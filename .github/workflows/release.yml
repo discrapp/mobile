@@ -10,7 +10,22 @@ on:
 permissions: read-all
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug secret availability
+        run: |
+          echo "HEIMDALLR_TOKEN available: ${{ secrets.HEIMDALLR_TOKEN != '' }}"
+          if [ -n "$HEIMDALLR_TOKEN" ]; then
+            echo "HEIMDALLR_TOKEN length: ${#HEIMDALLR_TOKEN}"
+          else
+            echo "HEIMDALLR_TOKEN is empty or not set"
+          fi
+        env:
+          HEIMDALLR_TOKEN: ${{ secrets.HEIMDALLR_TOKEN }}
+
   release:
+    needs: debug
     uses: "Mosher-Labs/.github/.github/workflows/release.yml@main"
     secrets:
       HEIMDALLR_TOKEN: ${{ secrets.HEIMDALLR_TOKEN }}
