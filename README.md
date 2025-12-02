@@ -1,108 +1,94 @@
-# basic-repo-template
+# Discr Mobile App
 
-![GitHub branch status](https://img.shields.io/github/checks-status/mosher-labs/basic-repo-template/main)
-![GitHub Issues](https://img.shields.io/github/issues/mosher-labs/basic-repo-template)
-![GitHub last commit](https://img.shields.io/github/last-commit/mosher-labs/basic-repo-template)
-![GitHub repo size](https://img.shields.io/github/repo-size/mosher-labs/basic-repo-template)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/mosher-labs/basic-repo-template)
-![GitHub License](https://img.shields.io/github/license/mosher-labs/basic-repo-template)
-![GitHub Sponsors](https://img.shields.io/github/sponsors/mosher-labs)
+![GitHub branch status](https://img.shields.io/github/checks-status/appdiscr/mobile/main)
+![GitHub Issues](https://img.shields.io/github/issues/appdiscr/mobile)
+![GitHub last commit](https://img.shields.io/github/last-commit/appdiscr/mobile)
+![GitHub repo size](https://img.shields.io/github/repo-size/appdiscr/mobile)
+![GitHub License](https://img.shields.io/github/license/appdiscr/mobile)
 
 ## Introduction
 
-🚀 This repository serves as a basic template for creating new
-repositories. It's designed to be a foundation for structure and
-organization. 🎯
+Discr is a mobile-first application built with React Native and Expo,
+powered by Supabase for backend services.
 
-### 🌍 Key Features
+### Key Features
 
-- 📦 A clean, reusable structure for quick repo setup.
-- 🗣️ Language-specific templates can inherit and extend from this base.
-- 🔄 Easily customizable for various projects and use cases.
+- Built with Expo SDK 54 and React Native
+- TypeScript for type safety
+- Supabase integration for authentication and data storage
+- Modern React 19 features
 
-### ✨ Perfect for
+## Prerequisites
 
-- Developers looking for a clean start 🛠️
-- Language-specific templates 👨‍💻
-- Seamless repository setup for quick deployments ⚡
+- Node.js 18+ and npm
+- Expo CLI
+- iOS Simulator (Mac) or Android Studio (for Android development)
 
-Feel free to fork, extend, and contribute! 🤝
+## Setup
 
-## Usage
+### Environment Variables
 
-To use this repository template, simply fork the repo.
-
-```bash
-gh repo fork --fork-name <FORK_NAME> --org <ORG_NAME>
-```
-
-Update the repository settings:
+Copy the example environment file and fill in your Supabase credentials:
 
 ```bash
-gh repo edit --add-topic devops,reliability-engineering,axes \
---add-topic infrastructure-as-code,viking,mosher-labs \
---delete-branch-on-merge --enable-discussions=false \
---enable-issues=false --enable-merge-commit=false \
---enable-projects=false --enable-rebase-merge=false \
---enable-wiki=false
+cp .env.example .env
 ```
 
-Create a ruleset for the default branch.
+Required environment variables:
 
-- Ruleset Name: Default branch
-- Enforcement status: Active
-- Target Branches: Default
-- ✅ Restrict deletions
-- ✅ Require linear history
-- ✅ Require signed commits
-- ✅ Require a pull request before merging
-- ✅ Dismiss stale pull request approvals when new commits are pushed
-- ✅ Require conversation resolution before merging
-- ✅ Request pull request review from Copilot
-- Allowed merge methods: "Squash"
-- ✅ Require status checks to pass
-- ✅ Require branches to be up to date before merging
-- ✅ Do not require status checks on creation
-- Status checks that are required: `pre-commit/pre-commit`
-- ✅ Block force pushes
-- ✅ Require code scanning results
+- `SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
 
-Enable Dependabot.
+Get these values from your Supabase project dashboard at:
+<https://app.supabase.com/project/discr-mvp/settings/api>
 
-- In Github UI, navigate to the repositories Settings > Code security
-- Enable Dependabot security updates
-- Enable Grouped security updates
-- Enable Dependabot version updates
-- Enable Dependabot on Actions runners
-- CodeQL analysis > Set up > Default
-- Enable Secret scanning
-- Enable Push protection
-
-Update the templated information:
-
-### README.md
-
-- [ ] Replace `basic-repo-template` with your `<FORK_NAME>`
-- [ ] Update the "Introduction" section
-- [ ] Update the "Usage" section
-- [ ] Update the "Contributing" section
-
-## 🔰 Contributing
-
-Upon first clone, install the pre-commit hooks.
+### Installation
 
 ```bash
-pre-commit install
+npm install
 ```
 
-To run pre-commit hooks locally, without a git commit.
+## Development
+
+Start the Expo development server:
 
 ```bash
-pre-commit run -a --all-files
+npm start
 ```
 
-To update pre-commit hooks, this ideally should be ran before a pull request is merged.
+Run on specific platforms:
 
 ```bash
-pre-commit autoupdate
+npm run ios       # iOS simulator
+npm run android   # Android emulator
+npm run web       # Web browser
 ```
+
+## Project Structure
+
+```text
+mobile/
+├── assets/          # Images, fonts, and static assets
+├── App.tsx          # Main application entry point
+├── app.json         # Expo configuration
+├── package.json     # Dependencies and scripts
+└── tsconfig.json    # TypeScript configuration
+```
+
+## Contributing
+
+This project uses conventional commits for version management.
+Please ensure your commits follow the format:
+
+```text
+type(scope): description
+
+feat: add new feature
+fix: resolve bug
+docs: update documentation
+chore: maintenance tasks
+```
+
+## License
+
+See LICENSE file for details.

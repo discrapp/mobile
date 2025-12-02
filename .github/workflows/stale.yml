@@ -8,5 +8,5 @@ permissions:
   pull-requests: write
 
 jobs:
-  pre-commit:
-    uses: "Mosher-Labs/.github/.github/workflows/stale.yml@main"
+  stale:
+    uses: "appdiscr/.github/.github/workflows/stale.yml@main"

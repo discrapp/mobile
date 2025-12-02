@@ -1,48 +1,60 @@
-# Mosher Labs Basic Repo Template - Project Memory
+# Discr Mobile - Project Memory
 
 This file contains persistent context for Claude Code sessions on this project.
 It will be automatically loaded at the start of every session.
 
 ## Project Overview
 
-This is a template repository for creating new Mosher Labs projects. It provides
-a standardized starting point with pre-configured tooling and workflows.
+This is the React Native mobile application for Discr, built with Expo and
+powered by Supabase for backend services.
 
 **Key Details:**
 
-- **Purpose:** Template for new repositories
+- **Framework:** React Native with Expo SDK 54
+- **Language:** TypeScript
+- **Backend:** Supabase (authentication, database, storage)
+- **State Management:** TBD
+- **Navigation:** TBD
 - **CI/CD:** GitHub Actions with release workflow
 - **Linting:** Pre-commit hooks for code quality
-- **Pattern:** Fork or use as template, then customize
 
 ## Repository Structure
 
 ```text
-basic-repo-template/
-├── .github/workflows/     # CI/CD workflows
-│   └── release.yml        # Semantic versioning & releases
-├── .pre-commit-config.yaml
-├── README.md
-└── CLAUDE.md
+mobile/
+├── .expo/              # Expo build artifacts
+├── .github/workflows/  # CI/CD workflows
+├── assets/             # Images, fonts, and static assets
+├── App.tsx             # Main application entry point
+├── app.json            # Expo configuration
+├── package.json        # Dependencies and scripts
+└── tsconfig.json       # TypeScript configuration
 ```
 
-## Using This Template
+## Development Setup
 
-### Creating a New Repo
+### Prerequisites
 
-1. **Use as template:** Click "Use this template" on GitHub
-1. **Clone locally:** `git clone <your-new-repo>`
-1. **Update README.md:** Replace template content with project description
-1. **Customize workflows:** Adjust `.github/workflows/` as needed
-1. **Install pre-commit:** `pre-commit install`
-1. **Create CLAUDE.md:** Document project-specific context
+- Node.js 18+ and npm
+- Expo CLI (installed via npx)
+- iOS Simulator (Mac) or Android Studio
 
-### Pre-configured Features
+### Environment Variables
 
-- **Release workflow:** Automatic semantic versioning from Conventional Commits
-- **Pre-commit hooks:** YAML, Markdown, and commit message linting
-- **GitHub Actions:** Ready to use CI/CD
-- **Documentation:** README template with badges
+Copy `.env.example` to `.env` and fill in Supabase credentials:
+
+- `SUPABASE_URL` - From Supabase dashboard
+- `SUPABASE_ANON_KEY` - From Supabase dashboard
+
+### Running the App
+
+```bash
+npm install          # Install dependencies
+npm start            # Start Expo dev server
+npm run ios          # Run on iOS simulator
+npm run android      # Run on Android emulator
+npm run web          # Run in web browser
+```
 
 ## Git Workflow
 
@@ -53,9 +65,6 @@ basic-repo-template/
    - Do NOT commit with `--no-verify` unless absolutely necessary
 1. **Commit with conventional format:** `git commit -m "type: description"`
 1. **Push and create PR:** `gh pr create --title "feat: description"`
-1. **Test changes:** If your changes reference shared workflows that were also updated,
-   temporarily change the reference from `@main` to `@your-branch` to test, verify
-   the PR passes, then change back to `@main` before merging
 1. **Merge to main:** Automatic release created based on commits
 
 **Commit Format:** Conventional Commits (enforced by pre-commit hook)
@@ -65,9 +74,7 @@ basic-repo-template/
 - `docs:` - Documentation changes (no version bump)
 - `chore:` - Maintenance (no version bump)
 - `refactor:` - Code refactoring (no version bump)
-- `test:` - Temporary test changes (like branch references)
-
-**Breaking changes:** Add `!` after type (e.g., `feat!:`) or include `BREAKING CHANGE:` in commit body for major version bump
+- `style:` - Code style changes (no version bump)
 
 ## Pre-commit Hooks
 
@@ -90,44 +97,33 @@ pre-commit autoupdate           # Update hook versions
 
 ### Code Quality Standards
 
-**CRITICAL:** All code must adhere to linter rules from the start. Do NOT write
-code that needs fixing after running pre-commit hooks.
+**CRITICAL:** All code must adhere to linter rules from the start.
 
-**Markdown (markdownlint):**
+### React Native Best Practices
 
-Configuration: `.markdownlint.yaml` (allows 2-space indent, 120 char lines)
+- Use TypeScript for all new code
+- Follow React hooks best practices
+- Optimize images and assets for mobile
+- Test on both iOS and Android platforms
+- Handle offline scenarios gracefully
 
-- Nested lists under unordered items: Use 2-space indentation
-- Nested lists under ordered items: Use 2-space indentation
-- Inline format for simple nested items: `**Item:** Detail 1, Detail 2`
-- Line length: 120 characters max (code/tables excluded)
-- Bare URLs: Allowed in reference sections
-- Bold for emphasis: Allowed in lists
+### Supabase Integration
 
-**YAML (yamllint):**
-
-- Maximum line length: 80 characters
-- Use 2-space indentation
-- No trailing whitespace
-- Proper quoting for strings containing special characters
-
-### When Working on This Repo
-
-1. **Write linter-compliant code from the start** - Don't fix after the fact
-1. **Run pre-commit hooks** BEFORE committing (fix all errors!)
-1. **Follow Conventional Commits** - Enables automatic versioning
-1. **Update CLAUDE.md** - Document important project context
-1. **Test shared workflow changes** - Use branch references before merging
+- Never commit actual credentials to git
+- Use environment variables for all config
+- Handle authentication state properly
+- Implement proper error handling for API calls
 
 ## References
 
 - @README.md - Repository overview
-- Shared Workflows: <https://github.com/Mosher-Labs/.github>
-- Conventional Commits: <https://www.conventionalcommits.org/>
+- Expo Documentation: <https://docs.expo.dev/>
+- React Native Documentation: <https://reactnative.dev/>
+- Supabase Documentation: <https://supabase.com/docs>
 
 ---
 
-**Last Updated:** 2025-11-18
+**Last Updated:** 2025-11-30
 
 This file should be updated whenever:
 
