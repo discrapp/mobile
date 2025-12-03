@@ -200,20 +200,6 @@ export default function SignUp() {
               )}
             </TouchableOpacity>
 
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.googleButton, loading && styles.buttonDisabled]}
-              onPress={handleGoogleSignUp}
-              disabled={loading}
-            >
-              <Text style={styles.googleButtonText}>Sign up with Google</Text>
-            </TouchableOpacity>
-
             <View style={styles.footer}>
               <Text style={styles.footerText}>Already have an account? </Text>
               <Link href="/(auth)/sign-in" asChild>
