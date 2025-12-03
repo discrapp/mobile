@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
+import * as Linking from 'expo-linking';
 import { supabase } from '@/lib/supabase';
 
 type AuthContextType = {
@@ -38,7 +39,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Handle deep link OAuth callbacks
+    const handleDeepLink = async (event: { url: string }) => {
+      if (event.url) {
+        const { data, error } = await supabase.auth.getSessionFromUrl({
+          url: event.url,
+        });
+        if (error) {
+          console.error('OAuth error:', error);
+        }
+        if (data?.session) {
+          setSession(data.session);
+          setUser(data.session.user);
+        }
+      }
+    };
+
+    // Listen for URL events (OAuth callbacks)
+    const urlSubscription = Linking.addEventListener('url', handleDeepLink);
+
+    // Check if app was opened with a URL
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      urlSubscription.remove();
+    };
   }, []);
 
   const signOut = async () => {
