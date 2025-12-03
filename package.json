@@ -41,7 +41,6 @@
     "@supabase/supabase-js": "^2.86.0",
     "expo": "~52.0.47",
     "expo-auth-session": "^7.0.9",
-    "expo-dev-client": "~5.0.20",
     "expo-font": "~13.0.4",
     "expo-linking": "~7.0.5",
     "expo-router": "~4.0.21",
