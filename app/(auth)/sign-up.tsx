@@ -74,8 +74,10 @@ export default function SignUp() {
     setLoading(true);
     try {
       // Get the correct redirect URL for current environment
+      // useProxy: true uses Expo's auth proxy for development
       const redirectUrl = AuthSession.makeRedirectUri({
         scheme: 'com.discr.app',
+        useProxy: true,
       });
 
       console.log('Using redirect URL:', redirectUrl);
