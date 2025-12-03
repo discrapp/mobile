@@ -1,20 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { useAuth } from '@/contexts/AuthContext';
 
-export default function HomeScreen() {
-  const { user } = useAuth();
-
+export default function MyBagScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Discr!</Text>
-      {user && (
-        <Text style={styles.email}>{user.email}</Text>
-      )}
+      <Text style={styles.title}>My Bag</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.description}>
-        Never lose your favorite disc again. Track your collection and help others find their lost discs.
-      </Text>
+      <Text style={styles.description}>Your disc collection will appear here.</Text>
     </View>
   );
 }
@@ -30,11 +22,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  email: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 8,
-  },
   separator: {
     marginVertical: 30,
     height: 1,
@@ -44,6 +31,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#666',
-    lineHeight: 24,
   },
 });
