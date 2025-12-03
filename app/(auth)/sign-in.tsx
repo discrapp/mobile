@@ -62,6 +62,7 @@ export default function SignIn() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          redirectTo: 'com.discr.app://',
           skipBrowserRedirect: true,
         },
       });
