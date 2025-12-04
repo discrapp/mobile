@@ -1,11 +1,15 @@
-import { StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ScrollView, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useAuth } from '@/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
+import { useState, useEffect } from 'react';
+import * as Crypto from 'expo-crypto';
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
+  const [gravatarUrl, setGravatarUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -23,6 +27,25 @@ export default function ProfileScreen() {
       ]
     );
   };
+
+  useEffect(() => {
+    const getGravatarUrl = async () => {
+      if (user?.email) {
+        try {
+          const emailHash = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.MD5,
+            user.email.toLowerCase().trim()
+          );
+          setGravatarUrl(`https://www.gravatar.com/avatar/${emailHash}?s=200&d=404`);
+        } catch (error) {
+          console.error('Error generating Gravatar URL:', error);
+          setImageError(true);
+        }
+      }
+    };
+
+    getGravatarUrl();
+  }, [user?.email]);
 
   const getInitials = (email: string) => {
     return email.charAt(0).toUpperCase();
@@ -51,7 +74,13 @@ export default function ProfileScreen() {
         {/* Profile Photo */}
         <View style={styles.photoContainer}>
           <View style={styles.photoPlaceholder}>
-            {user?.email ? (
+            {gravatarUrl && !imageError ? (
+              <Image
+                source={{ uri: gravatarUrl }}
+                style={styles.gravatarImage}
+                onError={() => setImageError(true)}
+              />
+            ) : user?.email ? (
               <Text style={styles.photoInitials}>{getInitials(user.email)}</Text>
             ) : (
               <FontAwesome name="user" size={48} color="#fff" />
@@ -117,6 +146,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.violet.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  gravatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   photoInitials: {
     fontSize: 42,
