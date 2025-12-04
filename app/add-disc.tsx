@@ -81,6 +81,20 @@ export default function AddDiscScreen() {
         fade: fade ? parseInt(fade, 10) : null,
       };
 
+      const requestBody = {
+        name: name.trim(),
+        manufacturer: manufacturer.trim() || undefined,
+        mold: mold.trim() || undefined,
+        plastic: plastic.trim() || undefined,
+        weight: weight ? parseInt(weight, 10) : undefined,
+        color: color.trim() || undefined,
+        flight_numbers: flightNumbers,
+        reward_amount: rewardAmount ? parseInt(rewardAmount, 10) : undefined,
+        notes: notes.trim() || undefined,
+      };
+
+      console.log('Creating disc with:', requestBody);
+
       // Call create-disc edge function
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/create-disc`,
@@ -90,24 +104,16 @@ export default function AddDiscScreen() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({
-            name: name.trim(),
-            manufacturer: manufacturer.trim() || undefined,
-            mold: mold.trim() || undefined,
-            plastic: plastic.trim() || undefined,
-            weight: weight ? parseInt(weight, 10) : undefined,
-            color: color.trim() || undefined,
-            flight_numbers: flightNumbers,
-            reward_amount: rewardAmount ? parseInt(rewardAmount, 10) : undefined,
-            notes: notes.trim() || undefined,
-          }),
+          body: JSON.stringify(requestBody),
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create disc');
+        console.error('API Error Response:', data);
+        console.error('Response status:', response.status);
+        throw new Error(data.error || data.details || 'Failed to create disc');
       }
 
       Alert.alert('Success', 'Disc added to your bag!', [
