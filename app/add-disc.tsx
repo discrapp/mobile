@@ -394,12 +394,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonPrimary: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#9333EA',
   },
   buttonSecondary: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: '#9333EA',
   },
   buttonDisabled: {
     opacity: 0.6,
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonSecondaryText: {
-    color: '#007AFF',
+    color: '#9333EA',
     fontSize: 16,
     fontWeight: '600',
   },
