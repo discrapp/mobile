@@ -124,8 +124,7 @@ export default function MyBagScreen() {
       <Pressable
         style={styles.discCard}
         onPress={() => {
-          // TODO: Navigate to disc detail screen
-          console.log('Tapped disc:', item.id);
+          router.push(`/disc/${item.id}`);
         }}>
         {/* Photo */}
         <View style={styles.photoContainer}>
