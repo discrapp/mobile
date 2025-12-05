@@ -17,6 +17,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import CameraWithOverlay from '@/components/CameraWithOverlay';
 
 interface FlightNumbers {
   speed: number | null;
@@ -86,6 +87,7 @@ export default function EditDiscScreen() {
   // Photos
   const [existingPhotos, setExistingPhotos] = useState<DiscPhoto[]>([]);
   const [newPhotos, setNewPhotos] = useState<string[]>([]);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -232,21 +234,11 @@ export default function EditDiscScreen() {
       return;
     }
 
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission denied', 'We need camera permissions to take photos');
-      return;
-    }
+    setShowCamera(true);
+  };
 
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      setNewPhotos([...newPhotos, result.assets[0].uri]);
-    }
+  const handlePhotoTaken = (uri: string) => {
+    setNewPhotos([...newPhotos, uri]);
   };
 
   const removeNewPhoto = (index: number) => {
@@ -456,10 +448,11 @@ export default function EditDiscScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}>
+    <>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
           <Text style={styles.title}>Edit Disc</Text>
@@ -719,7 +712,14 @@ export default function EditDiscScreen() {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+
+      <CameraWithOverlay
+        visible={showCamera}
+        onClose={() => setShowCamera(false)}
+        onPhotoTaken={handlePhotoTaken}
+      />
+    </>
   );
 }
 

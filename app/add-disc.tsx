@@ -17,6 +17,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import CameraWithOverlay from '@/components/CameraWithOverlay';
 
 interface FlightNumbers {
   speed: number | null;
@@ -61,6 +62,7 @@ export default function AddDiscScreen() {
 
   // Photos (up to 4)
   const [photos, setPhotos] = useState<string[]>([]);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -111,23 +113,11 @@ export default function AddDiscScreen() {
       return;
     }
 
-    // Request permissions
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission denied', 'We need camera permissions to take photos');
-      return;
-    }
+    setShowCamera(true);
+  };
 
-    // Launch camera
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      setPhotos([...photos, result.assets[0].uri]);
-    }
+  const handlePhotoTaken = (uri: string) => {
+    setPhotos([...photos, uri]);
   };
 
   const removePhoto = (index: number) => {
@@ -271,10 +261,11 @@ export default function AddDiscScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}>
+    <>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
           <Text style={styles.title}>Add Disc to Your Bag</Text>
@@ -516,7 +507,14 @@ export default function AddDiscScreen() {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+
+      <CameraWithOverlay
+        visible={showCamera}
+        onClose={() => setShowCamera(false)}
+        onPhotoTaken={handlePhotoTaken}
+      />
+    </>
   );
 }
 
