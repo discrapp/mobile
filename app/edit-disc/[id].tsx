@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import CameraWithOverlay from '@/components/CameraWithOverlay';
+import ImageCropperWithCircle from '@/components/ImageCropperWithCircle';
 
 interface FlightNumbers {
   speed: number | null;
@@ -88,6 +89,8 @@ export default function EditDiscScreen() {
   const [existingPhotos, setExistingPhotos] = useState<DiscPhoto[]>([]);
   const [newPhotos, setNewPhotos] = useState<string[]>([]);
   const [showCamera, setShowCamera] = useState(false);
+  const [showCropper, setShowCropper] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState('');
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -216,16 +219,21 @@ export default function EditDiscScreen() {
       return;
     }
 
+    // Launch image picker (no editing, we'll use custom cropper)
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
+      allowsEditing: false,
+      quality: 1.0,
     });
 
     if (!result.canceled && result.assets[0]) {
-      setNewPhotos([...newPhotos, result.assets[0].uri]);
+      setSelectedImageUri(result.assets[0].uri);
+      setShowCropper(true);
     }
+  };
+
+  const handleCropComplete = (uri: string) => {
+    setNewPhotos([...newPhotos, uri]);
   };
 
   const takePhoto = async () => {
@@ -718,6 +726,13 @@ export default function EditDiscScreen() {
         visible={showCamera}
         onClose={() => setShowCamera(false)}
         onPhotoTaken={handlePhotoTaken}
+      />
+
+      <ImageCropperWithCircle
+        visible={showCropper}
+        imageUri={selectedImageUri}
+        onClose={() => setShowCropper(false)}
+        onCropComplete={handleCropComplete}
       />
     </>
   );
