@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Modal, Dimensions, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Modal, Dimensions } from 'react-native';
+import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
@@ -21,6 +23,46 @@ export default function ImageCropperWithCircle({
   onCropComplete,
 }: ImageCropperWithCircleProps) {
   const [processing, setProcessing] = useState(false);
+
+  // Gesture values
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const savedTranslateX = useSharedValue(0);
+  const savedTranslateY = useSharedValue(0);
+
+  // Pinch gesture for zoom
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate((e) => {
+      scale.value = savedScale.value * e.scale;
+    })
+    .onEnd(() => {
+      // Limit zoom between 1x and 3x
+      scale.value = withSpring(Math.max(1, Math.min(scale.value, 3)));
+      savedScale.value = scale.value;
+    });
+
+  // Pan gesture for moving
+  const panGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      translateX.value = savedTranslateX.value + e.translationX;
+      translateY.value = savedTranslateY.value + e.translationY;
+    })
+    .onEnd(() => {
+      savedTranslateX.value = translateX.value;
+      savedTranslateY.value = translateY.value;
+    });
+
+  const composedGesture = Gesture.Simultaneous(pinchGesture, panGesture);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
+  }));
 
   const handleCrop = async () => {
     setProcessing(true);
@@ -45,16 +87,22 @@ export default function ImageCropperWithCircle({
 
   return (
     <Modal visible={visible} animationType="slide">
-      <View style={styles.container}>
+      <GestureHandlerRootView style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
+          <GestureDetector gesture={composedGesture}>
+            <Animated.Image
+              source={{ uri: imageUri }}
+              style={[styles.image, animatedStyle]}
+              resizeMode="cover"
+            />
+          </GestureDetector>
 
           {/* Circular guide overlay */}
-          <View style={styles.overlay}>
+          <View style={styles.overlay} pointerEvents="none">
             <View style={styles.circleGuide}>
               <View style={styles.circle} />
             </View>
-            <Text style={styles.helperText}>Position your disc in the circle</Text>
+            <Text style={styles.helperText}>Pinch to zoom, drag to position</Text>
           </View>
         </View>
 
@@ -78,7 +126,7 @@ export default function ImageCropperWithCircle({
             )}
           </TouchableOpacity>
         </View>
-      </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
