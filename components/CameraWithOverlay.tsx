@@ -5,7 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const CIRCLE_SIZE = SCREEN_WIDTH * 0.7; // 70% of screen width
+const CIRCLE_SIZE = Math.min(SCREEN_WIDTH * 0.7, 280); // 70% of screen width, max 280
 
 interface CameraWithOverlayProps {
   visible: boolean;
@@ -59,18 +59,12 @@ export default function CameraWithOverlay({ visible, onClose, onPhotoTaken }: Ca
     <Modal visible={visible} animationType="slide">
       <View style={styles.container}>
         <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
-          {/* Dark overlay with circle cutout */}
+          {/* Dark overlay with circle guide */}
           <View style={styles.overlay}>
-            <View style={styles.overlayTop} />
-            <View style={styles.overlayMiddle}>
-              <View style={styles.overlaySide} />
-              <View style={styles.circleContainer}>
-                <View style={styles.circle} />
-                <Text style={styles.helperText}>Center your disc in the circle</Text>
-              </View>
-              <View style={styles.overlaySide} />
+            <View style={styles.circleGuide}>
+              <View style={styles.circle} />
             </View>
-            <View style={styles.overlayBottom} />
+            <Text style={styles.helperText}>Center your disc in the circle</Text>
           </View>
 
           {/* Controls */}
@@ -139,20 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  overlayTop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    width: '100%',
-  },
-  overlayMiddle: {
-    flexDirection: 'row',
-    height: CIRCLE_SIZE,
-  },
-  overlaySide: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  circleContainer: {
+  circleGuide: {
     width: CIRCLE_SIZE,
     height: CIRCLE_SIZE,
     justifyContent: 'center',
@@ -162,24 +143,21 @@ const styles = StyleSheet.create({
     width: CIRCLE_SIZE,
     height: CIRCLE_SIZE,
     borderRadius: CIRCLE_SIZE / 2,
-    borderWidth: 3,
+    borderWidth: 4,
     borderColor: '#fff',
-    opacity: 0.8,
+    backgroundColor: 'transparent',
   },
   helperText: {
-    marginTop: 16,
+    marginTop: 24,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  overlayBottom: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
   controls: {
     position: 'absolute',
