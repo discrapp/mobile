@@ -126,7 +126,8 @@ export default function EditDiscScreen() {
       );
       setTurn(disc.flight_numbers.turn !== null ? disc.flight_numbers.turn.toString() : '');
       setFade(disc.flight_numbers.fade !== null ? disc.flight_numbers.fade.toString() : '');
-      setRewardAmount(disc.reward_amount || '');
+      // reward_amount comes as string like "5.00" from API
+      setRewardAmount(disc.reward_amount ? disc.reward_amount.toString() : '');
       setNotes(disc.notes || '');
     } catch (error) {
       console.error('Error fetching disc:', error);
