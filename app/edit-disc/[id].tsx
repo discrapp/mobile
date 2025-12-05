@@ -664,19 +664,23 @@ export default function EditDiscScreen() {
               {existingPhotos
                 .filter((photo) => photo.photo_url && photo.photo_url.trim() !== '')
                 .map((photo) => (
-                  <View key={photo.id} style={styles.photoContainer}>
-                    <Image source={{ uri: photo.photo_url }} style={styles.photoImage} />
-                  <Pressable
-                    style={styles.photoRemoveButton}
-                    onPress={() => removeExistingPhoto(photo.id)}>
-                    <FontAwesome name="times-circle" size={24} color="#ff4444" />
-                  </Pressable>
-                </View>
+                  <View key={photo.id} style={styles.photoWrapper}>
+                    <View style={styles.photoContainer}>
+                      <Image source={{ uri: photo.photo_url }} style={styles.photoImage} />
+                    </View>
+                    <Pressable
+                      style={styles.photoRemoveButton}
+                      onPress={() => removeExistingPhoto(photo.id)}>
+                      <FontAwesome name="times-circle" size={24} color="#ff4444" />
+                    </Pressable>
+                  </View>
               ))}
               {/* New photos */}
               {newPhotos.map((photo, index) => (
-                <View key={`new-${index}`} style={styles.photoContainer}>
-                  <Image source={{ uri: photo }} style={styles.photoImage} />
+                <View key={`new-${index}`} style={styles.photoWrapper}>
+                  <View style={styles.photoContainer}>
+                    <Image source={{ uri: photo }} style={styles.photoImage} />
+                  </View>
                   <Pressable
                     style={styles.photoRemoveButton}
                     onPress={() => removeNewPhoto(index)}>
@@ -871,8 +875,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
   },
-  photoContainer: {
+  photoWrapper: {
     position: 'relative',
+    width: 100,
+    height: 100,
+  },
+  photoContainer: {
     width: 100,
     height: 100,
     borderRadius: 50,
