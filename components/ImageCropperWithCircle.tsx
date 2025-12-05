@@ -101,24 +101,23 @@ export default function ImageCropperWithCircle({
       // Cover mode: image scales to cover the container, larger dimension overflows
       const imageAspect = imgWidth / imgHeight;
       const containerAspect = 1; // Square container
-      let displayWidth, displayHeight, offsetX, offsetY;
+      let displayWidth, displayHeight, offsetX, offsetY, scaleFactor;
 
       if (imageAspect > containerAspect) {
-        // Image is wider - scale to height, width overflows
+        // Image is wider - scale to fit height, width overflows
         displayHeight = IMAGE_CONTAINER_SIZE;
         displayWidth = IMAGE_CONTAINER_SIZE * imageAspect;
         offsetX = (IMAGE_CONTAINER_SIZE - displayWidth) / 2; // Negative, centers the overflow
         offsetY = 0;
+        scaleFactor = imgHeight / displayHeight; // Use height scale for landscape
       } else {
-        // Image is taller - scale to width, height overflows
+        // Image is taller - scale to fit width, height overflows
         displayWidth = IMAGE_CONTAINER_SIZE;
         displayHeight = IMAGE_CONTAINER_SIZE / imageAspect;
         offsetX = 0;
         offsetY = (IMAGE_CONTAINER_SIZE - displayHeight) / 2; // Negative, centers the overflow
+        scaleFactor = imgWidth / displayWidth; // Use width scale for portrait
       }
-
-      // Scale from display to image coordinates
-      const scaleFactor = imgWidth / displayWidth;
 
       // Circle center in screen coordinates
       const circleCenterX = IMAGE_CONTAINER_SIZE / 2;
