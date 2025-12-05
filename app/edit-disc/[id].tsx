@@ -86,7 +86,6 @@ export default function EditDiscScreen() {
   // Photos
   const [existingPhotos, setExistingPhotos] = useState<DiscPhoto[]>([]);
   const [newPhotos, setNewPhotos] = useState<string[]>([]);
-  const [photosToDelete, setPhotosToDelete] = useState<string[]>([]); // IDs of existing photos to delete
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -254,9 +253,65 @@ export default function EditDiscScreen() {
     setNewPhotos(newPhotos.filter((_, i) => i !== index));
   };
 
-  const removeExistingPhoto = (photoId: string) => {
-    setPhotosToDelete([...photosToDelete, photoId]);
-    setExistingPhotos(existingPhotos.filter((p) => p.id !== photoId));
+  const removeExistingPhoto = async (photoId: string) => {
+    // Show confirmation dialog
+    Alert.alert(
+      'Delete Photo',
+      'Are you sure you want to delete this photo? This cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            // Remove from UI immediately
+            setExistingPhotos(existingPhotos.filter((p) => p.id !== photoId));
+
+            try {
+              const {
+                data: { session },
+              } = await supabase.auth.getSession();
+
+              if (!session) {
+                Alert.alert('Error', 'You must be signed in to delete a photo');
+                return;
+              }
+
+              // Delete from storage and database immediately
+              const deleteResponse = await fetch(
+                `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-disc-photo`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
+                  },
+                  body: JSON.stringify({ photo_id: photoId }),
+                }
+              );
+
+              if (!deleteResponse.ok) {
+                const deleteError = await deleteResponse.json();
+                console.error('Failed to delete photo:', deleteError);
+                Alert.alert('Error', 'Failed to delete photo. Please try again.');
+                // Restore the photo to the UI if deletion failed
+                fetchDiscData();
+              } else {
+                console.log('Photo deleted successfully');
+              }
+            } catch (error) {
+              console.error('Error deleting photo:', error);
+              Alert.alert('Error', 'Failed to delete photo. Please try again.');
+              // Restore the photo to the UI if deletion failed
+              fetchDiscData();
+            }
+          },
+        },
+      ]
+    );
   };
 
   const showPhotoOptions = () => {
@@ -306,37 +361,6 @@ export default function EditDiscScreen() {
       };
 
       console.log('Updating disc with:', JSON.stringify(requestBody, null, 2));
-
-      // Delete photos marked for deletion FIRST
-      if (photosToDelete.length > 0) {
-        console.log(`Deleting ${photosToDelete.length} photos`);
-        for (const photoId of photosToDelete) {
-          try {
-            const deleteResponse = await fetch(
-              `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-disc-photo`,
-              {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${session.access_token}`,
-                },
-                body: JSON.stringify({ photo_id: photoId }),
-              }
-            );
-
-            if (!deleteResponse.ok) {
-              const deleteError = await deleteResponse.json();
-              console.error(`Failed to delete photo ${photoId}:`, deleteError);
-              // Continue with other deletions even if one fails
-            } else {
-              console.log(`✅ Photo ${photoId} deleted successfully`);
-            }
-          } catch (photoError) {
-            console.error(`Error deleting photo ${photoId}:`, photoError);
-            // Continue with other deletions even if one fails
-          }
-        }
-      }
 
       // Call update-disc edge function
       const response = await fetch(
@@ -413,8 +437,7 @@ export default function EditDiscScreen() {
         }
       }
 
-      // Clear state arrays after successful save
-      setPhotosToDelete([]);
+      // Clear new photos array after successful save
       setNewPhotos([]);
 
       Alert.alert('Success', 'Disc updated successfully!', [
