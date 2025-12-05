@@ -304,6 +304,37 @@ export default function EditDiscScreen() {
 
       console.log('Updating disc with:', JSON.stringify(requestBody, null, 2));
 
+      // Delete photos marked for deletion FIRST
+      if (photosToDelete.length > 0) {
+        console.log(`Deleting ${photosToDelete.length} photos`);
+        for (const photoId of photosToDelete) {
+          try {
+            const deleteResponse = await fetch(
+              `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-disc-photo`,
+              {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ photo_id: photoId }),
+              }
+            );
+
+            if (!deleteResponse.ok) {
+              const deleteError = await deleteResponse.json();
+              console.error(`Failed to delete photo ${photoId}:`, deleteError);
+              // Continue with other deletions even if one fails
+            } else {
+              console.log(`✅ Photo ${photoId} deleted successfully`);
+            }
+          } catch (photoError) {
+            console.error(`Error deleting photo ${photoId}:`, photoError);
+            // Continue with other deletions even if one fails
+          }
+        }
+      }
+
       // Call update-disc edge function
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/update-disc`,
@@ -333,7 +364,8 @@ export default function EditDiscScreen() {
       if (newPhotos.length > 0) {
         console.log(`Uploading ${newPhotos.length} new photos for disc ${id}`);
 
-        // Determine which photo slots to use (continue from existing photos)
+        // Determine which photo slots to use
+        // existingPhotos has already been filtered to remove deleted photos
         const startingPhotoNumber = existingPhotos.length + 1;
 
         for (let i = 0; i < newPhotos.length; i++) {
@@ -377,6 +409,10 @@ export default function EditDiscScreen() {
           }
         }
       }
+
+      // Clear state arrays after successful save
+      setPhotosToDelete([]);
+      setNewPhotos([]);
 
       Alert.alert('Success', 'Disc updated successfully!', [
         {
