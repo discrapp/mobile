@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
+  TouchableOpacity,
   Image,
   View as RNView,
 } from 'react-native';
@@ -74,15 +75,12 @@ export default function DiscDetailScreen() {
         title: disc.mold || disc.name,
         headerBackTitle: 'My Bag',
         headerRight: () => (
-          <Pressable
+          <TouchableOpacity
             onPress={() => router.push(`/edit-disc/${disc.id}`)}
-            hitSlop={8}
-            style={({ pressed }) => ({
-              marginRight: 16,
-              opacity: pressed ? 0.5 : 1,
-            })}>
+            activeOpacity={0.6}
+            style={{ marginRight: 16 }}>
             <FontAwesome name="edit" size={22} color={Colors.violet.primary} />
-          </Pressable>
+          </TouchableOpacity>
         ),
       });
     }
