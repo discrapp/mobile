@@ -146,7 +146,13 @@ export default function EditDiscScreen() {
       setRewardAmount(disc.reward_amount ? disc.reward_amount.toString() : '');
       setNotes(disc.notes || '');
       // Photos
-      setExistingPhotos(disc.photos || []);
+      setExistingPhotos(Array.isArray(disc.photos) ? disc.photos : []);
+
+      console.log('Disc data loaded:', {
+        id: disc.id,
+        mold: disc.mold,
+        photoCount: Array.isArray(disc.photos) ? disc.photos.length : 0,
+      });
     } catch (error) {
       console.error('Error fetching disc:', error);
       Alert.alert('Error', 'Failed to load disc data. Please try again.');
