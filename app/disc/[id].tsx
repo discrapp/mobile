@@ -218,16 +218,19 @@ export default function DiscDetailScreen() {
     );
   }
 
+  // Filter out photos without valid URLs
+  const validPhotos = disc.photos.filter((photo) => photo.photo_url && photo.photo_url.trim() !== '');
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       {/* Photo Gallery */}
-      {disc.photos.length > 0 ? (
+      {validPhotos.length > 0 ? (
         <ScrollView
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           style={styles.photoGallery}>
-          {disc.photos.map((photo) => (
+          {validPhotos.map((photo) => (
             <Image key={photo.id} source={{ uri: photo.photo_url }} style={styles.photo} />
           ))}
         </ScrollView>
@@ -239,7 +242,7 @@ export default function DiscDetailScreen() {
       )}
 
       {/* Photo indicator */}
-      {disc.photos.length > 1 && (
+      {validPhotos.length > 1 && (
         <View style={styles.photoIndicator}>
           <FontAwesome name="camera" size={12} color="#666" />
           <Text style={styles.photoIndicatorText}>

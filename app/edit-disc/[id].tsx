@@ -145,7 +145,10 @@ export default function EditDiscScreen() {
       const fadeValue = disc.flight_numbers.fade !== null ? disc.flight_numbers.fade.toString() : '';
       const rewardAmountValue = disc.reward_amount ? disc.reward_amount.toString() : '';
       const notesValue = disc.notes || '';
-      const photosValue = Array.isArray(disc.photos) ? disc.photos : [];
+      // Filter out photos without valid URLs (orphaned database records)
+      const photosValue = Array.isArray(disc.photos)
+        ? disc.photos.filter((p: DiscPhoto) => p.photo_url && p.photo_url.trim() !== '')
+        : [];
 
       console.log('Setting form values:', {
         manufacturer: manufacturerValue,
@@ -641,9 +644,11 @@ export default function EditDiscScreen() {
             <Text style={styles.label}>Photos</Text>
             <View style={styles.photoGrid}>
               {/* Existing photos */}
-              {existingPhotos.map((photo) => (
-                <View key={photo.id} style={styles.photoContainer}>
-                  <Image source={{ uri: photo.photo_url }} style={styles.photoImage} />
+              {existingPhotos
+                .filter((photo) => photo.photo_url && photo.photo_url.trim() !== '')
+                .map((photo) => (
+                  <View key={photo.id} style={styles.photoContainer}>
+                    <Image source={{ uri: photo.photo_url }} style={styles.photoImage} />
                   <Pressable
                     style={styles.photoRemoveButton}
                     onPress={() => removeExistingPhoto(photo.id)}>
