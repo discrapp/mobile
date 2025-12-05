@@ -8,17 +8,28 @@ import {
   Alert,
   ActivityIndicator,
   Pressable,
+  Image,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import { Text, View } from '@/components/Themed';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 interface FlightNumbers {
   speed: number | null;
   glide: number | null;
   turn: number | null;
   fade: number | null;
+}
+
+interface DiscPhoto {
+  id: string;
+  storage_path: string;
+  photo_type: string;
+  photo_url?: string;
+  created_at: string;
 }
 
 interface Disc {
@@ -32,6 +43,7 @@ interface Disc {
   flight_numbers: FlightNumbers;
   reward_amount?: string;
   notes?: string;
+  photos: DiscPhoto[];
 }
 
 export default function EditDiscScreen() {
@@ -67,6 +79,10 @@ export default function EditDiscScreen() {
   const [fade, setFade] = useState('');
   const [rewardAmount, setRewardAmount] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Photos
+  const [existingPhotos, setExistingPhotos] = useState<DiscPhoto[]>([]);
+  const [newPhotos, setNewPhotos] = useState<string[]>([]);
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -129,6 +145,8 @@ export default function EditDiscScreen() {
       // reward_amount comes as string like "5.00" from API
       setRewardAmount(disc.reward_amount ? disc.reward_amount.toString() : '');
       setNotes(disc.notes || '');
+      // Photos
+      setExistingPhotos(disc.photos || []);
     } catch (error) {
       console.error('Error fetching disc:', error);
       Alert.alert('Error', 'Failed to load disc data. Please try again.');
@@ -149,6 +167,67 @@ export default function EditDiscScreen() {
     }
 
     return isValid;
+  };
+
+  const getTotalPhotos = () => existingPhotos.length + newPhotos.length;
+
+  const pickImage = async () => {
+    if (getTotalPhotos() >= 4) {
+      Alert.alert('Maximum photos', 'You can only have up to 4 photos per disc');
+      return;
+    }
+
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'We need camera roll permissions to add photos');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setNewPhotos([...newPhotos, result.assets[0].uri]);
+    }
+  };
+
+  const takePhoto = async () => {
+    if (getTotalPhotos() >= 4) {
+      Alert.alert('Maximum photos', 'You can only have up to 4 photos per disc');
+      return;
+    }
+
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'We need camera permissions to take photos');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setNewPhotos([...newPhotos, result.assets[0].uri]);
+    }
+  };
+
+  const removeNewPhoto = (index: number) => {
+    setNewPhotos(newPhotos.filter((_, i) => i !== index));
+  };
+
+  const showPhotoOptions = () => {
+    Alert.alert('Add Photo', 'Choose an option', [
+      { text: 'Take Photo', onPress: takePhoto },
+      { text: 'Choose from Library', onPress: pickImage },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
   const handleSave = async () => {
@@ -214,6 +293,55 @@ export default function EditDiscScreen() {
           { text: 'OK' },
         ]);
         throw new Error(data.error || data.details || 'Failed to update disc');
+      }
+
+      // Upload new photos if any
+      if (newPhotos.length > 0) {
+        console.log(`Uploading ${newPhotos.length} new photos for disc ${id}`);
+
+        // Determine which photo slots to use (continue from existing photos)
+        const startingPhotoNumber = existingPhotos.length + 1;
+
+        for (let i = 0; i < newPhotos.length; i++) {
+          const photoUri = newPhotos[i];
+          const photoNumber = startingPhotoNumber + i;
+          const photoType = `photo-${photoNumber}`;
+
+          try {
+            const formData = new FormData();
+            formData.append('disc_id', id);
+            formData.append('photo_type', photoType);
+
+            const uriParts = photoUri.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+
+            formData.append('file', {
+              uri: photoUri,
+              type: `image/${fileType}`,
+              name: `disc-photo.${fileType}`,
+            } as any);
+
+            const photoResponse = await fetch(
+              `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/upload-disc-photo`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: formData,
+              }
+            );
+
+            if (!photoResponse.ok) {
+              const photoError = await photoResponse.json();
+              console.error(`Failed to upload photo ${i + 1}:`, photoError);
+            } else {
+              console.log(`✅ Photo ${i + 1} uploaded successfully`);
+            }
+          } catch (photoError) {
+            console.error(`Error uploading photo ${i + 1}:`, photoError);
+          }
+        }
       }
 
       Alert.alert('Success', 'Disc updated successfully!', [
@@ -428,6 +556,44 @@ export default function EditDiscScreen() {
             />
           </View>
 
+          {/* Photos */}
+          <View style={styles.field}>
+            <Text style={styles.label}>Photos</Text>
+            <View style={styles.photoGrid}>
+              {/* Existing photos */}
+              {existingPhotos.map((photo) => (
+                <View key={photo.id} style={styles.photoContainer}>
+                  <Image source={{ uri: photo.photo_url }} style={styles.photoImage} />
+                  <View style={styles.existingPhotoBadge}>
+                    <Text style={styles.existingPhotoBadgeText}>Saved</Text>
+                  </View>
+                </View>
+              ))}
+              {/* New photos */}
+              {newPhotos.map((photo, index) => (
+                <View key={`new-${index}`} style={styles.photoContainer}>
+                  <Image source={{ uri: photo }} style={styles.photoImage} />
+                  <Pressable
+                    style={styles.photoRemoveButton}
+                    onPress={() => removeNewPhoto(index)}>
+                    <FontAwesome name="times-circle" size={24} color="#ff4444" />
+                  </Pressable>
+                </View>
+              ))}
+              {/* Add photo button */}
+              {getTotalPhotos() < 4 && (
+                <Pressable style={styles.photoAddButton} onPress={showPhotoOptions}>
+                  <FontAwesome name="camera" size={32} color="#999" />
+                  <Text style={styles.photoAddText}>Add Photo</Text>
+                </Pressable>
+              )}
+            </View>
+            <Text style={styles.photoHint}>
+              {existingPhotos.length} saved, {newPhotos.length} new • {4 - getTotalPhotos()}{' '}
+              remaining
+            </Text>
+          </View>
+
           {/* Buttons */}
           <View style={styles.buttonContainer}>
             <Pressable
@@ -581,6 +747,62 @@ const styles = StyleSheet.create({
     color: '#ff4444',
     fontSize: 14,
     marginTop: 4,
+  },
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  photoContainer: {
+    position: 'relative',
+    width: 100,
+    height: 100,
+  },
+  photoImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+  },
+  photoRemoveButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+  },
+  existingPhotoBadge: {
+    position: 'absolute',
+    bottom: 4,
+    left: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  existingPhotoBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  photoAddButton: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  photoAddText: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+  },
+  photoHint: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 8,
   },
   buttonContainer: {
     flexDirection: 'row',
