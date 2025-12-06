@@ -94,9 +94,20 @@ export default function ImageCropperWithCircle({
       }
 
       // User's current transforms (scale first, then translate)
-      const userScale = savedScale.value;
-      const userTranslateX = savedTranslateX.value;
-      const userTranslateY = savedTranslateY.value;
+      // Use the current animated values, not saved values, to match what user sees
+      const userScale = scale.value;
+      const userTranslateX = translateX.value;
+      const userTranslateY = translateY.value;
+
+      console.log('Crop debug:', {
+        userScale,
+        userTranslateX,
+        userTranslateY,
+        imgWidth,
+        imgHeight,
+        IMAGE_CONTAINER_SIZE,
+        CIRCLE_SIZE,
+      });
 
       // Calculate how the image is displayed with resizeMode="cover"
       // Cover mode: image scales to fill the container, larger dimension overflows
@@ -207,12 +218,16 @@ export default function ImageCropperWithCircle({
             />
           </GestureDetector>
 
-          {/* Circular guide overlay */}
+          {/* Circular guide overlay - circle centered independently from helper text */}
           <View style={styles.overlay} pointerEvents="none">
-            <View style={styles.circleGuide}>
-              <View style={styles.circle} />
+            <View style={styles.circleContainer}>
+              <View style={styles.circleGuide}>
+                <View style={styles.circle} />
+              </View>
             </View>
-            <Text style={styles.helperText}>Pinch to zoom, drag to position</Text>
+            <View style={styles.helperTextContainer}>
+              <Text style={styles.helperText}>Pinch to zoom, drag to position</Text>
+            </View>
           </View>
         </View>
 
@@ -257,6 +272,9 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
+  },
+  circleContainer: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -274,8 +292,14 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     backgroundColor: 'transparent',
   },
+  helperTextContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: '25%',
+    alignItems: 'center',
+  },
   helperText: {
-    marginTop: 24,
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
