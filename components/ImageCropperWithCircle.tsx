@@ -75,11 +75,12 @@ export default function ImageCropperWithCircle({
 
   const composedGesture = Gesture.Simultaneous(pinchGesture, panGesture);
 
+  // Note: transform order matters! Scale first (around center), then translate
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
+      { scale: scale.value },
       { translateX: translateX.value },
       { translateY: translateY.value },
-      { scale: scale.value },
     ],
   }));
 
@@ -92,61 +93,79 @@ export default function ImageCropperWithCircle({
         return;
       }
 
-      // User's current transforms
+      // User's current transforms (scale first, then translate)
       const userScale = savedScale.value;
       const userTranslateX = savedTranslateX.value;
       const userTranslateY = savedTranslateY.value;
 
       // Calculate how the image is displayed with resizeMode="cover"
-      // Cover mode: image scales to cover the container, larger dimension overflows
+      // Cover mode: image scales to fill the container, larger dimension overflows
       const imageAspect = imgWidth / imgHeight;
       const containerAspect = 1; // Square container
-      let displayWidth, displayHeight, offsetX, offsetY, scaleFactor;
+      let displayWidth: number, displayHeight: number;
 
       if (imageAspect > containerAspect) {
         // Image is wider - scale to fit height, width overflows
         displayHeight = IMAGE_CONTAINER_SIZE;
         displayWidth = IMAGE_CONTAINER_SIZE * imageAspect;
-        offsetX = (IMAGE_CONTAINER_SIZE - displayWidth) / 2; // Negative, centers the overflow
-        offsetY = 0;
-        scaleFactor = imgHeight / displayHeight; // Use height scale for landscape
       } else {
         // Image is taller - scale to fit width, height overflows
         displayWidth = IMAGE_CONTAINER_SIZE;
         displayHeight = IMAGE_CONTAINER_SIZE / imageAspect;
-        offsetX = 0;
-        offsetY = (IMAGE_CONTAINER_SIZE - displayHeight) / 2; // Negative, centers the overflow
-        scaleFactor = imgWidth / displayWidth; // Use width scale for portrait
       }
 
-      // Circle center in screen coordinates
-      const circleCenterX = IMAGE_CONTAINER_SIZE / 2;
-      const circleCenterY = IMAGE_CONTAINER_SIZE / 2;
+      // Ratio to convert from display coordinates to original image coordinates
+      const displayToOriginalRatio = imgWidth / displayWidth;
 
-      // Calculate what part of the image is under the circle
-      // Account for: initial offset, user pan, user scale
-      const imageX = (circleCenterX - offsetX - userTranslateX) / userScale;
-      const imageY = (circleCenterY - offsetY - userTranslateY) / userScale;
-      const circleRadius = CIRCLE_SIZE / 2 / userScale;
+      // Circle center in screen coordinates (center of the container)
+      const circleCenterScreenX = IMAGE_CONTAINER_SIZE / 2;
+      const circleCenterScreenY = IMAGE_CONTAINER_SIZE / 2;
+
+      // Image center in screen coordinates (before any transforms)
+      const imageCenterScreenX = IMAGE_CONTAINER_SIZE / 2;
+      const imageCenterScreenY = IMAGE_CONTAINER_SIZE / 2;
+
+      // Transform order is: scale (around center), then translate
+      // To find what original image point is at the circle center:
+      // 1. Remove translation: point relative to scaled image center
+      // 2. Remove scale: point relative to unscaled image center
+      // 3. Add back unscaled image center offset
+
+      // Point on scaled image that's at circle center (accounting for translation)
+      const pointOnScaledImageX = circleCenterScreenX - userTranslateX - imageCenterScreenX;
+      const pointOnScaledImageY = circleCenterScreenY - userTranslateY - imageCenterScreenY;
+
+      // Point on unscaled displayed image (relative to image center)
+      const pointOnDisplayedImageX = pointOnScaledImageX / userScale;
+      const pointOnDisplayedImageY = pointOnScaledImageY / userScale;
+
+      // Point in displayed image coordinates (relative to top-left of displayed image)
+      const displayedImageCropCenterX = displayWidth / 2 + pointOnDisplayedImageX;
+      const displayedImageCropCenterY = displayHeight / 2 + pointOnDisplayedImageY;
+
+      // Circle radius in displayed image coordinates
+      const circleRadiusDisplayed = (CIRCLE_SIZE / 2) / userScale;
 
       // Convert to original image coordinates
-      const cropCenterX = imageX * scaleFactor;
-      const cropCenterY = imageY * scaleFactor;
-      const cropRadius = circleRadius * scaleFactor;
+      const cropCenterX = displayedImageCropCenterX * displayToOriginalRatio;
+      const cropCenterY = displayedImageCropCenterY * displayToOriginalRatio;
+      const cropRadius = circleRadiusDisplayed * displayToOriginalRatio;
 
       // Calculate crop box (square containing the circle)
-      const cropX = Math.max(0, cropCenterX - cropRadius);
-      const cropY = Math.max(0, cropCenterY - cropRadius);
-      const cropSize = cropRadius * 2;
+      let cropX = cropCenterX - cropRadius;
+      let cropY = cropCenterY - cropRadius;
+      let cropSize = cropRadius * 2;
 
-      // Ensure crop region is within bounds
-      const finalCropX = Math.max(0, Math.min(cropX, imgWidth - cropSize));
-      const finalCropY = Math.max(0, Math.min(cropY, imgHeight - cropSize));
-      const finalCropSize = Math.min(
-        cropSize,
-        imgWidth - finalCropX,
-        imgHeight - finalCropY
-      );
+      // Clamp to image bounds
+      cropX = Math.max(0, Math.min(cropX, imgWidth - 1));
+      cropY = Math.max(0, Math.min(cropY, imgHeight - 1));
+      cropSize = Math.min(cropSize, imgWidth - cropX, imgHeight - cropY);
+
+      // Ensure we have a valid crop size
+      if (cropSize < 10) {
+        console.error('Crop size too small');
+        return;
+      }
 
       // Crop and resize
       const manipResult = await manipulateAsync(
@@ -154,10 +173,10 @@ export default function ImageCropperWithCircle({
         [
           {
             crop: {
-              originX: Math.round(finalCropX),
-              originY: Math.round(finalCropY),
-              width: Math.round(finalCropSize),
-              height: Math.round(finalCropSize),
+              originX: Math.round(cropX),
+              originY: Math.round(cropY),
+              width: Math.round(cropSize),
+              height: Math.round(cropSize),
             },
           },
           { resize: { width: 800, height: 800 } },
