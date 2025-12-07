@@ -74,7 +74,7 @@ export default function SignUp() {
       // Get the correct redirect URL for current environment
       // useProxy: true uses Expo's auth proxy for development
       const redirectUrl = AuthSession.makeRedirectUri({
-        scheme: 'com.discr.app',
+        scheme: 'com.aceback.app',
         useProxy: true,
       });
 
@@ -115,7 +115,7 @@ export default function SignUp() {
       >
         <View style={styles.content}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logo}>Discr</Text>
+            <Text style={styles.logo}>AceBack</Text>
           </View>
 
           <Text style={styles.title}>Create Account</Text>

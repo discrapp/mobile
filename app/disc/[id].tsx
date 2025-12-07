@@ -15,6 +15,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import QRCode from 'react-native-qrcode-svg';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+import { useColorScheme } from '@/components/useColorScheme';
 
 interface FlightNumbers {
   speed: number | null;
@@ -72,6 +73,8 @@ const COLOR_MAP: Record<string, string> = {
 export default function DiscDetailScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { id } = useLocalSearchParams<{ id: string }>();
   const [disc, setDisc] = useState<Disc | null>(null);
   const [loading, setLoading] = useState(true);
@@ -371,16 +374,18 @@ export default function DiscDetailScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>QR Code</Text>
           {disc.qr_code?.short_code ? (
-            <View style={styles.qrCodeContainer}>
-              <QRCode
-                value={disc.qr_code.short_code}
-                size={200}
-                color={Colors.violet.primary}
-                backgroundColor="#fff"
-              />
-              <Text style={styles.qrCodeLabel}>{disc.qr_code.short_code}</Text>
+            <RNView style={styles.qrCodeContainer}>
+              <RNView style={styles.qrCodeInner}>
+                <QRCode
+                  value={`https://aceback.app/d/${disc.qr_code.short_code}`}
+                  size={180}
+                  color={Colors.violet.primary}
+                  backgroundColor="#fff"
+                />
+              </RNView>
+              <Text style={[styles.qrCodeLabel, { color: isDark ? '#fff' : Colors.violet.primary }]}>{disc.qr_code.short_code}</Text>
               <Text style={styles.qrCodeHint}>Scan with phone camera to find this disc</Text>
-            </View>
+            </RNView>
           ) : (
             <View style={styles.qrStatus}>
               <FontAwesome name="circle-o" size={16} color="#ccc" />
@@ -568,11 +573,12 @@ const styles = StyleSheet.create({
   },
   qrCodeContainer: {
     alignItems: 'center',
-    padding: 20,
+    padding: 16,
+  },
+  qrCodeInner: {
+    padding: 16,
     backgroundColor: '#fff',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#eee',
   },
   qrCodeLabel: {
     marginTop: 12,

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Discr",
-    "slug": "discr",
+    "name": "AceBack",
+    "slug": "aceback",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.discr.app",
+    "scheme": "com.aceback.app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,16 +15,32 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.discr.app",
+      "bundleIdentifier": "com.aceback.app",
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "associatedDomains": ["applinks:aceback.app"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#3b1877"
-      }
+      },
+      "package": "com.aceback.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "aceback.app",
+              "pathPrefix": "/d/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -53,6 +69,6 @@
         "projectId": "da5579bb-8ed9-4c5d-8090-299146e0fc6a"
       }
     },
-    "owner": "benniemosher-discr"
+    "owner": "benniemosher-aceback"
   }
 }

@@ -1,11 +1,11 @@
-# Discr Mobile - Project Memory
+# AceBack Mobile - Project Memory
 
 This file contains persistent context for Claude Code sessions on this project.
 It will be automatically loaded at the start of every session.
 
 ## Project Overview
 
-This is the React Native mobile application for Discr, built with Expo and
+This is the React Native mobile application for AceBack, built with Expo and
 powered by Supabase for backend services.
 
 **Key Details:**

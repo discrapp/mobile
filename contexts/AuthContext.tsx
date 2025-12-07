@@ -117,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'com.discr.app://',
+        redirectTo: 'com.aceback.app://',
       },
     });
     return { error };

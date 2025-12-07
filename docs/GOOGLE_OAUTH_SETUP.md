@@ -1,6 +1,6 @@
 # Google OAuth Setup for Expo
 
-This guide explains how to configure Google OAuth for the Discr mobile app.
+This guide explains how to configure Google OAuth for the AceBack mobile app.
 
 ## Overview
 
@@ -29,15 +29,15 @@ The app slug is defined in `app.json`:
 
 Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
 
-1. Select your project (`discr-mvp`)
+1. Select your project (`aceback-mvp`)
 1. Go to "Credentials"
-1. Click on your OAuth 2.0 Client ID (`Discr Web Client`)
+1. Click on your OAuth 2.0 Client ID (`AceBack Web Client`)
 1. Under "Authorized redirect URIs", add:
 
    **For Expo Go (Development):**
 
    ```text
-   https://auth.expo.io/@benniemosher-discr/discr
+   https://auth.expo.io/@benniemosher-aceback/aceback
    ```
 
    **For Production (React Native/Expo):**
@@ -46,7 +46,7 @@ Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
    https://xhaogdigrsiwxdjmjzgx.supabase.co/auth/v1/callback
    ```
 
-   This is your Supabase OAuth callback URL. After Google authenticates, it redirects to Supabase, which then redirects back to your app using the custom scheme `com.discr.app://`.
+   This is your Supabase OAuth callback URL. After Google authenticates, it redirects to Supabase, which then redirects back to your app using the custom scheme `com.aceback.app://`.
 
 1. Click "Save"
 
@@ -99,7 +99,7 @@ For standalone builds (not Expo Go):
    ```json
    {
      "expo": {
-       "scheme": "com.discr.app"
+       "scheme": "com.aceback.app"
      }
    }
    ```
@@ -107,7 +107,7 @@ For standalone builds (not Expo Go):
 1. **Update Google Cloud Console redirect URI:**
 
    ```
-   com.discr.app:/oauthredirect
+   com.aceback.app:/oauthredirect
    ```
 
 1. **Configure iOS URL scheme:**
@@ -116,7 +116,7 @@ For standalone builds (not Expo Go):
    {
      "expo": {
        "ios": {
-         "bundleIdentifier": "com.discr.app",
+         "bundleIdentifier": "com.aceback.app",
          "usesAppleSignIn": true
        }
      }
@@ -129,7 +129,7 @@ For standalone builds (not Expo Go):
    {
      "expo": {
        "android": {
-         "package": "com.discr.app"
+         "package": "com.aceback.app"
        }
      }
    }
@@ -147,7 +147,7 @@ import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
 
 const redirectUri = AuthSession.makeRedirectUri({
-  scheme: "com.discr.app",
+  scheme: "com.aceback.app",
 });
 
 // Then use this redirectUri in your OAuth flow

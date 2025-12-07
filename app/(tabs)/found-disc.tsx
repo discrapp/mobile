@@ -10,14 +10,14 @@ import {
   Platform,
   Alert,
   Dimensions,
-  View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
-import { Text } from '@/components/Themed';
+import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+import { useColorScheme } from '@/components/useColorScheme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -42,8 +42,30 @@ interface RecoveryEvent {
   status: string;
 }
 
+interface PendingRecovery {
+  id: string;
+  status: string;
+  finder_message?: string;
+  meetup_location?: string;
+  meetup_time?: string;
+  created_at: string;
+  disc: {
+    id: string;
+    name: string;
+    manufacturer?: string;
+    mold?: string;
+    plastic?: string;
+    color?: string;
+    reward_amount?: number;
+    owner_display_name: string;
+    photo_url?: string;
+  } | null;
+}
+
 export default function FoundDiscScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [permission, requestPermission] = useCameraPermissions();
   const [qrCode, setQrCode] = useState('');
   const [message, setMessage] = useState('');
@@ -53,6 +75,68 @@ export default function FoundDiscScreen() {
   const [errorMessage, setErrorMessage] = useState('');
   const [hasActiveRecovery, setHasActiveRecovery] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
+  const [pendingRecoveries, setPendingRecoveries] = useState<PendingRecovery[]>([]);
+  const [loadingPending, setLoadingPending] = useState(true);
+
+  // Fetch pending recoveries on mount
+  useEffect(() => {
+    fetchPendingRecoveries();
+  }, []);
+
+  const fetchPendingRecoveries = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setLoadingPending(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/get-my-finds`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setPendingRecoveries(data);
+      }
+    } catch (error) {
+      console.error('Error fetching pending recoveries:', error);
+    } finally {
+      setLoadingPending(false);
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'found':
+        return { backgroundColor: '#F39C12' };
+      case 'meetup_proposed':
+        return { backgroundColor: '#3498DB' };
+      case 'meetup_confirmed':
+        return { backgroundColor: '#2ECC71' };
+      default:
+        return { backgroundColor: '#95A5A6' };
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    switch (status) {
+      case 'found':
+        return 'Waiting for owner';
+      case 'meetup_proposed':
+        return 'Meetup proposed';
+      case 'meetup_confirmed':
+        return 'Meetup confirmed';
+      default:
+        return status;
+    }
+  };
 
   const startScanning = async () => {
     if (!permission?.granted) {
@@ -191,6 +275,8 @@ export default function FoundDiscScreen() {
 
       setRecoveryEvent(data.recovery_event);
       setScreenState('success');
+      // Refresh pending list
+      fetchPendingRecoveries();
     } catch (error) {
       console.error('Report error:', error);
       setErrorMessage('Failed to report found disc. Please try again.');
@@ -244,7 +330,7 @@ export default function FoundDiscScreen() {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>QR Code</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000', borderColor: isDark ? '#555' : '#ddd' }]}
               placeholder="Enter code (e.g., TEST001)"
               placeholderTextColor="#999"
               value={qrCode}
@@ -258,6 +344,45 @@ export default function FoundDiscScreen() {
             <FontAwesome name="search" size={18} color={Colors.violet.primary} />
             <Text style={styles.secondaryButtonText}>Look Up Disc</Text>
           </Pressable>
+
+          {/* Pending Returns Section */}
+          {pendingRecoveries.length > 0 && (
+            <View style={styles.pendingSection}>
+              <Text style={styles.pendingSectionTitle}>Your Pending Returns</Text>
+              <Text style={styles.pendingSectionSubtitle}>
+                Discs you found that are waiting to be returned
+              </Text>
+              {pendingRecoveries.map((recovery) => (
+                <Pressable
+                  key={recovery.id}
+                  style={[styles.pendingCard, { borderColor: isDark ? '#444' : '#eee' }]}
+                  onPress={() => router.push(`/recovery/${recovery.id}`)}>
+                  {recovery.disc?.photo_url ? (
+                    <Image source={{ uri: recovery.disc.photo_url }} style={styles.pendingPhoto} />
+                  ) : (
+                    <View style={styles.pendingPhotoPlaceholder}>
+                      <FontAwesome name="circle" size={24} color="#ccc" />
+                    </View>
+                  )}
+                  <View style={styles.pendingInfo}>
+                    <Text style={styles.pendingDiscName}>
+                      {recovery.disc?.mold || recovery.disc?.name || 'Unknown Disc'}
+                    </Text>
+                    {recovery.disc?.manufacturer && (
+                      <Text style={styles.pendingManufacturer}>{recovery.disc.manufacturer}</Text>
+                    )}
+                    <View style={styles.pendingStatusRow}>
+                      <View style={[styles.statusBadge, getStatusStyle(recovery.status)]}>
+                        <Text style={styles.statusText}>{formatStatus(recovery.status)}</Text>
+                      </View>
+                      <Text style={styles.pendingOwner}>→ {recovery.disc?.owner_display_name}</Text>
+                    </View>
+                  </View>
+                  <FontAwesome name="chevron-right" size={16} color="#999" />
+                </Pressable>
+              ))}
+            </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -390,7 +515,7 @@ export default function FoundDiscScreen() {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Message for Owner (Optional)</Text>
             <TextInput
-              style={[styles.input, styles.messageInput]}
+              style={[styles.input, styles.messageInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000', borderColor: isDark ? '#555' : '#ddd' }]}
               placeholder="Where did you find it? Any details..."
               placeholderTextColor="#999"
               value={message}
@@ -441,19 +566,16 @@ export default function FoundDiscScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   scrollContent: {
     padding: 20,
     paddingBottom: 40,
-    backgroundColor: '#fff',
   },
   centerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#fff',
   },
   header: {
     alignItems: 'center',
@@ -486,7 +608,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 18,
-    backgroundColor: '#fff',
   },
   messageInput: {
     height: 100,
@@ -559,7 +680,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eee',
     marginBottom: 24,
-    backgroundColor: '#fff',
   },
   discPhoto: {
     width: 120,
@@ -738,5 +858,74 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 16,
     fontWeight: '600',
+  },
+  pendingSection: {
+    marginTop: 32,
+    paddingTop: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  pendingSectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  pendingSectionSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+  },
+  pendingCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  pendingPhoto: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  pendingPhotoPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pendingInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  pendingDiscName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  pendingManufacturer: {
+    fontSize: 14,
+    color: '#666',
+  },
+  pendingStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    gap: 8,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  statusText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  pendingOwner: {
+    fontSize: 12,
+    color: '#999',
   },
 });

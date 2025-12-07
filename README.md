@@ -1,14 +1,14 @@
-# Discr Mobile App
+# AceBack Mobile App
 
-![GitHub branch status](https://img.shields.io/github/checks-status/appdiscr/mobile/main)
-![GitHub Issues](https://img.shields.io/github/issues/appdiscr/mobile)
-![GitHub last commit](https://img.shields.io/github/last-commit/appdiscr/mobile)
-![GitHub repo size](https://img.shields.io/github/repo-size/appdiscr/mobile)
-![GitHub License](https://img.shields.io/github/license/appdiscr/mobile)
+![GitHub branch status](https://img.shields.io/github/checks-status/acebackapp/mobile/main)
+![GitHub Issues](https://img.shields.io/github/issues/acebackapp/mobile)
+![GitHub last commit](https://img.shields.io/github/last-commit/acebackapp/mobile)
+![GitHub repo size](https://img.shields.io/github/repo-size/acebackapp/mobile)
+![GitHub License](https://img.shields.io/github/license/acebackapp/mobile)
 
 ## Introduction
 
-Discr is a mobile-first application built with React Native and Expo,
+AceBack is a mobile-first application built with React Native and Expo,
 powered by Supabase for backend services.
 
 ### Key Features

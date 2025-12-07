@@ -7,7 +7,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Discr!</Text>
+      <Text style={styles.title}>Welcome to AceBack!</Text>
       {user && (
         <Text style={styles.email}>{user.email}</Text>
       )}

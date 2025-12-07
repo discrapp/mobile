@@ -1,6 +1,6 @@
 # Authentication Flow
 
-This document describes the authentication flow in the Discr mobile app.
+This document describes the authentication flow in the AceBack mobile app.
 
 ## User Auth Flow Diagram
 
