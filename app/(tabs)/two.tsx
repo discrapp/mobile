@@ -6,6 +6,7 @@ import Colors from '@/constants/Colors';
 import { useState, useEffect } from 'react';
 import * as Crypto from 'expo-crypto';
 import { supabase } from '@/lib/supabase';
+import { router } from 'expo-router';
 
 type DisplayPreference = 'username' | 'full_name';
 
@@ -13,6 +14,19 @@ interface ProfileData {
   username: string | null;
   full_name: string | null;
   display_preference: DisplayPreference;
+}
+
+interface ActiveRecovery {
+  id: string;
+  status: string;
+  created_at: string;
+  disc: {
+    id: string;
+    name: string;
+    manufacturer: string | null;
+    mold: string | null;
+    color: string | null;
+  } | null;
 }
 
 export default function ProfileScreen() {
@@ -31,6 +45,8 @@ export default function ProfileScreen() {
   const [tempUsername, setTempUsername] = useState('');
   const [tempFullName, setTempFullName] = useState('');
   const [discsReturned, setDiscsReturned] = useState(0);
+  const [activeRecoveries, setActiveRecoveries] = useState<ActiveRecovery[]>([]);
+  const [loadingRecoveries, setLoadingRecoveries] = useState(true);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -134,6 +150,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     fetchProfile();
     fetchDiscsReturned();
+    fetchActiveRecoveries();
   }, [user?.id]);
 
   const fetchDiscsReturned = async () => {
@@ -151,6 +168,63 @@ export default function ProfileScreen() {
       }
     } catch (error) {
       console.error('Error fetching discs returned:', error);
+    }
+  };
+
+  const fetchActiveRecoveries = async () => {
+    if (!user?.id) return;
+
+    setLoadingRecoveries(true);
+    try {
+      // Get all discs owned by the user
+      const { data: userDiscs, error: discsError } = await supabase
+        .from('discs')
+        .select('id')
+        .eq('owner_id', user.id);
+
+      if (discsError || !userDiscs || userDiscs.length === 0) {
+        setActiveRecoveries([]);
+        return;
+      }
+
+      const discIds = userDiscs.map(d => d.id);
+
+      // Get active recovery events for those discs
+      const { data: recoveries, error: recoveriesError } = await supabase
+        .from('recovery_events')
+        .select(`
+          id,
+          status,
+          created_at,
+          disc:discs(id, name, manufacturer, mold, color)
+        `)
+        .in('disc_id', discIds)
+        .not('status', 'in', '("recovered","cancelled")')
+        .order('created_at', { ascending: false });
+
+      if (recoveriesError) {
+        console.error('Error fetching recoveries:', recoveriesError);
+        setActiveRecoveries([]);
+        return;
+      }
+
+      // Transform data - Supabase may return disc as array or object depending on FK relationship
+      const transformedRecoveries: ActiveRecovery[] = (recoveries || []).map((r) => {
+        const discData = Array.isArray(r.disc) ? r.disc[0] : r.disc;
+        return {
+          id: r.id,
+          status: r.status,
+          created_at: r.created_at,
+          disc: discData as ActiveRecovery['disc'],
+        };
+      });
+
+      setActiveRecoveries(transformedRecoveries);
+    } catch (error) {
+      console.error('Error fetching active recoveries:', error);
+      setActiveRecoveries([]);
+    } finally {
+      setLoadingRecoveries(false);
     }
   };
 
@@ -194,6 +268,32 @@ export default function ProfileScreen() {
     });
   };
 
+  const getRecoveryStatusInfo = (status: string) => {
+    switch (status) {
+      case 'found':
+        return { label: 'Found', color: '#f59e0b', icon: 'search' as const };
+      case 'meetup_proposed':
+        return { label: 'Meetup Proposed', color: '#3b82f6', icon: 'calendar' as const };
+      case 'meetup_confirmed':
+        return { label: 'Meetup Confirmed', color: '#10b981', icon: 'check-circle' as const };
+      default:
+        return { label: status, color: '#6b7280', icon: 'question-circle' as const };
+    }
+  };
+
+  const getRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
+    return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`;
+  };
+
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
@@ -230,6 +330,51 @@ export default function ProfileScreen() {
                   {discsReturned} disc{discsReturned !== 1 ? 's' : ''} returned
                 </Text>
               </View>
+            )}
+          </View>
+        )}
+
+        {/* Active Recoveries Section */}
+        {(activeRecoveries.length > 0 || loadingRecoveries) && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Active Recoveries</Text>
+            {loadingRecoveries ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={Colors.violet.primary} />
+              </View>
+            ) : (
+              activeRecoveries.map((recovery) => {
+                const statusInfo = getRecoveryStatusInfo(recovery.status);
+                return (
+                  <TouchableOpacity
+                    key={recovery.id}
+                    style={styles.recoveryCard}
+                    onPress={() => router.push(`/recovery/${recovery.id}`)}>
+                    <View style={styles.recoveryCardLeft}>
+                      <Text style={styles.recoveryDiscName}>
+                        {recovery.disc?.name || 'Unknown Disc'}
+                      </Text>
+                      {recovery.disc?.manufacturer && recovery.disc?.mold && (
+                        <Text style={styles.recoveryDiscInfo}>
+                          {recovery.disc.manufacturer} {recovery.disc.mold}
+                        </Text>
+                      )}
+                      <Text style={styles.recoveryTime}>
+                        Found {getRelativeTime(recovery.created_at)}
+                      </Text>
+                    </View>
+                    <View style={styles.recoveryCardRight}>
+                      <View style={[styles.statusBadge, { backgroundColor: statusInfo.color + '20' }]}>
+                        <FontAwesome name={statusInfo.icon} size={12} color={statusInfo.color} />
+                        <Text style={[styles.statusText, { color: statusInfo.color }]}>
+                          {statusInfo.label}
+                        </Text>
+                      </View>
+                      <FontAwesome name="chevron-right" size={14} color="#999" />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
             )}
           </View>
         )}
@@ -518,5 +663,51 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  recoveryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(150, 150, 150, 0.2)',
+  },
+  recoveryCardLeft: {
+    flex: 1,
+  },
+  recoveryCardRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  recoveryDiscName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  recoveryDiscInfo: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  recoveryTime: {
+    fontSize: 12,
+    color: '#999',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
