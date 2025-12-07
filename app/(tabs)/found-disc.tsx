@@ -10,10 +10,11 @@ import {
   Platform,
   Alert,
   Dimensions,
+  View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
-import { Text, View } from '@/components/Themed';
+import { Text } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
@@ -440,16 +441,19 @@ export default function FoundDiscScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   scrollContent: {
     padding: 20,
     paddingBottom: 40,
+    backgroundColor: '#fff',
   },
   centerContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#fff',
   },
   header: {
     alignItems: 'center',
@@ -555,6 +559,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eee',
     marginBottom: 24,
+    backgroundColor: '#fff',
   },
   discPhoto: {
     width: 120,
