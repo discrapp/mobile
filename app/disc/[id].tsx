@@ -12,6 +12,7 @@ import {
 import { useRouter, useLocalSearchParams, useNavigation, useFocusEffect } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import QRCode from 'react-native-qrcode-svg';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
 
@@ -30,6 +31,12 @@ interface DiscPhoto {
   created_at: string;
 }
 
+interface QRCodeInfo {
+  id: string;
+  short_code: string;
+  status: string;
+}
+
 interface Disc {
   id: string;
   name: string;
@@ -44,6 +51,7 @@ interface Disc {
   created_at: string;
   photos: DiscPhoto[];
   qr_code_id?: string;
+  qr_code?: QRCodeInfo;
 }
 
 // Color mapping with hex values
@@ -359,19 +367,26 @@ export default function DiscDetailScreen() {
           </View>
         )}
 
-        {/* QR Code Status */}
+        {/* QR Code */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>QR Code</Text>
-          <View style={styles.qrStatus}>
-            <FontAwesome
-              name={disc.qr_code_id ? 'check-circle' : 'circle-o'}
-              size={16}
-              color={disc.qr_code_id ? Colors.violet.primary : '#ccc'}
-            />
-            <Text style={styles.qrStatusText}>
-              {disc.qr_code_id ? 'Linked to QR code' : 'Not linked to QR code'}
-            </Text>
-          </View>
+          {disc.qr_code?.short_code ? (
+            <View style={styles.qrCodeContainer}>
+              <QRCode
+                value={disc.qr_code.short_code}
+                size={200}
+                color={Colors.violet.primary}
+                backgroundColor="#fff"
+              />
+              <Text style={styles.qrCodeLabel}>{disc.qr_code.short_code}</Text>
+              <Text style={styles.qrCodeHint}>Scan with phone camera to find this disc</Text>
+            </View>
+          ) : (
+            <View style={styles.qrStatus}>
+              <FontAwesome name="circle-o" size={16} color="#ccc" />
+              <Text style={styles.qrStatusText}>Not linked to QR code</Text>
+            </View>
+          )}
         </View>
 
         {/* Notes */}
@@ -550,6 +565,27 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: Colors.violet.primary,
+  },
+  qrCodeContainer: {
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  qrCodeLabel: {
+    marginTop: 12,
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.violet.primary,
+    letterSpacing: 2,
+  },
+  qrCodeHint: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
   },
   qrStatus: {
     flexDirection: 'row',
