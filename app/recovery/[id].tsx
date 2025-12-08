@@ -322,7 +322,7 @@ export default function RecoveryDetailScreen() {
               ) : (
                 <>
                   <FontAwesome name="check" size={16} color="#fff" />
-                  <Text style={styles.acceptButtonText}>Accept</Text>
+                  <Text style={styles.acceptButtonText}>Confirm</Text>
                 </>
               )}
             </Pressable>
@@ -755,14 +755,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    borderWidth: 2,
-    borderColor: Colors.violet.primary,
+    backgroundColor: Colors.violet.primary,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
   },
   secondaryButtonText: {
-    color: Colors.violet.primary,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

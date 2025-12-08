@@ -470,7 +470,7 @@ export default function FoundDiscScreen() {
           </View>
 
           <Pressable style={styles.secondaryButton} onPress={lookupQrCode}>
-            <FontAwesome name="search" size={18} color={Colors.violet.primary} />
+            <FontAwesome name="search" size={18} color="#fff" />
             <Text style={styles.secondaryButtonText}>Look Up Disc</Text>
           </Pressable>
 
@@ -590,7 +590,7 @@ export default function FoundDiscScreen() {
         <Text style={styles.errorTitle}>Oops!</Text>
         <Text style={styles.errorMessage}>{errorMessage}</Text>
         <Pressable style={styles.secondaryButton} onPress={resetScreen}>
-          <FontAwesome name="refresh" size={18} color={Colors.violet.primary} />
+          <FontAwesome name="refresh" size={18} color="#fff" />
           <Text style={styles.secondaryButtonText}>Try Again</Text>
         </Pressable>
       </View>
@@ -781,15 +781,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    borderWidth: 2,
-    borderColor: Colors.violet.primary,
+    backgroundColor: Colors.violet.primary,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
     marginTop: 16,
   },
   secondaryButtonText: {
-    color: Colors.violet.primary,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
