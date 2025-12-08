@@ -331,7 +331,7 @@ export default function RecoveryDetailScreen() {
               onPress={() => handleDeclineMeetup(pendingProposal.id)}
               disabled={actionLoading}
             >
-              <FontAwesome name="refresh" size={16} color={Colors.violet.primary} />
+              <FontAwesome name="refresh" size={16} color="#fff" />
               <Text style={styles.counterButtonText}>Counter</Text>
             </Pressable>
           </RNView>
@@ -722,13 +722,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    borderWidth: 2,
-    borderColor: Colors.violet.primary,
-    paddingVertical: 12,
+    backgroundColor: Colors.violet.primary,
+    paddingVertical: 14,
     borderRadius: 10,
   },
   counterButtonText: {
-    color: Colors.violet.primary,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
