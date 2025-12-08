@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import * as Crypto from 'expo-crypto';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
+import { useColorScheme } from '@/components/useColorScheme';
 
 type DisplayPreference = 'username' | 'full_name';
 
@@ -31,6 +32,8 @@ interface ActiveRecovery {
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [gravatarUrl, setGravatarUrl] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
@@ -46,7 +49,10 @@ export default function ProfileScreen() {
   const [tempFullName, setTempFullName] = useState('');
   const [discsReturned, setDiscsReturned] = useState(0);
   const [activeRecoveries, setActiveRecoveries] = useState<ActiveRecovery[]>([]);
+  const [myFinds, setMyFinds] = useState<ActiveRecovery[]>([]);
   const [loadingRecoveries, setLoadingRecoveries] = useState(true);
+  const [loadingFinds, setLoadingFinds] = useState(true);
+  const [discsFound, setDiscsFound] = useState(0);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -150,7 +156,9 @@ export default function ProfileScreen() {
   useEffect(() => {
     fetchProfile();
     fetchDiscsReturned();
+    fetchDiscsFound();
     fetchActiveRecoveries();
+    fetchMyFinds();
   }, [user?.id]);
 
   const fetchDiscsReturned = async () => {
@@ -161,13 +169,31 @@ export default function ProfileScreen() {
         .from('recovery_events')
         .select('*', { count: 'exact', head: true })
         .eq('finder_id', user.id)
-        .eq('status', 'completed');
+        .eq('status', 'recovered');
 
       if (!error && count !== null) {
         setDiscsReturned(count);
       }
     } catch (error) {
       console.error('Error fetching discs returned:', error);
+    }
+  };
+
+  const fetchDiscsFound = async () => {
+    if (!user?.id) return;
+
+    try {
+      // Count all recovery events where user is the finder (regardless of status)
+      const { count, error } = await supabase
+        .from('recovery_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('finder_id', user.id);
+
+      if (!error && count !== null) {
+        setDiscsFound(count);
+      }
+    } catch (error) {
+      console.error('Error fetching discs found:', error);
     }
   };
 
@@ -225,6 +251,50 @@ export default function ProfileScreen() {
       setActiveRecoveries([]);
     } finally {
       setLoadingRecoveries(false);
+    }
+  };
+
+  const fetchMyFinds = async () => {
+    if (!user?.id) return;
+
+    setLoadingFinds(true);
+    try {
+      // Get recovery events where the user is the finder
+      const { data: recoveries, error: recoveriesError } = await supabase
+        .from('recovery_events')
+        .select(`
+          id,
+          status,
+          created_at,
+          disc:discs(id, name, manufacturer, mold, color)
+        `)
+        .eq('finder_id', user.id)
+        .not('status', 'in', '("recovered","cancelled")')
+        .order('created_at', { ascending: false });
+
+      if (recoveriesError) {
+        console.error('Error fetching my finds:', recoveriesError);
+        setMyFinds([]);
+        return;
+      }
+
+      // Transform data
+      const transformedFinds: ActiveRecovery[] = (recoveries || []).map((r) => {
+        const discData = Array.isArray(r.disc) ? r.disc[0] : r.disc;
+        return {
+          id: r.id,
+          status: r.status,
+          created_at: r.created_at,
+          disc: discData as ActiveRecovery['disc'],
+        };
+      });
+
+      setMyFinds(transformedFinds);
+    } catch (error) {
+      console.error('Error fetching my finds:', error);
+      setMyFinds([]);
+    } finally {
+      setLoadingFinds(false);
     }
   };
 
@@ -323,21 +393,33 @@ export default function ProfileScreen() {
                 Member since {getMemberSinceText(user.created_at)}
               </Text>
             )}
-            {discsReturned > 0 && (
-              <View style={styles.statsBadge}>
-                <FontAwesome name="trophy" size={14} color={Colors.violet.primary} />
-                <Text style={styles.statsText}>
-                  {discsReturned} disc{discsReturned !== 1 ? 's' : ''} returned
-                </Text>
+            {(discsFound > 0 || discsReturned > 0) && (
+              <View style={styles.statsRow}>
+                {discsFound > 0 && (
+                  <View style={styles.statsBadge}>
+                    <FontAwesome name="search" size={14} color={Colors.violet.primary} />
+                    <Text style={styles.statsText}>
+                      {discsFound} found
+                    </Text>
+                  </View>
+                )}
+                {discsReturned > 0 && (
+                  <View style={styles.statsBadge}>
+                    <FontAwesome name="trophy" size={14} color="#10b981" />
+                    <Text style={[styles.statsText, { color: '#10b981' }]}>
+                      {discsReturned} returned
+                    </Text>
+                  </View>
+                )}
               </View>
             )}
           </View>
         )}
 
-        {/* Active Recoveries Section */}
+        {/* Active Recoveries Section (Discs you own that someone found) */}
         {(activeRecoveries.length > 0 || loadingRecoveries) && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Active Recoveries</Text>
+            <Text style={styles.sectionTitle}>My Discs Being Recovered</Text>
             {loadingRecoveries ? (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="small" color={Colors.violet.primary} />
@@ -352,11 +434,56 @@ export default function ProfileScreen() {
                     onPress={() => router.push(`/recovery/${recovery.id}`)}>
                     <View style={styles.recoveryCardLeft}>
                       <Text style={styles.recoveryDiscName}>
-                        {recovery.disc?.name || 'Unknown Disc'}
+                        {recovery.disc?.mold || recovery.disc?.name || 'Unknown Disc'}
                       </Text>
-                      {recovery.disc?.manufacturer && recovery.disc?.mold && (
+                      {recovery.disc?.manufacturer && (
                         <Text style={styles.recoveryDiscInfo}>
-                          {recovery.disc.manufacturer} {recovery.disc.mold}
+                          {recovery.disc.manufacturer}
+                        </Text>
+                      )}
+                      <Text style={styles.recoveryTime}>
+                        Found {getRelativeTime(recovery.created_at)}
+                      </Text>
+                    </View>
+                    <View style={styles.recoveryCardRight}>
+                      <View style={[styles.statusBadge, { backgroundColor: statusInfo.color + '20' }]}>
+                        <FontAwesome name={statusInfo.icon} size={12} color={statusInfo.color} />
+                        <Text style={[styles.statusText, { color: statusInfo.color }]}>
+                          {statusInfo.label}
+                        </Text>
+                      </View>
+                      <FontAwesome name="chevron-right" size={14} color="#999" />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+            )}
+          </View>
+        )}
+
+        {/* My Finds Section (Discs you found that belong to others) */}
+        {(myFinds.length > 0 || loadingFinds) && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Discs I Found</Text>
+            {loadingFinds ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={Colors.violet.primary} />
+              </View>
+            ) : (
+              myFinds.map((recovery) => {
+                const statusInfo = getRecoveryStatusInfo(recovery.status);
+                return (
+                  <TouchableOpacity
+                    key={recovery.id}
+                    style={styles.recoveryCard}
+                    onPress={() => router.push(`/recovery/${recovery.id}`)}>
+                    <View style={styles.recoveryCardLeft}>
+                      <Text style={styles.recoveryDiscName}>
+                        {recovery.disc?.mold || recovery.disc?.name || 'Unknown Disc'}
+                      </Text>
+                      {recovery.disc?.manufacturer && (
+                        <Text style={styles.recoveryDiscInfo}>
+                          {recovery.disc.manufacturer}
                         </Text>
                       )}
                       <Text style={styles.recoveryTime}>
@@ -391,10 +518,11 @@ export default function ProfileScreen() {
               {editingUsername ? (
                 <View style={styles.editInputContainer}>
                   <TextInput
-                    style={styles.editInput}
+                    style={[styles.editInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
                     value={tempUsername}
                     onChangeText={setTempUsername}
                     placeholder="Enter username"
+                    placeholderTextColor="#999"
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
@@ -429,10 +557,11 @@ export default function ProfileScreen() {
               {editingFullName ? (
                 <View style={styles.editInputContainer}>
                   <TextInput
-                    style={styles.editInput}
+                    style={[styles.editInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
                     value={tempFullName}
                     onChangeText={setTempFullName}
                     placeholder="Enter full name"
+                    placeholderTextColor="#999"
                     autoCapitalize="words"
                   />
                   <TouchableOpacity onPress={handleSaveFullName} disabled={saving}>
@@ -547,11 +676,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+  },
   statsBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 12,
     backgroundColor: 'rgba(106, 27, 154, 0.1)',
     paddingHorizontal: 12,
     paddingVertical: 6,

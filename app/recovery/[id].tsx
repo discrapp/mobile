@@ -8,6 +8,7 @@ import {
   Alert,
   Linking,
   RefreshControl,
+  View as RNView,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -284,7 +285,7 @@ export default function RecoveryDetailScreen() {
       </View>
 
       {/* Disc Card */}
-      <View style={[styles.discCard, { borderColor: isDark ? '#444' : '#eee' }]}>
+      <View style={[styles.discCard, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
         {recovery.disc?.photo_url ? (
           <Image source={{ uri: recovery.disc.photo_url }} style={styles.discPhoto} />
         ) : (
@@ -311,7 +312,7 @@ export default function RecoveryDetailScreen() {
       </View>
 
       {/* People Involved */}
-      <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee' }]}>
+      <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
         <Text style={styles.sectionTitle}>People</Text>
         <View style={styles.personRow}>
           <FontAwesome name="user" size={16} color={Colors.violet.primary} />
@@ -329,7 +330,7 @@ export default function RecoveryDetailScreen() {
 
       {/* Finder Message */}
       {recovery.finder_message && (
-        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee' }]}>
+        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
           <Text style={styles.sectionTitle}>Finder's Message</Text>
           <Text style={styles.messageText}>{recovery.finder_message}</Text>
           <Text style={styles.timestamp}>Found {formatDate(recovery.found_at)}</Text>
@@ -338,23 +339,23 @@ export default function RecoveryDetailScreen() {
 
       {/* Accepted Meetup */}
       {acceptedProposal && (
-        <View style={[styles.section, styles.acceptedSection]}>
+        <RNView style={[styles.section, styles.acceptedSection]}>
           <Text style={styles.sectionTitle}>
             <FontAwesome name="check-circle" size={18} color="#2ECC71" /> Confirmed Meetup
           </Text>
-          <View style={styles.meetupDetails}>
-            <View style={styles.meetupRow}>
+          <RNView style={styles.meetupDetails}>
+            <RNView style={styles.meetupRow}>
               <FontAwesome name="map-marker" size={16} color="#666" />
               <Text style={styles.meetupText}>{acceptedProposal.location_name}</Text>
-            </View>
-            <View style={styles.meetupRow}>
+            </RNView>
+            <RNView style={styles.meetupRow}>
               <FontAwesome name="calendar" size={16} color="#666" />
               <Text style={styles.meetupText}>{formatDate(acceptedProposal.proposed_datetime)}</Text>
-            </View>
+            </RNView>
             {acceptedProposal.message && (
               <Text style={styles.proposalMessage}>{acceptedProposal.message}</Text>
             )}
-          </View>
+          </RNView>
           <Pressable
             style={styles.directionsButton}
             onPress={() => handleGetDirections(acceptedProposal)}
@@ -378,29 +379,29 @@ export default function RecoveryDetailScreen() {
               )}
             </Pressable>
           )}
-        </View>
+        </RNView>
       )}
 
       {/* Pending Proposal (for owner to accept/decline) */}
       {isOwner && pendingProposal && (
-        <View style={[styles.section, styles.pendingSection]}>
+        <RNView style={[styles.section, styles.pendingSection]}>
           <Text style={styles.sectionTitle}>
             <FontAwesome name="clock-o" size={18} color="#F39C12" /> Pending Meetup Proposal
           </Text>
-          <View style={styles.meetupDetails}>
-            <View style={styles.meetupRow}>
+          <RNView style={styles.meetupDetails}>
+            <RNView style={styles.meetupRow}>
               <FontAwesome name="map-marker" size={16} color="#666" />
               <Text style={styles.meetupText}>{pendingProposal.location_name}</Text>
-            </View>
-            <View style={styles.meetupRow}>
+            </RNView>
+            <RNView style={styles.meetupRow}>
               <FontAwesome name="calendar" size={16} color="#666" />
               <Text style={styles.meetupText}>{formatDate(pendingProposal.proposed_datetime)}</Text>
-            </View>
+            </RNView>
             {pendingProposal.message && (
               <Text style={styles.proposalMessage}>{pendingProposal.message}</Text>
             )}
-          </View>
-          <View style={styles.actionButtons}>
+          </RNView>
+          <RNView style={styles.actionButtons}>
             <Pressable
               style={[styles.acceptButton, actionLoading && styles.buttonDisabled]}
               onPress={() => handleAcceptMeetup(pendingProposal.id)}
@@ -423,8 +424,8 @@ export default function RecoveryDetailScreen() {
               <FontAwesome name="times" size={16} color="#E74C3C" />
               <Text style={styles.declineButtonText}>Decline</Text>
             </Pressable>
-          </View>
-        </View>
+          </RNView>
+        </RNView>
       )}
 
       {/* Finder: Propose Meetup button */}
@@ -440,7 +441,7 @@ export default function RecoveryDetailScreen() {
 
       {/* Finder: Waiting for owner */}
       {!isOwner && pendingProposal && (
-        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee' }]}>
+        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
           <View style={styles.waitingRow}>
             <FontAwesome name="clock-o" size={20} color="#F39C12" />
             <Text style={styles.waitingText}>Waiting for owner to respond to your meetup proposal</Text>
@@ -613,11 +614,11 @@ const styles = StyleSheet.create({
   },
   acceptedSection: {
     borderColor: '#2ECC71',
-    backgroundColor: 'rgba(46, 204, 113, 0.05)',
+    backgroundColor: 'rgba(46, 204, 113, 0.1)',
   },
   pendingSection: {
     borderColor: '#F39C12',
-    backgroundColor: 'rgba(243, 156, 18, 0.05)',
+    backgroundColor: 'rgba(243, 156, 18, 0.1)',
   },
   meetupDetails: {
     marginBottom: 12,

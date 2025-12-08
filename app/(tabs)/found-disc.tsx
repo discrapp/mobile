@@ -21,6 +21,21 @@ import { useColorScheme } from '@/components/useColorScheme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
+// Color mapping with hex values
+const COLOR_MAP: Record<string, string> = {
+  Red: '#E74C3C',
+  Orange: '#E67E22',
+  Yellow: '#F1C40F',
+  Green: '#2ECC71',
+  Blue: '#3498DB',
+  Purple: '#9B59B6',
+  Pink: '#E91E63',
+  White: '#ECF0F1',
+  Black: '#2C3E50',
+  Gray: '#95A5A6',
+  Multi: 'rainbow',
+};
+
 type ScreenState = 'input' | 'scanning' | 'loading' | 'found' | 'reporting' | 'success' | 'error';
 
 interface DiscInfo {
@@ -76,11 +91,14 @@ export default function FoundDiscScreen() {
   const [hasActiveRecovery, setHasActiveRecovery] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
   const [pendingRecoveries, setPendingRecoveries] = useState<PendingRecovery[]>([]);
+  const [myDiscsBeingRecovered, setMyDiscsBeingRecovered] = useState<PendingRecovery[]>([]);
   const [loadingPending, setLoadingPending] = useState(true);
+  const [loadingMyDiscs, setLoadingMyDiscs] = useState(true);
 
   // Fetch pending recoveries on mount
   useEffect(() => {
     fetchPendingRecoveries();
+    fetchMyDiscsBeingRecovered();
   }, []);
 
   const fetchPendingRecoveries = async () => {
@@ -112,6 +130,72 @@ export default function FoundDiscScreen() {
     }
   };
 
+  const fetchMyDiscsBeingRecovered = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setLoadingMyDiscs(false);
+        return;
+      }
+
+      // Get all discs owned by the user
+      const { data: userDiscs, error: discsError } = await supabase
+        .from('discs')
+        .select('id')
+        .eq('owner_id', session.user.id);
+
+      if (discsError || !userDiscs || userDiscs.length === 0) {
+        setMyDiscsBeingRecovered([]);
+        setLoadingMyDiscs(false);
+        return;
+      }
+
+      const discIds = userDiscs.map(d => d.id);
+
+      // Get active recovery events for those discs
+      const { data: recoveries, error: recoveriesError } = await supabase
+        .from('recovery_events')
+        .select(`
+          id,
+          status,
+          finder_message,
+          created_at,
+          disc:discs(id, name, manufacturer, mold, plastic, color)
+        `)
+        .in('disc_id', discIds)
+        .not('status', 'in', '("recovered","cancelled")')
+        .order('created_at', { ascending: false });
+
+      if (recoveriesError) {
+        console.error('Error fetching my discs being recovered:', recoveriesError);
+        setMyDiscsBeingRecovered([]);
+        return;
+      }
+
+      // Transform data
+      const transformedRecoveries: PendingRecovery[] = (recoveries || []).map((r) => {
+        const discData = Array.isArray(r.disc) ? r.disc[0] : r.disc;
+        return {
+          id: r.id,
+          status: r.status,
+          finder_message: r.finder_message,
+          created_at: r.created_at,
+          disc: discData ? {
+            ...discData,
+            owner_display_name: 'You',
+          } : null,
+        };
+      });
+
+      setMyDiscsBeingRecovered(transformedRecoveries);
+    } catch (error) {
+      console.error('Error fetching my discs being recovered:', error);
+      setMyDiscsBeingRecovered([]);
+    } finally {
+      setLoadingMyDiscs(false);
+    }
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'found':
@@ -125,12 +209,12 @@ export default function FoundDiscScreen() {
     }
   };
 
-  const formatStatus = (status: string) => {
+  const formatStatus = (status: string, isOwner: boolean = false) => {
     switch (status) {
       case 'found':
-        return 'Waiting for owner';
+        return isOwner ? 'Action needed' : 'Waiting for owner';
       case 'meetup_proposed':
-        return 'Meetup proposed';
+        return isOwner ? 'Review meetup' : 'Meetup proposed';
       case 'meetup_confirmed':
         return 'Meetup confirmed';
       default:
@@ -157,7 +241,16 @@ export default function FoundDiscScreen() {
   const handleBarcodeScan = (result: BarcodeScanningResult) => {
     if (hasScanned) return;
     setHasScanned(true);
-    const scannedCode = result.data;
+    let scannedCode = result.data;
+
+    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    if (scannedCode.includes('/d/')) {
+      const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
+      if (match) {
+        scannedCode = match[1];
+      }
+    }
+
     setQrCode(scannedCode);
     setScreenState('input');
     // Auto-lookup after scanning
@@ -304,9 +397,41 @@ export default function FoundDiscScreen() {
   if (screenState === 'input') {
     return (
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* My Discs Being Recovered Section - Show first if owner has active recoveries */}
+          {myDiscsBeingRecovered.length > 0 && (
+            <View style={[styles.ownerRecoverySection, { borderColor: isDark ? '#444' : '#F39C12' }]}>
+              <View style={styles.ownerRecoverySectionHeader}>
+                <FontAwesome name="bell" size={20} color="#F39C12" />
+                <Text style={styles.ownerRecoverySectionTitle}>Your Discs Were Found!</Text>
+              </View>
+              <Text style={styles.ownerRecoverySectionSubtitle}>
+                Someone found your disc and is trying to return it
+              </Text>
+              {myDiscsBeingRecovered.map((recovery) => (
+                <Pressable
+                  key={recovery.id}
+                  style={[styles.ownerRecoveryCard, { borderColor: isDark ? '#444' : '#eee' }]}
+                  onPress={() => router.push(`/recovery/${recovery.id}`)}>
+                  <View style={styles.ownerRecoveryInfo}>
+                    <Text style={styles.ownerRecoveryDiscName}>
+                      {recovery.disc?.mold || recovery.disc?.name || 'Unknown Disc'}
+                    </Text>
+                    {recovery.disc?.manufacturer && (
+                      <Text style={styles.ownerRecoveryManufacturer}>{recovery.disc.manufacturer}</Text>
+                    )}
+                    <View style={[styles.statusBadge, getStatusStyle(recovery.status)]}>
+                      <Text style={styles.statusText}>{formatStatus(recovery.status, true)}</Text>
+                    </View>
+                  </View>
+                  <FontAwesome name="chevron-right" size={16} color="#F39C12" />
+                </Pressable>
+              ))}
+            </View>
+          )}
+
           <View style={styles.header}>
             <FontAwesome name="qrcode" size={48} color={Colors.violet.primary} />
             <Text style={styles.title}>Found a Disc?</Text>
@@ -393,7 +518,7 @@ export default function FoundDiscScreen() {
     // Double-check permission before rendering camera
     if (!permission?.granted) {
       return (
-        <View style={styles.centerContainer}>
+        <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
           <FontAwesome name="camera" size={48} color="#ccc" />
           <Text style={styles.errorTitle}>Camera Permission Required</Text>
           <Text style={styles.errorMessage}>
@@ -444,7 +569,7 @@ export default function FoundDiscScreen() {
   // Loading State
   if (screenState === 'loading' || screenState === 'reporting') {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <ActivityIndicator size="large" color={Colors.violet.primary} />
         <Text style={styles.loadingText}>
           {screenState === 'loading' ? 'Looking up disc...' : 'Reporting found disc...'}
@@ -456,7 +581,7 @@ export default function FoundDiscScreen() {
   // Error State
   if (screenState === 'error') {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <FontAwesome name="exclamation-circle" size={64} color="#E74C3C" />
         <Text style={styles.errorTitle}>Oops!</Text>
         <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -472,7 +597,7 @@ export default function FoundDiscScreen() {
   if (screenState === 'found' && discInfo) {
     return (
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
@@ -496,6 +621,24 @@ export default function FoundDiscScreen() {
             {discInfo.plastic && <Text style={styles.discPlastic}>{discInfo.plastic}</Text>}
             {discInfo.color && (
               <View style={styles.colorBadge}>
+                {COLOR_MAP[discInfo.color] === 'rainbow' ? (
+                  <View style={styles.rainbowDot}>
+                    <View style={[styles.rainbowSlice, { backgroundColor: '#E74C3C' }]} />
+                    <View style={[styles.rainbowSlice, { backgroundColor: '#F1C40F' }]} />
+                    <View style={[styles.rainbowSlice, { backgroundColor: '#2ECC71' }]} />
+                    <View style={[styles.rainbowSlice, { backgroundColor: '#3498DB' }]} />
+                  </View>
+                ) : (
+                  <View
+                    style={[
+                      styles.colorDot,
+                      {
+                        backgroundColor: COLOR_MAP[discInfo.color] || '#666',
+                        borderColor: discInfo.color === 'White' ? '#ccc' : 'rgba(0, 0, 0, 0.1)',
+                      },
+                    ]}
+                  />
+                )}
                 <Text style={styles.colorText}>{discInfo.color}</Text>
               </View>
             )}
@@ -541,7 +684,7 @@ export default function FoundDiscScreen() {
   // Success State
   if (screenState === 'success' && recoveryEvent) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <FontAwesome name="check-circle" size={80} color="#2ECC71" />
         <Text style={styles.successTitle}>Thank You!</Text>
         <Text style={styles.successMessage}>
@@ -712,11 +855,31 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   colorBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
     marginTop: 8,
+    gap: 6,
+  },
+  colorDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  rainbowDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  rainbowSlice: {
+    flex: 1,
+    height: '100%',
   },
   colorText: {
     fontSize: 12,
@@ -858,6 +1021,50 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 16,
     fontWeight: '600',
+  },
+  ownerRecoverySection: {
+    backgroundColor: 'rgba(243, 156, 18, 0.1)',
+    borderWidth: 2,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 24,
+  },
+  ownerRecoverySectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 4,
+  },
+  ownerRecoverySectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#F39C12',
+  },
+  ownerRecoverySectionSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+  },
+  ownerRecoveryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 8,
+  },
+  ownerRecoveryInfo: {
+    flex: 1,
+  },
+  ownerRecoveryDiscName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  ownerRecoveryManufacturer: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 6,
   },
   pendingSection: {
     marginTop: 32,

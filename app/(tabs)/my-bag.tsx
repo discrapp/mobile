@@ -29,6 +29,13 @@ interface DiscPhoto {
   created_at: string;
 }
 
+interface ActiveRecovery {
+  id: string;
+  status: string;
+  finder_id: string;
+  found_at: string;
+}
+
 interface Disc {
   id: string;
   name: string;
@@ -42,7 +49,15 @@ interface Disc {
   notes?: string;
   created_at: string;
   photos: DiscPhoto[];
+  active_recovery?: ActiveRecovery | null;
 }
+
+// Recovery status labels and colors
+const RECOVERY_STATUS_MAP: Record<string, { label: string; color: string }> = {
+  found: { label: 'Found', color: '#F39C12' },
+  meetup_proposed: { label: 'Meetup Proposed', color: '#3498DB' },
+  meetup_confirmed: { label: 'Meetup Confirmed', color: '#27AE60' },
+};
 
 // Color mapping with hex values
 const COLOR_MAP: Record<string, string> = {
@@ -138,7 +153,16 @@ export default function MyBagScreen() {
 
         {/* Disc Info */}
         <View style={styles.discInfo}>
-          <Text style={styles.discName}>{item.mold || item.name}</Text>
+          <View style={styles.discNameRow}>
+            <Text style={styles.discName}>{item.mold || item.name}</Text>
+            {item.active_recovery && RECOVERY_STATUS_MAP[item.active_recovery.status] && (
+              <View style={[styles.recoveryBadge, { backgroundColor: RECOVERY_STATUS_MAP[item.active_recovery.status].color }]}>
+                <Text style={styles.recoveryBadgeText}>
+                  {RECOVERY_STATUS_MAP[item.active_recovery.status].label}
+                </Text>
+              </View>
+            )}
+          </View>
           {item.manufacturer && <Text style={styles.discDetails}>{item.manufacturer}</Text>}
           {item.plastic && <Text style={styles.discMeta}>{item.plastic}</Text>}
           <View style={styles.discFooter}>
@@ -269,10 +293,26 @@ const styles = StyleSheet.create({
   discInfo: {
     flex: 1,
   },
+  discNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+    flexWrap: 'wrap',
+  },
   discName: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 4,
+  },
+  recoveryBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  recoveryBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
   },
   discDetails: {
     fontSize: 14,

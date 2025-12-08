@@ -38,6 +38,20 @@ interface QRCodeInfo {
   status: string;
 }
 
+interface ActiveRecovery {
+  id: string;
+  status: string;
+  finder_id: string;
+  found_at: string;
+}
+
+// Recovery status labels and colors
+const RECOVERY_STATUS_MAP: Record<string, { label: string; color: string }> = {
+  found: { label: 'Found', color: '#F39C12' },
+  meetup_proposed: { label: 'Meetup Proposed', color: '#3498DB' },
+  meetup_confirmed: { label: 'Meetup Confirmed', color: '#27AE60' },
+};
+
 interface Disc {
   id: string;
   name: string;
@@ -53,6 +67,7 @@ interface Disc {
   photos: DiscPhoto[];
   qr_code_id?: string;
   qr_code?: QRCodeInfo;
+  active_recovery?: ActiveRecovery | null;
 }
 
 // Color mapping with hex values
@@ -279,6 +294,20 @@ export default function DiscDetailScreen() {
       <View style={styles.infoSection}>
         <Text style={styles.title}>{disc.mold || disc.name}</Text>
 
+        {/* Recovery Status Banner */}
+        {disc.active_recovery && RECOVERY_STATUS_MAP[disc.active_recovery.status] && (
+          <Pressable
+            style={[styles.recoveryBanner, { backgroundColor: RECOVERY_STATUS_MAP[disc.active_recovery.status].color }]}
+            onPress={() => router.push(`/recovery/${disc.active_recovery!.id}`)}
+          >
+            <FontAwesome name="refresh" size={16} color="#fff" />
+            <Text style={styles.recoveryBannerText}>
+              {RECOVERY_STATUS_MAP[disc.active_recovery.status].label} - Tap for details
+            </Text>
+            <FontAwesome name="chevron-right" size={14} color="#fff" />
+          </Pressable>
+        )}
+
         {/* Manufacturer */}
         {disc.manufacturer && <Text style={styles.manufacturer}>{disc.manufacturer}</Text>}
 
@@ -490,6 +519,22 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 8,
+  },
+  recoveryBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  recoveryBannerText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
   },
   manufacturer: {
     fontSize: 18,
