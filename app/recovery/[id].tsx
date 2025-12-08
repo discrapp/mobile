@@ -488,7 +488,7 @@ export default function RecoveryDetailScreen() {
           />
           <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Owner</Text>
-            <Text style={[styles.personName, isOwner && styles.youText]}>
+            <Text style={[styles.personName, isOwner && (isDark ? styles.youTextDark : styles.youText)]}>
               {isOwner ? 'You' : recovery.owner.display_name}
             </Text>
           </RNView>
@@ -501,7 +501,7 @@ export default function RecoveryDetailScreen() {
           />
           <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Finder</Text>
-            <Text style={[styles.personName, !isOwner && styles.youText]}>
+            <Text style={[styles.personName, !isOwner && (isDark ? styles.youTextDark : styles.youText)]}>
               {!isOwner ? 'You' : recovery.finder.display_name}
             </Text>
           </RNView>
@@ -682,6 +682,10 @@ const styles = StyleSheet.create({
   },
   youText: {
     color: Colors.violet.primary,
+    fontWeight: '600',
+  },
+  youTextDark: {
+    color: '#fff',
     fontWeight: '600',
   },
   messageText: {
