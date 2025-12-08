@@ -275,6 +275,11 @@ export default function RecoveryDetailScreen() {
   const pendingProposal = recovery.meetup_proposals.find(p => p.status === 'pending');
   const acceptedProposal = recovery.meetup_proposals.find(p => p.status === 'accepted');
 
+  // Determine if current user proposed the pending meetup
+  const currentUserId = isOwner ? recovery.owner.id : recovery.finder.id;
+  const userProposedMeetup = pendingProposal?.proposed_by === currentUserId;
+  const canRespondToProposal = pendingProposal && !userProposedMeetup;
+
   return (
     <ScrollView
       style={styles.container}
@@ -399,8 +404,8 @@ export default function RecoveryDetailScreen() {
         </RNView>
       )}
 
-      {/* Pending Proposal (for owner to accept/decline) */}
-      {isOwner && pendingProposal && (
+      {/* Pending Proposal - shown to person who can respond (didn't propose) */}
+      {canRespondToProposal && (
         <RNView style={[styles.section, styles.pendingSection]}>
           <Text style={styles.sectionTitle}>
             <FontAwesome name="clock-o" size={18} color="#F39C12" /> Pending Meetup Proposal
@@ -456,12 +461,27 @@ export default function RecoveryDetailScreen() {
         </Pressable>
       )}
 
-      {/* Finder: Waiting for owner to respond */}
-      {!isOwner && pendingProposal && (
+      {/* Waiting for response - shown to person who proposed */}
+      {pendingProposal && userProposedMeetup && (
         <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+          <RNView style={styles.meetupDetails}>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="map-marker" size={16} color="#666" />
+              <Text style={styles.meetupText}>{pendingProposal.location_name}</Text>
+            </RNView>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="calendar" size={16} color="#666" />
+              <Text style={styles.meetupText}>{formatDate(pendingProposal.proposed_datetime)}</Text>
+            </RNView>
+            {pendingProposal.message && (
+              <Text style={styles.proposalMessage}>{pendingProposal.message}</Text>
+            )}
+          </RNView>
           <View style={styles.waitingRow}>
             <FontAwesome name="clock-o" size={20} color="#F39C12" />
-            <Text style={styles.waitingText}>Waiting for owner to respond to your meetup proposal</Text>
+            <Text style={styles.waitingText}>
+              Waiting for {isOwner ? 'the finder' : 'the owner'} to respond to your meetup proposal
+            </Text>
           </View>
         </View>
       )}
