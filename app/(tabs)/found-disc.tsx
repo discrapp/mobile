@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -13,6 +13,7 @@ import {
   View as RNView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -96,11 +97,13 @@ export default function FoundDiscScreen() {
   const [loadingPending, setLoadingPending] = useState(true);
   const [loadingMyDiscs, setLoadingMyDiscs] = useState(true);
 
-  // Fetch pending recoveries on mount
-  useEffect(() => {
-    fetchPendingRecoveries();
-    fetchMyDiscsBeingRecovered();
-  }, []);
+  // Fetch pending recoveries when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchPendingRecoveries();
+      fetchMyDiscsBeingRecovered();
+    }, [])
+  );
 
   const fetchPendingRecoveries = async () => {
     try {

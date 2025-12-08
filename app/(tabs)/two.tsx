@@ -53,6 +53,7 @@ export default function ProfileScreen() {
   const [loadingRecoveries, setLoadingRecoveries] = useState(true);
   const [loadingFinds, setLoadingFinds] = useState(true);
   const [discsFound, setDiscsFound] = useState(0);
+  const [myDiscsFoundByOthers, setMyDiscsFoundByOthers] = useState(0);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -157,9 +158,41 @@ export default function ProfileScreen() {
     fetchProfile();
     fetchDiscsReturned();
     fetchDiscsFound();
+    fetchMyDiscsFoundByOthers();
     fetchActiveRecoveries();
     fetchMyFinds();
   }, [user?.id]);
+
+  const fetchMyDiscsFoundByOthers = async () => {
+    if (!user?.id) return;
+
+    try {
+      // Get all discs owned by the user
+      const { data: userDiscs, error: discsError } = await supabase
+        .from('discs')
+        .select('id')
+        .eq('owner_id', user.id);
+
+      if (discsError || !userDiscs || userDiscs.length === 0) {
+        setMyDiscsFoundByOthers(0);
+        return;
+      }
+
+      const discIds = userDiscs.map(d => d.id);
+
+      // Count recovery events for those discs
+      const { count, error } = await supabase
+        .from('recovery_events')
+        .select('*', { count: 'exact', head: true })
+        .in('disc_id', discIds);
+
+      if (!error && count !== null) {
+        setMyDiscsFoundByOthers(count);
+      }
+    } catch (error) {
+      console.error('Error fetching my discs found by others:', error);
+    }
+  };
 
   const fetchDiscsReturned = async () => {
     if (!user?.id) return;
@@ -393,8 +426,16 @@ export default function ProfileScreen() {
                 Member since {getMemberSinceText(user.created_at)}
               </Text>
             )}
-            {(discsFound > 0 || discsReturned > 0) && (
+            {(discsFound > 0 || discsReturned > 0 || myDiscsFoundByOthers > 0) && (
               <View style={styles.statsRow}>
+                {myDiscsFoundByOthers > 0 && (
+                  <View style={styles.statsBadge}>
+                    <FontAwesome name="bell" size={14} color="#F39C12" />
+                    <Text style={[styles.statsText, { color: '#F39C12' }]}>
+                      {myDiscsFoundByOthers} recovered
+                    </Text>
+                  </View>
+                )}
                 {discsFound > 0 && (
                   <View style={styles.statsBadge}>
                     <FontAwesome name="search" size={14} color={Colors.violet.primary} />

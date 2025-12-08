@@ -87,7 +87,7 @@ function RootLayoutNav() {
         <Stack.Screen name="add-disc" options={{ presentation: 'modal', title: 'Add Disc' }} />
         <Stack.Screen name="disc/[id]" options={{ title: 'Disc Details' }} />
         <Stack.Screen name="edit-disc/[id]" options={{ presentation: 'modal', title: 'Edit Disc' }} />
-        <Stack.Screen name="recovery/[id]" options={{ title: 'Recovery Details' }} />
+        <Stack.Screen name="recovery/[id]" options={{ title: 'Recovery Details', headerBackTitle: 'Back' }} />
         <Stack.Screen name="propose-meetup/[id]" options={{ presentation: 'modal', title: 'Propose Meetup' }} />
         <Stack.Screen name="d/[code]" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
