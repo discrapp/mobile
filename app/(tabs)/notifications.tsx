@@ -5,12 +5,14 @@ import {
   RefreshControl,
   ActivityIndicator,
   View as RNView,
+  Animated,
+  PanResponder,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useAuth } from '@/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -131,6 +133,30 @@ export default function NotificationsScreen() {
     }
   };
 
+  const dismissNotification = async (notificationId: string, wasUnread: boolean) => {
+    // Optimistically remove from UI
+    setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+    if (wasUnread) {
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    }
+
+    // Mark as read in backend (so it doesn't come back)
+    if (!session?.access_token) return;
+
+    try {
+      await supabase.functions.invoke('mark-notification-read', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: { notification_id: notificationId },
+      });
+    } catch (error) {
+      console.error('Error dismissing notification:', error);
+      // Refetch to restore state if failed
+      fetchNotifications();
+    }
+  };
+
   const handleNotificationPress = async (notification: Notification) => {
     // Mark as read if unread
     if (!notification.read) {
@@ -157,42 +183,103 @@ export default function NotificationsScreen() {
     return date.toLocaleDateString();
   };
 
-  const renderNotification = ({ item }: { item: Notification }) => {
+  const SwipeableNotification = ({ item }: { item: Notification }) => {
+    const translateX = useRef(new Animated.Value(0)).current;
+    const SWIPE_THRESHOLD = -80;
+
+    const panResponder = useRef(
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+          // Only respond to horizontal swipes
+          return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10;
+        },
+        onPanResponderMove: (_, gestureState) => {
+          // Only allow swiping left
+          if (gestureState.dx < 0) {
+            translateX.setValue(gestureState.dx);
+          }
+        },
+        onPanResponderRelease: (_, gestureState) => {
+          if (gestureState.dx < SWIPE_THRESHOLD) {
+            // Swipe to dismiss
+            Animated.timing(translateX, {
+              toValue: -400,
+              duration: 200,
+              useNativeDriver: true,
+            }).start(() => {
+              dismissNotification(item.id, !item.read);
+            });
+          } else {
+            // Snap back
+            Animated.spring(translateX, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          }
+        },
+      })
+    ).current;
+
     const iconName = NOTIFICATION_ICONS[item.type] || 'bell';
     const iconColor = NOTIFICATION_COLORS[item.type] || Colors.violet.primary;
 
     return (
-      <TouchableOpacity
-        style={[
-          styles.notificationItem,
-          !item.read && styles.unreadNotification,
-          isDark && styles.notificationItemDark,
-        ]}
-        onPress={() => handleNotificationPress(item)}
-        activeOpacity={0.7}
-      >
-        <RNView
-          style={[styles.iconContainer, { backgroundColor: `${iconColor}20` }]}
+      <RNView style={styles.swipeContainer}>
+        {/* Delete background - tappable to dismiss */}
+        <TouchableOpacity
+          style={styles.deleteBackground}
+          onPress={() => dismissNotification(item.id, !item.read)}
+          activeOpacity={0.8}
         >
-          <FontAwesome name={iconName} size={20} color={iconColor} />
-        </RNView>
-        <RNView style={styles.notificationContent}>
-          <Text style={[styles.notificationTitle, isDark && styles.textDark]}>
-            {item.title}
-          </Text>
-          <Text
-            style={[styles.notificationBody, isDark && styles.textMutedDark]}
-            numberOfLines={2}
+          <FontAwesome name="trash" size={20} color="#fff" />
+          <Text style={styles.deleteText}>Dismiss</Text>
+        </TouchableOpacity>
+
+        {/* Notification content */}
+        <Animated.View
+          style={[
+            styles.notificationSlider,
+            isDark ? styles.notificationSliderDark : styles.notificationSliderLight,
+            { transform: [{ translateX }] },
+          ]}
+          {...panResponder.panHandlers}
+        >
+          <TouchableOpacity
+            style={[
+              styles.notificationItem,
+              !item.read && styles.unreadNotification,
+            ]}
+            onPress={() => handleNotificationPress(item)}
+            activeOpacity={0.7}
           >
-            {item.body}
-          </Text>
-          <Text style={[styles.notificationTime, isDark && styles.textMutedDark]}>
-            {formatTimeAgo(item.created_at)}
-          </Text>
-        </RNView>
-        {!item.read && <RNView style={styles.unreadDot} />}
-      </TouchableOpacity>
+            <RNView
+              style={[styles.iconContainer, { backgroundColor: `${iconColor}20` }]}
+            >
+              <FontAwesome name={iconName} size={20} color={iconColor} />
+            </RNView>
+            <RNView style={styles.notificationContent}>
+              <Text style={[styles.notificationTitle, isDark && styles.textDark]}>
+                {item.title}
+              </Text>
+              <Text
+                style={[styles.notificationBody, isDark && styles.textMutedDark]}
+                numberOfLines={2}
+              >
+                {item.body}
+              </Text>
+              <Text style={[styles.notificationTime, isDark && styles.textMutedDark]}>
+                {formatTimeAgo(item.created_at)}
+              </Text>
+            </RNView>
+            {!item.read && <RNView style={styles.unreadDot} />}
+          </TouchableOpacity>
+        </Animated.View>
+      </RNView>
     );
+  };
+
+  const renderNotification = ({ item }: { item: Notification }) => {
+    return <SwipeableNotification item={item} />;
   };
 
   const renderEmpty = () => (
@@ -285,14 +372,40 @@ const styles = StyleSheet.create({
     color: Colors.violet.primary,
     fontWeight: '500',
   },
+  swipeContainer: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  deleteBackground: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 100,
+    backgroundColor: '#E74C3C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  deleteText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  notificationSlider: {
+    // This wrapper ensures full coverage over the delete background
+  },
+  notificationSliderLight: {
+    backgroundColor: '#fff',
+  },
+  notificationSliderDark: {
+    backgroundColor: '#000',
+  },
   notificationItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     padding: 16,
-    backgroundColor: 'transparent',
-  },
-  notificationItemDark: {
-    backgroundColor: 'transparent',
   },
   unreadNotification: {
     backgroundColor: `${Colors.violet.primary}08`,

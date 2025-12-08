@@ -950,9 +950,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.violet.primary,
   },
   buttonSecondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: Colors.violet.primary,
+    backgroundColor: Colors.violet.primary,
   },
   buttonDisabled: {
     opacity: 0.6,
@@ -963,7 +961,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonSecondaryText: {
-    color: Colors.violet.primary,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

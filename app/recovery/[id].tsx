@@ -114,6 +114,45 @@ export default function RecoveryDetailScreen() {
     fetchRecoveryDetails();
   }, [fetchRecoveryDetails]);
 
+  // Subscribe to real-time updates for this recovery event
+  useEffect(() => {
+    if (!recoveryId) return;
+
+    const channel = supabase
+      .channel(`recovery-${recoveryId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'recovery_events',
+          filter: `id=eq.${recoveryId}`,
+        },
+        () => {
+          // Refetch when the recovery event is updated
+          fetchRecoveryDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'meetup_proposals',
+          filter: `recovery_event_id=eq.${recoveryId}`,
+        },
+        () => {
+          // Refetch when meetup proposals change
+          fetchRecoveryDetails();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [recoveryId, fetchRecoveryDetails]);
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchRecoveryDetails();
@@ -275,6 +314,11 @@ export default function RecoveryDetailScreen() {
   const pendingProposal = recovery.meetup_proposals.find(p => p.status === 'pending');
   const acceptedProposal = recovery.meetup_proposals.find(p => p.status === 'accepted');
 
+  // Determine if current user proposed the pending meetup
+  const currentUserId = isOwner ? recovery.owner.id : recovery.finder.id;
+  const userProposedMeetup = pendingProposal?.proposed_by === currentUserId;
+  const canRespondToProposal = pendingProposal && !userProposedMeetup;
+
   return (
     <ScrollView
       style={styles.container}
@@ -286,6 +330,153 @@ export default function RecoveryDetailScreen() {
         <FontAwesome name={statusInfo.icon} size={16} color="#fff" />
         <Text style={styles.statusText}>{statusInfo.label}</Text>
       </View>
+
+      {/* Recovery Complete - shown at top when disc is recovered */}
+      {recovery.status === 'recovered' && (
+        <RNView style={[styles.section, styles.recoveredSection]}>
+          <FontAwesome name="trophy" size={48} color="#F1C40F" />
+          <Text style={styles.recoveredTitle}>Disc Recovered!</Text>
+          <Text style={styles.recoveredText}>
+            This disc was successfully returned on {formatDate(recovery.recovered_at || recovery.updated_at)}
+          </Text>
+        </RNView>
+      )}
+
+      {/* Pending Proposal - shown to person who can respond (didn't propose) */}
+      {canRespondToProposal && (
+        <RNView style={[styles.section, styles.pendingSection]}>
+          <Text style={styles.sectionTitle}>
+            <FontAwesome name="clock-o" size={18} color="#F39C12" /> Pending Meetup Proposal
+          </Text>
+          <RNView style={styles.meetupDetails}>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="map-marker" size={16} color="#666" />
+              <Text style={styles.meetupText}>{pendingProposal.location_name}</Text>
+            </RNView>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="calendar" size={16} color="#666" />
+              <Text style={styles.meetupText}>{formatDate(pendingProposal.proposed_datetime)}</Text>
+            </RNView>
+            {pendingProposal.message && (
+              <RNView style={styles.meetupRow}>
+                <FontAwesome name="sticky-note-o" size={16} color="#666" />
+                <Text style={styles.meetupText}>{pendingProposal.message}</Text>
+              </RNView>
+            )}
+          </RNView>
+          <RNView style={styles.actionButtons}>
+            <Pressable
+              style={[styles.acceptButton, actionLoading && styles.buttonDisabled]}
+              onPress={() => handleAcceptMeetup(pendingProposal.id)}
+              disabled={actionLoading}
+            >
+              {actionLoading ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <>
+                  <FontAwesome name="check" size={16} color="#fff" />
+                  <Text style={styles.acceptButtonText}>Confirm</Text>
+                </>
+              )}
+            </Pressable>
+            <Pressable
+              style={[styles.counterButton, actionLoading && styles.buttonDisabled]}
+              onPress={() => handleDeclineMeetup(pendingProposal.id)}
+              disabled={actionLoading}
+            >
+              <FontAwesome name="refresh" size={16} color="#fff" />
+              <Text style={styles.counterButtonText}>Counter</Text>
+            </Pressable>
+          </RNView>
+        </RNView>
+      )}
+
+      {/* Waiting for response - shown to person who proposed */}
+      {pendingProposal && userProposedMeetup && (
+        <RNView style={[styles.section, styles.pendingSection]}>
+          <Text style={styles.sectionTitle}>
+            <FontAwesome name="clock-o" size={18} color="#F39C12" /> Your Meetup Proposal
+          </Text>
+          <RNView style={styles.meetupDetails}>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="map-marker" size={16} color="#666" />
+              <Text style={styles.meetupText}>{pendingProposal.location_name}</Text>
+            </RNView>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="calendar" size={16} color="#666" />
+              <Text style={styles.meetupText}>{formatDate(pendingProposal.proposed_datetime)}</Text>
+            </RNView>
+            {pendingProposal.message && (
+              <RNView style={styles.meetupRow}>
+                <FontAwesome name="sticky-note-o" size={16} color="#666" />
+                <Text style={styles.meetupText}>{pendingProposal.message}</Text>
+              </RNView>
+            )}
+          </RNView>
+          <RNView style={styles.waitingRow}>
+            <FontAwesome name="clock-o" size={20} color="#F39C12" />
+            <Text style={styles.waitingText}>
+              Waiting for {isOwner ? 'the finder' : 'the owner'} to respond
+            </Text>
+          </RNView>
+        </RNView>
+      )}
+
+      {/* Confirmed/Completed Meetup - shown at top when meetup is accepted */}
+      {acceptedProposal && (
+        <RNView style={[
+          styles.section,
+          recovery.status === 'recovered'
+            ? { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }
+            : styles.acceptedSection
+        ]}>
+          <Text style={styles.sectionTitle}>
+            <FontAwesome name="check-circle" size={18} color="#2ECC71" />{' '}
+            {recovery.status === 'recovered' ? 'Meetup Completed' : 'Confirmed Meetup'}
+          </Text>
+          <RNView style={[styles.meetupDetails, recovery.status === 'recovered' && { marginBottom: 0 }]}>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="map-marker" size={16} color="#666" />
+              <Text style={styles.meetupText}>{acceptedProposal.location_name}</Text>
+            </RNView>
+            <RNView style={styles.meetupRow}>
+              <FontAwesome name="calendar" size={16} color="#666" />
+              <Text style={styles.meetupText}>{formatDate(acceptedProposal.proposed_datetime)}</Text>
+            </RNView>
+            {acceptedProposal.message && (
+              <RNView style={styles.meetupRow}>
+                <FontAwesome name="sticky-note-o" size={16} color="#666" />
+                <Text style={styles.meetupText}>{acceptedProposal.message}</Text>
+              </RNView>
+            )}
+          </RNView>
+          {recovery.status !== 'recovered' && (
+            <Pressable
+              style={styles.directionsButton}
+              onPress={() => handleGetDirections(acceptedProposal)}
+            >
+              <FontAwesome name="location-arrow" size={16} color="#fff" />
+              <Text style={styles.directionsButtonText}>Get Directions</Text>
+            </Pressable>
+          )}
+          {isOwner && recovery.status === 'meetup_confirmed' && (
+            <Pressable
+              style={[styles.primaryButton, { marginTop: 12 }]}
+              onPress={handleCompleteRecovery}
+              disabled={actionLoading}
+            >
+              {actionLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <>
+                  <FontAwesome name="check" size={18} color="#fff" />
+                  <Text style={styles.primaryButtonText}>Mark as Recovered</Text>
+                </>
+              )}
+            </Pressable>
+          )}
+        </RNView>
+      )}
 
       {/* Disc Card */}
       <View style={[styles.discCard, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
@@ -315,135 +506,42 @@ export default function RecoveryDetailScreen() {
       </View>
 
       {/* People Involved */}
-      <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+      <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
         <Text style={styles.sectionTitle}>People</Text>
-        <View style={styles.personRow}>
+        <RNView style={styles.personRow}>
           <Avatar
             avatarUrl={recovery.owner.avatar_url}
-            name={recovery.owner.display_name}
+            name={isOwner ? 'You' : recovery.owner.display_name}
             size={36}
           />
-          <View style={styles.personInfo}>
+          <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Owner</Text>
-            <Text style={styles.personName}>
-              {recovery.owner.display_name}
-              {isOwner && <Text style={styles.youBadge}> (You)</Text>}
+            <Text style={[styles.personName, isOwner && styles.youText]}>
+              {isOwner ? 'You' : recovery.owner.display_name}
             </Text>
-          </View>
-        </View>
-        <View style={styles.personRow}>
+          </RNView>
+        </RNView>
+        <RNView style={styles.personRow}>
           <Avatar
             avatarUrl={recovery.finder.avatar_url}
-            name={recovery.finder.display_name}
+            name={!isOwner ? 'You' : recovery.finder.display_name}
             size={36}
           />
-          <View style={styles.personInfo}>
+          <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Finder</Text>
-            <Text style={styles.personName}>
-              {recovery.finder.display_name}
-              {!isOwner && <Text style={styles.youBadge}> (You)</Text>}
+            <Text style={[styles.personName, !isOwner && styles.youText]}>
+              {!isOwner ? 'You' : recovery.finder.display_name}
             </Text>
-          </View>
-        </View>
-      </View>
+          </RNView>
+        </RNView>
+      </RNView>
 
       {/* Finder Message */}
       {recovery.finder_message && (
-        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+        <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
           <Text style={styles.sectionTitle}>Finder's Message</Text>
           <Text style={styles.messageText}>{recovery.finder_message}</Text>
           <Text style={styles.timestamp}>Found {formatDate(recovery.found_at)}</Text>
-        </View>
-      )}
-
-      {/* Accepted Meetup */}
-      {acceptedProposal && (
-        <RNView style={[styles.section, styles.acceptedSection]}>
-          <Text style={styles.sectionTitle}>
-            <FontAwesome name="check-circle" size={18} color="#2ECC71" /> Confirmed Meetup
-          </Text>
-          <RNView style={styles.meetupDetails}>
-            <RNView style={styles.meetupRow}>
-              <FontAwesome name="map-marker" size={16} color="#666" />
-              <Text style={styles.meetupText}>{acceptedProposal.location_name}</Text>
-            </RNView>
-            <RNView style={styles.meetupRow}>
-              <FontAwesome name="calendar" size={16} color="#666" />
-              <Text style={styles.meetupText}>{formatDate(acceptedProposal.proposed_datetime)}</Text>
-            </RNView>
-            {acceptedProposal.message && (
-              <Text style={styles.proposalMessage}>{acceptedProposal.message}</Text>
-            )}
-          </RNView>
-          <Pressable
-            style={styles.directionsButton}
-            onPress={() => handleGetDirections(acceptedProposal)}
-          >
-            <FontAwesome name="location-arrow" size={16} color="#fff" />
-            <Text style={styles.directionsButtonText}>Get Directions</Text>
-          </Pressable>
-          {isOwner && recovery.status === 'meetup_confirmed' && (
-            <Pressable
-              style={[styles.primaryButton, { marginTop: 12 }]}
-              onPress={handleCompleteRecovery}
-              disabled={actionLoading}
-            >
-              {actionLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <>
-                  <FontAwesome name="check" size={18} color="#fff" />
-                  <Text style={styles.primaryButtonText}>Mark as Recovered</Text>
-                </>
-              )}
-            </Pressable>
-          )}
-        </RNView>
-      )}
-
-      {/* Pending Proposal (for owner to accept/decline) */}
-      {isOwner && pendingProposal && (
-        <RNView style={[styles.section, styles.pendingSection]}>
-          <Text style={styles.sectionTitle}>
-            <FontAwesome name="clock-o" size={18} color="#F39C12" /> Pending Meetup Proposal
-          </Text>
-          <RNView style={styles.meetupDetails}>
-            <RNView style={styles.meetupRow}>
-              <FontAwesome name="map-marker" size={16} color="#666" />
-              <Text style={styles.meetupText}>{pendingProposal.location_name}</Text>
-            </RNView>
-            <RNView style={styles.meetupRow}>
-              <FontAwesome name="calendar" size={16} color="#666" />
-              <Text style={styles.meetupText}>{formatDate(pendingProposal.proposed_datetime)}</Text>
-            </RNView>
-            {pendingProposal.message && (
-              <Text style={styles.proposalMessage}>{pendingProposal.message}</Text>
-            )}
-          </RNView>
-          <RNView style={styles.actionButtons}>
-            <Pressable
-              style={[styles.acceptButton, actionLoading && styles.buttonDisabled]}
-              onPress={() => handleAcceptMeetup(pendingProposal.id)}
-              disabled={actionLoading}
-            >
-              {actionLoading ? (
-                <ActivityIndicator color="#fff" size="small" />
-              ) : (
-                <>
-                  <FontAwesome name="check" size={16} color="#fff" />
-                  <Text style={styles.acceptButtonText}>Accept</Text>
-                </>
-              )}
-            </Pressable>
-            <Pressable
-              style={[styles.declineButton, actionLoading && styles.buttonDisabled]}
-              onPress={() => handleDeclineMeetup(pendingProposal.id)}
-              disabled={actionLoading}
-            >
-              <FontAwesome name="times" size={16} color="#E74C3C" />
-              <Text style={styles.declineButtonText}>Decline</Text>
-            </Pressable>
-          </RNView>
         </RNView>
       )}
 
@@ -458,26 +556,6 @@ export default function RecoveryDetailScreen() {
         </Pressable>
       )}
 
-      {/* Finder: Waiting for owner to respond */}
-      {!isOwner && pendingProposal && (
-        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
-          <View style={styles.waitingRow}>
-            <FontAwesome name="clock-o" size={20} color="#F39C12" />
-            <Text style={styles.waitingText}>Waiting for owner to respond to your meetup proposal</Text>
-          </View>
-        </View>
-      )}
-
-      {/* Recovery Complete */}
-      {recovery.status === 'recovered' && (
-        <View style={[styles.section, styles.recoveredSection]}>
-          <FontAwesome name="trophy" size={48} color="#F1C40F" />
-          <Text style={styles.recoveredTitle}>Disc Recovered!</Text>
-          <Text style={styles.recoveredText}>
-            This disc was successfully returned on {formatDate(recovery.recovered_at || recovery.updated_at)}
-          </Text>
-        </View>
-      )}
     </ScrollView>
   );
 }
@@ -620,10 +698,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
   },
-  youBadge: {
-    fontSize: 13,
-    color: Colors.violet.primary,
-    fontWeight: '600',
+  youText: {
+    fontWeight: '700',
   },
   messageText: {
     fontSize: 15,
@@ -656,21 +732,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     flex: 1,
   },
-  proposalMessage: {
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
-    marginTop: 8,
-    paddingLeft: 26,
-  },
   directionsButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     backgroundColor: '#3498DB',
-    paddingVertical: 12,
-    borderRadius: 10,
+    paddingVertical: 16,
+    borderRadius: 12,
   },
   directionsButtonText: {
     color: '#fff',
@@ -683,6 +752,7 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     flex: 1,
+    flexBasis: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -696,19 +766,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  declineButton: {
+  counterButton: {
     flex: 1,
+    flexBasis: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    borderWidth: 2,
-    borderColor: '#E74C3C',
-    paddingVertical: 12,
+    backgroundColor: Colors.violet.primary,
+    paddingVertical: 14,
     borderRadius: 10,
   },
-  declineButtonText: {
-    color: '#E74C3C',
+  counterButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -736,14 +806,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    borderWidth: 2,
-    borderColor: Colors.violet.primary,
+    backgroundColor: Colors.violet.primary,
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
   },
   secondaryButtonText: {
-    color: Colors.violet.primary,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
