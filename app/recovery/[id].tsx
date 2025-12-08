@@ -424,7 +424,12 @@ export default function RecoveryDetailScreen() {
 
       {/* Confirmed/Completed Meetup - shown at top when meetup is accepted */}
       {acceptedProposal && (
-        <RNView style={[styles.section, styles.acceptedSection]}>
+        <RNView style={[
+          styles.section,
+          recovery.status === 'recovered'
+            ? { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }
+            : styles.acceptedSection
+        ]}>
           <Text style={styles.sectionTitle}>
             <FontAwesome name="check-circle" size={18} color="#2ECC71" />{' '}
             {recovery.status === 'recovered' ? 'Meetup Completed' : 'Confirmed Meetup'}
