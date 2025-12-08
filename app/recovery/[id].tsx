@@ -422,11 +422,12 @@ export default function RecoveryDetailScreen() {
         </RNView>
       )}
 
-      {/* Confirmed Meetup - shown at top when meetup is accepted */}
+      {/* Confirmed/Completed Meetup - shown at top when meetup is accepted */}
       {acceptedProposal && (
         <RNView style={[styles.section, styles.acceptedSection]}>
           <Text style={styles.sectionTitle}>
-            <FontAwesome name="check-circle" size={18} color="#2ECC71" /> Confirmed Meetup
+            <FontAwesome name="check-circle" size={18} color="#2ECC71" />{' '}
+            {recovery.status === 'recovered' ? 'Meetup Completed' : 'Confirmed Meetup'}
           </Text>
           <RNView style={styles.meetupDetails}>
             <RNView style={styles.meetupRow}>
@@ -444,13 +445,15 @@ export default function RecoveryDetailScreen() {
               </RNView>
             )}
           </RNView>
-          <Pressable
-            style={styles.directionsButton}
-            onPress={() => handleGetDirections(acceptedProposal)}
-          >
-            <FontAwesome name="location-arrow" size={16} color="#fff" />
-            <Text style={styles.directionsButtonText}>Get Directions</Text>
-          </Pressable>
+          {recovery.status !== 'recovered' && (
+            <Pressable
+              style={styles.directionsButton}
+              onPress={() => handleGetDirections(acceptedProposal)}
+            >
+              <FontAwesome name="location-arrow" size={16} color="#fff" />
+              <Text style={styles.directionsButtonText}>Get Directions</Text>
+            </Pressable>
+          )}
           {isOwner && recovery.status === 'meetup_confirmed' && (
             <Pressable
               style={[styles.primaryButton, { marginTop: 12 }]}
