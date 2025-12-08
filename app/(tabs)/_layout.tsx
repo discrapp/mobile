@@ -44,11 +44,11 @@ export default function TabLayout() {
     if (!session?.access_token) return;
 
     try {
-      const response = await supabase.functions.invoke('get-notifications', {
+      const response = await supabase.functions.invoke('get-notifications?limit=1', {
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: { limit: 1 },
       });
 
       if (!response.error && response.data) {

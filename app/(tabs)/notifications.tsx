@@ -59,6 +59,7 @@ export default function NotificationsScreen() {
 
     try {
       const response = await supabase.functions.invoke('get-notifications', {
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
