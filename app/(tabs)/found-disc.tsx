@@ -167,7 +167,7 @@ export default function FoundDiscScreen() {
           disc:discs(id, name, manufacturer, mold, plastic, color)
         `)
         .in('disc_id', discIds)
-        .not('status', 'in', '("recovered","cancelled")')
+        .not('status', 'in', '("recovered","cancelled","surrendered")')
         .order('created_at', { ascending: false });
 
       if (recoveriesError) {

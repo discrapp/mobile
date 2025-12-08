@@ -133,6 +133,30 @@ export default function NotificationsScreen() {
     }
   };
 
+  const dismissAllNotifications = async () => {
+    if (!session?.access_token || notifications.length === 0) return;
+
+    // Optimistically clear UI
+    const previousNotifications = notifications;
+    const previousUnreadCount = unreadCount;
+    setNotifications([]);
+    setUnreadCount(0);
+
+    try {
+      await supabase.functions.invoke('dismiss-notification', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: { dismiss_all: true },
+      });
+    } catch (error) {
+      console.error('Error dismissing all notifications:', error);
+      // Restore state if failed
+      setNotifications(previousNotifications);
+      setUnreadCount(previousUnreadCount);
+    }
+  };
+
   const dismissNotification = async (notificationId: string, wasUnread: boolean) => {
     // Optimistically remove from UI
     setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
@@ -308,14 +332,21 @@ export default function NotificationsScreen() {
 
   return (
     <View style={styles.container}>
-      {unreadCount > 0 && (
+      {notifications.length > 0 && (
         <RNView style={[styles.header, isDark && styles.headerDark]}>
           <Text style={[styles.unreadText, isDark && styles.textDark]}>
-            {unreadCount} unread
+            {unreadCount > 0 ? `${unreadCount} unread` : `${notifications.length} notifications`}
           </Text>
-          <TouchableOpacity onPress={markAllAsRead}>
-            <Text style={styles.markAllText}>Mark all as read</Text>
-          </TouchableOpacity>
+          <RNView style={styles.headerActions}>
+            {unreadCount > 0 && (
+              <TouchableOpacity onPress={markAllAsRead} style={styles.headerButton}>
+                <Text style={styles.markAllText}>Mark all read</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={dismissAllNotifications} style={styles.headerButton}>
+              <Text style={styles.dismissAllText}>Dismiss all</Text>
+            </TouchableOpacity>
+          </RNView>
         </RNView>
       )}
       <FlatList
@@ -367,9 +398,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#374151',
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  headerButton: {
+    paddingVertical: 4,
+  },
   markAllText: {
     fontSize: 14,
     color: Colors.violet.primary,
+    fontWeight: '500',
+  },
+  dismissAllText: {
+    fontSize: 14,
+    color: '#E74C3C',
     fontWeight: '500',
   },
   swipeContainer: {
