@@ -478,43 +478,43 @@ export default function RecoveryDetailScreen() {
       </View>
 
       {/* People Involved */}
-      <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+      <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
         <Text style={styles.sectionTitle}>People</Text>
-        <View style={styles.personRow}>
+        <RNView style={styles.personRow}>
           <Avatar
             avatarUrl={recovery.owner.avatar_url}
             name={isOwner ? 'You' : recovery.owner.display_name}
             size={36}
           />
-          <View style={styles.personInfo}>
+          <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Owner</Text>
             <Text style={[styles.personName, isOwner && styles.youText]}>
               {isOwner ? 'You' : recovery.owner.display_name}
             </Text>
-          </View>
-        </View>
-        <View style={styles.personRow}>
+          </RNView>
+        </RNView>
+        <RNView style={styles.personRow}>
           <Avatar
             avatarUrl={recovery.finder.avatar_url}
             name={!isOwner ? 'You' : recovery.finder.display_name}
             size={36}
           />
-          <View style={styles.personInfo}>
+          <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Finder</Text>
             <Text style={[styles.personName, !isOwner && styles.youText]}>
               {!isOwner ? 'You' : recovery.finder.display_name}
             </Text>
-          </View>
-        </View>
-      </View>
+          </RNView>
+        </RNView>
+      </RNView>
 
       {/* Finder Message */}
       {recovery.finder_message && (
-        <View style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+        <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
           <Text style={styles.sectionTitle}>Finder's Message</Text>
           <Text style={styles.messageText}>{recovery.finder_message}</Text>
           <Text style={styles.timestamp}>Found {formatDate(recovery.found_at)}</Text>
-        </View>
+        </RNView>
       )}
 
       {/* Propose Meetup button - available to both owner and finder when status is 'found' */}
