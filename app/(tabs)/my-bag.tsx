@@ -50,6 +50,8 @@ interface Disc {
   created_at: string;
   photos: DiscPhoto[];
   active_recovery?: ActiveRecovery | null;
+  was_surrendered?: boolean;
+  surrendered_at?: string | null;
 }
 
 // Recovery status labels and colors
@@ -155,6 +157,12 @@ export default function MyBagScreen() {
         <View style={styles.discInfo}>
           <View style={styles.discNameRow}>
             <Text style={styles.discName}>{item.mold || item.name}</Text>
+            {item.was_surrendered && (
+              <View style={[styles.recoveryBadge, styles.surrenderedBadge]}>
+                <FontAwesome name="gift" size={10} color="#fff" />
+                <Text style={styles.recoveryBadgeText}>Surrendered</Text>
+              </View>
+            )}
             {item.active_recovery && RECOVERY_STATUS_MAP[item.active_recovery.status] && (
               <View style={[styles.recoveryBadge, { backgroundColor: RECOVERY_STATUS_MAP[item.active_recovery.status].color }]}>
                 <Text style={styles.recoveryBadgeText}>
@@ -305,6 +313,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   recoveryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -313,6 +324,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 10,
     fontWeight: '600',
+  },
+  surrenderedBadge: {
+    backgroundColor: '#9B59B6',
   },
   discDetails: {
     fontSize: 14,

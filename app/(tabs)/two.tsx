@@ -258,7 +258,7 @@ export default function ProfileScreen() {
           disc:discs(id, name, manufacturer, mold, color)
         `)
         .in('disc_id', discIds)
-        .not('status', 'in', '("recovered","cancelled")')
+        .not('status', 'in', '("recovered","cancelled","surrendered")')
         .order('created_at', { ascending: false });
 
       if (recoveriesError) {
@@ -302,7 +302,7 @@ export default function ProfileScreen() {
           disc:discs(id, name, manufacturer, mold, color)
         `)
         .eq('finder_id', user.id)
-        .not('status', 'in', '("recovered","cancelled")')
+        .not('status', 'in', '("recovered","cancelled","surrendered")')
         .order('created_at', { ascending: false });
 
       if (recoveriesError) {

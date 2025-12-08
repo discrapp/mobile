@@ -68,6 +68,8 @@ interface Disc {
   qr_code_id?: string;
   qr_code?: QRCodeInfo;
   active_recovery?: ActiveRecovery | null;
+  was_surrendered?: boolean;
+  surrendered_at?: string | null;
 }
 
 // Color mapping with hex values
@@ -258,6 +260,14 @@ export default function DiscDetailScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+      {/* Surrendered Banner */}
+      {disc.was_surrendered && (
+        <RNView style={styles.surrenderedBanner}>
+          <FontAwesome name="gift" size={18} color="#fff" />
+          <Text style={styles.surrenderedBannerText}>This disc was surrendered to you</Text>
+        </RNView>
+      )}
+
       {/* Photo Gallery - Circular Display */}
       {validPhotos.length > 0 ? (
         <View style={styles.photoGalleryContainer}>
@@ -667,6 +677,22 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   deleteButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  surrenderedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: '#9B59B6',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  surrenderedBannerText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
