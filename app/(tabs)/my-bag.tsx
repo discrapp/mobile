@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   StyleSheet,
   Pressable,
@@ -13,6 +13,7 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+import { getCachedDiscs, setCachedDiscs } from '@/utils/discCache';
 
 interface FlightNumbers {
   speed: number | null;
@@ -81,10 +82,26 @@ export default function MyBagScreen() {
   const [discs, setDiscs] = useState<Disc[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Load cached data on mount
+  useEffect(() => {
+    const loadCachedData = async () => {
+      const cached = await getCachedDiscs();
+      if (cached && cached.length > 0) {
+        setDiscs(cached as Disc[]);
+        setLoading(false);
+      }
+    };
+    loadCachedData();
+  }, []);
 
   const fetchDiscs = async (isRefreshing = false) => {
     try {
-      if (!isRefreshing) setLoading(true);
+      // Only show loading spinner on initial load if no cached data
+      if (!isRefreshing && isInitialLoad && discs.length === 0) {
+        setLoading(true);
+      }
 
       const {
         data: { session },
@@ -112,12 +129,19 @@ export default function MyBagScreen() {
 
       const data = await response.json();
       setDiscs(data);
+
+      // Save to cache
+      await setCachedDiscs(data);
     } catch (error) {
       console.error('Error fetching discs:', error);
-      Alert.alert('Error', 'Failed to load your discs. Please try again.');
+      // Only show error if we don't have cached data to display
+      if (discs.length === 0) {
+        Alert.alert('Error', 'Failed to load your discs. Please try again.');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
+      setIsInitialLoad(false);
     }
   };
 
