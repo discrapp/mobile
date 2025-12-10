@@ -1,6 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "timezone": "America/Denver",
   "schedule": [
     "after 10pm every weekday",
@@ -17,44 +19,72 @@
   "automerge": false,
   "platformAutomerge": false,
   "rebaseWhen": "behind-base-branch",
-  "labels": ["dependencies", "renovate"],
-  "assignees": ["@benniemosher"],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "assignees": [
+    "@benniemosher"
+  ],
   "vulnerabilityAlerts": {
-    "labels": ["security", "dependencies"],
-    "assignees": ["@benniemosher"]
+    "labels": [
+      "security",
+      "dependencies"
+    ],
+    "assignees": [
+      "@benniemosher"
+    ]
   },
   "packageRules": [
     {
       "description": "Group Expo SDK updates",
-      "matchPackagePatterns": ["^expo", "^@expo/"],
-      "groupName": "expo packages"
+      "groupName": "expo packages",
+      "matchPackageNames": [
+        "/^expo/",
+        "/^@expo//"
+      ]
     },
     {
       "description": "Group React Native updates",
-      "matchPackagePatterns": ["^react-native"],
-      "groupName": "react-native packages"
+      "groupName": "react-native packages",
+      "matchPackageNames": [
+        "/^react-native/"
+      ]
     },
     {
       "description": "Group testing packages",
-      "matchPackagePatterns": ["jest", "testing-library"],
-      "groupName": "testing packages"
+      "groupName": "testing packages",
+      "matchPackageNames": [
+        "/jest/",
+        "/testing-library/"
+      ]
     },
     {
       "description": "GitHub Actions - automerge patch/minor",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true,
       "automergeType": "pr"
     },
     {
       "description": "Pre-commit hooks - group updates",
-      "matchManagers": ["pre-commit"],
+      "matchManagers": [
+        "pre-commit"
+      ],
       "groupName": "pre-commit hooks"
     },
     {
       "description": "TypeScript and types - group together",
-      "matchPackagePatterns": ["^typescript", "^@types/"],
-      "groupName": "typescript and types"
+      "groupName": "typescript and types",
+      "matchPackageNames": [
+        "/^typescript/",
+        "/^@types//"
+      ]
     }
   ]
 }
