@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import SignIn from '../../app/(auth)/sign-in';
@@ -90,7 +90,9 @@ describe('SignIn', () => {
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
-    fireEvent.press(getByText('Sign In'));
+    await act(async () => {
+      fireEvent.press(getByText('Sign In'));
+    });
 
     await waitFor(() => {
       expect(mockSignIn).toHaveBeenCalledWith('test@example.com', 'password123');
@@ -105,7 +107,9 @@ describe('SignIn', () => {
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
-    fireEvent.press(getByText('Sign In'));
+    await act(async () => {
+      fireEvent.press(getByText('Sign In'));
+    });
 
     await waitFor(() => {
       expect(router.replace).toHaveBeenCalledWith('/(tabs)');
@@ -119,7 +123,9 @@ describe('SignIn', () => {
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'wrongpassword');
-    fireEvent.press(getByText('Sign In'));
+    await act(async () => {
+      fireEvent.press(getByText('Sign In'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Sign In Error', 'Invalid credentials');
@@ -133,7 +139,9 @@ describe('SignIn', () => {
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
-    fireEvent.press(getByText('Sign In'));
+    await act(async () => {
+      fireEvent.press(getByText('Sign In'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Error', 'An unexpected error occurred');

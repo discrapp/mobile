@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import ForgotPassword from '../../app/(auth)/forgot-password';
@@ -70,7 +70,9 @@ describe('ForgotPassword', () => {
     const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.press(getByText('Send Reset Link'));
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
 
     await waitFor(() => {
       expect(supabase.auth.resetPasswordForEmail).toHaveBeenCalledWith(
@@ -91,7 +93,9 @@ describe('ForgotPassword', () => {
     const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.press(getByText('Send Reset Link'));
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith(
@@ -111,7 +115,9 @@ describe('ForgotPassword', () => {
     const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.press(getByText('Send Reset Link'));
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Error', 'User not found');
@@ -128,7 +134,9 @@ describe('ForgotPassword', () => {
     const { getByText, getByPlaceholderText, getByTestId } = render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.press(getByText('Send Reset Link'));
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
 
     // Button should show loading state
     await waitFor(() => {
@@ -136,7 +144,9 @@ describe('ForgotPassword', () => {
     });
 
     // Resolve the promise
-    resolvePromise!({ data: {}, error: null });
+    await act(async () => {
+      resolvePromise!({ data: {}, error: null });
+    });
   });
 
   it('has a back to sign in link', () => {

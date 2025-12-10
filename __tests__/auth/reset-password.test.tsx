@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import ResetPassword from '../../app/(auth)/reset-password';
@@ -84,7 +84,9 @@ describe('ResetPassword', () => {
       getByPlaceholderText('Confirm new password'),
       'newpassword123'
     );
-    fireEvent.press(getByText('Reset Password'));
+    await act(async () => {
+      fireEvent.press(getByText('Reset Password'));
+    });
 
     await waitFor(() => {
       expect(supabase.auth.updateUser).toHaveBeenCalledWith({
@@ -107,7 +109,9 @@ describe('ResetPassword', () => {
       getByPlaceholderText('Confirm new password'),
       'newpassword123'
     );
-    fireEvent.press(getByText('Reset Password'));
+    await act(async () => {
+      fireEvent.press(getByText('Reset Password'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith(
@@ -131,7 +135,9 @@ describe('ResetPassword', () => {
       getByPlaceholderText('Confirm new password'),
       'newpassword123'
     );
-    fireEvent.press(getByText('Reset Password'));
+    await act(async () => {
+      fireEvent.press(getByText('Reset Password'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Error', 'Invalid session');
@@ -152,12 +158,16 @@ describe('ResetPassword', () => {
       getByPlaceholderText('Confirm new password'),
       'newpassword123'
     );
-    fireEvent.press(getByText('Reset Password'));
+    await act(async () => {
+      fireEvent.press(getByText('Reset Password'));
+    });
 
     await waitFor(() => {
       expect(getByTestId('loading-indicator')).toBeTruthy();
     });
 
-    resolvePromise!({ data: { user: {} }, error: null });
+    await act(async () => {
+      resolvePromise!({ data: { user: {} }, error: null });
+    });
   });
 });

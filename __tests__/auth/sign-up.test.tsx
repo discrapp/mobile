@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import SignUp from '../../app/(auth)/sign-up';
@@ -126,7 +126,9 @@ describe('SignUp', () => {
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
-    fireEvent.press(getButton(getAllByText, 'Create Account'));
+    await act(async () => {
+      fireEvent.press(getButton(getAllByText, 'Create Account'));
+    });
 
     await waitFor(() => {
       expect(mockSignUp).toHaveBeenCalledWith('test@example.com', 'password123');
@@ -141,7 +143,9 @@ describe('SignUp', () => {
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
-    fireEvent.press(getButton(getAllByText, 'Create Account'));
+    await act(async () => {
+      fireEvent.press(getButton(getAllByText, 'Create Account'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith(
@@ -160,7 +164,9 @@ describe('SignUp', () => {
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'existing@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
-    fireEvent.press(getButton(getAllByText, 'Create Account'));
+    await act(async () => {
+      fireEvent.press(getButton(getAllByText, 'Create Account'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Sign Up Error', 'Email already exists');
@@ -175,7 +181,9 @@ describe('SignUp', () => {
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
-    fireEvent.press(getButton(getAllByText, 'Create Account'));
+    await act(async () => {
+      fireEvent.press(getButton(getAllByText, 'Create Account'));
+    });
 
     await waitFor(() => {
       expect(Alert.alert).toHaveBeenCalledWith('Error', 'An unexpected error occurred');
