@@ -210,6 +210,8 @@ export default function FoundDiscScreen() {
         return { backgroundColor: '#2ECC71' };
       case 'dropped_off':
         return { backgroundColor: '#8b5cf6' };
+      case 'abandoned':
+        return { backgroundColor: '#27AE60' };
       default:
         return { backgroundColor: '#95A5A6' };
     }
@@ -225,6 +227,8 @@ export default function FoundDiscScreen() {
         return 'Meetup confirmed';
       case 'dropped_off':
         return isOwner ? 'Ready for pickup' : 'Dropped off';
+      case 'abandoned':
+        return 'Owner gave up - Yours to claim!';
       default:
         return status;
     }
@@ -511,7 +515,9 @@ export default function FoundDiscScreen() {
                       <View style={[styles.statusBadge, getStatusStyle(recovery.status)]}>
                         <Text style={styles.statusText}>{formatStatus(recovery.status)}</Text>
                       </View>
-                      <Text style={styles.pendingOwner}>→ {recovery.disc?.owner_display_name}</Text>
+                      {recovery.status !== 'abandoned' && recovery.disc?.owner_display_name && (
+                        <Text style={styles.pendingOwner}>→ {recovery.disc.owner_display_name}</Text>
+                      )}
                     </View>
                   </View>
                   <FontAwesome name="chevron-right" size={16} color="#999" />
