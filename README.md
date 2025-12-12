@@ -22,25 +22,46 @@ powered by Supabase for backend services.
 
 - Node.js 18+ and npm
 - Expo CLI
+- Supabase CLI (`brew install supabase/tap/supabase`)
 - iOS Simulator (Mac) or Android Studio (for Android development)
 
 ## Setup
 
 ### Environment Variables
 
-Copy the example environment file and fill in your Supabase credentials:
+#### Option 1: Using Supabase CLI (Recommended)
 
 ```bash
-cp .env.example .env
+# Login to Supabase (one-time setup)
+supabase login
+
+# Get project reference ID
+supabase projects list
+
+# Generate .env file with credentials
+PROJECT_REF="xhaogdigrsiwxdjmjzgx"
+ANON_KEY=$(supabase projects api-keys --project-ref $PROJECT_REF | grep anon | awk '{print $4}')
+
+cat > .env << EOF
+EXPO_PUBLIC_SUPABASE_URL=https://${PROJECT_REF}.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=${ANON_KEY}
+EOF
 ```
 
-Required environment variables:
+#### Option 2: Manual Setup
 
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+1. Copy the example environment file:
 
-Get these values from your Supabase project dashboard at:
-<https://app.supabase.com/project/discr-mvp/settings/api>
+   ```bash
+   cp .env.example .env
+   ```
+
+1. Get credentials from the Supabase dashboard:
+   <https://app.supabase.com/project/aceback-mvp/settings/api>
+
+1. Edit `.env` with your values:
+   - `EXPO_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+   - `EXPO_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
 
 ### Installation
 
