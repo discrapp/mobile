@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const DISC_CACHE_KEY = '@aceback/discs_cache';
+export const DISC_CACHE_TIMESTAMP_KEY = '@aceback/discs_cache_timestamp';
+
+// Cache is considered stale after 30 seconds
+const CACHE_TTL_MS = 30 * 1000;
 
 export interface CachedDisc {
   id: string;
@@ -54,22 +58,43 @@ export async function getCachedDiscs(): Promise<CachedDisc[] | null> {
 }
 
 /**
- * Save discs to AsyncStorage cache
+ * Save discs to AsyncStorage cache with timestamp
  */
 export async function setCachedDiscs(discs: CachedDisc[]): Promise<void> {
   try {
-    await AsyncStorage.setItem(DISC_CACHE_KEY, JSON.stringify(discs));
+    await AsyncStorage.multiSet([
+      [DISC_CACHE_KEY, JSON.stringify(discs)],
+      [DISC_CACHE_TIMESTAMP_KEY, Date.now().toString()],
+    ]);
   } catch (error) {
     console.error('Error saving disc cache:', error);
   }
 }
 
 /**
- * Clear the disc cache
+ * Check if the cache is stale (older than TTL)
+ * Returns true if cache should be refreshed
+ */
+export async function isCacheStale(): Promise<boolean> {
+  try {
+    const timestamp = await AsyncStorage.getItem(DISC_CACHE_TIMESTAMP_KEY);
+    if (!timestamp) {
+      return true;
+    }
+    const cacheAge = Date.now() - parseInt(timestamp, 10);
+    return cacheAge > CACHE_TTL_MS;
+  } catch (error) {
+    console.error('Error checking cache staleness:', error);
+    return true;
+  }
+}
+
+/**
+ * Clear the disc cache and timestamp
  */
 export async function clearDiscCache(): Promise<void> {
   try {
-    await AsyncStorage.removeItem(DISC_CACHE_KEY);
+    await AsyncStorage.multiRemove([DISC_CACHE_KEY, DISC_CACHE_TIMESTAMP_KEY]);
   } catch (error) {
     console.error('Error clearing disc cache:', error);
   }

@@ -13,7 +13,7 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
-import { getCachedDiscs, setCachedDiscs } from '@/utils/discCache';
+import { getCachedDiscs, setCachedDiscs, isCacheStale } from '@/utils/discCache';
 
 interface FlightNumbers {
   speed: number | null;
@@ -150,12 +150,18 @@ export default function MyBagScreen() {
     }
   };
 
-  // Only fetch on focus after cache has been checked
+  // Only fetch on focus if cache is stale
   useFocusEffect(
     useCallback(() => {
-      if (cacheLoaded) {
-        fetchDiscs();
-      }
+      const checkAndFetch = async () => {
+        if (cacheLoaded) {
+          const stale = await isCacheStale();
+          if (stale) {
+            fetchDiscs();
+          }
+        }
+      };
+      checkAndFetch();
     }, [cacheLoaded])
   );
 

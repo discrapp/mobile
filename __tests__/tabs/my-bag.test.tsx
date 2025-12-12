@@ -38,9 +38,11 @@ jest.mock('../../lib/supabase', () => ({
 // Mock discCache
 const mockGetCachedDiscs = jest.fn();
 const mockSetCachedDiscs = jest.fn();
+const mockIsCacheStale = jest.fn();
 jest.mock('../../utils/discCache', () => ({
   getCachedDiscs: () => mockGetCachedDiscs(),
   setCachedDiscs: (discs: any) => mockSetCachedDiscs(discs),
+  isCacheStale: () => mockIsCacheStale(),
 }));
 
 // Mock fetch
@@ -98,6 +100,7 @@ describe('MyBagScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetCachedDiscs.mockResolvedValue(null);
+    mockIsCacheStale.mockResolvedValue(true); // Default to stale so tests trigger fetch
     mockGetSession.mockResolvedValue({
       data: { session: { access_token: 'test-token' } },
     });

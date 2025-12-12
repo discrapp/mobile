@@ -3,7 +3,9 @@ import {
   getCachedDiscs,
   setCachedDiscs,
   clearDiscCache,
+  isCacheStale,
   DISC_CACHE_KEY,
+  DISC_CACHE_TIMESTAMP_KEY,
 } from '../../utils/discCache';
 
 // AsyncStorage is already mocked in jest.setup.js
@@ -57,22 +59,26 @@ describe('discCache', () => {
   });
 
   describe('setCachedDiscs', () => {
-    it('stores discs as JSON string', async () => {
+    it('stores discs and timestamp', async () => {
       const mockDiscs = [
         { id: '1', mold: 'Destroyer' },
         { id: '2', mold: 'Buzzz' },
       ];
+      const mockNow = 1700000000000;
+      jest.spyOn(Date, 'now').mockReturnValue(mockNow);
 
       await setCachedDiscs(mockDiscs);
 
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-        DISC_CACHE_KEY,
-        JSON.stringify(mockDiscs)
-      );
+      expect(AsyncStorage.multiSet).toHaveBeenCalledWith([
+        [DISC_CACHE_KEY, JSON.stringify(mockDiscs)],
+        [DISC_CACHE_TIMESTAMP_KEY, mockNow.toString()],
+      ]);
+
+      jest.restoreAllMocks();
     });
 
     it('handles AsyncStorage errors gracefully', async () => {
-      (AsyncStorage.setItem as jest.Mock).mockRejectedValue(
+      (AsyncStorage.multiSet as jest.Mock).mockRejectedValue(
         new Error('Storage error')
       );
 
@@ -84,19 +90,67 @@ describe('discCache', () => {
   });
 
   describe('clearDiscCache', () => {
-    it('removes disc cache from storage', async () => {
+    it('removes disc cache and timestamp from storage', async () => {
       await clearDiscCache();
 
-      expect(AsyncStorage.removeItem).toHaveBeenCalledWith(DISC_CACHE_KEY);
+      expect(AsyncStorage.multiRemove).toHaveBeenCalledWith([
+        DISC_CACHE_KEY,
+        DISC_CACHE_TIMESTAMP_KEY,
+      ]);
     });
 
     it('handles AsyncStorage errors gracefully', async () => {
-      (AsyncStorage.removeItem as jest.Mock).mockRejectedValue(
+      (AsyncStorage.multiRemove as jest.Mock).mockRejectedValue(
         new Error('Storage error')
       );
 
       // Should not throw
       await expect(clearDiscCache()).resolves.not.toThrow();
+    });
+  });
+
+  describe('isCacheStale', () => {
+    it('returns true when no timestamp exists', async () => {
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+      const result = await isCacheStale();
+
+      expect(result).toBe(true);
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(DISC_CACHE_TIMESTAMP_KEY);
+    });
+
+    it('returns false when cache is fresh (within 30 seconds)', async () => {
+      const mockNow = 1700000000000;
+      const recentTimestamp = (mockNow - 10000).toString(); // 10 seconds ago
+      jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValue(recentTimestamp);
+
+      const result = await isCacheStale();
+
+      expect(result).toBe(false);
+      jest.restoreAllMocks();
+    });
+
+    it('returns true when cache is stale (older than 30 seconds)', async () => {
+      const mockNow = 1700000000000;
+      const oldTimestamp = (mockNow - 60000).toString(); // 60 seconds ago
+      jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValue(oldTimestamp);
+
+      const result = await isCacheStale();
+
+      expect(result).toBe(true);
+      jest.restoreAllMocks();
+    });
+
+    it('returns true when AsyncStorage throws', async () => {
+      (AsyncStorage.getItem as jest.Mock).mockRejectedValue(
+        new Error('Storage error')
+      );
+
+      const result = await isCacheStale();
+
+      expect(result).toBe(true);
     });
   });
 });
