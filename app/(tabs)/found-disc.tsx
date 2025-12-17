@@ -38,7 +38,7 @@ const COLOR_MAP: Record<string, string> = {
   Multi: 'rainbow',
 };
 
-type ScreenState = 'input' | 'scanning' | 'loading' | 'found' | 'reporting' | 'success' | 'error';
+type ScreenState = 'input' | 'scanning' | 'loading' | 'found' | 'reporting' | 'success' | 'error' | 'qr_claim' | 'qr_link' | 'claiming' | 'claim_success';
 
 interface DiscInfo {
   id: string;
@@ -97,6 +97,7 @@ export default function FoundDiscScreen() {
   const [myDiscsBeingRecovered, setMyDiscsBeingRecovered] = useState<PendingRecovery[]>([]);
   const [loadingPending, setLoadingPending] = useState(true);
   const [loadingMyDiscs, setLoadingMyDiscs] = useState(true);
+  const [unclaimedQrCode, setUnclaimedQrCode] = useState<string | null>(null);
 
   // Fetch pending recoveries when screen comes into focus
   useFocusEffect(
@@ -311,6 +312,32 @@ export default function FoundDiscScreen() {
       const data = await response.json();
 
       if (!data.found) {
+        // Check if QR code exists but isn't linked to a disc
+        if (data.qr_exists) {
+          if (data.qr_status === 'generated') {
+            // Unclaimed QR code - user can claim it
+            setUnclaimedQrCode(data.qr_code);
+            setScreenState('qr_claim');
+            return;
+          }
+          if (data.qr_status === 'assigned') {
+            if (data.is_assignee) {
+              // User owns this QR code but hasn't linked it to a disc
+              setUnclaimedQrCode(data.qr_code);
+              setScreenState('qr_link');
+              return;
+            }
+            // Someone else owns this QR code
+            setErrorMessage('This QR code is already claimed by another user.');
+            setScreenState('error');
+            return;
+          }
+          if (data.qr_status === 'deactivated') {
+            setErrorMessage('This QR code has been deactivated and can no longer be used.');
+            setScreenState('error');
+            return;
+          }
+        }
         setErrorMessage('No disc found with this QR code. Please check and try again.');
         setScreenState('error');
         return;
@@ -342,6 +369,50 @@ export default function FoundDiscScreen() {
 
   const lookupQrCode = () => {
     lookupQrCodeWithValue(qrCode);
+  };
+
+  const claimQrCode = async () => {
+    if (!unclaimedQrCode) return;
+
+    setScreenState('claiming');
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        Alert.alert('Error', 'You must be signed in to claim a QR code');
+        setScreenState('qr_claim');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/assign-qr-code`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ qr_code: unclaimedQrCode }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrorMessage(data.error || 'Failed to claim QR code');
+        setScreenState('error');
+        return;
+      }
+
+      setScreenState('claim_success');
+    } catch (error) {
+      console.error('Claim error:', error);
+      setErrorMessage('Failed to claim QR code. Please try again.');
+      setScreenState('error');
+    }
   };
 
   const reportFoundDisc = async () => {
@@ -406,6 +477,7 @@ export default function FoundDiscScreen() {
     setRecoveryEvent(null);
     setErrorMessage('');
     setHasActiveRecovery(false);
+    setUnclaimedQrCode(null);
   };
 
   const navigateToProposeMeetup = () => {
@@ -593,13 +665,79 @@ export default function FoundDiscScreen() {
   }
 
   // Loading State
-  if (screenState === 'loading' || screenState === 'reporting') {
+  if (screenState === 'loading' || screenState === 'reporting' || screenState === 'claiming') {
     return (
       <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
         <ActivityIndicator size="large" color={Colors.violet.primary} />
         <Text style={styles.loadingText}>
-          {screenState === 'loading' ? 'Looking up disc...' : 'Reporting found disc...'}
+          {screenState === 'loading' ? 'Looking up disc...' : screenState === 'claiming' ? 'Claiming QR code...' : 'Reporting found disc...'}
         </Text>
+      </View>
+    );
+  }
+
+  // QR Claim State - Unclaimed QR code that can be claimed
+  if (screenState === 'qr_claim' && unclaimedQrCode) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <FontAwesome name="qrcode" size={64} color={Colors.violet.primary} />
+        <Text style={styles.successTitle}>New QR Code!</Text>
+        <Text style={styles.qrCodeDisplay}>{unclaimedQrCode}</Text>
+        <Text style={styles.successMessage}>
+          This QR code hasn't been claimed yet. Claim it to link it to one of your discs.
+        </Text>
+        <Pressable style={styles.primaryButton} onPress={claimQrCode}>
+          <FontAwesome name="check" size={18} color="#fff" />
+          <Text style={styles.primaryButtonText}>Claim This QR Code</Text>
+        </Pressable>
+        <Pressable style={styles.textButton} onPress={resetScreen}>
+          <Text style={styles.textButtonText}>Cancel</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // QR Link State - Already claimed by user, needs to be linked
+  if (screenState === 'qr_link' && unclaimedQrCode) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <FontAwesome name="link" size={64} color={Colors.violet.primary} />
+        <Text style={styles.successTitle}>Your QR Code</Text>
+        <Text style={styles.qrCodeDisplay}>{unclaimedQrCode}</Text>
+        <Text style={styles.successMessage}>
+          You've already claimed this QR code. Link it to one of your discs in your bag.
+        </Text>
+        <Pressable style={styles.primaryButton} onPress={() => { resetScreen(); router.push('/(tabs)/my-bag'); }}>
+          <FontAwesome name="briefcase" size={18} color="#fff" />
+          <Text style={styles.primaryButtonText}>Go to My Bag</Text>
+        </Pressable>
+        <Pressable style={styles.textButton} onPress={resetScreen}>
+          <Text style={styles.textButtonText}>Cancel</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // Claim Success State
+  if (screenState === 'claim_success') {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <FontAwesome name="check-circle" size={80} color="#2ECC71" />
+        <Text style={styles.successTitle}>QR Code Claimed!</Text>
+        <Text style={styles.successMessage}>
+          The QR code is now yours. Link it to one of your discs so finders can return it to you.
+        </Text>
+        <Pressable style={styles.primaryButton} onPress={() => { resetScreen(); router.push('/(tabs)/my-bag'); }}>
+          <FontAwesome name="briefcase" size={18} color="#fff" />
+          <Text style={styles.primaryButtonText}>Go to My Bag</Text>
+        </Pressable>
+        <Pressable style={styles.secondaryButton} onPress={() => router.push('/add-disc')}>
+          <FontAwesome name="plus" size={18} color="#fff" />
+          <Text style={styles.secondaryButtonText}>Create New Disc</Text>
+        </Pressable>
+        <Pressable style={styles.textButton} onPress={resetScreen}>
+          <Text style={styles.textButtonText}>Scan Another QR Code</Text>
+        </Pressable>
       </View>
     );
   }
@@ -945,6 +1083,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  qrCodeDisplay: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginVertical: 12,
+    letterSpacing: 2,
   },
   successTitle: {
     fontSize: 28,

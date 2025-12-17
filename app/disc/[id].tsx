@@ -8,14 +8,18 @@ import {
   TouchableOpacity,
   Image,
   View as RNView,
+  Dimensions,
 } from 'react-native';
 import { useRouter, useLocalSearchParams, useNavigation, useFocusEffect } from 'expo-router';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import QRCode from 'react-native-qrcode-svg';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/components/useColorScheme';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface FlightNumbers {
   speed: number | null;
@@ -96,6 +100,10 @@ export default function DiscDetailScreen() {
   const [disc, setDisc] = useState<Disc | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [linking, setLinking] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
 
   useLayoutEffect(() => {
     if (disc) {
@@ -238,6 +246,157 @@ export default function DiscDetailScreen() {
       setDeleting(false);
     }
   };
+
+  const startScanning = async () => {
+    if (!permission?.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert(
+          'Camera Permission Required',
+          'Please grant camera permission to scan QR codes.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+    }
+    setHasScanned(false);
+    setScanning(true);
+  };
+
+  const handleBarcodeScan = (result: BarcodeScanningResult) => {
+    if (hasScanned) return;
+    setHasScanned(true);
+    let scannedCode = result.data;
+
+    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    if (scannedCode.includes('/d/')) {
+      const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
+      if (match) {
+        scannedCode = match[1];
+      }
+    }
+
+    setScanning(false);
+    linkQrCode(scannedCode);
+  };
+
+  const linkQrCode = async (qrCode: string) => {
+    if (!disc) return;
+
+    setLinking(true);
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        Alert.alert('Error', 'You must be signed in to link a QR code');
+        setLinking(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-qr-to-disc`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ qr_code: qrCode, disc_id: disc.id }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.error === 'QR code is not assigned to you') {
+          Alert.alert(
+            'Claim First',
+            'You need to claim this QR code first. Go to the Found Disc screen to claim it.',
+            [{ text: 'OK' }]
+          );
+        } else if (data.error === 'QR code must be assigned before linking to a disc') {
+          Alert.alert(
+            'Claim First',
+            'This QR code is unclaimed. Go to the Found Disc screen to claim it first.',
+            [{ text: 'OK' }]
+          );
+        } else {
+          Alert.alert('Error', data.error || 'Failed to link QR code');
+        }
+        return;
+      }
+
+      Alert.alert('Success', 'QR code linked to this disc!', [{ text: 'OK' }]);
+      // Refresh disc data
+      fetchDisc();
+    } catch (error) {
+      console.error('Link error:', error);
+      Alert.alert('Error', 'Failed to link QR code. Please try again.');
+    } finally {
+      setLinking(false);
+    }
+  };
+
+  if (scanning) {
+    // Camera permission check
+    if (!permission?.granted) {
+      return (
+        <View style={styles.centerContainer}>
+          <FontAwesome name="camera" size={48} color="#ccc" />
+          <Text style={styles.errorText}>Camera Permission Required</Text>
+          <Pressable style={styles.primaryButton} onPress={requestPermission}>
+            <Text style={styles.primaryButtonText}>Grant Permission</Text>
+          </Pressable>
+          <Pressable style={styles.textButton} onPress={() => setScanning(false)}>
+            <Text style={styles.textButtonText}>Cancel</Text>
+          </Pressable>
+        </View>
+      );
+    }
+
+    return (
+      <RNView style={styles.scannerContainer}>
+        <CameraView
+          style={styles.camera}
+          facing="back"
+          active={true}
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarcodeScanned={hasScanned ? undefined : handleBarcodeScan}
+        />
+        <RNView style={styles.scannerOverlay}>
+          <RNView style={styles.scannerHeader}>
+            <Text style={styles.scannerTitle}>Scan QR Code</Text>
+            <Text style={styles.scannerSubtitle}>
+              Scan a QR code sticker to link it to this disc
+            </Text>
+          </RNView>
+          <RNView style={styles.scannerFrame}>
+            <RNView style={[styles.cornerBorder, styles.topLeft]} />
+            <RNView style={[styles.cornerBorder, styles.topRight]} />
+            <RNView style={[styles.cornerBorder, styles.bottomLeft]} />
+            <RNView style={[styles.cornerBorder, styles.bottomRight]} />
+          </RNView>
+          <Pressable style={styles.cancelScanButton} onPress={() => setScanning(false)}>
+            <Text style={styles.cancelScanText}>Cancel</Text>
+          </Pressable>
+        </RNView>
+      </RNView>
+    );
+  }
+
+  if (linking) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color={Colors.violet.primary} />
+        <Text style={styles.loadingText}>Linking QR code...</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -426,10 +585,16 @@ export default function DiscDetailScreen() {
               <Text style={styles.qrCodeHint}>Scan with phone camera to find this disc</Text>
             </RNView>
           ) : (
-            <View style={styles.qrStatus}>
-              <FontAwesome name="circle-o" size={16} color="#ccc" />
-              <Text style={styles.qrStatusText}>Not linked to QR code</Text>
-            </View>
+            <Pressable
+              style={styles.linkQrButton}
+              onPress={startScanning}>
+              <FontAwesome name="qrcode" size={20} color={Colors.violet.primary} />
+              <View style={styles.linkQrTextContainer}>
+                <Text style={styles.linkQrButtonText}>Link QR Code</Text>
+                <Text style={styles.linkQrHint}>Scan a QR sticker to attach to this disc</Text>
+              </View>
+              <FontAwesome name="camera" size={16} color={Colors.violet.primary} />
+            </Pressable>
           )}
         </View>
 
@@ -648,14 +813,28 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
   },
-  qrStatus: {
+  linkQrButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    backgroundColor: '#f5f5f5',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#eee',
+    gap: 12,
   },
-  qrStatusText: {
+  linkQrTextContainer: {
+    flex: 1,
+  },
+  linkQrButtonText: {
     fontSize: 16,
-    color: '#666',
+    fontWeight: '600',
+    color: Colors.violet.primary,
+  },
+  linkQrHint: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 2,
   },
   notes: {
     fontSize: 16,
@@ -696,5 +875,120 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  // Scanner styles
+  scannerContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  camera: {
+    flex: 1,
+  },
+  scannerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  scannerHeader: {
+    alignItems: 'center',
+  },
+  scannerTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerSubtitle: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerFrame: {
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_WIDTH * 0.7,
+    position: 'relative',
+  },
+  cornerBorder: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderColor: Colors.violet.primary,
+  },
+  topLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderTopLeftRadius: 8,
+  },
+  topRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderTopRightRadius: 8,
+  },
+  bottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderBottomLeftRadius: 8,
+  },
+  bottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderBottomRightRadius: 8,
+  },
+  cancelScanButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+  },
+  cancelScanText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  primaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: Colors.violet.primary,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  textButton: {
+    alignItems: 'center',
+    paddingVertical: 16,
+    marginTop: 8,
+  },
+  textButtonText: {
+    color: '#666',
+    fontSize: 16,
   },
 });
