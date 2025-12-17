@@ -9,13 +9,17 @@ export default function CheckoutSuccessScreen() {
   const isDark = colorScheme === 'dark';
 
   useEffect(() => {
-    // Navigate back to home after 2 seconds
+    // Navigate to order detail or home after 2 seconds
     const timer = setTimeout(() => {
-      router.push('/(tabs)');
+      if (order_id) {
+        router.push(`/orders/${order_id}`);
+      } else {
+        router.push('/(tabs)');
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [order_id]);
 
   const styles = StyleSheet.create({
     container: {
