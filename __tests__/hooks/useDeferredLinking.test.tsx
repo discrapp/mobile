@@ -1,12 +1,8 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
-import { Alert, AppState } from 'react-native';
+import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
-import {
-  checkClipboardForCode,
-  hasCheckedDeferredCode,
-  markDeferredCodeChecked,
-} from '@/lib/deferredLinking';
+import { checkClipboardForCode } from '@/lib/deferredLinking';
 
 // Mock the dependencies
 jest.mock('expo-router', () => ({
@@ -15,30 +11,27 @@ jest.mock('expo-router', () => ({
 
 jest.mock('@/lib/deferredLinking', () => ({
   checkClipboardForCode: jest.fn(),
-  hasCheckedDeferredCode: jest.fn(),
-  markDeferredCodeChecked: jest.fn(),
 }));
 
 jest.spyOn(Alert, 'alert');
 
-// Extract the hook for testing (we'll test it in isolation)
-// Since it's defined inside _layout.tsx, we recreate it here for testing
+// Track session check state (mirrors the actual implementation)
+let hasCheckedThisSession = false;
+
+// Recreate the hook for testing (mirrors _layout.tsx implementation)
 function useDeferredLinking(user: any, loading: boolean) {
   const router = useRouter();
-  const { useEffect, useRef } = require('react');
-  const appState = useRef(AppState.currentState);
+  const { useEffect } = require('react');
 
   useEffect(() => {
     if (loading || !user) return;
 
     const checkForDeferredCode = async () => {
-      const alreadyChecked = await hasCheckedDeferredCode();
-      if (alreadyChecked) return;
+      if (hasCheckedThisSession) return;
+      hasCheckedThisSession = true;
 
       const code = await checkClipboardForCode();
       if (code) {
-        await markDeferredCodeChecked();
-
         Alert.alert(
           'Found a Disc Code!',
           `We found code "${code}" in your clipboard. Would you like to look up this disc?`,
@@ -55,8 +48,6 @@ function useDeferredLinking(user: any, loading: boolean) {
             },
           ]
         );
-      } else {
-        await markDeferredCodeChecked();
       }
     };
 
@@ -72,9 +63,9 @@ describe('useDeferredLinking', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset the in-memory session flag before each test
+    hasCheckedThisSession = false;
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (hasCheckedDeferredCode as jest.Mock).mockResolvedValue(false);
-    (markDeferredCodeChecked as jest.Mock).mockResolvedValue(undefined);
   });
 
   it('does not check clipboard when loading', async () => {
@@ -104,15 +95,20 @@ describe('useDeferredLinking', () => {
   });
 
   it('does not check clipboard if already checked this session', async () => {
-    (hasCheckedDeferredCode as jest.Mock).mockResolvedValue(true);
+    (checkClipboardForCode as jest.Mock).mockResolvedValue(null);
 
+    // First render - should check
     renderHook(() => useDeferredLinking({ id: '123' }, false));
 
     await waitFor(() => {
-      expect(hasCheckedDeferredCode).toHaveBeenCalled();
+      expect(checkClipboardForCode).toHaveBeenCalledTimes(1);
     });
 
-    expect(checkClipboardForCode).not.toHaveBeenCalled();
+    // Second render - should not check again (session flag set)
+    renderHook(() => useDeferredLinking({ id: '123' }, false));
+
+    // Still only called once
+    expect(checkClipboardForCode).toHaveBeenCalledTimes(1);
   });
 
   it('shows alert when valid code found in clipboard', async () => {
@@ -132,24 +128,16 @@ describe('useDeferredLinking', () => {
     });
   });
 
-  it('marks as checked after showing alert', async () => {
-    (checkClipboardForCode as jest.Mock).mockResolvedValue('ABC123');
-
-    renderHook(() => useDeferredLinking({ id: '123' }, false));
-
-    await waitFor(() => {
-      expect(markDeferredCodeChecked).toHaveBeenCalled();
-    });
-  });
-
-  it('marks as checked even when no code found', async () => {
+  it('does not show alert when no code found', async () => {
     (checkClipboardForCode as jest.Mock).mockResolvedValue(null);
 
     renderHook(() => useDeferredLinking({ id: '123' }, false));
 
     await waitFor(() => {
-      expect(markDeferredCodeChecked).toHaveBeenCalled();
+      expect(checkClipboardForCode).toHaveBeenCalled();
     });
+
+    expect(Alert.alert).not.toHaveBeenCalled();
   });
 
   it('navigates to deep link when user confirms', async () => {
