@@ -7,6 +7,7 @@ import {
   Linking,
   RefreshControl,
   View as RNView,
+  useColorScheme,
 } from 'react-native';
 import { useLocalSearchParams, Stack, useFocusEffect, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -99,9 +100,62 @@ function getTrackingUrl(trackingNumber: string): string {
 export default function OrderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [order, setOrder] = useState<StickerOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    errorText: {
+      color: isDark ? '#999' : '#666',
+    },
+    timelineDot: {
+      backgroundColor: isDark ? '#444' : '#ddd',
+    },
+    timelineDotCurrentBorder: {
+      borderColor: isDark ? '#1a1a1a' : '#fff',
+    },
+    timelineLine: {
+      backgroundColor: isDark ? '#444' : '#ddd',
+    },
+    timelineLabel: {
+      color: isDark ? '#666' : '#999',
+    },
+    timelineLabelActive: {
+      color: isDark ? '#fff' : '#333',
+    },
+    timelineDate: {
+      color: isDark ? '#999' : '#666',
+    },
+    detailCard: {
+      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+    },
+    detailLabel: {
+      color: isDark ? '#999' : '#666',
+    },
+    trackingCard: {
+      backgroundColor: isDark ? '#1a1a1a' : Colors.violet[50],
+    },
+    trackingIconContainer: {
+      backgroundColor: isDark ? '#2a2a2a' : '#fff',
+    },
+    trackingHint: {
+      color: isDark ? '#999' : '#666',
+    },
+    addressCard: {
+      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+    },
+    addressLine: {
+      color: isDark ? '#999' : '#666',
+    },
+    helpText: {
+      color: isDark ? '#999' : '#666',
+    },
+  };
 
   const fetchOrder = async (isRefreshing = false) => {
     if (!isRefreshing) {
@@ -180,7 +234,7 @@ export default function OrderDetailScreen() {
         <Stack.Screen options={{ title: 'Order Details' }} />
         <View style={styles.centerContainer}>
           <FontAwesome name="exclamation-circle" size={48} color="#ccc" />
-          <Text style={styles.errorText}>Order not found</Text>
+          <Text style={[styles.errorText, dynamicStyles.errorText]}>Order not found</Text>
         </View>
       </>
     );
@@ -198,7 +252,7 @@ export default function OrderDetailScreen() {
         }}
       />
       <ScrollView
-        style={styles.container}
+        style={[styles.container, dynamicStyles.container]}
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
@@ -231,8 +285,10 @@ export default function OrderDetailScreen() {
                     <RNView
                       style={[
                         styles.timelineDot,
+                        dynamicStyles.timelineDot,
                         isPast && { backgroundColor: config.color },
                         isCurrent && styles.timelineDotCurrent,
+                        isCurrent && dynamicStyles.timelineDotCurrentBorder,
                       ]}
                     >
                       {isPast && <FontAwesome name="check" size={10} color="#fff" />}
@@ -241,23 +297,24 @@ export default function OrderDetailScreen() {
                       <RNView
                         style={[
                           styles.timelineLine,
+                          dynamicStyles.timelineLine,
                           isPast && index < currentStatusIndex && { backgroundColor: config.color },
                         ]}
                       />
                     )}
                   </RNView>
                   <RNView style={styles.timelineContent}>
-                    <Text style={[styles.timelineLabel, isPast && styles.timelineLabelActive]}>
+                    <Text style={[styles.timelineLabel, dynamicStyles.timelineLabel, isPast && styles.timelineLabelActive, isPast && dynamicStyles.timelineLabelActive]}>
                       {config.label}
                     </Text>
                     {status === 'paid' && order.paid_at && (
-                      <Text style={styles.timelineDate}>{formatDateTime(order.paid_at)}</Text>
+                      <Text style={[styles.timelineDate, dynamicStyles.timelineDate]}>{formatDateTime(order.paid_at)}</Text>
                     )}
                     {status === 'printed' && order.printed_at && (
-                      <Text style={styles.timelineDate}>{formatDateTime(order.printed_at)}</Text>
+                      <Text style={[styles.timelineDate, dynamicStyles.timelineDate]}>{formatDateTime(order.printed_at)}</Text>
                     )}
                     {status === 'shipped' && order.shipped_at && (
-                      <Text style={styles.timelineDate}>{formatDateTime(order.shipped_at)}</Text>
+                      <Text style={[styles.timelineDate, dynamicStyles.timelineDate]}>{formatDateTime(order.shipped_at)}</Text>
                     )}
                   </RNView>
                 </RNView>
@@ -269,30 +326,30 @@ export default function OrderDetailScreen() {
         {/* Order Details */}
         <RNView style={styles.section}>
           <Text style={styles.sectionTitle}>Order Details</Text>
-          <RNView style={styles.detailCard}>
+          <RNView style={[styles.detailCard, dynamicStyles.detailCard]}>
             <RNView style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Order Number</Text>
+              <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Order Number</Text>
               <Text style={styles.detailValue}>{order.order_number}</Text>
             </RNView>
             <RNView style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Order Date</Text>
+              <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Order Date</Text>
               <Text style={styles.detailValue}>{formatDate(order.created_at)}</Text>
             </RNView>
             <RNView style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Quantity</Text>
+              <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Quantity</Text>
               <Text style={styles.detailValue}>
                 {order.quantity} sticker{order.quantity !== 1 ? 's' : ''}
               </Text>
             </RNView>
             <View style={styles.detailDivider} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
             <RNView style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Subtotal</Text>
+              <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Subtotal</Text>
               <Text style={styles.detailValue}>
                 ${((order.quantity * order.unit_price_cents) / 100).toFixed(2)}
               </Text>
             </RNView>
             <RNView style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Shipping</Text>
+              <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Shipping</Text>
               <Text style={[styles.detailValue, styles.freeText]}>FREE</Text>
             </RNView>
             <View style={styles.detailDivider} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -309,13 +366,13 @@ export default function OrderDetailScreen() {
         {order.tracking_number && (
           <RNView style={styles.section}>
             <Text style={styles.sectionTitle}>Tracking Information</Text>
-            <Pressable style={styles.trackingCard} onPress={handleTrackPackage}>
-              <RNView style={styles.trackingIconContainer}>
+            <Pressable style={[styles.trackingCard, dynamicStyles.trackingCard]} onPress={handleTrackPackage}>
+              <RNView style={[styles.trackingIconContainer, dynamicStyles.trackingIconContainer]}>
                 <FontAwesome name="truck" size={24} color={Colors.violet.primary} />
               </RNView>
               <RNView style={styles.trackingInfo}>
                 <Text style={styles.trackingNumber}>{order.tracking_number}</Text>
-                <Text style={styles.trackingHint}>Tap to track your package</Text>
+                <Text style={[styles.trackingHint, dynamicStyles.trackingHint]}>Tap to track your package</Text>
               </RNView>
               <FontAwesome name="chevron-right" size={16} color="#ccc" />
             </Pressable>
@@ -326,19 +383,19 @@ export default function OrderDetailScreen() {
         {order.shipping_address && (
           <RNView style={styles.section}>
             <Text style={styles.sectionTitle}>Shipping Address</Text>
-            <RNView style={styles.addressCard}>
+            <RNView style={[styles.addressCard, dynamicStyles.addressCard]}>
               <FontAwesome name="map-marker" size={20} color={Colors.violet.primary} />
               <RNView style={styles.addressText}>
                 <Text style={styles.addressName}>{order.shipping_address.name}</Text>
-                <Text style={styles.addressLine}>{order.shipping_address.street_address}</Text>
+                <Text style={[styles.addressLine, dynamicStyles.addressLine]}>{order.shipping_address.street_address}</Text>
                 {order.shipping_address.street_address_2 && (
-                  <Text style={styles.addressLine}>{order.shipping_address.street_address_2}</Text>
+                  <Text style={[styles.addressLine, dynamicStyles.addressLine]}>{order.shipping_address.street_address_2}</Text>
                 )}
-                <Text style={styles.addressLine}>
+                <Text style={[styles.addressLine, dynamicStyles.addressLine]}>
                   {order.shipping_address.city}, {order.shipping_address.state}{' '}
                   {order.shipping_address.postal_code}
                 </Text>
-                <Text style={styles.addressLine}>{order.shipping_address.country}</Text>
+                <Text style={[styles.addressLine, dynamicStyles.addressLine]}>{order.shipping_address.country}</Text>
               </RNView>
             </RNView>
           </RNView>
@@ -346,7 +403,7 @@ export default function OrderDetailScreen() {
 
         {/* Help Section */}
         <RNView style={styles.section}>
-          <Text style={styles.helpText}>
+          <Text style={[styles.helpText, dynamicStyles.helpText]}>
             Need help with your order? Contact us at{' '}
             <Text
               style={styles.helpLink}
@@ -376,7 +433,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: '#666',
     marginTop: 12,
   },
   statusHeader: {
@@ -427,13 +483,11 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#ddd',
     alignItems: 'center',
     justifyContent: 'center',
   },
   timelineDotCurrent: {
     borderWidth: 3,
-    borderColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -443,7 +497,6 @@ const styles = StyleSheet.create({
   timelineLine: {
     width: 2,
     flex: 1,
-    backgroundColor: '#ddd',
     marginVertical: 4,
   },
   timelineContent: {
@@ -453,19 +506,15 @@ const styles = StyleSheet.create({
   },
   timelineLabel: {
     fontSize: 14,
-    color: '#999',
   },
   timelineLabelActive: {
-    color: '#333',
     fontWeight: '500',
   },
   timelineDate: {
     fontSize: 12,
-    color: '#666',
     marginTop: 2,
   },
   detailCard: {
-    backgroundColor: '#f8f8f8',
     borderRadius: 12,
     padding: 16,
   },
@@ -476,7 +525,6 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 14,
-    color: '#666',
   },
   detailValue: {
     fontSize: 14,
@@ -501,7 +549,6 @@ const styles = StyleSheet.create({
   trackingCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.violet[50],
     borderRadius: 12,
     padding: 16,
   },
@@ -509,7 +556,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -524,12 +570,10 @@ const styles = StyleSheet.create({
   },
   trackingHint: {
     fontSize: 12,
-    color: '#666',
     marginTop: 2,
   },
   addressCard: {
     flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
     borderRadius: 12,
     padding: 16,
     gap: 12,
@@ -544,12 +588,10 @@ const styles = StyleSheet.create({
   },
   addressLine: {
     fontSize: 14,
-    color: '#666',
     lineHeight: 20,
   },
   helpText: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
     marginTop: 8,
   },

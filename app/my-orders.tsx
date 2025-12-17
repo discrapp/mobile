@@ -6,6 +6,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   View as RNView,
+  useColorScheme,
 } from 'react-native';
 import { useRouter, Stack, useFocusEffect } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -45,9 +46,33 @@ function formatDate(dateString: string): string {
 
 export default function MyOrdersScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [orders, setOrders] = useState<StickerOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    orderCard: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : 'rgba(150, 150, 150, 0.2)',
+    },
+    orderDate: {
+      color: isDark ? '#999' : '#666',
+    },
+    orderDetailText: {
+      color: isDark ? '#999' : '#666',
+    },
+    trackingRow: {
+      borderTopColor: isDark ? '#333' : '#f0f0f0',
+    },
+    emptyDescription: {
+      color: isDark ? '#999' : '#666',
+    },
+  };
 
   const fetchOrders = async (isRefreshing = false) => {
     if (!isRefreshing) {
@@ -105,13 +130,13 @@ export default function MyOrdersScreen() {
 
     return (
       <Pressable
-        style={styles.orderCard}
+        style={[styles.orderCard, dynamicStyles.orderCard]}
         onPress={() => router.push(`/orders/${item.id}`)}
       >
         <RNView style={styles.orderHeader}>
           <RNView>
             <Text style={styles.orderNumber}>{item.order_number}</Text>
-            <Text style={styles.orderDate}>{formatDate(item.created_at)}</Text>
+            <Text style={[styles.orderDate, dynamicStyles.orderDate]}>{formatDate(item.created_at)}</Text>
           </RNView>
           <RNView style={[styles.statusBadge, { backgroundColor: statusConfig.color }]}>
             <FontAwesome name={statusConfig.icon as any} size={12} color="#fff" />
@@ -123,21 +148,21 @@ export default function MyOrdersScreen() {
 
         <RNView style={styles.orderDetails}>
           <RNView style={styles.orderDetailItem}>
-            <FontAwesome name="qrcode" size={16} color="#666" />
-            <Text style={styles.orderDetailText}>
+            <FontAwesome name="qrcode" size={16} color={isDark ? '#999' : '#666'} />
+            <Text style={[styles.orderDetailText, dynamicStyles.orderDetailText]}>
               {item.quantity} sticker{item.quantity !== 1 ? 's' : ''}
             </Text>
           </RNView>
           <RNView style={styles.orderDetailItem}>
-            <FontAwesome name="dollar" size={16} color="#666" />
-            <Text style={styles.orderDetailText}>
+            <FontAwesome name="dollar" size={16} color={isDark ? '#999' : '#666'} />
+            <Text style={[styles.orderDetailText, dynamicStyles.orderDetailText]}>
               ${(item.total_price_cents / 100).toFixed(2)}
             </Text>
           </RNView>
         </RNView>
 
         {item.tracking_number && (
-          <RNView style={styles.trackingRow}>
+          <RNView style={[styles.trackingRow, dynamicStyles.trackingRow]}>
             <FontAwesome name="truck" size={14} color={Colors.violet.primary} />
             <Text style={styles.trackingText}>Tracking: {item.tracking_number}</Text>
           </RNView>
@@ -154,7 +179,7 @@ export default function MyOrdersScreen() {
     <RNView style={styles.emptyState}>
       <FontAwesome name="shopping-bag" size={64} color="#ccc" style={styles.emptyIcon} />
       <Text style={styles.emptyTitle}>No Orders Yet</Text>
-      <Text style={styles.emptyDescription}>
+      <Text style={[styles.emptyDescription, dynamicStyles.emptyDescription]}>
         Order QR code stickers to protect your discs and help finders contact you.
       </Text>
       <Pressable style={styles.orderButton} onPress={() => router.push('/order-stickers')}>
@@ -178,7 +203,7 @@ export default function MyOrdersScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'My Orders', headerBackTitle: 'Back' }} />
-      <View style={styles.container}>
+      <View style={[styles.container, dynamicStyles.container]}>
         <FlatList
           data={orders}
           renderItem={renderOrderCard}
@@ -215,11 +240,10 @@ const styles = StyleSheet.create({
   },
   orderCard: {
     padding: 16,
+    paddingRight: 48,
     marginBottom: 12,
     borderRadius: 12,
-    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: 'rgba(150, 150, 150, 0.2)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -238,7 +262,6 @@ const styles = StyleSheet.create({
   },
   orderDate: {
     fontSize: 13,
-    color: '#666',
     marginTop: 2,
   },
   statusBadge: {
@@ -269,7 +292,6 @@ const styles = StyleSheet.create({
   },
   orderDetailText: {
     fontSize: 14,
-    color: '#666',
   },
   trackingRow: {
     flexDirection: 'row',
@@ -278,7 +300,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
   },
   trackingText: {
     fontSize: 13,
@@ -308,7 +329,6 @@ const styles = StyleSheet.create({
   },
   emptyDescription: {
     fontSize: 16,
-    color: '#666',
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 22,
