@@ -1,10 +1,12 @@
-import { StyleSheet, TouchableOpacity, Alert, ScrollView, Image, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ScrollView, TextInput, ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
 import { Text, View } from '@/components/Themed';
 import { useAuth } from '@/contexts/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as Crypto from 'expo-crypto';
+import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -15,6 +17,7 @@ interface ProfileData {
   username: string | null;
   full_name: string | null;
   display_preference: DisplayPreference;
+  avatar_url: string | null;
 }
 
 interface ActiveRecovery {
@@ -40,7 +43,10 @@ export default function ProfileScreen() {
     username: null,
     full_name: null,
     display_preference: 'username',
+    avatar_url: null,
   });
+  const [avatarSignedUrl, setAvatarSignedUrl] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
@@ -78,7 +84,7 @@ export default function ProfileScreen() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name, display_preference')
+        .select('username, full_name, display_preference, avatar_url')
         .eq('id', user.id)
         .single();
 
@@ -89,12 +95,39 @@ export default function ProfileScreen() {
           username: data.username,
           full_name: data.full_name,
           display_preference: data.display_preference || 'username',
+          avatar_url: data.avatar_url,
         });
+
+        // If user has a custom avatar, fetch signed URL
+        if (data.avatar_url) {
+          await fetchAvatarSignedUrl(data.avatar_url);
+        } else {
+          setAvatarSignedUrl(null);
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAvatarSignedUrl = async (storagePath: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // Use service to get signed URL (the API returns it)
+      const { data, error } = await supabase.storage
+        .from('profile-photos')
+        .createSignedUrl(storagePath, 3600);
+
+      if (!error && data?.signedUrl) {
+        setAvatarSignedUrl(data.signedUrl);
+        setImageError(false);
+      }
+    } catch (error) {
+      console.error('Error fetching avatar signed URL:', error);
     }
   };
 
@@ -121,6 +154,174 @@ export default function ProfileScreen() {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePhotoPress = () => {
+    Alert.alert(
+      'Profile Photo',
+      'Choose an option',
+      [
+        {
+          text: 'Take Photo',
+          onPress: () => pickImage('camera'),
+        },
+        {
+          text: 'Choose from Library',
+          onPress: () => pickImage('library'),
+        },
+        ...(profile.avatar_url ? [{
+          text: 'Remove Photo',
+          style: 'destructive' as const,
+          onPress: handleDeletePhoto,
+        }] : []),
+        { text: 'Cancel', style: 'cancel' as const },
+      ]
+    );
+  };
+
+  const pickImage = async (source: 'camera' | 'library') => {
+    try {
+      let result;
+
+      if (source === 'camera') {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Required', 'Please allow camera access to take photos.');
+          return;
+        }
+        result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.8,
+        });
+      } else {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Required', 'Please allow photo library access to choose photos.');
+          return;
+        }
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.8,
+        });
+      }
+
+      if (!result.canceled && result.assets[0]) {
+        await uploadPhoto(result.assets[0]);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to select image');
+    }
+  };
+
+  const uploadPhoto = async (asset: ImagePicker.ImagePickerAsset) => {
+    setUploadingPhoto(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        Alert.alert('Error', 'Please sign in to upload a photo');
+        return;
+      }
+
+      // Create form data
+      const formData = new FormData();
+      const fileExtension = asset.uri.split('.').pop() || 'jpg';
+      const mimeType = fileExtension === 'png' ? 'image/png' : 'image/jpeg';
+
+      formData.append('file', {
+        uri: asset.uri,
+        type: mimeType,
+        name: `photo.${fileExtension}`,
+      } as unknown as Blob);
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/upload-profile-photo`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to upload photo');
+      }
+
+      const data = await response.json();
+
+      // Update local state
+      setProfile(prev => ({ ...prev, avatar_url: data.storage_path }));
+      setAvatarSignedUrl(data.avatar_url);
+      setImageError(false);
+
+      Alert.alert('Success', 'Profile photo updated!');
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to upload photo');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleDeletePhoto = async () => {
+    Alert.alert(
+      'Remove Photo',
+      'Are you sure you want to remove your profile photo?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: deletePhoto,
+        },
+      ]
+    );
+  };
+
+  const deletePhoto = async () => {
+    setUploadingPhoto(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        Alert.alert('Error', 'Please sign in');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-profile-photo`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete photo');
+      }
+
+      // Update local state
+      setProfile(prev => ({ ...prev, avatar_url: null }));
+      setAvatarSignedUrl(null);
+      setImageError(false);
+
+      Alert.alert('Success', 'Profile photo removed');
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to delete photo');
+    } finally {
+      setUploadingPhoto(false);
     }
   };
 
@@ -411,13 +612,28 @@ export default function ProfileScreen() {
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         {/* Profile Photo */}
-        <View style={styles.photoContainer}>
+        <TouchableOpacity
+          style={styles.photoContainer}
+          onPress={handlePhotoPress}
+          disabled={uploadingPhoto}>
           <View style={styles.photoPlaceholder}>
-            {gravatarUrl && !imageError ? (
+            {uploadingPhoto ? (
+              <ActivityIndicator size="large" color="#fff" />
+            ) : avatarSignedUrl && !imageError ? (
+              <Image
+                source={{ uri: avatarSignedUrl }}
+                style={styles.gravatarImage}
+                onError={() => setImageError(true)}
+                cachePolicy="memory-disk"
+                transition={200}
+              />
+            ) : gravatarUrl && !imageError ? (
               <Image
                 source={{ uri: gravatarUrl }}
                 style={styles.gravatarImage}
                 onError={() => setImageError(true)}
+                cachePolicy="memory-disk"
+                transition={200}
               />
             ) : user?.email ? (
               <Text style={styles.photoInitials}>{getInitials(user.email)}</Text>
@@ -425,7 +641,10 @@ export default function ProfileScreen() {
               <FontAwesome name="user" size={48} color="#fff" />
             )}
           </View>
-        </View>
+          <View style={styles.photoEditBadge}>
+            <FontAwesome name="camera" size={12} color="#fff" />
+          </View>
+        </TouchableOpacity>
 
         {/* User Info */}
         {user && (
@@ -694,6 +913,20 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     marginBottom: 20,
+    position: 'relative',
+  },
+  photoEditBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: Colors.violet.primary,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   photoPlaceholder: {
     width: 100,
