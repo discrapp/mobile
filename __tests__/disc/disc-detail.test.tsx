@@ -374,4 +374,52 @@ describe('DiscDetailScreen', () => {
       expect(mockSetOptions).toHaveBeenCalled();
     });
   });
+
+  it('shows remove QR code button when disc has QR code', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve([mockDisc]),
+    });
+
+    const { getByText } = render(<DiscDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('Remove QR Code')).toBeTruthy();
+    });
+  });
+
+  it('shows confirmation dialog when remove QR code is pressed', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve([mockDisc]),
+    });
+
+    const { getByText } = render(<DiscDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('Remove QR Code')).toBeTruthy();
+    });
+
+    fireEvent.press(getByText('Remove QR Code'));
+
+    expect(Alert.alert).toHaveBeenCalledWith(
+      'Unlink QR Code',
+      'Are you sure you want to remove the QR code from this disc? The QR code will be deleted and cannot be recovered.',
+      expect.any(Array)
+    );
+  });
+
+  it('does not show remove QR code button when disc has no QR code', async () => {
+    const discWithoutQR = { ...mockDisc, qr_code: null };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve([discWithoutQR]),
+    });
+
+    const { queryByText } = render(<DiscDetailScreen />);
+
+    await waitFor(() => {
+      expect(queryByText('Remove QR Code')).toBeNull();
+    });
+  });
 });

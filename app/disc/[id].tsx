@@ -102,6 +102,7 @@ export default function DiscDetailScreen() {
   const [deleting, setDeleting] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [linking, setLinking] = useState(false);
+  const [unlinking, setUnlinking] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -331,12 +332,76 @@ export default function DiscDetailScreen() {
 
       Alert.alert('Success', 'QR code linked to this disc!', [{ text: 'OK' }]);
       // Refresh disc data
-      fetchDisc();
+      fetchDiscDetail();
     } catch (error) {
       console.error('Link error:', error);
       Alert.alert('Error', 'Failed to link QR code. Please try again.');
     } finally {
       setLinking(false);
+    }
+  };
+
+  const handleUnlinkQrCode = () => {
+    Alert.alert(
+      'Unlink QR Code',
+      'Are you sure you want to remove the QR code from this disc? The QR code will be deleted and cannot be recovered.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Unlink',
+          style: 'destructive',
+          onPress: unlinkQrCode,
+        },
+      ]
+    );
+  };
+
+  const unlinkQrCode = async () => {
+    if (!disc) return;
+
+    setUnlinking(true);
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        Alert.alert('Error', 'You must be signed in to unlink a QR code');
+        setUnlinking(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/unlink-qr-code`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ disc_id: disc.id }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert('Error', data.error || 'Failed to unlink QR code');
+        return;
+      }
+
+      Alert.alert('Success', 'QR code removed from this disc', [{ text: 'OK' }]);
+      // Refresh disc data
+      fetchDiscDetail();
+    } catch (error) {
+      console.error('Unlink error:', error);
+      Alert.alert('Error', 'Failed to unlink QR code. Please try again.');
+    } finally {
+      setUnlinking(false);
     }
   };
 
@@ -394,6 +459,15 @@ export default function DiscDetailScreen() {
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={Colors.violet.primary} />
         <Text style={styles.loadingText}>Linking QR code...</Text>
+      </View>
+    );
+  }
+
+  if (unlinking) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color={Colors.violet.primary} />
+        <Text style={styles.loadingText}>Removing QR code...</Text>
       </View>
     );
   }
@@ -583,6 +657,10 @@ export default function DiscDetailScreen() {
               </RNView>
               <Text style={[styles.qrCodeLabel, { color: isDark ? '#fff' : Colors.violet.primary }]}>{disc.qr_code.short_code}</Text>
               <Text style={styles.qrCodeHint}>Scan with phone camera to find this disc</Text>
+              <Pressable style={styles.unlinkButton} onPress={handleUnlinkQrCode}>
+                <FontAwesome name="unlink" size={14} color="#E74C3C" />
+                <Text style={styles.unlinkButtonText}>Remove QR Code</Text>
+              </Pressable>
             </RNView>
           ) : (
             <Pressable
@@ -812,6 +890,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     textAlign: 'center',
+  },
+  unlinkButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  unlinkButtonText: {
+    color: '#E74C3C',
+    fontSize: 14,
+    fontWeight: '500',
   },
   linkQrButton: {
     flexDirection: 'row',
