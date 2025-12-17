@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   View as RNView,
+  useColorScheme,
 } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { Text, View } from '@/components/Themed';
@@ -34,6 +35,8 @@ interface ShippingAddress {
 
 export default function OrderStickersScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [quantity, setQuantity] = useState(5);
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState<ShippingAddress>({
@@ -48,6 +51,52 @@ export default function OrderStickersScreen() {
 
   const totalPriceCents = quantity * UNIT_PRICE_CENTS + SHIPPING_PRICE_CENTS;
   const totalPriceDisplay = (totalPriceCents / 100).toFixed(2);
+
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    scrollView: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    productCard: {
+      backgroundColor: isDark ? '#1a1a1a' : Colors.violet[50],
+    },
+    productImageContainer: {
+      backgroundColor: isDark ? '#2a2a2a' : '#fff',
+    },
+    productDescription: {
+      color: isDark ? '#999' : '#666',
+    },
+    pricePerUnit: {
+      color: isDark ? '#999' : '#666',
+    },
+    inputLabel: {
+      color: isDark ? '#ccc' : '#333',
+    },
+    input: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : '#ddd',
+      color: isDark ? '#fff' : '#000',
+    },
+    summaryCard: {
+      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+      borderColor: isDark ? '#333' : '#eee',
+    },
+    summaryLabel: {
+      color: isDark ? '#999' : '#666',
+    },
+    summaryValue: {
+      color: isDark ? '#ccc' : '#333',
+    },
+    checkoutContainer: {
+      backgroundColor: isDark ? '#000' : '#fff',
+      borderTopColor: isDark ? '#333' : '#eee',
+    },
+    secureText: {
+      color: isDark ? '#999' : '#666',
+    },
+  };
 
   const incrementQuantity = () => {
     if (quantity < MAX_QUANTITY) {
@@ -155,17 +204,17 @@ export default function OrderStickersScreen() {
         }}
       />
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, dynamicStyles.container]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+        <ScrollView style={[styles.scrollView, dynamicStyles.scrollView]} contentContainerStyle={styles.content}>
           {/* Product Info */}
-          <RNView style={styles.productCard}>
-            <RNView style={styles.productImageContainer}>
+          <RNView style={[styles.productCard, dynamicStyles.productCard]}>
+            <RNView style={[styles.productImageContainer, dynamicStyles.productImageContainer]}>
               <FontAwesome name="qrcode" size={64} color={Colors.violet.primary} />
             </RNView>
             <Text style={styles.productTitle}>AceBack QR Code Stickers</Text>
-            <Text style={styles.productDescription}>
+            <Text style={[styles.productDescription, dynamicStyles.productDescription]}>
               Durable, weatherproof QR stickers. Link to your discs so finders can contact you
               instantly.
             </Text>
@@ -193,7 +242,7 @@ export default function OrderStickersScreen() {
                 <FontAwesome name="plus" size={16} color={quantity >= MAX_QUANTITY ? '#ccc' : Colors.violet.primary} />
               </Pressable>
             </RNView>
-            <Text style={styles.pricePerUnit}>
+            <Text style={[styles.pricePerUnit, dynamicStyles.pricePerUnit]}>
               ${(UNIT_PRICE_CENTS / 100).toFixed(2)} per sticker
             </Text>
           </RNView>
@@ -202,9 +251,9 @@ export default function OrderStickersScreen() {
           <RNView style={styles.section}>
             <Text style={styles.sectionTitle}>Shipping Address</Text>
 
-            <Text style={styles.inputLabel}>Full Name *</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>Full Name *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={address.name}
               onChangeText={(text) => setAddress({ ...address, name: text })}
               placeholder="John Doe"
@@ -212,18 +261,18 @@ export default function OrderStickersScreen() {
               autoCapitalize="words"
             />
 
-            <Text style={styles.inputLabel}>Street Address *</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>Street Address *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={address.street_address}
               onChangeText={(text) => setAddress({ ...address, street_address: text })}
               placeholder="123 Main St"
               autoComplete="street-address"
             />
 
-            <Text style={styles.inputLabel}>Apt, Suite, etc.</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>Apt, Suite, etc.</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={address.street_address_2}
               onChangeText={(text) => setAddress({ ...address, street_address_2: text })}
               placeholder="Apt 4B (optional)"
@@ -231,9 +280,9 @@ export default function OrderStickersScreen() {
 
             <RNView style={styles.cityStateRow}>
               <RNView style={styles.cityInput}>
-                <Text style={styles.inputLabel}>City *</Text>
+                <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>City *</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, dynamicStyles.input]}
                   value={address.city}
                   onChangeText={(text) => setAddress({ ...address, city: text })}
                   placeholder="City"
@@ -241,9 +290,9 @@ export default function OrderStickersScreen() {
                 />
               </RNView>
               <RNView style={styles.stateInput}>
-                <Text style={styles.inputLabel}>State *</Text>
+                <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>State *</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, dynamicStyles.input]}
                   value={address.state}
                   onChangeText={(text) => setAddress({ ...address, state: text })}
                   placeholder="CA"
@@ -253,9 +302,9 @@ export default function OrderStickersScreen() {
               </RNView>
             </RNView>
 
-            <Text style={styles.inputLabel}>ZIP Code *</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.inputLabel]}>ZIP Code *</Text>
             <TextInput
-              style={[styles.input, styles.zipInput]}
+              style={[styles.input, dynamicStyles.input, styles.zipInput]}
               value={address.postal_code}
               onChangeText={(text) => setAddress({ ...address, postal_code: text })}
               placeholder="12345"
@@ -266,18 +315,18 @@ export default function OrderStickersScreen() {
           </RNView>
 
           {/* Order Summary */}
-          <RNView style={styles.summaryCard}>
+          <RNView style={[styles.summaryCard, dynamicStyles.summaryCard]}>
             <Text style={styles.summaryTitle}>Order Summary</Text>
             <RNView style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>
+              <Text style={[styles.summaryLabel, dynamicStyles.summaryLabel]}>
                 {quantity} sticker{quantity !== 1 ? 's' : ''}
               </Text>
-              <Text style={styles.summaryValue}>
+              <Text style={[styles.summaryValue, dynamicStyles.summaryValue]}>
                 ${((quantity * UNIT_PRICE_CENTS) / 100).toFixed(2)}
               </Text>
             </RNView>
             <RNView style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Shipping</Text>
+              <Text style={[styles.summaryLabel, dynamicStyles.summaryLabel]}>Shipping</Text>
               <Text style={styles.summaryValueFree}>FREE</Text>
             </RNView>
             <View style={styles.summaryDivider} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -292,7 +341,7 @@ export default function OrderStickersScreen() {
         </ScrollView>
 
         {/* Checkout Button */}
-        <RNView style={styles.checkoutContainer}>
+        <RNView style={[styles.checkoutContainer, dynamicStyles.checkoutContainer]}>
           <Pressable
             style={[styles.checkoutButton, loading && styles.checkoutButtonDisabled]}
             onPress={handleCheckout}
@@ -309,7 +358,7 @@ export default function OrderStickersScreen() {
               </>
             )}
           </Pressable>
-          <Text style={styles.secureText}>
+          <Text style={[styles.secureText, dynamicStyles.secureText]}>
             <FontAwesome name="shield" size={12} color="#666" /> Secure checkout powered by Stripe
           </Text>
         </RNView>
@@ -321,11 +370,9 @@ export default function OrderStickersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   scrollView: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   content: {
     padding: 16,
@@ -335,13 +382,11 @@ const styles = StyleSheet.create({
     padding: 24,
     marginBottom: 24,
     borderRadius: 16,
-    backgroundColor: Colors.violet[50],
   },
   productImageContainer: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -359,7 +404,6 @@ const styles = StyleSheet.create({
   },
   productDescription: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -400,24 +444,20 @@ const styles = StyleSheet.create({
   },
   pricePerUnit: {
     fontSize: 14,
-    color: '#666',
     textAlign: 'center',
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 6,
-    color: '#333',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 16,
     marginBottom: 16,
-    backgroundColor: '#fff',
   },
   cityStateRow: {
     flexDirection: 'row',
@@ -435,9 +475,7 @@ const styles = StyleSheet.create({
   summaryCard: {
     padding: 20,
     borderRadius: 12,
-    backgroundColor: '#f8f8f8',
     borderWidth: 1,
-    borderColor: '#eee',
   },
   summaryTitle: {
     fontSize: 16,
@@ -451,11 +489,9 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 14,
-    color: '#666',
   },
   summaryValue: {
     fontSize: 14,
-    color: '#333',
   },
   summaryValueFree: {
     fontSize: 14,
@@ -482,9 +518,7 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 16,
     paddingBottom: 32,
-    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#eee',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -511,7 +545,6 @@ const styles = StyleSheet.create({
   },
   secureText: {
     fontSize: 12,
-    color: '#666',
     textAlign: 'center',
   },
 });
