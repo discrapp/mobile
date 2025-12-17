@@ -360,4 +360,34 @@ describe('RecoveryDetailScreen', () => {
       expect(getByText('Meetup Confirmed')).toBeTruthy();
     });
   });
+
+  it('navigates to propose-meetup when Counter button is pressed', async () => {
+    jest.clearAllMocks();
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({
+        ...mockRecoveryData,
+        status: 'meetup_proposed',
+        meetup_proposals: [{
+          id: 'prop-1',
+          proposed_by: 'finder-1',
+          location_name: 'Maple Hill DGC',
+          proposed_datetime: '2024-01-25T14:00:00Z',
+          status: 'pending',
+          message: 'Meet at parking lot',
+          created_at: '2024-01-20T10:00:00Z',
+        }],
+      }),
+    });
+
+    const { getByText } = render(<RecoveryDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('Counter')).toBeTruthy();
+    });
+
+    fireEvent.press(getByText('Counter'));
+
+    expect(mockPush).toHaveBeenCalledWith('/propose-meetup/recovery-123');
+  });
 });

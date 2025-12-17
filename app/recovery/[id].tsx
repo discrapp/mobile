@@ -234,22 +234,10 @@ export default function RecoveryDetailScreen() {
     }
   };
 
-  const handleDeclineMeetup = async (proposalId: string) => {
-    Alert.alert(
-      'Decline Meetup',
-      'Are you sure you want to decline this meetup proposal?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Decline',
-          style: 'destructive',
-          onPress: async () => {
-            // TODO: Implement decline-meetup endpoint
-            Alert.alert('Info', 'Decline functionality coming soon');
-          },
-        },
-      ]
-    );
+  const handleCounterProposal = () => {
+    // Navigate to propose-meetup screen to suggest an alternative
+    // The API will automatically decline the existing proposal
+    router.push(`/propose-meetup/${recoveryId}`);
   };
 
   const handleCompleteRecovery = async () => {
@@ -620,7 +608,7 @@ export default function RecoveryDetailScreen() {
             </Pressable>
             <Pressable
               style={[styles.counterButton, actionLoading && styles.buttonDisabled]}
-              onPress={() => handleDeclineMeetup(pendingProposal.id)}
+              onPress={handleCounterProposal}
               disabled={actionLoading}
             >
               <FontAwesome name="refresh" size={16} color="#fff" />
