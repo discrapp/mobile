@@ -12,7 +12,7 @@ import {
   Dimensions,
   View as RNView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text, View } from '@/components/Themed';
@@ -81,6 +81,7 @@ interface PendingRecovery {
 
 export default function FoundDiscScreen() {
   const router = useRouter();
+  const { scannedCode: routeScannedCode } = useLocalSearchParams<{ scannedCode?: string }>();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [permission, requestPermission] = useCameraPermissions();
@@ -104,6 +105,14 @@ export default function FoundDiscScreen() {
       fetchMyDiscsBeingRecovered();
     }, [])
   );
+
+  // Handle scannedCode param from deep link navigation
+  useEffect(() => {
+    if (routeScannedCode && screenState === 'input') {
+      setQrCode(routeScannedCode);
+      lookupQrCodeWithValue(routeScannedCode);
+    }
+  }, [routeScannedCode]);
 
   const fetchPendingRecoveries = async () => {
     try {

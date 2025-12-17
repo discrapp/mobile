@@ -4,8 +4,11 @@ import { Alert } from 'react-native';
 import FoundDiscScreen from '../../app/(tabs)/found-disc';
 
 // Mock expo-router
+const mockRouter = { push: jest.fn(), replace: jest.fn() };
+const mockSearchParams: { scannedCode?: string } = {};
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => mockRouter,
+  useLocalSearchParams: () => mockSearchParams,
 }));
 
 // Mock @react-navigation/native useFocusEffect
@@ -57,6 +60,8 @@ jest.spyOn(Alert, 'alert');
 describe('FoundDiscScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset search params
+    mockSearchParams.scannedCode = undefined;
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve([]),
@@ -585,6 +590,110 @@ describe('FoundDiscScreen', () => {
       await waitFor(() => {
         expect(getByText('Look Up Disc')).toBeTruthy();
       });
+    });
+  });
+
+  describe('scannedCode param from deep link navigation', () => {
+    it('auto-triggers lookup when scannedCode param is provided', async () => {
+      mockSearchParams.scannedCode = 'DEEPLINK123';
+
+      render(<FoundDiscScreen />);
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('/lookup-qr-code?code=DEEPLINK123'),
+          expect.any(Object)
+        );
+      });
+    });
+
+    it('includes scannedCode in lookup API call', async () => {
+      mockSearchParams.scannedCode = 'PREFILLED';
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve([]),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ found: false }),
+        });
+
+      render(<FoundDiscScreen />);
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('/lookup-qr-code?code=PREFILLED'),
+          expect.any(Object)
+        );
+      });
+    });
+
+    it('shows disc info when scannedCode lookup succeeds', async () => {
+      mockSearchParams.scannedCode = 'FOUND001';
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve([]),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({
+            found: true,
+            disc: {
+              id: 'disc-1',
+              name: 'Deep Link Disc',
+              mold: 'Destroyer',
+              manufacturer: 'Innova',
+              owner_display_name: 'Test Owner',
+            },
+            has_active_recovery: false,
+          }),
+        });
+
+      const { getByText } = render(<FoundDiscScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Disc Found!')).toBeTruthy();
+      });
+    });
+
+    it('shows error when scannedCode lookup fails', async () => {
+      mockSearchParams.scannedCode = 'NOTFOUND';
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve([]),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ found: false }),
+        });
+
+      const { getByText } = render(<FoundDiscScreen />);
+
+      await waitFor(() => {
+        expect(getByText('No disc found with this QR code. Please check and try again.')).toBeTruthy();
+      });
+    });
+
+    it('does not auto-trigger lookup when no scannedCode param', async () => {
+      mockSearchParams.scannedCode = undefined;
+
+      const { getByText } = render(<FoundDiscScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Found a Disc?')).toBeTruthy();
+      });
+
+      // Should only have called the pending recoveries fetch, not lookup
+      const lookupCalls = (global.fetch as jest.Mock).mock.calls.filter(
+        (call: string[]) => call[0].includes('/lookup-qr-code')
+      );
+      expect(lookupCalls).toHaveLength(0);
     });
   });
 

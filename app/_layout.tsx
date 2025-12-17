@@ -8,11 +8,7 @@ import { Alert, AppState, AppStateStatus } from 'react-native';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import {
-  checkClipboardForCode,
-  hasCheckedDeferredCode,
-  markDeferredCodeChecked,
-} from '@/lib/deferredLinking';
+import { checkClipboardForCode } from '@/lib/deferredLinking';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -78,24 +74,28 @@ function useProtectedRoute(user: any, loading: boolean) {
  * Hook to check for deferred deep link codes from clipboard
  * Prompts user if a valid code is found after app comes to foreground
  */
+// Track if we've checked this app session (in-memory, resets on app restart)
+let hasCheckedThisSession = false;
+
 function useDeferredLinking(user: any, loading: boolean) {
   const router = useRouter();
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     // Only check when user is authenticated and not loading
-    if (loading || !user) return;
+    if (loading || !user) {
+      return;
+    }
 
     const checkForDeferredCode = async () => {
-      // Don't check more than once per session
-      const alreadyChecked = await hasCheckedDeferredCode();
-      if (alreadyChecked) return;
+      // Don't check more than once per app session (in-memory flag)
+      if (hasCheckedThisSession) {
+        return;
+      }
+      hasCheckedThisSession = true;
 
       const code = await checkClipboardForCode();
       if (code) {
-        // Mark as checked before showing alert
-        await markDeferredCodeChecked();
-
         Alert.alert(
           'Found a Disc Code!',
           `We found code "${code}" in your clipboard. Would you like to look up this disc?`,
@@ -112,9 +112,6 @@ function useDeferredLinking(user: any, loading: boolean) {
             },
           ]
         );
-      } else {
-        // Mark as checked even if no code found
-        await markDeferredCodeChecked();
       }
     };
 

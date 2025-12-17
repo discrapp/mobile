@@ -78,13 +78,11 @@ export default function DeepLinkHandler() {
       }
 
       // Otherwise, go to found-disc tab with the result
-      // We'll pass the disc info via a global state or just navigate with the code
       router.replace({
         pathname: '/(tabs)/found-disc',
         params: { scannedCode: qrCode },
       });
-    } catch (err) {
-      console.error('Error looking up QR code:', err);
+    } catch {
       setError('Failed to look up QR code');
     }
   };

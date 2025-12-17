@@ -42,8 +42,7 @@ export async function checkClipboardForCode(): Promise<string | null> {
     }
 
     return null;
-  } catch (error) {
-    console.log('Error checking clipboard:', error);
+  } catch {
     return null;
   }
 }
