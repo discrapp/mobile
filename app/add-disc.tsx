@@ -285,7 +285,7 @@ export default function AddDiscScreen() {
               Mold <Text style={styles.required}>*</Text>
             </Text>
             <TextInput
-              style={[styles.input, moldError ? styles.inputError : null]}
+              style={[styles.input, moldError ? styles.inputError : null, { color: textColor }]}
               value={mold}
               onChangeText={(text) => {
                 setMold(text);
@@ -293,7 +293,6 @@ export default function AddDiscScreen() {
               }}
               placeholder="e.g., Destroyer"
               placeholderTextColor="#999"
-              color={textColor}
             />
             {moldError ? <Text style={styles.errorText}>{moldError}</Text> : null}
           </View>
@@ -302,12 +301,11 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Manufacturer</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: textColor }]}
               value={manufacturer}
               onChangeText={setManufacturer}
               placeholder="e.g., Innova"
               placeholderTextColor="#999"
-              color={textColor}
             />
           </View>
 
@@ -315,12 +313,11 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Plastic</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: textColor }]}
               value={plastic}
               onChangeText={setPlastic}
               placeholder="e.g., Star"
               placeholderTextColor="#999"
-              color={textColor}
             />
           </View>
 
@@ -328,13 +325,12 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Weight (grams)</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: textColor }]}
               value={weight}
               onChangeText={setWeight}
               placeholder="e.g., 175"
               placeholderTextColor="#999"
               keyboardType="numeric"
-              color={textColor}
             />
           </View>
 
@@ -378,25 +374,23 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Speed</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: textColor }]}
                 value={speed}
                 onChangeText={setSpeed}
                 placeholder="1-15"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
-                color={textColor}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Glide</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: textColor }]}
                 value={glide}
                 onChangeText={setGlide}
                 placeholder="1-7"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
-                color={textColor}
               />
             </View>
           </View>
@@ -405,25 +399,23 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Turn</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
                 placeholder="-5 to 1"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
-                color={textColor}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Fade</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: textColor }]}
                 value={fade}
                 onChangeText={setFade}
                 placeholder="0-5"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
-                color={textColor}
               />
             </View>
           </View>
@@ -434,7 +426,7 @@ export default function AddDiscScreen() {
             <View style={styles.inputWithPrefix}>
               <Text style={styles.inputPrefix}>$</Text>
               <TextInput
-                style={[styles.input, styles.inputWithPrefixText]}
+                style={[styles.input, styles.inputWithPrefixText, { color: textColor }]}
                 value={rewardAmount}
                 onChangeText={(text) => {
                   // Only allow numbers and decimal point
@@ -449,7 +441,6 @@ export default function AddDiscScreen() {
                 placeholder="0.00"
                 placeholderTextColor="#999"
                 keyboardType="decimal-pad"
-                color={textColor}
               />
             </View>
           </View>
@@ -458,7 +449,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Notes</Text>
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[styles.input, styles.textArea, { color: textColor }]}
               value={notes}
               onChangeText={setNotes}
               placeholder="Any additional notes about this disc..."
@@ -466,7 +457,6 @@ export default function AddDiscScreen() {
               multiline
               numberOfLines={4}
               textAlignVertical="top"
-              color={textColor}
             />
           </View>
 

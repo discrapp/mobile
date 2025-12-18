@@ -25,6 +25,7 @@ const MAX_QUANTITY = 100;
 const SHIPPING_PRICE_CENTS = 0; // Free shipping
 
 interface ShippingAddress {
+  id?: string;
   name: string;
   street_address: string;
   street_address_2: string;
@@ -40,6 +41,10 @@ export default function OrderStickersScreen() {
   const isDark = colorScheme === 'dark';
   const [quantity, setQuantity] = useState(5);
   const [loading, setLoading] = useState(false);
+  const [loadingAddress, setLoadingAddress] = useState(true);
+  const [hasDefaultAddress, setHasDefaultAddress] = useState(false);
+  const [saveAsDefault, setSaveAsDefault] = useState(false);
+  const [defaultAddressId, setDefaultAddressId] = useState<string | null>(null);
   const [address, setAddress] = useState<ShippingAddress>({
     name: '',
     street_address: '',
@@ -49,6 +54,57 @@ export default function OrderStickersScreen() {
     postal_code: '',
     country: 'US',
   });
+
+  // Fetch default address on mount
+  useEffect(() => {
+    fetchDefaultAddress();
+  }, []);
+
+  const fetchDefaultAddress = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setLoadingAddress(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/get-default-address`,
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const defaultAddress = await response.json();
+        if (defaultAddress) {
+          setAddress({
+            name: defaultAddress.name || '',
+            street_address: defaultAddress.street_address || '',
+            street_address_2: defaultAddress.street_address_2 || '',
+            city: defaultAddress.city || '',
+            state: defaultAddress.state || '',
+            postal_code: defaultAddress.postal_code || '',
+            country: defaultAddress.country || 'US',
+          });
+          setDefaultAddressId(defaultAddress.id);
+          setHasDefaultAddress(true);
+        } else {
+          // No default address - default checkbox to checked for first-time users
+          setSaveAsDefault(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching default address:', error);
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
 
   // Input refs for keyboard navigation
   const nameRef = useRef<TextInput>(null);
@@ -129,6 +185,12 @@ export default function OrderStickersScreen() {
     secureText: {
       color: isDark ? '#999' : '#666',
     },
+    checkboxContainer: {
+      borderColor: isDark ? '#333' : '#ddd',
+    },
+    checkboxLabel: {
+      color: isDark ? '#ccc' : '#333',
+    },
   };
 
   const incrementQuantity = () => {
@@ -169,6 +231,40 @@ export default function OrderStickersScreen() {
       if (!session) {
         Alert.alert('Error', 'Please sign in to place an order');
         return;
+      }
+
+      // Save address as default if checkbox is checked
+      if (saveAsDefault) {
+        try {
+          const saveAddressResponse = await fetch(
+            `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/save-default-address`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({
+                address_id: defaultAddressId, // Update existing if we have one
+                name: address.name.trim(),
+                street_address: address.street_address.trim(),
+                street_address_2: address.street_address_2.trim() || undefined,
+                city: address.city.trim(),
+                state: address.state.trim(),
+                postal_code: address.postal_code.trim(),
+                country: address.country,
+              }),
+            }
+          );
+
+          if (!saveAddressResponse.ok) {
+            console.error('Failed to save default address');
+            // Continue with order - don't block checkout for address save failure
+          }
+        } catch (saveError) {
+          console.error('Error saving default address:', saveError);
+          // Continue with order
+        }
       }
 
       const response = await fetch(
@@ -374,6 +470,21 @@ export default function OrderStickersScreen() {
               returnKeyType="done"
               inputAccessoryViewID={Platform.OS === 'ios' ? inputAccessoryViewID : undefined}
             />
+
+            {/* Save as default checkbox */}
+            <Pressable
+              style={[styles.checkboxRow, dynamicStyles.checkboxContainer]}
+              onPress={() => setSaveAsDefault(!saveAsDefault)}
+            >
+              <RNView style={[styles.checkbox, saveAsDefault && styles.checkboxChecked]}>
+                {saveAsDefault && (
+                  <FontAwesome name="check" size={12} color="#fff" />
+                )}
+              </RNView>
+              <Text style={[styles.checkboxLabel, dynamicStyles.checkboxLabel]}>
+                Save as my default address
+              </Text>
+            </Pressable>
           </RNView>
 
           {/* Order Summary */}
@@ -650,5 +761,27 @@ const styles = StyleSheet.create({
   secureText: {
     fontSize: 12,
     textAlign: 'center',
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: Colors.violet.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  checkboxChecked: {
+    backgroundColor: Colors.violet.primary,
+  },
+  checkboxLabel: {
+    fontSize: 14,
   },
 });

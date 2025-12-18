@@ -20,6 +20,17 @@ interface ProfileData {
   avatar_url: string | null;
 }
 
+interface ShippingAddressData {
+  id: string | null;
+  name: string;
+  street_address: string;
+  street_address_2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+}
+
 interface ActiveRecovery {
   id: string;
   status: string;
@@ -60,6 +71,22 @@ export default function ProfileScreen() {
   const [loadingFinds, setLoadingFinds] = useState(true);
   const [discsFound, setDiscsFound] = useState(0);
   const [myDiscsFoundByOthers, setMyDiscsFoundByOthers] = useState(0);
+
+  // Shipping address state
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddressData | null>(null);
+  const [loadingShippingAddress, setLoadingShippingAddress] = useState(true);
+  const [editingShippingAddress, setEditingShippingAddress] = useState(false);
+  const [savingShippingAddress, setSavingShippingAddress] = useState(false);
+  const [tempShippingAddress, setTempShippingAddress] = useState<ShippingAddressData>({
+    id: null,
+    name: '',
+    street_address: '',
+    street_address_2: '',
+    city: '',
+    state: '',
+    postal_code: '',
+    country: 'US',
+  });
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -362,6 +389,7 @@ export default function ProfileScreen() {
     fetchMyDiscsFoundByOthers();
     fetchActiveRecoveries();
     fetchMyFinds();
+    fetchShippingAddress();
   }, [user?.id]);
 
   const fetchMyDiscsFoundByOthers = async () => {
@@ -538,6 +566,144 @@ export default function ProfileScreen() {
     } finally {
       setLoadingFinds(false);
     }
+  };
+
+  const fetchShippingAddress = async () => {
+    if (!user?.id) return;
+
+    setLoadingShippingAddress(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setLoadingShippingAddress(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/get-default-address`,
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const address = await response.json();
+        if (address) {
+          setShippingAddress({
+            id: address.id,
+            name: address.name || '',
+            street_address: address.street_address || '',
+            street_address_2: address.street_address_2 || '',
+            city: address.city || '',
+            state: address.state || '',
+            postal_code: address.postal_code || '',
+            country: address.country || 'US',
+          });
+        } else {
+          setShippingAddress(null);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching shipping address:', error);
+    } finally {
+      setLoadingShippingAddress(false);
+    }
+  };
+
+  const saveShippingAddress = async () => {
+    if (!user?.id) return;
+
+    // Validate required fields
+    if (!tempShippingAddress.name.trim()) {
+      Alert.alert('Missing Information', 'Name is required');
+      return;
+    }
+    if (!tempShippingAddress.street_address.trim()) {
+      Alert.alert('Missing Information', 'Street address is required');
+      return;
+    }
+    if (!tempShippingAddress.city.trim()) {
+      Alert.alert('Missing Information', 'City is required');
+      return;
+    }
+    if (!tempShippingAddress.state.trim()) {
+      Alert.alert('Missing Information', 'State is required');
+      return;
+    }
+    if (!tempShippingAddress.postal_code.trim()) {
+      Alert.alert('Missing Information', 'ZIP code is required');
+      return;
+    }
+
+    setSavingShippingAddress(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        Alert.alert('Error', 'Please sign in');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/save-default-address`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            address_id: shippingAddress?.id || undefined,
+            name: tempShippingAddress.name.trim(),
+            street_address: tempShippingAddress.street_address.trim(),
+            street_address_2: tempShippingAddress.street_address_2.trim() || undefined,
+            city: tempShippingAddress.city.trim(),
+            state: tempShippingAddress.state.trim(),
+            postal_code: tempShippingAddress.postal_code.trim(),
+            country: tempShippingAddress.country || 'US',
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save address');
+      }
+
+      const savedAddress = await response.json();
+      setShippingAddress({
+        id: savedAddress.id,
+        name: savedAddress.name,
+        street_address: savedAddress.street_address,
+        street_address_2: savedAddress.street_address_2 || '',
+        city: savedAddress.city,
+        state: savedAddress.state,
+        postal_code: savedAddress.postal_code,
+        country: savedAddress.country,
+      });
+      setEditingShippingAddress(false);
+      Alert.alert('Success', 'Shipping address saved');
+    } catch (error) {
+      console.error('Error saving shipping address:', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to save address');
+    } finally {
+      setSavingShippingAddress(false);
+    }
+  };
+
+  const handleEditShippingAddress = () => {
+    setTempShippingAddress(shippingAddress || {
+      id: null,
+      name: '',
+      street_address: '',
+      street_address_2: '',
+      city: '',
+      state: '',
+      postal_code: '',
+      country: 'US',
+    });
+    setEditingShippingAddress(true);
   };
 
   useEffect(() => {
@@ -908,6 +1074,123 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Shipping Address Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Shipping Address</Text>
+          {loadingShippingAddress ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={Colors.violet.primary} />
+            </View>
+          ) : editingShippingAddress ? (
+            <View>
+              <Text style={styles.detailLabel}>Name *</Text>
+              <TextInput
+                style={[styles.addressInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                value={tempShippingAddress.name}
+                onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, name: text })}
+                placeholder="Full name"
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+              />
+
+              <Text style={styles.detailLabel}>Street Address *</Text>
+              <TextInput
+                style={[styles.addressInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                value={tempShippingAddress.street_address}
+                onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, street_address: text })}
+                placeholder="123 Main St"
+                placeholderTextColor="#999"
+              />
+
+              <Text style={styles.detailLabel}>Apt, Suite, etc.</Text>
+              <TextInput
+                style={[styles.addressInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                value={tempShippingAddress.street_address_2}
+                onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, street_address_2: text })}
+                placeholder="Apt 4B (optional)"
+                placeholderTextColor="#999"
+              />
+
+              <View style={styles.cityStateRow}>
+                <View style={styles.cityInput}>
+                  <Text style={styles.detailLabel}>City *</Text>
+                  <TextInput
+                    style={[styles.addressInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                    value={tempShippingAddress.city}
+                    onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, city: text })}
+                    placeholder="City"
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                <View style={styles.stateInput}>
+                  <Text style={styles.detailLabel}>State *</Text>
+                  <TextInput
+                    style={[styles.addressInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                    value={tempShippingAddress.state}
+                    onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, state: text })}
+                    placeholder="TX"
+                    placeholderTextColor="#999"
+                    autoCapitalize="characters"
+                    maxLength={2}
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.detailLabel}>ZIP Code *</Text>
+              <TextInput
+                style={[styles.addressInput, styles.zipInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                value={tempShippingAddress.postal_code}
+                onChangeText={(text) => setTempShippingAddress({ ...tempShippingAddress, postal_code: text })}
+                placeholder="12345"
+                placeholderTextColor="#999"
+                keyboardType="numeric"
+                maxLength={10}
+              />
+
+              <View style={styles.addressButtonRow}>
+                <TouchableOpacity
+                  style={styles.addressCancelButton}
+                  onPress={() => setEditingShippingAddress(false)}
+                  disabled={savingShippingAddress}>
+                  <Text style={styles.addressCancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.addressSaveButton, savingShippingAddress && styles.addressSaveButtonDisabled]}
+                  onPress={saveShippingAddress}
+                  disabled={savingShippingAddress}>
+                  {savingShippingAddress ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.addressSaveButtonText}>Save Address</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : shippingAddress ? (
+            <TouchableOpacity style={styles.addressCard} onPress={handleEditShippingAddress}>
+              <View style={styles.addressCardContent}>
+                <FontAwesome name="map-marker" size={16} color={Colors.violet.primary} style={styles.addressIcon} />
+                <View style={styles.addressText}>
+                  <Text style={styles.addressName}>{shippingAddress.name}</Text>
+                  <Text style={styles.addressLine}>{shippingAddress.street_address}</Text>
+                  {shippingAddress.street_address_2 ? (
+                    <Text style={styles.addressLine}>{shippingAddress.street_address_2}</Text>
+                  ) : null}
+                  <Text style={styles.addressLine}>
+                    {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postal_code}
+                  </Text>
+                </View>
+              </View>
+              <FontAwesome name="pencil" size={14} color="#999" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.addAddressButton} onPress={handleEditShippingAddress}>
+              <FontAwesome name="plus" size={16} color={Colors.violet.primary} />
+              <Text style={styles.addAddressText}>Add Shipping Address</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Account Details Section */}
         {user?.created_at && (
           <View style={styles.section}>
@@ -1191,5 +1474,102 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#666',
     marginTop: 2,
+  },
+  // Shipping address styles
+  addressInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  cityStateRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cityInput: {
+    flex: 2,
+  },
+  stateInput: {
+    flex: 1,
+  },
+  zipInput: {
+    width: 120,
+  },
+  addressButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 8,
+  },
+  addressCancelButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  addressCancelButtonText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  addressSaveButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: Colors.violet.primary,
+  },
+  addressSaveButtonDisabled: {
+    opacity: 0.7,
+  },
+  addressSaveButtonText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  addressCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  addressCardContent: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  addressIcon: {
+    marginRight: 12,
+    marginTop: 2,
+  },
+  addressText: {
+    flex: 1,
+  },
+  addressName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  addressLine: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  addAddressButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: Colors.violet.primary,
+    borderRadius: 8,
+    borderStyle: 'dashed',
+    gap: 8,
+  },
+  addAddressText: {
+    fontSize: 14,
+    color: Colors.violet.primary,
+    fontWeight: '500',
   },
 });

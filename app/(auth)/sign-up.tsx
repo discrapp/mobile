@@ -16,6 +16,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import { useAuth } from '@/contexts/AuthContext';
 import { validateSignUpForm } from '@/lib/validation';
+import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -72,10 +73,8 @@ export default function SignUp() {
     setLoading(true);
     try {
       // Get the correct redirect URL for current environment
-      // useProxy: true uses Expo's auth proxy for development
       const redirectUrl = AuthSession.makeRedirectUri({
         scheme: 'com.aceback.app',
-        useProxy: true,
       });
 
       console.log('Using redirect URL:', redirectUrl);
