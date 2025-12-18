@@ -94,10 +94,9 @@ export default function OrderStickersScreen() {
           });
           setDefaultAddressId(defaultAddress.id);
           setHasDefaultAddress(true);
-        } else {
-          // No default address - default checkbox to checked for first-time users
-          setSaveAsDefault(true);
         }
+        // Always default checkbox to checked so any edits are saved
+        setSaveAsDefault(true);
       }
     } catch (error) {
       console.error('Error fetching default address:', error);

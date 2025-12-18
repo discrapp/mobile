@@ -427,6 +427,23 @@ describe('ProfileScreen', () => {
       });
     });
 
+    it('pre-fills name with profile full name when adding new address', async () => {
+      const { getByText, getByDisplayValue } = render(<ProfileScreen />);
+
+      // Wait for profile to load (mock returns full_name: 'Test User')
+      await waitFor(() => {
+        expect(getByText('Test User')).toBeTruthy();
+      });
+
+      // Click Add Shipping Address
+      fireEvent.press(getByText('Add Shipping Address'));
+
+      // Name field should be pre-filled with profile full name
+      await waitFor(() => {
+        expect(getByDisplayValue('Test User')).toBeTruthy();
+      });
+    });
+
     it('opens edit form when pressing existing address', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -470,7 +487,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows validation error for missing name', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByDisplayValue } = render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -478,11 +495,14 @@ describe('ProfileScreen', () => {
 
       fireEvent.press(getByText('Add Shipping Address'));
 
+      // Name is pre-filled with profile full name, clear it
       await waitFor(() => {
-        expect(getByPlaceholderText('Full name')).toBeTruthy();
+        expect(getByDisplayValue('Test User')).toBeTruthy();
       });
 
-      // Try to save without entering name
+      fireEvent.changeText(getByDisplayValue('Test User'), '');
+
+      // Try to save without name
       fireEvent.press(getByText('Save Address'));
 
       await waitFor(() => {
