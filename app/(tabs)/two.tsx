@@ -695,7 +695,7 @@ export default function ProfileScreen() {
   const handleEditShippingAddress = () => {
     setTempShippingAddress(shippingAddress || {
       id: null,
-      name: '',
+      name: profile.full_name || '',
       street_address: '',
       street_address_2: '',
       city: '',

@@ -179,7 +179,7 @@ describe('OrderStickersScreen', () => {
       );
     });
 
-    it('checkbox defaults to unchecked when address exists', async () => {
+    it('checkbox defaults to checked when address exists', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
           return Promise.resolve({
@@ -208,7 +208,7 @@ describe('OrderStickersScreen', () => {
         expect(getByDisplayValue('John Doe')).toBeTruthy();
       });
 
-      // Checkbox should still be visible
+      // Checkbox should be visible and checked by default
       expect(getByText('Save as my default address')).toBeTruthy();
     });
 
@@ -391,6 +391,9 @@ describe('OrderStickersScreen', () => {
       await waitFor(() => {
         expect(getByDisplayValue('John Doe')).toBeTruthy();
       });
+
+      // Toggle checkbox OFF (it's checked by default now)
+      fireEvent.press(getByText('Save as my default address'));
 
       // Clear the previous mock calls
       mockFetch.mockClear();
