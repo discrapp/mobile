@@ -332,6 +332,98 @@ export default function RecoveryDetailScreen() {
     );
   };
 
+  const handleMarkRetrieved = async () => {
+    Alert.alert(
+      'Mark as Retrieved',
+      'Confirm that you have picked up your disc from the drop-off location?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Confirm',
+          onPress: async () => {
+            setActionLoading(true);
+            try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) throw new Error('Not authenticated');
+
+              const response = await fetch(
+                `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/mark-disc-retrieved`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
+                  },
+                  body: JSON.stringify({ recovery_event_id: recoveryId }),
+                }
+              );
+
+              const data = await response.json();
+              if (!response.ok) throw new Error(data.error || 'Failed to mark as retrieved');
+
+              Alert.alert('Success', 'Your disc has been marked as retrieved!', [
+                { text: 'OK', onPress: () => router.back() },
+              ]);
+            } catch (err) {
+              Alert.alert('Error', err instanceof Error ? err.message : 'Failed to mark as retrieved');
+            } finally {
+              setActionLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleRelinquishDisc = async () => {
+    const finderName = recovery?.finder.display_name || 'the finder';
+    const discName = recovery?.disc?.name || 'this disc';
+
+    Alert.alert(
+      'Give Disc to Finder?',
+      `This will transfer ownership of ${discName} to ${finderName}. They will pick it up from the drop-off location. This action cannot be undone.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Give to Finder',
+          style: 'destructive',
+          onPress: async () => {
+            setActionLoading(true);
+            try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) throw new Error('Not authenticated');
+
+              const response = await fetch(
+                `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/relinquish-disc`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
+                  },
+                  body: JSON.stringify({ recovery_event_id: recoveryId }),
+                }
+              );
+
+              const data = await response.json();
+              if (!response.ok) throw new Error(data.error || 'Failed to relinquish disc');
+
+              Alert.alert(
+                'Disc Given to Finder',
+                `${discName} has been transferred to ${finderName}. It will now appear in their collection.`,
+                [{ text: 'OK', onPress: () => router.replace('/') }]
+              );
+            } catch (err) {
+              Alert.alert('Error', err instanceof Error ? err.message : 'Failed to relinquish disc');
+            } finally {
+              setActionLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleAbandonDisc = async () => {
     const discName = recovery?.disc?.name || 'this disc';
 
@@ -548,11 +640,11 @@ export default function RecoveryDetailScreen() {
               <Text style={styles.directionsButtonText}>Get Directions to Pickup</Text>
             </Pressable>
 
-            {/* Mark as Recovered button for owner */}
+            {/* Mark as Retrieved button for owner */}
             {isOwner && (
               <Pressable
                 style={styles.primaryButton}
-                onPress={handleCompleteRecovery}
+                onPress={handleMarkRetrieved}
                 disabled={actionLoading}
               >
                 {actionLoading ? (
@@ -560,7 +652,7 @@ export default function RecoveryDetailScreen() {
                 ) : (
                   <>
                     <FontAwesome name="check" size={18} color="#fff" />
-                    <Text style={styles.primaryButtonText}>Mark as Recovered</Text>
+                    <Text style={styles.primaryButtonText}>I Picked Up My Disc</Text>
                   </>
                 )}
               </Pressable>
@@ -806,16 +898,27 @@ export default function RecoveryDetailScreen() {
         </Pressable>
       )}
 
-      {/* Abandon Disc button - only visible to owner when disc is dropped off */}
+      {/* Relinquish or Abandon Disc - only visible to owner when disc is dropped off */}
       {canAbandon && (
-        <Pressable
-          style={[styles.abandonButton, actionLoading && styles.buttonDisabled]}
-          onPress={handleAbandonDisc}
-          disabled={actionLoading}
-        >
-          <FontAwesome name="times-circle" size={18} color="#E74C3C" />
-          <Text style={styles.abandonButtonText}>Abandon Disc</Text>
-        </Pressable>
+        <RNView style={styles.dropOffOwnerActions}>
+          <Text style={styles.dropOffActionsLabel}>Don't want to pick it up?</Text>
+          <Pressable
+            style={[styles.relinquishButton, actionLoading && styles.buttonDisabled]}
+            onPress={handleRelinquishDisc}
+            disabled={actionLoading}
+          >
+            <FontAwesome name="gift" size={18} color={Colors.violet.primary} />
+            <Text style={styles.relinquishButtonText}>Give to Finder</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.abandonButton, actionLoading && styles.buttonDisabled]}
+            onPress={handleAbandonDisc}
+            disabled={actionLoading}
+          >
+            <FontAwesome name="times-circle" size={18} color="#E74C3C" />
+            <Text style={styles.abandonButtonText}>Abandon Disc</Text>
+          </Pressable>
+        </RNView>
       )}
 
     </ScrollView>
@@ -1246,5 +1349,32 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 12,
     marginTop: 16,
+  },
+  dropOffOwnerActions: {
+    marginTop: 24,
+    gap: 12,
+  },
+  dropOffActionsLabel: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  relinquishButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: Colors.violet.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+  },
+  relinquishButtonText: {
+    color: Colors.violet.primary,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
