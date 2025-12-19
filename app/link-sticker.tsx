@@ -10,8 +10,8 @@ import {
   ScrollView,
   View as RNView,
 } from 'react-native';
-import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
-import { Text, View } from '@/components/Themed';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Text } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
@@ -33,6 +33,11 @@ export default function LinkStickerScreen() {
 
   const [shortCode, setShortCode] = useState(params.code || '');
   const [loading, setLoading] = useState(false);
+
+  // Dynamic styles for dark/light mode
+  const dynamicContainerStyle = {
+    backgroundColor: isDark ? '#000' : '#fff',
+  };
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [discs, setDiscs] = useState<Disc[]>([]);
@@ -238,23 +243,16 @@ export default function LinkStickerScreen() {
   };
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: 'Link Sticker',
-          headerBackTitle: 'Back',
-        }}
-      />
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView
+      style={[styles.container, dynamicContainerStyle]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView
+        style={[styles.scrollView, dynamicContainerStyle]}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled">
           {!verified ? (
             // Step 1: Enter/Verify Code
-            <View style={styles.section}>
+            <RNView style={styles.section}>
               <RNView style={styles.iconContainer}>
                 <FontAwesome name="qrcode" size={48} color={Colors.violet.primary} />
               </RNView>
@@ -293,10 +291,10 @@ export default function LinkStickerScreen() {
                   </>
                 )}
               </Pressable>
-            </View>
+            </RNView>
           ) : (
             // Step 2: Select Disc
-            <View style={styles.section}>
+            <RNView style={styles.section}>
               <RNView style={styles.verifiedBadge}>
                 <FontAwesome name="check-circle" size={20} color="#27AE60" />
                 <Text style={styles.verifiedText}>Code Verified: {shortCode}</Text>
@@ -354,11 +352,10 @@ export default function LinkStickerScreen() {
                   </Pressable>
                 </>
               )}
-            </View>
+            </RNView>
           )}
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
   );
 }
 

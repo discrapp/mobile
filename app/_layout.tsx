@@ -186,6 +186,7 @@ function RootLayoutNav() {
         <Stack.Screen name="drop-off/[id]" options={{ title: 'Drop Off Location', headerBackTitle: 'Back' }} />
         <Stack.Screen name="d/[code]" options={{ headerShown: false }} />
         <Stack.Screen name="claim-disc" options={{ title: 'Claim Disc', headerShown: false }} />
+        <Stack.Screen name="link-sticker" options={{ title: 'Link Sticker', headerBackTitle: 'Back' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
