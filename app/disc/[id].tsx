@@ -112,6 +112,15 @@ export default function DiscDetailScreen() {
     navigation.setOptions({
       headerBackTitle: 'Back',
       title: disc ? (disc.mold || disc.name) : 'Disc Details',
+      headerLeft: () => (
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: -8 }}>
+          <FontAwesome name="chevron-left" size={18} color={Colors.violet.primary} />
+          <Text style={{ color: Colors.violet.primary, fontSize: 17, marginLeft: 4 }}>Back</Text>
+        </Pressable>
+      ),
       headerRight: disc ? () => (
         <Pressable
           onPress={() => router.push(`/edit-disc/${disc.id}`)}
