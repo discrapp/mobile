@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, Alert, ScrollView, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ScrollView, TextInput, ActivityIndicator, RefreshControl } from 'react-native';
 import { Image } from 'expo-image';
 import { Text, View } from '@/components/Themed';
 import { useAuth } from '@/contexts/AuthContext';
@@ -99,6 +99,23 @@ export default function ProfileScreen() {
     postal_code: '',
     country: 'US',
   });
+
+  // Pull-to-refresh state
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([
+      fetchProfile(),
+      fetchDiscsReturned(),
+      fetchDiscsFound(),
+      fetchMyDiscsFoundByOthers(),
+      fetchActiveRecoveries(),
+      fetchMyFinds(),
+      fetchShippingAddress(),
+    ]);
+    setRefreshing(false);
+  }, [user?.id]);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -849,7 +866,16 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView
+      style={styles.scrollView}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={Colors.violet.primary}
+          colors={[Colors.violet.primary]}
+        />
+      }>
       <View style={styles.container}>
         {/* Profile Photo */}
         <TouchableOpacity
