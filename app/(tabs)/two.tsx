@@ -1250,31 +1250,47 @@ export default function ProfileScreen() {
                   <FontAwesome name="check" size={12} color="#10b981" />
                 </View>
               )}
+              {profile.stripe_connect_status === 'pending' && (
+                <View style={styles.pendingBadge}>
+                  <FontAwesome name="clock-o" size={12} color="#f59e0b" />
+                </View>
+              )}
+              {profile.stripe_connect_status === 'restricted' && (
+                <View style={styles.restrictedBadge}>
+                  <FontAwesome name="exclamation-circle" size={12} color="#ef4444" />
+                </View>
+              )}
             </View>
             {profile.stripe_connect_status === 'active' ? (
               <Text style={styles.paymentMethodStatusText}>Ready to receive card payments</Text>
             ) : profile.stripe_connect_status === 'pending' ? (
-              <TouchableOpacity
-                style={styles.paymentMethodSecondaryButton}
-                onPress={handleSetupPayouts}
-                disabled={connectLoading}>
-                {connectLoading ? (
-                  <ActivityIndicator size="small" color={Colors.violet.primary} />
-                ) : (
-                  <Text style={styles.paymentMethodSecondaryButtonText}>Continue Setup</Text>
-                )}
-              </TouchableOpacity>
+              <View style={styles.paymentMethodStatusRow}>
+                <Text style={styles.paymentMethodPendingText}>Setup incomplete</Text>
+                <TouchableOpacity
+                  style={styles.paymentMethodSecondaryButton}
+                  onPress={handleSetupPayouts}
+                  disabled={connectLoading}>
+                  {connectLoading ? (
+                    <ActivityIndicator size="small" color={Colors.violet.primary} />
+                  ) : (
+                    <Text style={styles.paymentMethodSecondaryButtonText}>Continue Setup</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
             ) : profile.stripe_connect_status === 'restricted' ? (
-              <TouchableOpacity
-                style={styles.paymentMethodSecondaryButton}
-                onPress={handleSetupPayouts}
-                disabled={connectLoading}>
-                {connectLoading ? (
-                  <ActivityIndicator size="small" color={Colors.violet.primary} />
-                ) : (
-                  <Text style={styles.paymentMethodSecondaryButtonText}>Fix Issues</Text>
-                )}
-              </TouchableOpacity>
+              <View style={styles.paymentMethodStatusRow}>
+                <Text style={styles.paymentMethodRestrictedText}>Action needed</Text>
+                <TouchableOpacity
+                  style={styles.paymentMethodSecondaryButton}
+                  onPress={handleSetupPayouts}
+                  disabled={connectLoading}>
+                  {connectLoading ? (
+                    <ActivityIndicator size="small" color={Colors.violet.primary} />
+                  ) : (
+                    <Text style={styles.paymentMethodSecondaryButtonText}>Fix Issues</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
             ) : (
               <TouchableOpacity
                 style={styles.paymentMethodSecondaryButton}
@@ -1902,5 +1918,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(16, 185, 129, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  pendingBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  restrictedBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paymentMethodStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  paymentMethodPendingText: {
+    fontSize: 13,
+    color: '#f59e0b',
+  },
+  paymentMethodRestrictedText: {
+    fontSize: 13,
+    color: '#ef4444',
   },
 });
