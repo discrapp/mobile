@@ -62,6 +62,7 @@ interface Disc {
   name: string;
   manufacturer?: string;
   mold?: string;
+  category?: string;
   plastic?: string;
   weight?: number;
   color?: string;
@@ -108,19 +109,18 @@ export default function DiscDetailScreen() {
   const [permission, requestPermission] = useCameraPermissions();
 
   useLayoutEffect(() => {
-    if (disc) {
-      navigation.setOptions({
-        title: disc.mold || disc.name,
-        headerRight: () => (
-          <Pressable
-            onPress={() => router.push(`/edit-disc/${disc.id}`)}
-            hitSlop={8}
-            style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-            <FontAwesome name="edit" size={18} color={Colors.violet.primary} />
-          </Pressable>
-        ),
-      });
-    }
+    navigation.setOptions({
+      headerBackTitle: 'Back',
+      title: disc ? (disc.mold || disc.name) : 'Disc Details',
+      headerRight: disc ? () => (
+        <Pressable
+          onPress={() => router.push(`/edit-disc/${disc.id}`)}
+          hitSlop={8}
+          style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <FontAwesome name="edit" size={18} color={Colors.violet.primary} />
+        </Pressable>
+      ) : undefined,
+    });
   }, [disc, navigation, router]);
 
   useFocusEffect(
@@ -547,6 +547,13 @@ export default function DiscDetailScreen() {
 
         {/* Details Grid */}
         <View style={styles.detailsGrid}>
+          {disc.category && (
+            <View style={styles.detailItem}>
+              <Text style={styles.detailLabel}>Type</Text>
+              <Text style={styles.detailValue}>{disc.category}</Text>
+            </View>
+          )}
+
           {disc.plastic && (
             <View style={styles.detailItem}>
               <Text style={styles.detailLabel}>Plastic</Text>
