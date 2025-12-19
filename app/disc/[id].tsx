@@ -111,7 +111,6 @@ export default function DiscDetailScreen() {
     if (disc) {
       navigation.setOptions({
         title: disc.mold || disc.name,
-        headerBackTitle: 'My Bag',
         headerRight: () => (
           <Pressable
             onPress={() => router.push(`/edit-disc/${disc.id}`)}

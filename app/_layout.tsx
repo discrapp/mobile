@@ -174,8 +174,23 @@ function RootLayoutNav() {
             ),
           })}
         />
-        <Stack.Screen name="disc/[id]" options={{ title: 'Disc Details' }} />
-        <Stack.Screen name="edit-disc/[id]" options={{ presentation: 'modal', title: 'Edit Disc' }} />
+        <Stack.Screen name="disc/[id]" options={{ title: 'Disc Details', headerBackTitle: 'Back' }} />
+        <Stack.Screen
+          name="edit-disc/[id]"
+          options={({ navigation }) => ({
+            presentation: 'modal',
+            title: 'Edit Disc',
+            headerRight: () => (
+              <Pressable
+                onPress={() => navigation.goBack()}
+                hitSlop={8}
+                style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FontAwesome name="times" size={18} color={colorScheme === 'dark' ? '#999' : '#666'} />
+              </Pressable>
+            ),
+          })}
+        />
         <Stack.Screen name="recovery/[id]" options={{ title: 'Recovery Details', headerBackTitle: 'Back' }} />
         <Stack.Screen name="propose-meetup/[id]" options={{ presentation: 'modal', title: 'Propose Meetup' }} />
         <Stack.Screen name="drop-off/[id]" options={{ title: 'Drop Off Location', headerBackTitle: 'Back' }} />
