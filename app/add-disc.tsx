@@ -473,7 +473,17 @@ export default function AddDiscScreen() {
         keyboardVerticalOffset={100}>
       <ScrollView style={[styles.scrollView, dynamicContainerStyle]} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
-          <Text style={styles.title}>Add Disc to Your Bag</Text>
+          {/* Header with close button */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Add Disc to Your Bag</Text>
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => router.back()}
+              hitSlop={8}
+            >
+              <FontAwesome name="times" size={24} color={isDark ? '#999' : '#666'} />
+            </Pressable>
+          </View>
 
           {/* QR Code Section */}
           <View style={[styles.qrSection, { backgroundColor: isDark ? '#1a1a1a' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }]}>
@@ -818,10 +828,18 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
+  },
+  closeButton: {
+    padding: 4,
   },
   sectionTitle: {
     fontSize: 18,
