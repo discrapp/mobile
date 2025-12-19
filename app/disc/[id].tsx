@@ -111,22 +111,17 @@ export default function DiscDetailScreen() {
       navigation.setOptions({
         title: disc.mold || disc.name,
         headerBackTitle: 'My Bag',
-        headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/my-bag')}
-            activeOpacity={0.6}
-            style={{ marginLeft: 16, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <FontAwesome name="chevron-left" size={16} color={Colors.violet.primary} />
-            <Text style={{ color: Colors.violet.primary, fontSize: 17 }}>My Bag</Text>
-          </TouchableOpacity>
-        ),
         headerRight: () => (
-          <TouchableOpacity
+          <Pressable
             onPress={() => router.push(`/edit-disc/${disc.id}`)}
-            activeOpacity={0.6}
-            style={{ marginRight: 16 }}>
-            <FontAwesome name="edit" size={22} color={Colors.violet.primary} />
-          </TouchableOpacity>
+            hitSlop={8}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 8,
+            }}>
+            <FontAwesome name="edit" size={18} color={Colors.violet.primary} />
+          </Pressable>
         ),
       });
     }

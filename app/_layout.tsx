@@ -166,15 +166,12 @@ function RootLayoutNav() {
                 onPress={() => navigation.goBack()}
                 hitSlop={8}
                 style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: 15,
-                  backgroundColor: colorScheme === 'dark' ? '#333' : '#e5e5e5',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  padding: 8,
                 }}
               >
-                <FontAwesome name="times" size={16} color={colorScheme === 'dark' ? '#999' : '#666'} />
+                <FontAwesome name="times" size={20} color={colorScheme === 'dark' ? '#999' : '#666'} />
               </Pressable>
             ),
           })}
