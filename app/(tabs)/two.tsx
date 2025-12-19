@@ -1176,97 +1176,114 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Payment Settings Section */}
+        {/* Rewards & Payments Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Settings</Text>
+          <Text style={styles.sectionTitle}>Rewards & Payments</Text>
           <Text style={styles.sectionDescription}>
-            Add your Venmo username to receive rewards when someone returns your disc.
+            Set up how you receive rewards when you find and return discs.
           </Text>
 
-          {/* Venmo Username */}
-          <View style={styles.editableRow}>
-            <View style={styles.venmoIconContainer}>
-              <Text style={styles.venmoIcon}>V</Text>
-            </View>
-            <View style={styles.editableContent}>
-              <Text style={styles.detailLabel}>Venmo Username</Text>
-              {editingVenmoUsername ? (
-                <View style={styles.editInputContainer}>
-                  <View style={styles.venmoInputWrapper}>
-                    <Text style={styles.venmoAtSymbol}>@</Text>
-                    <TextInput
-                      style={[styles.editInput, styles.venmoInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
-                      value={tempVenmoUsername}
-                      onChangeText={setTempVenmoUsername}
-                      placeholder="your-username"
-                      placeholderTextColor="#999"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                    />
-                  </View>
-                  <TouchableOpacity onPress={handleSaveVenmoUsername} disabled={saving}>
-                    <FontAwesome name="check" size={18} color={Colors.violet.primary} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setEditingVenmoUsername(false)} style={styles.cancelButton}>
-                    <FontAwesome name="times" size={18} color="#999" />
-                  </TouchableOpacity>
+          {/* Venmo - Primary Option */}
+          <View style={styles.paymentMethodCard}>
+            <View style={styles.paymentMethodHeader}>
+              <View style={styles.venmoIconContainer}>
+                <Text style={styles.venmoIcon}>V</Text>
+              </View>
+              <View style={styles.paymentMethodInfo}>
+                <Text style={styles.paymentMethodTitle}>Venmo</Text>
+                <Text style={styles.paymentMethodRecommended}>Recommended - No setup required</Text>
+              </View>
+              {profile.venmo_username && (
+                <View style={styles.checkBadge}>
+                  <FontAwesome name="check" size={12} color="#10b981" />
                 </View>
-              ) : (
-                <TouchableOpacity
-                  style={styles.editableValue}
-                  onPress={() => {
-                    setTempVenmoUsername(profile.venmo_username || '');
-                    setEditingVenmoUsername(true);
-                  }}>
-                  <Text style={profile.venmo_username ? styles.detailValue : styles.placeholderValue}>
-                    {profile.venmo_username ? `@${profile.venmo_username}` : 'Add Venmo username'}
-                  </Text>
-                  <FontAwesome name="pencil" size={14} color="#999" />
-                </TouchableOpacity>
               )}
             </View>
-          </View>
-        </View>
-
-        {/* Payout Setup Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payout Setup</Text>
-          <View style={styles.payoutContainer}>
-            <View style={styles.payoutInfo}>
-              <View style={[styles.payoutStatusBadge, { backgroundColor: getConnectStatusInfo(profile.stripe_connect_status).color + '20' }]}>
-                <FontAwesome
-                  name={getConnectStatusInfo(profile.stripe_connect_status).icon}
-                  size={14}
-                  color={getConnectStatusInfo(profile.stripe_connect_status).color}
-                />
-                <Text style={[styles.payoutStatusText, { color: getConnectStatusInfo(profile.stripe_connect_status).color }]}>
-                  {getConnectStatusInfo(profile.stripe_connect_status).label}
-                </Text>
+            {editingVenmoUsername ? (
+              <View style={styles.editInputContainer}>
+                <View style={styles.venmoInputWrapper}>
+                  <Text style={styles.venmoAtSymbol}>@</Text>
+                  <TextInput
+                    style={[styles.editInput, styles.venmoInput, { backgroundColor: isDark ? '#333' : '#fff', color: isDark ? '#fff' : '#000' }]}
+                    value={tempVenmoUsername}
+                    onChangeText={setTempVenmoUsername}
+                    placeholder="your-username"
+                    placeholderTextColor="#999"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+                <TouchableOpacity onPress={handleSaveVenmoUsername} disabled={saving}>
+                  <FontAwesome name="check" size={18} color={Colors.violet.primary} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setEditingVenmoUsername(false)} style={styles.cancelButton}>
+                  <FontAwesome name="times" size={18} color="#999" />
+                </TouchableOpacity>
               </View>
-              <Text style={styles.payoutDescription}>
-                {profile.stripe_connect_status === 'active'
-                  ? 'You can receive reward payments via credit card'
-                  : profile.stripe_connect_status === 'pending'
-                  ? 'Complete your payout setup to receive rewards'
-                  : profile.stripe_connect_status === 'restricted'
-                  ? 'Additional information needed for payouts'
-                  : 'Set up payouts to receive rewards when you find discs'}
-              </Text>
-            </View>
-            {profile.stripe_connect_status !== 'active' && (
+            ) : (
               <TouchableOpacity
-                style={styles.payoutButton}
+                style={styles.paymentMethodAction}
+                onPress={() => {
+                  setTempVenmoUsername(profile.venmo_username || '');
+                  setEditingVenmoUsername(true);
+                }}>
+                <Text style={profile.venmo_username ? styles.detailValue : styles.placeholderValue}>
+                  {profile.venmo_username ? `@${profile.venmo_username}` : 'Add your Venmo username'}
+                </Text>
+                <FontAwesome name="pencil" size={14} color="#999" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Credit Card - Optional */}
+          <View style={[styles.paymentMethodCard, styles.paymentMethodCardSecondary]}>
+            <View style={styles.paymentMethodHeader}>
+              <View style={styles.cardIconContainer}>
+                <FontAwesome name="credit-card" size={14} color="#6b7280" />
+              </View>
+              <View style={styles.paymentMethodInfo}>
+                <Text style={styles.paymentMethodTitleSecondary}>Credit Card</Text>
+                <Text style={styles.paymentMethodOptional}>Optional - Requires verification</Text>
+              </View>
+              {profile.stripe_connect_status === 'active' && (
+                <View style={styles.checkBadge}>
+                  <FontAwesome name="check" size={12} color="#10b981" />
+                </View>
+              )}
+            </View>
+            {profile.stripe_connect_status === 'active' ? (
+              <Text style={styles.paymentMethodStatusText}>Ready to receive card payments</Text>
+            ) : profile.stripe_connect_status === 'pending' ? (
+              <TouchableOpacity
+                style={styles.paymentMethodSecondaryButton}
                 onPress={handleSetupPayouts}
                 disabled={connectLoading}>
                 {connectLoading ? (
-                  <ActivityIndicator size="small" color="#fff" />
+                  <ActivityIndicator size="small" color={Colors.violet.primary} />
                 ) : (
-                  <>
-                    <FontAwesome name="credit-card" size={16} color="#fff" />
-                    <Text style={styles.payoutButtonText}>
-                      {profile.stripe_connect_status === 'none' ? 'Set Up Payouts' : 'Continue Setup'}
-                    </Text>
-                  </>
+                  <Text style={styles.paymentMethodSecondaryButtonText}>Continue Setup</Text>
+                )}
+              </TouchableOpacity>
+            ) : profile.stripe_connect_status === 'restricted' ? (
+              <TouchableOpacity
+                style={styles.paymentMethodSecondaryButton}
+                onPress={handleSetupPayouts}
+                disabled={connectLoading}>
+                {connectLoading ? (
+                  <ActivityIndicator size="small" color={Colors.violet.primary} />
+                ) : (
+                  <Text style={styles.paymentMethodSecondaryButtonText}>Fix Issues</Text>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.paymentMethodSecondaryButton}
+                onPress={handleSetupPayouts}
+                disabled={connectLoading}>
+                {connectLoading ? (
+                  <ActivityIndicator size="small" color={Colors.violet.primary} />
+                ) : (
+                  <Text style={styles.paymentMethodSecondaryButtonText}>Set Up (ID required)</Text>
                 )}
               </TouchableOpacity>
             )}
@@ -1807,44 +1824,83 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingLeft: 0,
   },
-  // Payout setup styles
-  payoutContainer: {
-    gap: 12,
+  // Payment method card styles
+  paymentMethodCard: {
+    backgroundColor: 'rgba(0, 140, 255, 0.05)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 140, 255, 0.2)',
   },
-  payoutInfo: {
-    gap: 8,
+  paymentMethodCardSecondary: {
+    backgroundColor: 'rgba(107, 114, 128, 0.05)',
+    borderColor: 'rgba(107, 114, 128, 0.2)',
+    marginBottom: 0,
   },
-  payoutStatusBadge: {
+  paymentMethodHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    gap: 6,
+    marginBottom: 12,
   },
-  payoutStatusText: {
-    fontSize: 14,
+  paymentMethodInfo: {
+    flex: 1,
+  },
+  paymentMethodTitle: {
+    fontSize: 16,
     fontWeight: '600',
   },
-  payoutDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
+  paymentMethodTitleSecondary: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#6b7280',
   },
-  payoutButton: {
+  paymentMethodRecommended: {
+    fontSize: 12,
+    color: '#10b981',
+    marginTop: 2,
+  },
+  paymentMethodOptional: {
+    fontSize: 12,
+    color: '#9ca3af',
+    marginTop: 2,
+  },
+  paymentMethodAction: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  paymentMethodStatusText: {
+    fontSize: 13,
+    color: '#10b981',
+  },
+  paymentMethodSecondaryButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(107, 114, 128, 0.3)',
+  },
+  paymentMethodSecondaryButtonText: {
+    fontSize: 13,
+    color: '#6b7280',
+  },
+  cardIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+    backgroundColor: 'rgba(107, 114, 128, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.violet.primary,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    gap: 8,
+    marginRight: 12,
   },
-  payoutButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+  checkBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
