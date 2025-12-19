@@ -91,6 +91,31 @@ jest.mock('expo-image-manipulator', () => ({
   SaveFormat: { JPEG: 'jpeg', PNG: 'png' },
 }));
 
+// Mock Sentry - prevent any real API calls during tests
+jest.mock('@sentry/react-native', () => ({
+  init: jest.fn(),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+  setUser: jest.fn(),
+  withScope: jest.fn((callback) => callback({ setExtras: jest.fn(), setTag: jest.fn() })),
+  addBreadcrumb: jest.fn(),
+  Severity: { Error: 'error', Warning: 'warning', Info: 'info' },
+}));
+
+// Mock our Sentry wrapper
+jest.mock('./lib/sentry', () => ({
+  initSentry: jest.fn(),
+  captureError: jest.fn(),
+  setUserContext: jest.fn(),
+  clearUserContext: jest.fn(),
+  Sentry: {
+    init: jest.fn(),
+    captureException: jest.fn(),
+    setUser: jest.fn(),
+    withScope: jest.fn((callback) => callback({ setExtras: jest.fn() })),
+  },
+}));
+
 // Mock Supabase
 jest.mock('./lib/supabase', () => ({
   supabase: {

@@ -9,6 +9,10 @@ import { Alert, AppState, AppStateStatus, Pressable } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { checkClipboardForCode } from '@/lib/deferredLinking';
+import { initSentry } from '@/lib/sentry';
+
+// Initialize Sentry as early as possible
+initSentry();
 
 export {
   // Catch any errors thrown by the Layout component.

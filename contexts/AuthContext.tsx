@@ -5,6 +5,7 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
+import { setUserContext, clearUserContext, captureError } from '@/lib/sentry';
 
 // Configure notification handler
 Notifications.setNotificationHandler({
@@ -126,6 +127,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Update Sentry user context
+      if (session?.user) {
+        setUserContext(session.user.id, session.user.email);
+      } else {
+        clearUserContext();
+      }
     });
 
     // Handle deep link OAuth callbacks
@@ -226,7 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'com.discrapp.com://',
+        redirectTo: 'com.discr.app://',
       },
     });
     return { error };
@@ -237,10 +245,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
     } catch (error) {
       console.error('Sign out error:', error);
+      captureError(error as Error, { operation: 'signOut' });
     }
     // Force clear state even if signOut fails
     setSession(null);
     setUser(null);
+    clearUserContext();
   };
 
   return (
