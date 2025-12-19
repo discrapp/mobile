@@ -19,6 +19,8 @@ import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Skeleton } from '@/components/Skeleton';
 import { openVenmoPayment } from '@/lib/venmoDeepLink';
+import * as WebBrowser from 'expo-web-browser';
+import { formatFeeHint, calculateTotalWithFee } from '@/lib/stripeFees';
 
 interface MeetupProposal {
   id: string;
@@ -74,6 +76,8 @@ interface RecoveryDetails {
     display_name: string;
     avatar_url?: string | null;
     venmo_username?: string | null;
+    stripe_connect_status?: string | null;
+    can_receive_card_payments?: boolean;
   };
   meetup_proposals: MeetupProposal[];
   drop_off?: DropOff | null;
@@ -91,6 +95,7 @@ export default function RecoveryDetailScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [markingPaid, setMarkingPaid] = useState(false);
+  const [cardPaymentLoading, setCardPaymentLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Set up custom back button that always works
@@ -539,6 +544,44 @@ export default function RecoveryDetailScreen() {
     }
   };
 
+  const handlePayWithCard = async () => {
+    if (!recovery?.disc?.reward_amount) {
+      Alert.alert('Error', 'Unable to process payment. No reward amount set.');
+      return;
+    }
+
+    setCardPaymentLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/send-reward-payment`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ recovery_event_id: recoveryId }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to create payment');
+
+      // Open Stripe Checkout in browser
+      await WebBrowser.openBrowserAsync(data.checkout_url);
+
+      // Refresh to check if payment was completed
+      fetchRecoveryDetails();
+    } catch (err) {
+      Alert.alert('Error', err instanceof Error ? err.message : 'Failed to process payment');
+    } finally {
+      setCardPaymentLoading(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -667,25 +710,58 @@ export default function RecoveryDetailScreen() {
             </RNView>
           )}
 
-          {/* Venmo reward button - shown to owner when finder has Venmo, reward set, and NOT already paid */}
-          {isOwner && recovery.disc?.reward_amount && recovery.disc.reward_amount > 0 && recovery.finder.venmo_username && !recovery.reward_paid_at && (
-            <Pressable style={styles.venmoButton} onPress={handleSendReward}>
-              <RNView style={styles.venmoIconBox}>
-                <Text style={styles.venmoIconText}>V</Text>
-              </RNView>
-              <Text style={styles.venmoButtonText}>
-                Send ${recovery.disc.reward_amount} Reward via Venmo
-              </Text>
-            </Pressable>
-          )}
+          {/* Payment options for owner when reward not yet paid */}
+          {isOwner && recovery.disc?.reward_amount && recovery.disc.reward_amount > 0 && !recovery.reward_paid_at && (
+            <RNView style={styles.paymentOptions}>
+              {/* Venmo button - shown when finder has Venmo */}
+              {recovery.finder.venmo_username && (
+                <Pressable style={styles.venmoButton} onPress={handleSendReward}>
+                  <RNView style={styles.venmoIconBox}>
+                    <Text style={styles.venmoIconText}>V</Text>
+                  </RNView>
+                  <RNView style={styles.paymentButtonContent}>
+                    <Text style={styles.venmoButtonText}>
+                      Send ${recovery.disc.reward_amount} via Venmo
+                    </Text>
+                    <Text style={styles.paymentFeeNote}>Free</Text>
+                  </RNView>
+                </Pressable>
+              )}
 
-          {/* Show message if reward exists but finder has no Venmo (and not already paid) */}
-          {isOwner && recovery.disc?.reward_amount && recovery.disc.reward_amount > 0 && !recovery.finder.venmo_username && !recovery.reward_paid_at && (
-            <RNView style={styles.noVenmoMessage}>
-              <FontAwesome name="info-circle" size={16} color="#666" />
-              <Text style={styles.noVenmoText}>
-                Contact {recovery.finder.display_name} directly to send the ${recovery.disc.reward_amount} reward
-              </Text>
+              {/* Card payment button - shown when finder has Stripe Connect */}
+              {recovery.finder.can_receive_card_payments && (
+                <Pressable
+                  style={styles.cardPaymentButton}
+                  onPress={handlePayWithCard}
+                  disabled={cardPaymentLoading}
+                >
+                  {cardPaymentLoading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <>
+                      <FontAwesome name="credit-card" size={18} color="#fff" />
+                      <RNView style={styles.paymentButtonContent}>
+                        <Text style={styles.cardPaymentButtonText}>
+                          Pay ${calculateTotalWithFee(recovery.disc.reward_amount).toFixed(2)} with Card
+                        </Text>
+                        <Text style={styles.cardPaymentFeeNote}>
+                          {formatFeeHint(recovery.disc.reward_amount)}
+                        </Text>
+                      </RNView>
+                    </>
+                  )}
+                </Pressable>
+              )}
+
+              {/* No payment options message - shown when neither option is available */}
+              {!recovery.finder.venmo_username && !recovery.finder.can_receive_card_payments && (
+                <RNView style={styles.noVenmoMessage}>
+                  <FontAwesome name="info-circle" size={16} color="#666" />
+                  <Text style={styles.noVenmoText}>
+                    Contact {recovery.finder.display_name} directly to send the ${recovery.disc.reward_amount} reward
+                  </Text>
+                </RNView>
+              )}
             </RNView>
           )}
 
@@ -1571,6 +1647,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
+  },
+  // Payment options container
+  paymentOptions: {
+    width: '100%',
+    gap: 12,
+    marginTop: 16,
+  },
+  paymentButtonContent: {
+    flex: 1,
+  },
+  paymentFeeNote: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    marginTop: 2,
+  },
+  cardPaymentButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    backgroundColor: Colors.violet.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    width: '100%',
+  },
+  cardPaymentButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  cardPaymentFeeNote: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    marginTop: 2,
   },
   // Reward received styles
   rewardReceivedBadge: {

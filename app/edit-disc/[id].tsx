@@ -26,6 +26,7 @@ import { CategoryPicker } from '@/components/CategoryPicker';
 import { CatalogDisc } from '@/hooks/useDiscCatalogSearch';
 import { compressImage } from '@/utils/imageCompression';
 import { FormFieldSkeleton, Skeleton } from '@/components/Skeleton';
+import { formatFeeHint } from '@/lib/stripeFees';
 
 interface FlightNumbers {
   speed: number | null;
@@ -702,6 +703,11 @@ export default function EditDiscScreen() {
                 keyboardType="decimal-pad"
               />
             </View>
+            {rewardAmount && parseFloat(rewardAmount) > 0 && (
+              <Text style={styles.feeHint}>
+                {formatFeeHint(parseFloat(rewardAmount))} • Venmo: ${parseFloat(rewardAmount).toFixed(2)} (free)
+              </Text>
+            )}
           </View>
 
           {/* Notes */}
@@ -843,6 +849,11 @@ const styles = StyleSheet.create({
   hintText: {
     fontSize: 12,
     color: '#999',
+    marginTop: 4,
+  },
+  feeHint: {
+    fontSize: 12,
+    color: '#666',
     marginTop: 4,
   },
   fieldSmall: {

@@ -28,6 +28,7 @@ import { PlasticPicker } from '@/components/PlasticPicker';
 import { CategoryPicker } from '@/components/CategoryPicker';
 import { CatalogDisc } from '@/hooks/useDiscCatalogSearch';
 import { compressImage } from '@/utils/imageCompression';
+import { formatFeeHint } from '@/lib/stripeFees';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -715,6 +716,11 @@ export default function AddDiscScreen() {
                 keyboardType="decimal-pad"
               />
             </View>
+            {rewardAmount && parseFloat(rewardAmount) > 0 && (
+              <Text style={styles.feeHint}>
+                {formatFeeHint(parseFloat(rewardAmount))} • Venmo: ${parseFloat(rewardAmount).toFixed(2)} (free)
+              </Text>
+            )}
           </View>
 
           {/* Notes */}
@@ -831,6 +837,11 @@ const styles = StyleSheet.create({
   hintText: {
     fontSize: 12,
     color: '#999',
+    marginTop: 4,
+  },
+  feeHint: {
+    fontSize: 12,
+    color: '#666',
     marginTop: 4,
   },
   fieldSmall: {

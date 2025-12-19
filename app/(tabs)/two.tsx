@@ -7,6 +7,7 @@ import Colors from '@/constants/Colors';
 import { useState, useEffect, useCallback } from 'react';
 import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
+import * as WebBrowser from 'expo-web-browser';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -15,12 +16,15 @@ import { RecoveryCardSkeleton, FormFieldSkeleton, Skeleton } from '@/components/
 
 type DisplayPreference = 'username' | 'full_name';
 
+type ConnectStatus = 'none' | 'pending' | 'active' | 'restricted';
+
 interface ProfileData {
   username: string | null;
   full_name: string | null;
   display_preference: DisplayPreference;
   avatar_url: string | null;
   venmo_username: string | null;
+  stripe_connect_status: ConnectStatus;
 }
 
 interface ShippingAddressData {
@@ -59,7 +63,9 @@ export default function ProfileScreen() {
     display_preference: 'username',
     avatar_url: null,
     venmo_username: null,
+    stripe_connect_status: 'none',
   });
+  const [connectLoading, setConnectLoading] = useState(false);
   const [avatarSignedUrl, setAvatarSignedUrl] = useState<string | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -117,7 +123,7 @@ export default function ProfileScreen() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name, display_preference, avatar_url, venmo_username')
+        .select('username, full_name, display_preference, avatar_url, venmo_username, stripe_connect_status')
         .eq('id', user.id)
         .single();
 
@@ -130,6 +136,7 @@ export default function ProfileScreen() {
           display_preference: data.display_preference || 'username',
           avatar_url: data.avatar_url,
           venmo_username: data.venmo_username,
+          stripe_connect_status: (data.stripe_connect_status as ConnectStatus) || 'none',
         });
 
         // If user has a custom avatar, fetch signed URL
@@ -721,6 +728,58 @@ export default function ProfileScreen() {
     setEditingShippingAddress(true);
   };
 
+  const handleSetupPayouts = async () => {
+    setConnectLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        Alert.alert('Error', 'Please sign in to set up payouts');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/create-connect-onboarding`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to start payout setup');
+      }
+
+      // Open the Stripe onboarding URL in browser
+      await WebBrowser.openBrowserAsync(data.onboarding_url);
+
+      // Refresh profile to get updated Connect status
+      await fetchProfile();
+    } catch (error) {
+      console.error('Error setting up payouts:', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to start payout setup');
+    } finally {
+      setConnectLoading(false);
+    }
+  };
+
+  const getConnectStatusInfo = (status: ConnectStatus) => {
+    switch (status) {
+      case 'active':
+        return { label: 'Ready', color: '#10b981', icon: 'check-circle' as const };
+      case 'pending':
+        return { label: 'Pending', color: '#f59e0b', icon: 'clock-o' as const };
+      case 'restricted':
+        return { label: 'Action Needed', color: '#ef4444', icon: 'exclamation-circle' as const };
+      default:
+        return { label: 'Not Set Up', color: '#6b7280', icon: 'credit-card' as const };
+    }
+  };
+
   useEffect(() => {
     const getGravatarUrl = async () => {
       if (user?.email) {
@@ -1140,6 +1199,51 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
               )}
             </View>
+          </View>
+        </View>
+
+        {/* Payout Setup Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Payout Setup</Text>
+          <View style={styles.payoutContainer}>
+            <View style={styles.payoutInfo}>
+              <View style={[styles.payoutStatusBadge, { backgroundColor: getConnectStatusInfo(profile.stripe_connect_status).color + '20' }]}>
+                <FontAwesome
+                  name={getConnectStatusInfo(profile.stripe_connect_status).icon}
+                  size={14}
+                  color={getConnectStatusInfo(profile.stripe_connect_status).color}
+                />
+                <Text style={[styles.payoutStatusText, { color: getConnectStatusInfo(profile.stripe_connect_status).color }]}>
+                  {getConnectStatusInfo(profile.stripe_connect_status).label}
+                </Text>
+              </View>
+              <Text style={styles.payoutDescription}>
+                {profile.stripe_connect_status === 'active'
+                  ? 'You can receive reward payments via credit card'
+                  : profile.stripe_connect_status === 'pending'
+                  ? 'Complete your payout setup to receive rewards'
+                  : profile.stripe_connect_status === 'restricted'
+                  ? 'Additional information needed for payouts'
+                  : 'Set up payouts to receive rewards when you find discs'}
+              </Text>
+            </View>
+            {profile.stripe_connect_status !== 'active' && (
+              <TouchableOpacity
+                style={styles.payoutButton}
+                onPress={handleSetupPayouts}
+                disabled={connectLoading}>
+                {connectLoading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <>
+                    <FontAwesome name="credit-card" size={16} color="#fff" />
+                    <Text style={styles.payoutButtonText}>
+                      {profile.stripe_connect_status === 'none' ? 'Set Up Payouts' : 'Continue Setup'}
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -1676,5 +1780,45 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0,
     paddingLeft: 0,
+  },
+  // Payout setup styles
+  payoutContainer: {
+    gap: 12,
+  },
+  payoutInfo: {
+    gap: 8,
+  },
+  payoutStatusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 6,
+  },
+  payoutStatusText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  payoutDescription: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
+  payoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.violet.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    gap: 8,
+  },
+  payoutButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

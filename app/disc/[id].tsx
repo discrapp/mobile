@@ -19,6 +19,7 @@ import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/components/useColorScheme';
 import { DiscDetailSkeleton } from '@/components/Skeleton';
+import { formatFeeHint } from '@/lib/stripeFees';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -642,10 +643,13 @@ export default function DiscDetailScreen() {
         )}
 
         {/* Reward Amount */}
-        {disc.reward_amount && (
+        {disc.reward_amount && parseFloat(disc.reward_amount) > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Reward Amount</Text>
             <Text style={styles.rewardAmount}>${disc.reward_amount}</Text>
+            <Text style={styles.feeHint}>
+              {formatFeeHint(parseFloat(disc.reward_amount))} • Venmo: ${parseFloat(disc.reward_amount).toFixed(2)} (free)
+            </Text>
           </View>
         )}
 
@@ -875,6 +879,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: Colors.violet.primary,
+  },
+  feeHint: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
   },
   qrCodeContainer: {
     alignItems: 'center',
