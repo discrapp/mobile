@@ -10,9 +10,12 @@ import {
   Pressable,
   Image,
   View,
+  Dimensions,
+  View as RNView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
@@ -25,6 +28,8 @@ import { PlasticPicker } from '@/components/PlasticPicker';
 import { CategoryPicker } from '@/components/CategoryPicker';
 import { CatalogDisc } from '@/hooks/useDiscCatalogSearch';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 interface FlightNumbers {
   speed: number | null;
   glide: number | null;
@@ -35,8 +40,17 @@ interface FlightNumbers {
 export default function AddDiscScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const textColor = Colors[colorScheme ?? 'light'].text;
   const [loading, setLoading] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+
+  // QR scanning state
+  const [showQrScanner, setShowQrScanner] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
+  const [qrCodeId, setQrCodeId] = useState<string | null>(null);
+  const [qrShortCode, setQrShortCode] = useState<string | null>(null);
+  const [qrLoading, setQrLoading] = useState(false);
 
   // Predefined color options
   const COLOR_OPTIONS = [
@@ -96,6 +110,149 @@ export default function AddDiscScreen() {
     // Clear any mold error since we selected a valid disc
     if (moldError) setMoldError('');
   }, [moldError]);
+
+  // QR Code scanning functions
+  const startQrScanning = async () => {
+    if (!permission?.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert(
+          'Camera Permission Required',
+          'Please grant camera permission to scan QR codes.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+    }
+    setHasScanned(false);
+    setShowQrScanner(true);
+  };
+
+  const handleBarcodeScan = async (result: BarcodeScanningResult) => {
+    if (hasScanned || qrLoading) return;
+    setHasScanned(true);
+    setShowQrScanner(false);
+
+    let scannedCode = result.data;
+
+    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    if (scannedCode.includes('/d/')) {
+      const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
+      if (match) {
+        scannedCode = match[1];
+      }
+    }
+
+    await processScannedQrCode(scannedCode);
+  };
+
+  const processScannedQrCode = async (code: string) => {
+    setQrLoading(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        Alert.alert('Error', 'You must be signed in to scan QR codes');
+        setQrLoading(false);
+        return;
+      }
+
+      // Look up the QR code
+      const lookupResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/lookup-qr-code?code=${encodeURIComponent(code.trim())}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      const lookupData = await lookupResponse.json();
+
+      if (!lookupData.qr_exists) {
+        Alert.alert('Invalid QR Code', 'This QR code was not found in our system.');
+        setQrLoading(false);
+        return;
+      }
+
+      // Handle different QR code statuses
+      if (lookupData.qr_status === 'deactivated') {
+        Alert.alert('QR Code Deactivated', 'This QR code has been deactivated and cannot be used.');
+        setQrLoading(false);
+        return;
+      }
+
+      if (lookupData.qr_status === 'active' || lookupData.found) {
+        Alert.alert(
+          'QR Code Already Linked',
+          'This QR code is already linked to a disc. Each QR code can only be linked to one disc.'
+        );
+        setQrLoading(false);
+        return;
+      }
+
+      if (lookupData.qr_status === 'assigned' && !lookupData.is_assignee) {
+        Alert.alert(
+          'QR Code Unavailable',
+          'This QR code has already been claimed by another user.'
+        );
+        setQrLoading(false);
+        return;
+      }
+
+      // QR code is available - either 'generated' (unclaimed) or 'assigned' to current user
+      if (lookupData.qr_status === 'generated') {
+        // Claim the QR code first
+        const assignResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/assign-qr-code`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ qr_code: code.trim() }),
+          }
+        );
+
+        const assignData = await assignResponse.json();
+
+        if (!assignResponse.ok || !assignData.success) {
+          Alert.alert('Error', assignData.error || 'Failed to claim QR code');
+          setQrLoading(false);
+          return;
+        }
+
+        // Successfully claimed - store the QR code ID
+        setQrCodeId(assignData.qr_code.id);
+        setQrShortCode(assignData.qr_code.short_code);
+        Alert.alert(
+          'QR Code Linked!',
+          `QR code ${assignData.qr_code.short_code} will be linked to this disc when you save.`
+        );
+      } else if (lookupData.qr_status === 'assigned' && lookupData.is_assignee) {
+        // Already assigned to user - use the qr_code_id from the API
+        setQrCodeId(lookupData.qr_code_id);
+        setQrShortCode(lookupData.qr_code);
+        Alert.alert(
+          'QR Code Ready',
+          `QR code ${lookupData.qr_code} is already claimed by you. It will be linked when you save.`
+        );
+      }
+    } catch (error) {
+      console.error('QR scan error:', error);
+      Alert.alert('Error', 'Failed to process QR code. Please try again.');
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const removeQrCode = () => {
+    setQrCodeId(null);
+    setQrShortCode(null);
+  };
 
   const validateForm = (): boolean => {
     let isValid = true;
@@ -204,6 +361,7 @@ export default function AddDiscScreen() {
         flight_numbers: flightNumbers,
         reward_amount: rewardAmount ? parseFloat(rewardAmount) : undefined, // Send as dollars (decimal)
         notes: notes.trim() || undefined,
+        qr_code_id: qrCodeId || undefined, // Link QR code if scanned
       };
 
       console.log('Creating disc with:', JSON.stringify(requestBody, null, 2));
@@ -306,6 +464,43 @@ export default function AddDiscScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
           <Text style={styles.title}>Add Disc to Your Bag</Text>
+
+          {/* QR Code Section */}
+          <View style={[styles.qrSection, { backgroundColor: isDark ? '#1a1a1a' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }]}>
+            {qrShortCode ? (
+              <View style={styles.qrLinkedContainer}>
+                <View style={styles.qrLinkedInfo}>
+                  <FontAwesome name="qrcode" size={24} color={Colors.violet.primary} />
+                  <View style={styles.qrLinkedText}>
+                    <Text style={styles.qrLinkedLabel}>QR Code Linked</Text>
+                    <Text style={[styles.qrLinkedCode, { color: textColor }]}>{qrShortCode}</Text>
+                  </View>
+                </View>
+                <Pressable onPress={removeQrCode} style={styles.qrRemoveButton}>
+                  <FontAwesome name="times-circle" size={24} color="#999" />
+                </Pressable>
+              </View>
+            ) : (
+              <Pressable
+                style={styles.qrScanButton}
+                onPress={startQrScanning}
+                disabled={qrLoading}
+              >
+                {qrLoading ? (
+                  <ActivityIndicator size="small" color={Colors.violet.primary} />
+                ) : (
+                  <>
+                    <FontAwesome name="qrcode" size={24} color={Colors.violet.primary} />
+                    <View style={styles.qrScanTextContainer}>
+                      <Text style={styles.qrScanTitle}>Scan QR Sticker</Text>
+                      <Text style={styles.qrScanSubtitle}>Link an AceBack sticker to this disc</Text>
+                    </View>
+                    <FontAwesome name="chevron-right" size={16} color="#999" />
+                  </>
+                )}
+              </Pressable>
+            )}
+          </View>
 
           {/* Mold - Required with Autocomplete */}
           <View style={[styles.field, styles.autocompleteField]}>
@@ -565,6 +760,37 @@ export default function AddDiscScreen() {
         onClose={() => setShowCropper(false)}
         onCropComplete={handleCropComplete}
       />
+
+      {/* QR Scanner Modal */}
+      {showQrScanner && (
+        <RNView style={styles.scannerContainer}>
+          <CameraView
+            style={styles.camera}
+            facing="back"
+            barcodeScannerSettings={{
+              barcodeTypes: ['qr'],
+            }}
+            onBarcodeScanned={hasScanned ? undefined : handleBarcodeScan}
+          />
+          <RNView style={styles.scannerOverlay}>
+            <RNView style={styles.scannerHeader}>
+              <Text style={styles.scannerTitle}>Scan QR Sticker</Text>
+              <Text style={styles.scannerSubtitle}>
+                Point your camera at an AceBack QR sticker
+              </Text>
+            </RNView>
+            <RNView style={styles.scannerFrame}>
+              <RNView style={[styles.cornerBorder, styles.topLeft]} />
+              <RNView style={[styles.cornerBorder, styles.topRight]} />
+              <RNView style={[styles.cornerBorder, styles.bottomLeft]} />
+              <RNView style={[styles.cornerBorder, styles.bottomRight]} />
+            </RNView>
+            <Pressable style={styles.cancelScanButton} onPress={() => setShowQrScanner(false)}>
+              <Text style={styles.cancelScanText}>Cancel</Text>
+            </Pressable>
+          </RNView>
+        </RNView>
+      )}
     </>
   );
 }
@@ -771,6 +997,146 @@ const styles = StyleSheet.create({
   },
   buttonSecondaryText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // QR Section styles
+  qrSection: {
+    borderWidth: 1,
+    borderRadius: 12,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  qrScanButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  qrScanTextContainer: {
+    flex: 1,
+  },
+  qrScanTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  qrScanSubtitle: {
+    fontSize: 13,
+    color: '#999',
+    marginTop: 2,
+  },
+  qrLinkedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  qrLinkedInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  qrLinkedText: {
+    flex: 1,
+  },
+  qrLinkedLabel: {
+    fontSize: 14,
+    color: '#2ECC71',
+    fontWeight: '600',
+  },
+  qrLinkedCode: {
+    fontSize: 18,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    letterSpacing: 1,
+    marginTop: 2,
+  },
+  qrRemoveButton: {
+    padding: 4,
+  },
+  // Scanner styles
+  scannerContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#000',
+    zIndex: 9999,
+  },
+  camera: {
+    flex: 1,
+  },
+  scannerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  scannerHeader: {
+    alignItems: 'center',
+  },
+  scannerTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerSubtitle: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerFrame: {
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_WIDTH * 0.7,
+    position: 'relative',
+  },
+  cornerBorder: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderColor: Colors.violet.primary,
+  },
+  topLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderTopLeftRadius: 8,
+  },
+  topRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderTopRightRadius: 8,
+  },
+  bottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderBottomLeftRadius: 8,
+  },
+  bottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderBottomRightRadius: 8,
+  },
+  cancelScanButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+  },
+  cancelScanText: {
+    color: '#333',
     fontSize: 16,
     fontWeight: '600',
   },
