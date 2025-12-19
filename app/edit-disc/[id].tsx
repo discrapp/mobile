@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -19,6 +19,8 @@ import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import CameraWithOverlay from '@/components/CameraWithOverlay';
 import ImageCropperWithCircle from '@/components/ImageCropperWithCircle';
+import { DiscAutocomplete } from '@/components/DiscAutocomplete';
+import { CatalogDisc } from '@/hooks/useDiscCatalogSearch';
 
 interface FlightNumbers {
   speed: number | null;
@@ -94,6 +96,21 @@ export default function EditDiscScreen() {
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
+
+  // Handler for when a disc is selected from autocomplete
+  const handleDiscSelected = useCallback((disc: CatalogDisc) => {
+    setMold(disc.mold);
+    setManufacturer(disc.manufacturer);
+
+    // Auto-fill flight numbers if available
+    if (disc.speed !== null) setSpeed(disc.speed.toString());
+    if (disc.glide !== null) setGlide(disc.glide.toString());
+    if (disc.turn !== null) setTurn(disc.turn.toString());
+    if (disc.fade !== null) setFade(disc.fade.toString());
+
+    // Clear any mold error since we selected a valid disc
+    if (moldError) setMoldError('');
+  }, [moldError]);
 
   useEffect(() => {
     fetchDiscData();
@@ -467,22 +484,26 @@ export default function EditDiscScreen() {
         <View style={styles.form}>
           <Text style={styles.title}>Edit Disc</Text>
 
-          {/* Mold - Required */}
-          <View style={styles.field}>
+          {/* Mold - Required with Autocomplete */}
+          <View style={[styles.field, styles.autocompleteField]}>
             <Text style={styles.label}>
               Mold <Text style={styles.required}>*</Text>
             </Text>
-            <TextInput
-              style={[styles.input, moldError ? styles.inputError : null, { color: textColor }]}
+            <DiscAutocomplete
               value={mold}
               onChangeText={(text) => {
                 setMold(text);
                 if (moldError) setMoldError('');
               }}
+              onSelectDisc={handleDiscSelected}
               placeholder="e.g., Destroyer"
-              placeholderTextColor="#999"
+              error={moldError}
+              textColor={textColor}
             />
             {moldError ? <Text style={styles.errorText}>{moldError}</Text> : null}
+            <Text style={styles.hintText}>
+              Start typing to search known discs
+            </Text>
           </View>
 
           {/* Manufacturer */}
@@ -765,6 +786,14 @@ const styles = StyleSheet.create({
   },
   field: {
     marginBottom: 16,
+  },
+  autocompleteField: {
+    zIndex: 1000, // Ensure dropdown appears above other fields
+  },
+  hintText: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
   },
   fieldSmall: {
     flex: 1,
