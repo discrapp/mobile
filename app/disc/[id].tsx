@@ -116,7 +116,7 @@ export default function DiscDetailScreen() {
         <Pressable
           onPress={() => router.back()}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 20 }}
-          style={{ flexDirection: 'row', alignItems: 'center' }}>
+          style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
           <FontAwesome name="angle-left" size={28} color={Colors.violet.primary} style={{ marginRight: 6 }} />
           <Text style={{ color: Colors.violet.primary, fontSize: 17 }}>Back</Text>
         </Pressable>
