@@ -235,7 +235,7 @@ describe('AuthContext', () => {
       expect(mockSignInWithOAuth).toHaveBeenCalledWith({
         provider: 'google',
         options: {
-          redirectTo: 'com.aceback.app://',
+          redirectTo: 'com.discrapp.com://',
         },
       });
     });

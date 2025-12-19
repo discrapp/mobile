@@ -94,7 +94,7 @@ describe('OrderStickersScreen', () => {
       const { getByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText('AceBack QR Code Stickers')).toBeTruthy();
+        expect(getByText('Discr QR Code Stickers')).toBeTruthy();
       });
     });
 

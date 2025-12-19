@@ -407,9 +407,9 @@ export default function OrderDetailScreen() {
             Need help with your order? Contact us at{' '}
             <Text
               style={styles.helpLink}
-              onPress={() => Linking.openURL('mailto:support@aceback.app')}
+              onPress={() => Linking.openURL('mailto:support@discrapp.com')}
             >
-              support@aceback.app
+              support@discrapp.com
             </Text>
           </Text>
         </RNView>

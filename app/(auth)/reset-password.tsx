@@ -80,7 +80,7 @@ export default function ResetPassword() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logo}>AceBack</Text>
+          <Text style={styles.logo}>Discr</Text>
         </View>
 
         <Text style={styles.title}>Create New Password</Text>

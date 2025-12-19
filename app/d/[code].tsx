@@ -7,7 +7,7 @@ import Colors from '@/constants/Colors';
 
 /**
  * Deep link handler for QR code scans.
- * URL format: aceback://d/ABC123 or https://aceback.app/d/ABC123
+ * URL format: com.discr.app://d/ABC123 or https://discrapp.com/d/ABC123
  *
  * This route handles incoming QR code scans from the native camera.
  * It looks up the disc and redirects appropriately:

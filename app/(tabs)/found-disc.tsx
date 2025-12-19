@@ -266,7 +266,7 @@ export default function FoundDiscScreen() {
     setHasScanned(true);
     let scannedCode = result.data;
 
-    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
     if (scannedCode.includes('/d/')) {
       const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
       if (match) {

@@ -1,7 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 
 import {
-  isValidAceBackCode,
+  isValidDiscrCode,
   checkClipboardForCode,
 } from '@/lib/deferredLinking';
 
@@ -16,47 +16,47 @@ describe('deferredLinking', () => {
     jest.clearAllMocks();
   });
 
-  describe('isValidAceBackCode', () => {
+  describe('isValidDiscrCode', () => {
     it('returns true for valid 6-character uppercase code', () => {
-      expect(isValidAceBackCode('ABC123')).toBe(true);
+      expect(isValidDiscrCode('ABC123')).toBe(true);
     });
 
     it('returns true for valid 8-character uppercase code', () => {
-      expect(isValidAceBackCode('ABCD1234')).toBe(true);
+      expect(isValidDiscrCode('ABCD1234')).toBe(true);
     });
 
     it('returns true for valid 7-character code', () => {
-      expect(isValidAceBackCode('ABC1234')).toBe(true);
+      expect(isValidDiscrCode('ABC1234')).toBe(true);
     });
 
     it('converts lowercase to uppercase and validates', () => {
-      expect(isValidAceBackCode('abc123')).toBe(true);
+      expect(isValidDiscrCode('abc123')).toBe(true);
     });
 
     it('returns false for code shorter than 6 characters', () => {
-      expect(isValidAceBackCode('ABC12')).toBe(false);
+      expect(isValidDiscrCode('ABC12')).toBe(false);
     });
 
     it('returns false for code longer than 8 characters', () => {
-      expect(isValidAceBackCode('ABCDE12345')).toBe(false);
+      expect(isValidDiscrCode('ABCDE12345')).toBe(false);
     });
 
     it('returns false for empty string', () => {
-      expect(isValidAceBackCode('')).toBe(false);
+      expect(isValidDiscrCode('')).toBe(false);
     });
 
     it('returns false for null/undefined', () => {
-      expect(isValidAceBackCode(null as unknown as string)).toBe(false);
-      expect(isValidAceBackCode(undefined as unknown as string)).toBe(false);
+      expect(isValidDiscrCode(null as unknown as string)).toBe(false);
+      expect(isValidDiscrCode(undefined as unknown as string)).toBe(false);
     });
 
     it('returns false for code with special characters', () => {
-      expect(isValidAceBackCode('ABC-12')).toBe(false);
-      expect(isValidAceBackCode('ABC_12')).toBe(false);
+      expect(isValidDiscrCode('ABC-12')).toBe(false);
+      expect(isValidDiscrCode('ABC_12')).toBe(false);
     });
 
     it('trims whitespace before validating', () => {
-      expect(isValidAceBackCode('  ABC123  ')).toBe(true);
+      expect(isValidDiscrCode('  ABC123  ')).toBe(true);
     });
   });
 
@@ -87,10 +87,10 @@ describe('deferredLinking', () => {
       expect(result).toBe('ABC123');
     });
 
-    it('extracts code from AceBack URL in clipboard', async () => {
+    it('extracts code from Discr URL in clipboard', async () => {
       (Clipboard.hasStringAsync as jest.Mock).mockResolvedValue(true);
       (Clipboard.getStringAsync as jest.Mock).mockResolvedValue(
-        'https://aceback.app/d/XYZ789'
+        'https://discrapp.com/d/XYZ789'
       );
 
       const result = await checkClipboardForCode();
@@ -101,7 +101,7 @@ describe('deferredLinking', () => {
     it('extracts code from URL with lowercase', async () => {
       (Clipboard.hasStringAsync as jest.Mock).mockResolvedValue(true);
       (Clipboard.getStringAsync as jest.Mock).mockResolvedValue(
-        'https://aceback.app/d/xyz789'
+        'https://discrapp.com/d/xyz789'
       );
 
       const result = await checkClipboardForCode();

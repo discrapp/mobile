@@ -508,7 +508,7 @@ export default function OrderStickersScreen() {
             <RNView style={[styles.productImageContainer, dynamicStyles.productImageContainer]}>
               <FontAwesome name="qrcode" size={64} color={Colors.violet.primary} />
             </RNView>
-            <Text style={styles.productTitle}>AceBack QR Code Stickers</Text>
+            <Text style={styles.productTitle}>Discr QR Code Stickers</Text>
             <Text style={[styles.productDescription, dynamicStyles.productDescription]}>
               Durable, weatherproof QR stickers. Link to your discs so finders can contact you
               instantly.

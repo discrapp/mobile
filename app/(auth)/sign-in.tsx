@@ -61,7 +61,7 @@ export default function SignIn() {
     try {
       // Get the correct redirect URL for current environment
       const redirectUrl = AuthSession.makeRedirectUri({
-        scheme: 'com.aceback.app',
+        scheme: 'com.discrapp.com',
       });
 
       console.log('Using redirect URL:', redirectUrl);
@@ -97,7 +97,7 @@ export default function SignIn() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logo}>AceBack</Text>
+          <Text style={styles.logo}>Discr</Text>
         </View>
 
         <Text style={styles.title}>Welcome Back</Text>

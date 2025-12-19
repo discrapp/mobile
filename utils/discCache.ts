@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const DISC_CACHE_KEY = '@aceback/discs_cache';
-export const DISC_CACHE_TIMESTAMP_KEY = '@aceback/discs_cache_timestamp';
+export const DISC_CACHE_KEY = '@discr/discs_cache';
+export const DISC_CACHE_TIMESTAMP_KEY = '@discr/discs_cache_timestamp';
 
 // Cache is considered stale after 30 seconds
 const CACHE_TTL_MS = 30 * 1000;

@@ -270,7 +270,7 @@ export default function DiscDetailScreen() {
     setHasScanned(true);
     let scannedCode = result.data;
 
-    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
     if (scannedCode.includes('/d/')) {
       const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
       if (match) {
@@ -660,7 +660,7 @@ export default function DiscDetailScreen() {
             <RNView style={styles.qrCodeContainer}>
               <RNView style={styles.qrCodeInner}>
                 <QRCode
-                  value={`https://aceback.app/d/${disc.qr_code.short_code}`}
+                  value={`https://discrapp.com/d/${disc.qr_code.short_code}`}
                   size={180}
                   color={Colors.violet.primary}
                   backgroundColor="#fff"

@@ -147,7 +147,7 @@ export default function AddDiscScreen() {
 
     let scannedCode = result.data;
 
-    // Extract code from URL if QR contains a URL like https://aceback.app/d/CODE
+    // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
     if (scannedCode.includes('/d/')) {
       const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
       if (match) {
@@ -502,7 +502,7 @@ export default function AddDiscScreen() {
                     <FontAwesome name="qrcode" size={24} color={Colors.violet.primary} />
                     <View style={styles.qrScanTextContainer}>
                       <Text style={styles.qrScanTitle}>Scan QR Sticker</Text>
-                      <Text style={styles.qrScanSubtitle}>Link an AceBack sticker to this disc</Text>
+                      <Text style={styles.qrScanSubtitle}>Link an Discr sticker to this disc</Text>
                     </View>
                     <FontAwesome name="chevron-right" size={16} color="#999" />
                   </>
@@ -790,7 +790,7 @@ export default function AddDiscScreen() {
             <RNView style={styles.scannerHeader}>
               <Text style={styles.scannerTitle}>Scan QR Sticker</Text>
               <Text style={styles.scannerSubtitle}>
-                Point your camera at an AceBack QR sticker
+                Point your camera at an Discr QR sticker
               </Text>
             </RNView>
             <RNView style={styles.scannerFrame}>

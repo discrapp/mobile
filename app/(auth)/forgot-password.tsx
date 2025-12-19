@@ -44,7 +44,7 @@ export default function ForgotPassword() {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         email.trim(),
         {
-          redirectTo: 'com.aceback.app://reset-password',
+          redirectTo: 'com.discrapp.com://reset-password',
         }
       );
 
@@ -77,7 +77,7 @@ export default function ForgotPassword() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logo}>AceBack</Text>
+          <Text style={styles.logo}>Discr</Text>
         </View>
 
         <Text style={styles.title}>Reset Password</Text>

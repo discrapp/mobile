@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "AceBack",
-    "slug": "aceback",
+    "name": "Discr",
+    "slug": "discr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.aceback.app",
+    "scheme": "com.discr.app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,11 +15,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aceback.app",
+      "bundleIdentifier": "com.discr.app",
       "config": {
         "usesNonExemptEncryption": false
       },
-      "associatedDomains": ["applinks:aceback.app"],
+      "associatedDomains": ["applinks:discrapp.com"],
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["venmo"]
       },
@@ -34,7 +34,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#3b1877"
       },
-      "package": "com.aceback.app",
+      "package": "com.discr.app",
       "intentFilters": [
         {
           "action": "VIEW",
@@ -42,7 +42,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "aceback.app",
+              "host": "discrapp.com",
               "pathPrefix": "/d/"
             }
           ],

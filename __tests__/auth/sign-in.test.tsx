@@ -41,7 +41,7 @@ describe('SignIn', () => {
   it('renders correctly', () => {
     const { getByText, getByPlaceholderText } = render(<SignIn />);
 
-    expect(getByText('AceBack')).toBeTruthy();
+    expect(getByText('Discr')).toBeTruthy();
     expect(getByText('Welcome Back')).toBeTruthy();
     expect(getByText('Sign in to continue')).toBeTruthy();
     expect(getByPlaceholderText('Enter your email')).toBeTruthy();

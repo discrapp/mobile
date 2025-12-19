@@ -1,14 +1,14 @@
-# AceBack Mobile App
+# Discr Mobile App
 
-![GitHub branch status](https://img.shields.io/github/checks-status/acebackapp/mobile/main)
-![GitHub Issues](https://img.shields.io/github/issues/acebackapp/mobile)
-![GitHub last commit](https://img.shields.io/github/last-commit/acebackapp/mobile)
-![GitHub repo size](https://img.shields.io/github/repo-size/acebackapp/mobile)
-![GitHub License](https://img.shields.io/github/license/acebackapp/mobile)
+![GitHub branch status](https://img.shields.io/github/checks-status/discrapp/mobile/main)
+![GitHub Issues](https://img.shields.io/github/issues/discrapp/mobile)
+![GitHub last commit](https://img.shields.io/github/last-commit/discrapp/mobile)
+![GitHub repo size](https://img.shields.io/github/repo-size/discrapp/mobile)
+![GitHub License](https://img.shields.io/github/license/discrapp/mobile)
 
 ## Introduction
 
-AceBack is a mobile-first application built with React Native and Expo,
+Discr is a mobile-first application built with React Native and Expo,
 powered by Supabase for backend services.
 
 ### Key Features
@@ -57,7 +57,7 @@ EOF
    ```
 
 1. Get credentials from the Supabase dashboard:
-   <https://app.supabase.com/project/aceback-mvp/settings/api>
+   <https://app.supabase.com/project/discr-mvp/settings/api>
 
 1. Edit `.env` with your values:
    - `EXPO_PUBLIC_SUPABASE_URL` - Your Supabase project URL

@@ -19,7 +19,7 @@ describe('HomeScreen', () => {
     useAuth.mockReturnValue({ user: null });
     const { getByText } = render(<HomeScreen />);
 
-    expect(getByText('Welcome to AceBack!')).toBeTruthy();
+    expect(getByText('Welcome to Discr!')).toBeTruthy();
     expect(getByText('Never lose your favorite disc again. Track your collection and help others find their lost discs.')).toBeTruthy();
   });
 
@@ -27,7 +27,7 @@ describe('HomeScreen', () => {
     useAuth.mockReturnValue({ user: mockUser });
     const { getByText } = render(<HomeScreen />);
 
-    expect(getByText('Welcome to AceBack!')).toBeTruthy();
+    expect(getByText('Welcome to Discr!')).toBeTruthy();
     expect(getByText('test@example.com')).toBeTruthy();
   });
 

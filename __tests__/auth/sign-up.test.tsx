@@ -48,7 +48,7 @@ describe('SignUp', () => {
   it('renders correctly', () => {
     const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
 
-    expect(getByText('AceBack')).toBeTruthy();
+    expect(getByText('Discr')).toBeTruthy();
     expect(getAllByText('Create Account').length).toBeGreaterThanOrEqual(1);
     expect(getByText('Sign up to get started')).toBeTruthy();
     expect(getByPlaceholderText('Enter your email')).toBeTruthy();
