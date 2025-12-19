@@ -27,8 +27,14 @@ export default function ProposeMeetupScreen() {
 
   const [locationName, setLocationName] = useState('');
   const [message, setMessage] = useState('');
-  const [proposedDate, setProposedDate] = useState(new Date());
-  const [tempDate, setTempDate] = useState(new Date()); // Temp date for iOS picker
+  // Default to 1 hour from now for convenience
+  const getDefaultTime = () => {
+    const date = new Date();
+    date.setHours(date.getHours() + 1);
+    return date;
+  };
+  const [proposedDate, setProposedDate] = useState(getDefaultTime);
+  const [tempDate, setTempDate] = useState(getDefaultTime); // Temp date for iOS picker
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [submitting, setSubmitting] = useState(false);
