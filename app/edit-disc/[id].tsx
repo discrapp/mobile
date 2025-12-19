@@ -9,10 +9,11 @@ import {
   ActivityIndicator,
   Pressable,
   Image,
+  View,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { Text, View } from '@/components/Themed';
+import { Text } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
