@@ -35,8 +35,15 @@ interface FlightNumbers {
 export default function AddDiscScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const textColor = Colors[colorScheme ?? 'light'].text;
   const [loading, setLoading] = useState(false);
+
+  // Dynamic styles for dark/light mode
+  const dynamicInputStyle = {
+    backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    borderColor: isDark ? '#333' : '#ccc',
+  };
 
   // Predefined color options
   const COLOR_OPTIONS = [
@@ -333,7 +340,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Manufacturer</Text>
             <TextInput
-              style={[styles.input, { color: textColor }]}
+              style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={manufacturer}
               onChangeText={(text) => {
                 setManufacturer(text);
@@ -370,7 +377,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Weight (grams)</Text>
             <TextInput
-              style={[styles.input, { color: textColor }]}
+              style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={weight}
               onChangeText={setWeight}
               placeholder="e.g., 175"
@@ -419,7 +426,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Speed</Text>
               <TextInput
-                style={[styles.input, { color: textColor }]}
+                style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={speed}
                 onChangeText={setSpeed}
                 placeholder="1-15"
@@ -430,7 +437,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Glide</Text>
               <TextInput
-                style={[styles.input, { color: textColor }]}
+                style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={glide}
                 onChangeText={setGlide}
                 placeholder="1-7"
@@ -444,7 +451,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Turn</Text>
               <TextInput
-                style={[styles.input, { color: textColor }]}
+                style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
                 placeholder="-5 to 1"
@@ -455,7 +462,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Fade</Text>
               <TextInput
-                style={[styles.input, { color: textColor }]}
+                style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={fade}
                 onChangeText={setFade}
                 placeholder="0-5"
@@ -468,7 +475,7 @@ export default function AddDiscScreen() {
           {/* Reward Amount */}
           <View style={styles.field}>
             <Text style={styles.label}>Reward Amount</Text>
-            <View style={styles.inputWithPrefix}>
+            <View style={[styles.inputWithPrefix, dynamicInputStyle]}>
               <Text style={styles.inputPrefix}>$</Text>
               <TextInput
                 style={[styles.input, styles.inputWithPrefixText, { color: textColor }]}
@@ -494,7 +501,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Notes</Text>
             <TextInput
-              style={[styles.input, styles.textArea, { color: textColor }]}
+              style={[styles.input, styles.textArea, dynamicInputStyle, { color: textColor }]}
               value={notes}
               onChangeText={setNotes}
               placeholder="Any additional notes about this disc..."
