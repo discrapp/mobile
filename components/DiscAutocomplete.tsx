@@ -2,11 +2,11 @@ import React, { useState, useCallback } from 'react';
 import {
   View,
   TextInput,
-  FlatList,
   Pressable,
   StyleSheet,
   ActivityIndicator,
   useColorScheme,
+  ScrollView,
 } from 'react-native';
 import { Text } from '@/components/Themed';
 import { useDiscCatalogSearch, CatalogDisc } from '@/hooks/useDiscCatalogSearch';
@@ -91,22 +91,6 @@ export function DiscAutocomplete({
     },
   };
 
-  const renderSuggestion = ({ item }: { item: CatalogDisc }) => (
-    <Pressable
-      style={[styles.suggestionItem, dynamicStyles.suggestionItem]}
-      onPress={() => handleSelectDisc(item)}>
-      <View style={styles.suggestionContent}>
-        <Text style={styles.moldName}>{item.mold}</Text>
-        <Text style={[styles.manufacturer, dynamicStyles.manufacturerText]}>{item.manufacturer}</Text>
-      </View>
-      {item.speed !== null && (
-        <Text style={[styles.flightNumbers, dynamicStyles.flightNumbers]}>
-          {item.speed} | {item.glide} | {item.turn} | {item.fade}
-        </Text>
-      )}
-    </Pressable>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -130,14 +114,29 @@ export function DiscAutocomplete({
 
       {showSuggestions && results.length > 0 && (
         <View style={[styles.dropdown, dynamicStyles.dropdown]}>
-          <FlatList
-            data={results}
-            renderItem={renderSuggestion}
-            keyExtractor={(item) => item.id}
+          <ScrollView
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled
-            style={styles.suggestionList}
-          />
+            style={styles.suggestionList}>
+            {results.map((item) => (
+              <Pressable
+                key={item.id}
+                style={[styles.suggestionItem, dynamicStyles.suggestionItem]}
+                onPress={() => handleSelectDisc(item)}>
+                <View style={styles.suggestionContent}>
+                  <Text style={styles.moldName}>{item.mold}</Text>
+                  <Text style={[styles.manufacturer, dynamicStyles.manufacturerText]}>
+                    {item.manufacturer}
+                  </Text>
+                </View>
+                {item.speed !== null && (
+                  <Text style={[styles.flightNumbers, dynamicStyles.flightNumbers]}>
+                    {item.speed} | {item.glide} | {item.turn} | {item.fade}
+                  </Text>
+                )}
+              </Pressable>
+            ))}
+          </ScrollView>
         </View>
       )}
     </View>
