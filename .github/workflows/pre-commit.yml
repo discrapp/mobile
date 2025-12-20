@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   pre-commit:
-    uses: "acebackapp/.github/.github/workflows/pre-commit.yml@main"
+    uses: "discrapp/.github/.github/workflows/pre-commit.yml@main"
     secrets: inherit
     permissions:
       contents: read
