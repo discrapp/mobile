@@ -123,8 +123,8 @@ jobs:
             echo "coverage_decreased=false" >> $GITHUB_OUTPUT
           fi
 
-          # Check if below minimum threshold (40%)
-          BELOW_MIN=$(echo "$PR_STMT < 40" | bc -l)
+          # Check if below minimum threshold (50%)
+          BELOW_MIN=$(echo "$PR_STMT < 50" | bc -l)
           if [ "$BELOW_MIN" = "1" ]; then
             echo "below_minimum=true" >> $GITHUB_OUTPUT
           else
@@ -163,7 +163,7 @@ jobs:
             };
 
             const getStatus = () => {
-              if (belowMinimum) return '❌ **FAILED**: Coverage below 40% minimum threshold';
+              if (belowMinimum) return '❌ **FAILED**: Coverage below 50% minimum threshold';
               if (coverageDecreased) return '❌ **FAILED**: Coverage decreased from base branch';
               return '✅ **PASSED**: Coverage maintained or improved';
             };
@@ -184,7 +184,7 @@ jobs:
               getStatus() + baseNote,
               '',
               '### Thresholds',
-              '- Minimum coverage: **40%**',
+              '- Minimum coverage: **50%**',
               '- Coverage must not decrease from base branch',
               '',
               '---',
@@ -222,7 +222,7 @@ jobs:
       - name: Fail if coverage thresholds not met
         run: |
           if [ "${{ steps.diff.outputs.below_minimum }}" = "true" ]; then
-            echo "❌ Coverage is below 40% minimum threshold"
+            echo "❌ Coverage is below 50% minimum threshold"
             exit 1
           fi
 
