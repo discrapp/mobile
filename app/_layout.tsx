@@ -169,8 +169,9 @@ function RootLayoutNav() {
           <Stack.Screen
             name="add-disc"
             options={{
-              presentation: 'modal',
+              presentation: 'transparentModal',
               headerShown: false,
+              animation: 'fade',
             }}
           />
           <Stack.Screen
