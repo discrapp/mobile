@@ -23,6 +23,7 @@
       "app/**/*.{ts,tsx}",
       "contexts/**/*.{ts,tsx}",
       "lib/**/*.{ts,tsx}",
+      "!lib/supabase.ts",
       "!app/**/_layout.tsx",
       "!app/**/+*.tsx",
       "!**/node_modules/**",

@@ -154,4 +154,68 @@ describe('ForgotPassword', () => {
 
     expect(getByText('Back to Sign In')).toBeTruthy();
   });
+
+  it('handles unexpected error with alert', async () => {
+    (supabase.auth.resetPasswordForEmail as jest.Mock).mockRejectedValue(
+      new Error('Network failure')
+    );
+
+    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+
+    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
+
+    await waitFor(() => {
+      expect(Alert.alert).toHaveBeenCalledWith(
+        'Error',
+        'An unexpected error occurred. Please try again.'
+      );
+    });
+  });
+
+  it('clears error when typing in email field', async () => {
+    const { getByText, getByPlaceholderText, queryByText } = render(<ForgotPassword />);
+
+    // First trigger an error
+    fireEvent.press(getByText('Send Reset Link'));
+
+    await waitFor(() => {
+      expect(getByText('Email is required')).toBeTruthy();
+    });
+
+    // Now type in the email field
+    fireEvent.changeText(getByPlaceholderText('Enter your email'), 't');
+
+    await waitFor(() => {
+      expect(queryByText('Email is required')).toBeNull();
+    });
+  });
+
+  it('navigates back when OK is pressed on success alert', async () => {
+    const { router } = jest.requireMock('expo-router');
+    (supabase.auth.resetPasswordForEmail as jest.Mock).mockResolvedValue({
+      data: {},
+      error: null,
+    });
+
+    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+
+    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
+    await act(async () => {
+      fireEvent.press(getByText('Send Reset Link'));
+    });
+
+    await waitFor(() => {
+      expect(Alert.alert).toHaveBeenCalled();
+    });
+
+    // Get the Alert callback and invoke it
+    const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
+    const okButton = alertCall[2][0];
+    okButton.onPress();
+
+    expect(router.back).toHaveBeenCalled();
+  });
 });

@@ -179,7 +179,9 @@ beforeAll(() => {
     if (
       typeof args[0] === 'string' &&
       (args[0].includes('Error reading disc cache') ||
-        args[0].includes('Error saving disc cache'))
+        args[0].includes('Error saving disc cache') ||
+        args[0].includes('Error fetching') ||
+        args[0].includes('Warning:'))
     ) {
       return;
     }
@@ -189,4 +191,18 @@ beforeAll(() => {
 
 afterAll(() => {
   console.error = originalError;
+});
+
+// Global test utilities for better async handling
+global.flushPromises = () => new Promise(resolve => setImmediate(resolve));
+
+// Reset all mocks and timers between tests
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.clearAllTimers();
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+  jest.clearAllTimers();
 });

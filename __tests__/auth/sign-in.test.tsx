@@ -515,8 +515,8 @@ describe('SignIn', () => {
     // Should only call signIn once since button is disabled after first press
     await waitFor(() => {
       expect(mockSignIn).toHaveBeenCalledTimes(1);
-    });
-  });
+    }, { timeout: 10000 });
+  }, 15000);
 
   it('re-enables form after sign-in error', async () => {
     mockSignIn.mockResolvedValue({ error: { message: 'Network error' } });

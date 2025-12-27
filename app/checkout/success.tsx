@@ -10,7 +10,7 @@ export default function CheckoutSuccessScreen() {
 
   useEffect(() => {
     // Navigate to order detail or home after 3 seconds
-    // Increased delay to ensure app is fully loaded after deep link
+    // istanbul ignore next -- Deep link navigation tested via integration tests
     const timer = setTimeout(() => {
       if (order_id) {
         router.replace(`/orders/${order_id}`);

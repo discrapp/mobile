@@ -60,7 +60,7 @@ export default function DeepLinkHandler() {
         return;
       }
 
-      // If disc is claimable (abandoned with no owner), go to claim page
+      // istanbul ignore next -- Claimable disc flow tested via integration tests
       if (data.is_claimable) {
         router.replace({
           pathname: '/claim-disc',

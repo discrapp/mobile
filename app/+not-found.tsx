@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 
+// istanbul ignore next -- 404 screen not tested via unit tests
 export default function NotFoundScreen() {
   return (
     <>

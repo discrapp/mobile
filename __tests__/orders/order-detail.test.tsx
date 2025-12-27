@@ -249,4 +249,88 @@ describe('OrderDetailScreen', () => {
       expect(getByText('FREE')).toBeTruthy();
     });
   });
+
+  it('opens USPS tracking URL for USPS tracking number', async () => {
+    const uspsOrder = {
+      ...mockOrder,
+      status: 'shipped',
+      tracking_number: '92001901755477000044975869',
+      shipped_at: '2024-01-17T10:00:00Z',
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ order: uspsOrder }),
+    });
+
+    const { getByText } = render(<OrderDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('92001901755477000044975869')).toBeTruthy();
+    });
+
+    fireEvent.press(getByText('Tap to track your package'));
+
+    await waitFor(() => {
+      expect(Linking.openURL).toHaveBeenCalledWith(
+        expect.stringContaining('usps.com')
+      );
+    });
+  });
+
+  it('opens FedEx tracking URL for FedEx tracking number', async () => {
+    const fedexOrder = {
+      ...mockOrder,
+      status: 'shipped',
+      tracking_number: '123456789012',
+      shipped_at: '2024-01-17T10:00:00Z',
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ order: fedexOrder }),
+    });
+
+    const { getByText } = render(<OrderDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('123456789012')).toBeTruthy();
+    });
+
+    fireEvent.press(getByText('Tap to track your package'));
+
+    await waitFor(() => {
+      expect(Linking.openURL).toHaveBeenCalledWith(
+        expect.stringContaining('fedex.com')
+      );
+    });
+  });
+
+  it('defaults to USPS for unknown tracking number format', async () => {
+    const unknownOrder = {
+      ...mockOrder,
+      status: 'shipped',
+      tracking_number: 'ABCD1234',
+      shipped_at: '2024-01-17T10:00:00Z',
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ order: unknownOrder }),
+    });
+
+    const { getByText } = render(<OrderDetailScreen />);
+
+    await waitFor(() => {
+      expect(getByText('ABCD1234')).toBeTruthy();
+    });
+
+    fireEvent.press(getByText('Tap to track your package'));
+
+    await waitFor(() => {
+      expect(Linking.openURL).toHaveBeenCalledWith(
+        expect.stringContaining('usps.com')
+      );
+    });
+  });
 });

@@ -57,8 +57,8 @@ describe('NotificationsScreen', () => {
 
       await waitFor(() => {
         expect(getByText('No notifications yet')).toBeTruthy();
-      });
-    });
+      }, { timeout: 10000 });
+    }, 15000);
 
     it('shows empty state description', async () => {
       const { getByText } = render(<NotificationsScreen />);

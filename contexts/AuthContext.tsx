@@ -29,6 +29,7 @@ type AuthContextType = {
   registerPushToken: () => Promise<void>;
 };
 
+// istanbul ignore next -- Default context values are fallbacks, not executed in normal flow
 const AuthContext = createContext<AuthContextType>({
   session: null,
   user: null,

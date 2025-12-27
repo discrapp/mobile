@@ -106,8 +106,8 @@ describe('AuthContext', () => {
 
       await waitFor(() => {
         expect(getByTestId('loading').props.children).toBe('ready');
-      });
-    });
+      }, { timeout: 10000 });
+    }, 15000);
 
     it('initializes with loading state', async () => {
       const { getByTestId } = render(

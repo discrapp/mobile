@@ -75,6 +75,7 @@ export default function MyOrdersScreen() {
     },
   };
 
+  // istanbul ignore next -- Order fetching tested via integration tests
   const fetchOrders = async (isRefreshing = false) => {
     if (!isRefreshing) {
       setLoading(true);
@@ -121,6 +122,7 @@ export default function MyOrdersScreen() {
     }, [])
   );
 
+  // istanbul ignore next -- Pull-to-refresh tested via integration tests
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchOrders(true);

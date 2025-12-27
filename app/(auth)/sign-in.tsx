@@ -10,15 +10,10 @@ import {
   Platform,
 } from 'react-native';
 import { Link, router } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session';
 import { useAuth } from '@/contexts/AuthContext';
 import { validateSignInForm } from '@/lib/validation';
-import { supabase } from '@/lib/supabase';
 import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
-
-WebBrowser.maybeCompleteAuthSession();
 
 export default function SignIn() {
   const { signIn } = useAuth();
@@ -60,40 +55,6 @@ export default function SignIn() {
     } finally {
       setLoading(false);
       isSubmitting.current = false;
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    try {
-      // Get the correct redirect URL for current environment
-      const redirectUrl = AuthSession.makeRedirectUri({
-        scheme: 'com.discrapp.com',
-      });
-
-      console.log('Using redirect URL:', redirectUrl);
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          skipBrowserRedirect: true,
-        },
-      });
-
-      if (error) {
-        handleError(error, { operation: 'google-sign-in' });
-        return;
-      }
-
-      if (data?.url) {
-        await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-        // The deep link handler in AuthContext will process the callback
-      }
-    } catch (error) {
-      handleError(error, { operation: 'google-sign-in' });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -254,34 +215,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#666',
-    fontSize: 14,
-  },
-  googleButton: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  googleButtonText: {
-    color: '#000',
     fontSize: 16,
     fontWeight: '600',
   },
