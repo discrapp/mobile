@@ -98,7 +98,7 @@ export function useDiscIdentification(): UseDiscIdentificationResult {
       const data = await apiResponse.json();
 
       if (!apiResponse.ok) {
-        const errorMessage = data.error || 'Failed to identify disc';
+        const errorMessage = data.details || data.error || 'Failed to identify disc';
         console.error('AI identification API error:', apiResponse.status, errorMessage, data);
         setError(errorMessage);
         return null;
