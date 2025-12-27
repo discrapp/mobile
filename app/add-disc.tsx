@@ -624,7 +624,7 @@ export default function AddDiscScreen() {
   };
 
   return (
-    <>
+    <View style={[styles.screenContainer, showOptionsModal && styles.transparentContainer]}>
       {/* Entry Mode Options Modal */}
       <Modal
         visible={showOptionsModal}
@@ -1149,11 +1149,17 @@ export default function AddDiscScreen() {
           </RNView>
         </RNView>
       )}
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+  },
+  transparentContainer: {
+    backgroundColor: 'transparent',
+  },
   container: {
     flex: 1,
   },
