@@ -93,6 +93,13 @@ export default function HomeScreen() {
           </RNView>
           <Text style={styles.quickActionText}>Link Sticker</Text>
         </Pressable>
+
+        <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/shot-recommendation')}>
+          <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : Colors.violet[100] }]}>
+            <FontAwesome name="magic" size={20} color={isDark ? '#a78bfa' : Colors.violet.primary} />
+          </RNView>
+          <Text style={styles.quickActionText}>Shot Advisor</Text>
+        </Pressable>
       </RNView>
     </ScrollView>
   );
