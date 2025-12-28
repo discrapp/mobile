@@ -55,6 +55,11 @@ jest.mock('expo-camera', () => ({
   CameraView: 'CameraView',
 }));
 
+// Mock react-native-safe-area-context
+jest.mock('react-native-safe-area-context', () => ({
+  SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Mock expo-image-picker
 const mockLaunchImageLibraryAsync = jest.fn();
 jest.mock('expo-image-picker', () => ({

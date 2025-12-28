@@ -7,6 +7,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import { useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -280,7 +281,7 @@ export default function ShotRecommendationScreen() {
   };
 
   return (
-    <View style={[styles.container, dynamicStyles.container]}>
+    <SafeAreaView style={[styles.container, dynamicStyles.container]} edges={['top']}>
       <Stack.Screen options={{ headerShown: false }} />
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: isDark ? '#333' : '#e0e0e0' }]}>
@@ -312,7 +313,7 @@ export default function ShotRecommendationScreen() {
         showCircleGuide={false}
         helperText="Capture the fairway from the tee pad"
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
