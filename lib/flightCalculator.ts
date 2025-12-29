@@ -191,22 +191,24 @@ export function calculateRealFlightPath(
 
   // Calculate the perpendicular direction for turn/fade
   // (perpendicular to the line from tee to basket)
+  // For a view from behind the tee, positive perpendicular = right side of fairway
   const perpX = -dy / distance;
   const perpY = dx / distance;
 
-  // Glide affects arc height
-  const arcHeight = glide * 4 * effectScale;
+  // For RHBH: turn (negative) curves right, fade (positive) curves left
+  // Apply turn in the high-speed phase (first half) and fade in low-speed phase (second half)
+  // Even with 0 turn, stable/overstable discs should show a slight S-curve or fade
 
-  // Control points for bezier curve
-  // First control point: ~40% along the path, offset by turn
+  // Control points for bezier curve - all curves are purely lateral (perpendicular to flight line)
+  // First control point: ~35% along path, offset by turn effect (high-speed phase)
   const t1 = 0.35;
   const cp1X = teeX + dx * t1 + perpX * turnEffect;
-  const cp1Y = teeY + dy * t1 + perpY * turnEffect - arcHeight * 0.5;
+  const cp1Y = teeY + dy * t1 + perpY * turnEffect;
 
-  // Second control point: ~70% along the path, offset by both turn and fade
-  const t2 = 0.7;
-  const cp2X = teeX + dx * t2 + perpX * (turnEffect * 0.5 - fadeEffect * 0.5);
-  const cp2Y = teeY + dy * t2 + perpY * (turnEffect * 0.5 - fadeEffect * 0.5) - arcHeight;
+  // Second control point: ~75% along path, transitioning from turn to fade
+  const t2 = 0.75;
+  const cp2X = teeX + dx * t2 + perpX * (turnEffect * 0.3 - fadeEffect);
+  const cp2Y = teeY + dy * t2 + perpY * (turnEffect * 0.3 - fadeEffect);
 
   return `M ${teeX} ${teeY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${basketX} ${basketY}`;
 }
