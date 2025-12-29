@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -18,6 +18,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import CameraWithOverlay from '@/components/CameraWithOverlay';
 import { useShotRecommendation } from '@/hooks/useShotRecommendation';
 import DiscAvatar from '@/components/DiscAvatar';
+import FlightPathOverlay from '@/components/FlightPathOverlay';
+import { supabase } from '@/lib/supabase';
 
 export default function ShotRecommendationScreen() {
   const router = useRouter();
@@ -28,6 +30,33 @@ export default function ShotRecommendationScreen() {
 
   // Camera state
   const [showCamera, setShowCamera] = useState(false);
+
+  // User's throwing hand preference
+  const [throwingHand, setThrowingHand] = useState<'right' | 'left'>('right');
+
+  // Fetch throwing hand preference
+  useEffect(() => {
+    async function fetchThrowingHand() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error: profileError } = await supabase
+          .from('profiles')
+          .select('throwing_hand')
+          .eq('id', user.id)
+          .single();
+
+        if (!profileError && data?.throwing_hand) {
+          setThrowingHand(data.throwing_hand as 'right' | 'left');
+        }
+      } catch {
+        // Use default (right) if fetch fails
+      }
+    }
+
+    fetchThrowingHand();
+  }, []);
 
   // Shot recommendation hook
   const { getRecommendation, isLoading, error, result, reset } = useShotRecommendation();
@@ -153,7 +182,7 @@ export default function ShotRecommendationScreen() {
   const renderResult = () => {
     if (!result) return null;
 
-    const { recommendation, terrain_analysis, alternatives, confidence } = result;
+    const { recommendation, terrain_analysis, alternatives, confidence, flight_path, photoUri } = result;
     const disc = recommendation.disc;
 
     return (
@@ -161,6 +190,18 @@ export default function ShotRecommendationScreen() {
         style={styles.resultScroll}
         contentContainerStyle={styles.resultContent}
       >
+        {/* Flight Path Overlay - shown if we have coordinates */}
+        {flight_path && photoUri && (
+          <FlightPathOverlay
+            photoUri={photoUri}
+            teePosition={flight_path.tee_position}
+            basketPosition={flight_path.basket_position}
+            flightNumbers={disc?.flight_numbers || null}
+            throwType={recommendation.throw_type}
+            throwingHand={throwingHand}
+          />
+        )}
+
         {/* Terrain Analysis Card */}
         <View style={[styles.card, dynamicStyles.card]}>
           <Text style={[styles.cardTitle, dynamicStyles.text]}>Terrain Analysis</Text>

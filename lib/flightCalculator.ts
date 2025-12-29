@@ -133,3 +133,80 @@ function generatePath(
   // Build SVG path
   return `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
 }
+
+/**
+ * Calculate flight path between real coordinates (tee to basket)
+ * Used for overlaying on captured hole photos
+ */
+export function calculateRealFlightPath(
+  flightNumbers: FlightNumbers | null,
+  throwType: ReleaseAngle,
+  throwingHand: 'right' | 'left',
+  startPoint: { x: number; y: number }, // Tee position (0-100%)
+  endPoint: { x: number; y: number }, // Basket position (0-100%)
+  canvasWidth: number,
+  canvasHeight: number
+): string {
+  // Convert percentage coordinates to pixels
+  const teeX = (startPoint.x / 100) * canvasWidth;
+  const teeY = (startPoint.y / 100) * canvasHeight;
+  const basketX = (endPoint.x / 100) * canvasWidth;
+  const basketY = (endPoint.y / 100) * canvasHeight;
+
+  // Calculate the distance and angle between tee and basket
+  const dx = basketX - teeX;
+  const dy = basketY - teeY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  // Get flight characteristics
+  const speed = flightNumbers?.speed ?? 9;
+  const glide = flightNumbers?.glide ?? 5;
+  const turn = flightNumbers?.turn ?? 0;
+  const fade = flightNumbers?.fade ?? 2;
+
+  // Scale effects based on distance
+  const effectScale = distance / 200;
+
+  // Calculate turn and fade effects
+  let turnEffect = turn * 8 * effectScale;
+  let fadeEffect = fade * 12 * effectScale;
+
+  // Adjust based on throw type
+  switch (throwType) {
+    case 'hyzer':
+      turnEffect *= 0.5;
+      fadeEffect *= 1.4;
+      break;
+    case 'anhyzer':
+      turnEffect *= 1.6;
+      fadeEffect *= 0.6;
+      break;
+  }
+
+  // Left-handed throws mirror the path
+  if (throwingHand === 'left') {
+    turnEffect = -turnEffect;
+    fadeEffect = -fadeEffect;
+  }
+
+  // Calculate the perpendicular direction for turn/fade
+  // (perpendicular to the line from tee to basket)
+  const perpX = -dy / distance;
+  const perpY = dx / distance;
+
+  // Glide affects arc height
+  const arcHeight = glide * 4 * effectScale;
+
+  // Control points for bezier curve
+  // First control point: ~40% along the path, offset by turn
+  const t1 = 0.35;
+  const cp1X = teeX + dx * t1 + perpX * turnEffect;
+  const cp1Y = teeY + dy * t1 + perpY * turnEffect - arcHeight * 0.5;
+
+  // Second control point: ~70% along the path, offset by both turn and fade
+  const t2 = 0.7;
+  const cp2X = teeX + dx * t2 + perpX * (turnEffect * 0.5 - fadeEffect * 0.5);
+  const cp2Y = teeY + dy * t2 + perpY * (turnEffect * 0.5 - fadeEffect * 0.5) - arcHeight;
+
+  return `M ${teeX} ${teeY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${basketX} ${basketY}`;
+}

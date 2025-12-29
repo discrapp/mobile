@@ -58,9 +58,15 @@ describe('useShotRecommendation', () => {
       },
     ],
     confidence: 0.85,
+    flight_path: {
+      tee_position: { x: 50, y: 90 },
+      basket_position: { x: 55, y: 15 },
+    },
     processing_time_ms: 1200,
     log_id: 'log-123',
   };
+
+  const testImageUri = 'file://test-image.jpg';
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -144,13 +150,16 @@ describe('useShotRecommendation', () => {
 
     const { result } = renderHook(() => useShotRecommendation());
 
-    let recommendation: typeof mockRecommendationResponse | null = null;
     await act(async () => {
-      recommendation = await result.current.getRecommendation('file://test-image.jpg');
+      await result.current.getRecommendation(testImageUri);
     });
 
-    expect(recommendation).toEqual(mockRecommendationResponse);
-    expect(result.current.result).toEqual(mockRecommendationResponse);
+    const expectedResult = {
+      ...mockRecommendationResponse,
+      photoUri: testImageUri,
+    };
+
+    expect(result.current.result).toEqual(expectedResult);
     expect(result.current.error).toBeNull();
     expect(result.current.isLoading).toBe(false);
   });

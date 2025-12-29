@@ -6,6 +6,8 @@ export interface DiscInfo {
   id: string;
   name: string | null;
   manufacturer: string | null;
+  color: string | null;
+  photo_url: string | null;
   flight_numbers: {
     speed: number | null;
     glide: number | null;
@@ -34,13 +36,20 @@ export interface AlternativeRecommendation {
   reason: string;
 }
 
+export interface FlightPath {
+  tee_position: { x: number; y: number };
+  basket_position: { x: number; y: number };
+}
+
 export interface ShotRecommendationResult {
   recommendation: ShotRecommendation;
   terrain_analysis: TerrainAnalysis;
   alternatives: AlternativeRecommendation[];
   confidence: number;
+  flight_path: FlightPath | null;
   processing_time_ms: number;
   log_id: string | null;
+  photoUri: string;
 }
 
 interface UseShotRecommendationResult {
@@ -120,8 +129,10 @@ export function useShotRecommendation(): UseShotRecommendationResult {
           terrain_analysis: data.terrain_analysis,
           alternatives: data.alternatives || [],
           confidence: data.confidence,
+          flight_path: data.flight_path || null,
           processing_time_ms: data.processing_time_ms,
           log_id: data.log_id || null,
+          photoUri: imageUri,
         };
 
         setResult(recommendationResult);
