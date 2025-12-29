@@ -168,8 +168,10 @@ export function calculateRealFlightPath(
   const effectScale = distance / 200;
 
   // Calculate turn and fade effects
-  let turnEffect = turn * 8 * effectScale;
-  let fadeEffect = fade * 12 * effectScale;
+  // Turn is negative for understable discs - negate so negative turn = right curve (positive offset)
+  // Fade is positive for overstable discs - will be subtracted in cp2 to curve left
+  let turnEffect = -turn * 10 * effectScale;
+  let fadeEffect = fade * 15 * effectScale;
 
   // Adjust based on throw type
   switch (throwType) {
