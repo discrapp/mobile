@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +17,8 @@ import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
 
 export default function SignIn() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,25 +61,49 @@ export default function SignIn() {
     }
   };
 
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    text: {
+      color: isDark ? '#fff' : '#000',
+    },
+    subtitle: {
+      color: isDark ? '#999' : '#666',
+    },
+    input: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : '#ddd',
+      color: isDark ? '#fff' : '#000',
+    },
+    label: {
+      color: isDark ? '#fff' : '#000',
+    },
+    footerText: {
+      color: isDark ? '#999' : '#666',
+    },
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, dynamicStyles.container]}
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>Discr</Text>
         </View>
 
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+        <Text style={[styles.title, dynamicStyles.text]}>Welcome Back</Text>
+        <Text style={[styles.subtitle, dynamicStyles.subtitle]}>Sign in to continue</Text>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={[styles.label, dynamicStyles.label]}>Email</Text>
             <TextInput
-              style={[styles.input, errors.email && styles.inputError]}
+              style={[styles.input, dynamicStyles.input, errors.email && styles.inputError]}
               placeholder="Enter your email"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -94,10 +121,11 @@ export default function SignIn() {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Password</Text>
+            <Text style={[styles.label, dynamicStyles.label]}>Password</Text>
             <TextInput
-              style={[styles.input, errors.password && styles.inputError]}
+              style={[styles.input, dynamicStyles.input, errors.password && styles.inputError]}
               placeholder="Enter your password"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
@@ -132,7 +160,7 @@ export default function SignIn() {
           </TouchableOpacity>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
+            <Text style={[styles.footerText, dynamicStyles.footerText]}>Don't have an account? </Text>
             <Link href="/(auth)/sign-up" asChild>
               <TouchableOpacity disabled={loading}>
                 <Text style={styles.link}>Sign Up</Text>
@@ -148,7 +176,6 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
@@ -169,11 +196,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#000',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
     marginBottom: 32,
   },
   form: {
@@ -185,16 +210,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#fff',
-    color: '#000',
   },
   inputError: {
     borderColor: '#ef4444',
@@ -235,7 +256,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   footerText: {
-    color: '#666',
     fontSize: 14,
   },
   link: {

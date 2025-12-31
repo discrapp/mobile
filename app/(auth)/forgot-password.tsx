@@ -9,12 +9,15 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 
 export default function ForgotPassword() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -70,27 +73,48 @@ export default function ForgotPassword() {
     }
   };
 
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    text: {
+      color: isDark ? '#fff' : '#000',
+    },
+    subtitle: {
+      color: isDark ? '#999' : '#666',
+    },
+    input: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : '#ddd',
+      color: isDark ? '#fff' : '#000',
+    },
+    label: {
+      color: isDark ? '#fff' : '#000',
+    },
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, dynamicStyles.container]}
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>Discr</Text>
         </View>
 
-        <Text style={styles.title}>Reset Password</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, dynamicStyles.text]}>Reset Password</Text>
+        <Text style={[styles.subtitle, dynamicStyles.subtitle]}>
           Enter your email and we'll send you a link to reset your password.
         </Text>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={[styles.label, dynamicStyles.label]}>Email</Text>
             <TextInput
-              style={[styles.input, error ? styles.inputError : null]}
+              style={[styles.input, dynamicStyles.input, error ? styles.inputError : null]}
               placeholder="Enter your email"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -133,7 +157,6 @@ export default function ForgotPassword() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
@@ -154,11 +177,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#000',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
     marginBottom: 32,
     lineHeight: 22,
   },
@@ -171,16 +192,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#fff',
-    color: '#000',
   },
   inputError: {
     borderColor: '#ef4444',

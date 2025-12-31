@@ -9,12 +9,15 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 
 export default function ResetPassword() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,25 +76,46 @@ export default function ResetPassword() {
     }
   };
 
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#fff',
+    },
+    text: {
+      color: isDark ? '#fff' : '#000',
+    },
+    subtitle: {
+      color: isDark ? '#999' : '#666',
+    },
+    input: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : '#ddd',
+      color: isDark ? '#fff' : '#000',
+    },
+    label: {
+      color: isDark ? '#fff' : '#000',
+    },
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, dynamicStyles.container]}
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>Discr</Text>
         </View>
 
-        <Text style={styles.title}>Create New Password</Text>
-        <Text style={styles.subtitle}>Enter your new password below.</Text>
+        <Text style={[styles.title, dynamicStyles.text]}>Create New Password</Text>
+        <Text style={[styles.subtitle, dynamicStyles.subtitle]}>Enter your new password below.</Text>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>New Password</Text>
+            <Text style={[styles.label, dynamicStyles.label]}>New Password</Text>
             <TextInput
-              style={[styles.input, errors.password ? styles.inputError : null]}
+              style={[styles.input, dynamicStyles.input, errors.password ? styles.inputError : null]}
               placeholder="Enter new password"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
@@ -108,13 +132,15 @@ export default function ResetPassword() {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Confirm Password</Text>
+            <Text style={[styles.label, dynamicStyles.label]}>Confirm Password</Text>
             <TextInput
               style={[
                 styles.input,
+                dynamicStyles.input,
                 errors.confirmPassword ? styles.inputError : null,
               ]}
               placeholder="Confirm new password"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={confirmPassword}
               onChangeText={(text) => {
                 setConfirmPassword(text);
@@ -150,7 +176,6 @@ export default function ResetPassword() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
@@ -171,11 +196,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#000',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
     marginBottom: 32,
   },
   form: {
@@ -187,16 +210,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#000',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#fff',
-    color: '#000',
   },
   inputError: {
     borderColor: '#ef4444',
