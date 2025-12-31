@@ -21,14 +21,14 @@ const errorMessages: Record<string, string> = {
   'networkerror': 'Unable to connect. Please check your internet.',
   'timeout': 'Request timed out. Please try again.',
 
-  // Auth errors
+  // Auth errors - Use generic messages to prevent email enumeration
   'invalid login credentials': 'Incorrect email or password.',
   'email not confirmed': 'Please verify your email before signing in.',
   'jwt expired': 'Your session has expired. Please sign in again.',
   'jwt malformed': 'Your session has expired. Please sign in again.',
   'refresh_token_not_found': 'Your session has expired. Please sign in again.',
-  'user not found': 'No account found with this email.',
-  'email already registered': 'An account with this email already exists.',
+  'user not found': 'Incorrect email or password.', // Generic to prevent email enumeration
+  'email already registered': 'Unable to create account. Please try again.', // Generic to prevent email enumeration
   'password is too weak': 'Password must be at least 8 characters.',
 
   // API errors
