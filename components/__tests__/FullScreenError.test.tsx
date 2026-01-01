@@ -18,9 +18,7 @@ describe('FullScreenError', () => {
     });
 
     it('should render retry button when onRetry is provided', () => {
-      const { getByText } = render(
-        <FullScreenError onRetry={jest.fn()} />
-      );
+      const { getByText } = render(<FullScreenError onRetry={jest.fn()} />);
       expect(getByText('Try Again')).toBeTruthy();
     });
 
@@ -64,9 +62,7 @@ describe('FullScreenError', () => {
     });
 
     it('should have accessibilityRole of button for retry button', () => {
-      const { getByRole } = render(
-        <FullScreenError onRetry={jest.fn()} />
-      );
+      const { getByRole } = render(<FullScreenError onRetry={jest.fn()} />);
       const buttons = getByRole('button');
       expect(buttons).toBeTruthy();
     });
@@ -80,9 +76,7 @@ describe('FullScreenError', () => {
     });
 
     it('should have accessibilityHint for retry button', () => {
-      const { getByHintText } = render(
-        <FullScreenError onRetry={jest.fn()} />
-      );
+      const { getByHintText } = render(<FullScreenError onRetry={jest.fn()} />);
       const retryButton = getByHintText('Attempts to recover from the error');
       expect(retryButton).toBeTruthy();
     });
