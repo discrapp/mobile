@@ -17,6 +17,7 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import QRCode from 'react-native-qrcode-svg';
 import Colors from '@/constants/Colors';
+import { DISC_COLORS } from '@/constants/discColors';
 import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/components/useColorScheme';
 import { DiscDetailSkeleton } from '@/components/Skeleton';
@@ -82,21 +83,6 @@ interface Disc {
   surrendered_at?: string | null;
   ai_identification_log_id?: string | null;
 }
-
-// Color mapping with hex values
-const COLOR_MAP: Record<string, string> = {
-  Red: '#E74C3C',
-  Orange: '#E67E22',
-  Yellow: '#F1C40F',
-  Green: '#2ECC71',
-  Blue: '#3498DB',
-  Purple: '#9B59B6',
-  Pink: '#E91E63',
-  White: '#ECF0F1',
-  Black: '#2C3E50',
-  Gray: '#95A5A6',
-  Multi: 'rainbow',
-};
 
 export default function DiscDetailScreen() {
   const router = useRouter();
@@ -600,7 +586,7 @@ export default function DiscDetailScreen() {
             <View style={styles.detailItem}>
               <Text style={styles.detailLabel}>Color</Text>
               <View style={styles.colorValue}>
-                {COLOR_MAP[disc.color] === 'rainbow' ? (
+                {DISC_COLORS[disc.color as keyof typeof DISC_COLORS] === 'rainbow' ? (
                   <View style={styles.rainbowDot}>
                     <View style={[styles.rainbowSlice, { backgroundColor: '#E74C3C' }]} />
                     <View style={[styles.rainbowSlice, { backgroundColor: '#F1C40F' }]} />
@@ -612,7 +598,7 @@ export default function DiscDetailScreen() {
                     style={[
                       styles.colorDot,
                       {
-                        backgroundColor: COLOR_MAP[disc.color] || '#666',
+                        backgroundColor: DISC_COLORS[disc.color as keyof typeof DISC_COLORS] || '#666',
                         borderColor: disc.color === 'White' ? '#ccc' : 'rgba(0, 0, 0, 0.1)',
                       },
                     ]}
