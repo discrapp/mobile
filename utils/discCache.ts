@@ -1,7 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEYS } from '../constants/storageKeys';
 
-export const DISC_CACHE_KEY = '@discr/discs_cache';
-export const DISC_CACHE_TIMESTAMP_KEY = '@discr/discs_cache_timestamp';
+/** @deprecated Import from constants/storageKeys instead */
+export const DISC_CACHE_KEY = STORAGE_KEYS.DISC_CACHE;
+/** @deprecated Import from constants/storageKeys instead */
+export const DISC_CACHE_TIMESTAMP_KEY = STORAGE_KEYS.DISC_CACHE_TIMESTAMP;
 
 // Cache is considered stale after 30 seconds
 const CACHE_TTL_MS = 30 * 1000;
@@ -46,7 +49,7 @@ export interface CachedDisc {
  */
 export async function getCachedDiscs(): Promise<CachedDisc[] | null> {
   try {
-    const cached = await AsyncStorage.getItem(DISC_CACHE_KEY);
+    const cached = await AsyncStorage.getItem(STORAGE_KEYS.DISC_CACHE);
     if (!cached) {
       return null;
     }
@@ -63,8 +66,8 @@ export async function getCachedDiscs(): Promise<CachedDisc[] | null> {
 export async function setCachedDiscs(discs: CachedDisc[]): Promise<void> {
   try {
     await AsyncStorage.multiSet([
-      [DISC_CACHE_KEY, JSON.stringify(discs)],
-      [DISC_CACHE_TIMESTAMP_KEY, Date.now().toString()],
+      [STORAGE_KEYS.DISC_CACHE, JSON.stringify(discs)],
+      [STORAGE_KEYS.DISC_CACHE_TIMESTAMP, Date.now().toString()],
     ]);
   } catch (error) {
     console.error('Error saving disc cache:', error);
@@ -77,7 +80,7 @@ export async function setCachedDiscs(discs: CachedDisc[]): Promise<void> {
  */
 export async function isCacheStale(): Promise<boolean> {
   try {
-    const timestamp = await AsyncStorage.getItem(DISC_CACHE_TIMESTAMP_KEY);
+    const timestamp = await AsyncStorage.getItem(STORAGE_KEYS.DISC_CACHE_TIMESTAMP);
     if (!timestamp) {
       return true;
     }
@@ -94,7 +97,10 @@ export async function isCacheStale(): Promise<boolean> {
  */
 export async function clearDiscCache(): Promise<void> {
   try {
-    await AsyncStorage.multiRemove([DISC_CACHE_KEY, DISC_CACHE_TIMESTAMP_KEY]);
+    await AsyncStorage.multiRemove([
+      STORAGE_KEYS.DISC_CACHE,
+      STORAGE_KEYS.DISC_CACHE_TIMESTAMP,
+    ]);
   } catch (error) {
     console.error('Error clearing disc cache:', error);
   }

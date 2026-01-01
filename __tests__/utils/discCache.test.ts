@@ -4,9 +4,8 @@ import {
   setCachedDiscs,
   clearDiscCache,
   isCacheStale,
-  DISC_CACHE_KEY,
-  DISC_CACHE_TIMESTAMP_KEY,
 } from '../../utils/discCache';
+import { STORAGE_KEYS } from '../../constants/storageKeys';
 
 // AsyncStorage is already mocked in jest.setup.js
 
@@ -22,7 +21,7 @@ describe('discCache', () => {
       const result = await getCachedDiscs();
 
       expect(result).toBeNull();
-      expect(AsyncStorage.getItem).toHaveBeenCalledWith(DISC_CACHE_KEY);
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(STORAGE_KEYS.DISC_CACHE);
     });
 
     it('returns parsed discs when cache exists', async () => {
@@ -70,8 +69,8 @@ describe('discCache', () => {
       await setCachedDiscs(mockDiscs);
 
       expect(AsyncStorage.multiSet).toHaveBeenCalledWith([
-        [DISC_CACHE_KEY, JSON.stringify(mockDiscs)],
-        [DISC_CACHE_TIMESTAMP_KEY, mockNow.toString()],
+        [STORAGE_KEYS.DISC_CACHE, JSON.stringify(mockDiscs)],
+        [STORAGE_KEYS.DISC_CACHE_TIMESTAMP, mockNow.toString()],
       ]);
 
       jest.restoreAllMocks();
@@ -94,8 +93,8 @@ describe('discCache', () => {
       await clearDiscCache();
 
       expect(AsyncStorage.multiRemove).toHaveBeenCalledWith([
-        DISC_CACHE_KEY,
-        DISC_CACHE_TIMESTAMP_KEY,
+        STORAGE_KEYS.DISC_CACHE,
+        STORAGE_KEYS.DISC_CACHE_TIMESTAMP,
       ]);
     });
 
@@ -116,7 +115,9 @@ describe('discCache', () => {
       const result = await isCacheStale();
 
       expect(result).toBe(true);
-      expect(AsyncStorage.getItem).toHaveBeenCalledWith(DISC_CACHE_TIMESTAMP_KEY);
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(
+        STORAGE_KEYS.DISC_CACHE_TIMESTAMP
+      );
     });
 
     it('returns false when cache is fresh (within 30 seconds)', async () => {
