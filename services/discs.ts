@@ -1,78 +1,125 @@
 /**
- * Disc service - CRUD operations for disc management
+ * Disc service - CRUD operations for discs
  */
 
-import { apiRequest } from '@/services/baseService';
-import { ApiError, ApiErrorCode, isApiError } from '@/services/ApiError';
+import { apiRequest } from './baseService';
+import { ApiError, ApiErrorCode } from './ApiError';
+
+export interface FlightNumbers {
+  speed: number | null;
+  glide: number | null;
+  turn: number | null;
+  fade: number | null;
+}
+
+export interface DiscPhoto {
+  id: string;
+  storage_path: string;
+  photo_uuid: string;
+  photo_url?: string;
+  created_at: string;
+}
+
+export interface QRCodeInfo {
+  id: string;
+  short_code: string;
+  status: string;
+}
+
+export interface ActiveRecovery {
+  id: string;
+  status: string;
+  finder_id: string;
+  found_at: string;
+}
 
 export interface Disc {
   id: string;
   name: string;
-  brand?: string;
+  manufacturer?: string;
+  mold?: string;
+  category?: string;
+  plastic?: string;
   weight?: number;
   color?: string;
-  photo_url?: string;
-  qr_code_id?: string | null;
-  owner_id: string;
+  flight_numbers: FlightNumbers;
+  reward_amount?: string;
+  notes?: string;
   created_at: string;
-  updated_at: string;
+  photos: DiscPhoto[];
+  qr_code_id?: string;
+  qr_code?: QRCodeInfo;
+  active_recovery?: ActiveRecovery | null;
+  was_surrendered?: boolean;
+  surrendered_at?: string | null;
+  ai_identification_log_id?: string | null;
 }
 
-export interface CreateDiscData {
-  name: string;
-  brand?: string;
-  weight?: number;
-  color?: string;
-}
-
-export interface UpdateDiscData {
+export interface CreateDiscInput {
   name?: string;
-  brand?: string;
+  manufacturer?: string;
+  mold?: string;
+  category?: string;
+  plastic?: string;
   weight?: number;
   color?: string;
+  flight_numbers?: Partial<FlightNumbers>;
+  reward_amount?: string;
+  notes?: string;
 }
 
-export interface PhotoData {
-  uri: string;
-  type: string;
+export interface UpdateDiscInput {
+  name?: string;
+  manufacturer?: string;
+  mold?: string;
+  category?: string;
+  plastic?: string;
+  weight?: number;
+  color?: string;
+  flight_numbers?: Partial<FlightNumbers>;
+  reward_amount?: string;
+  notes?: string;
 }
 
+/**
+ * Disc service for managing disc CRUD operations
+ */
 export const discService = {
   /**
-   * Get all discs for the current user
+   * Get all discs for the authenticated user
    */
   async getAll(): Promise<Disc[]> {
-    return apiRequest<Disc[]>('/functions/v1/discs', {
+    return apiRequest<Disc[]>('/functions/v1/get-user-discs', {
       method: 'GET',
-      operation: 'get-discs',
+      operation: 'fetch-discs',
     });
   },
 
   /**
-   * Get a single disc by ID
-   * Returns null if the disc is not found
+   * Get a specific disc by ID
+   * @throws {ApiError} if disc is not found
    */
-  async getById(id: string): Promise<Disc | null> {
-    try {
-      return await apiRequest<Disc>(`/functions/v1/discs/${id}`, {
-        method: 'GET',
-        operation: 'get-disc',
+  async getById(discId: string): Promise<Disc> {
+    const discs = await this.getAll();
+    const disc = discs.find((d) => d.id === discId);
+
+    if (!disc) {
+      throw new ApiError('Disc not found', {
+        code: ApiErrorCode.NOT_FOUND,
+        operation: 'get-disc-by-id',
       });
-    } catch (error) {
-      if (isApiError(error) && error.code === ApiErrorCode.NOT_FOUND) {
-        return null;
-      }
-      throw error;
     }
+
+    return disc;
   },
 
   /**
    * Create a new disc
    */
-  async create(data: CreateDiscData): Promise<Disc> {
-    return apiRequest<Disc>('/functions/v1/discs', {
+  async create(input: CreateDiscInput): Promise<Disc> {
+    return apiRequest<Disc>('/functions/v1/create-disc', {
       method: 'POST',
-      body: data,
+      body: input as Record<string, unknown>,
       operation: 'create-disc',
     });
   },
@@ -80,20 +127,21 @@ export const discService = {
   /**
    * Update an existing disc
    */
-  async update(id: string, data: UpdateDiscData): Promise<Disc> {
-    return apiRequest<Disc>(`/functions/v1/discs/${id}`, {
-      method: 'PATCH',
-      body: data,
+  async update(discId: string, updates: UpdateDiscInput): Promise<Disc> {
+    return apiRequest<Disc>('/functions/v1/update-disc', {
+      method: 'POST',
+      body: { disc_id: discId, ...updates } as Record<string, unknown>,
       operation: 'update-disc',
     });
   },
 
   /**
-   * Delete a disc
+   * Delete a disc by ID
    */
-  async delete(id: string): Promise<void> {
-    await apiRequest(`/functions/v1/discs/${id}`, {
+  async delete(discId: string): Promise<void> {
+    await apiRequest('/functions/v1/delete-disc', {
       method: 'DELETE',
+      body: { disc_id: discId },
       operation: 'delete-disc',
     });
   },
@@ -101,10 +149,10 @@ export const discService = {
   /**
    * Link a QR code to a disc
    */
-  async linkQrCode(discId: string, qrCodeId: string): Promise<Disc> {
-    return apiRequest<Disc>(`/functions/v1/discs/${discId}/qr`, {
+  async linkQrCode(discId: string, qrCode: string): Promise<void> {
+    await apiRequest('/functions/v1/link-qr-to-disc', {
       method: 'POST',
-      body: { qr_code_id: qrCodeId },
+      body: { disc_id: discId, qr_code: qrCode },
       operation: 'link-qr-code',
     });
   },
@@ -112,21 +160,11 @@ export const discService = {
   /**
    * Unlink a QR code from a disc
    */
-  async unlinkQrCode(discId: string): Promise<Disc> {
-    return apiRequest<Disc>(`/functions/v1/discs/${discId}/qr`, {
-      method: 'DELETE',
-      operation: 'unlink-qr-code',
-    });
-  },
-
-  /**
-   * Upload a photo for a disc
-   */
-  async uploadPhoto(discId: string, photoData: PhotoData): Promise<Disc> {
-    return apiRequest<Disc>(`/functions/v1/discs/${discId}/photo`, {
+  async unlinkQrCode(discId: string): Promise<void> {
+    await apiRequest('/functions/v1/unlink-qr-code', {
       method: 'POST',
-      body: photoData,
-      operation: 'upload-disc-photo',
+      body: { disc_id: discId },
+      operation: 'unlink-qr-code',
     });
   },
 };

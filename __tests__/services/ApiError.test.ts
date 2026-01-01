@@ -2,7 +2,7 @@
  * Tests for ApiError class - custom error for API operations
  */
 
-import { ApiError, ApiErrorCode, isApiError } from '@/services/ApiError';
+import { ApiError, ApiErrorCode, isApiError } from '../../services/ApiError';
 
 describe('ApiError', () => {
   describe('constructor', () => {

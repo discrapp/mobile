@@ -130,11 +130,14 @@ function DefaultErrorFallback({
   colorScheme,
 }: DefaultErrorFallbackProps) {
   const isDark = colorScheme === 'dark';
+  const errorMessage = 'Something went wrong. Please try again.';
 
   return (
     <View
       testID="error-boundary-container"
       style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+      accessibilityRole="alert"
+      accessibilityLabel={`An error occurred. ${errorMessage}`}
     >
       <View style={styles.content}>
         <View
@@ -149,10 +152,16 @@ function DefaultErrorFallback({
 
         <Text style={styles.title}>Oops!</Text>
         <Text style={[styles.message, { color: isDark ? '#999' : '#666' }]}>
-          Something went wrong. Please try again.
+          {errorMessage}
         </Text>
 
-        <Pressable style={styles.retryButton} onPress={resetError}>
+        <Pressable
+          style={styles.retryButton}
+          onPress={resetError}
+          accessibilityRole="button"
+          accessibilityLabel="Try Again"
+          accessibilityHint="Attempts to recover from the error"
+        >
           <FontAwesome name="refresh" size={16} color="#fff" />
           <Text style={styles.retryButtonText}>Try Again</Text>
         </Pressable>
