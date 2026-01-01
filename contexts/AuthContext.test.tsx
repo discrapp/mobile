@@ -62,7 +62,7 @@ describe('AuthContext', () => {
     jest.clearAllMocks();
   });
 
-  const setupMocks = (session: any = null) => {
+  const setupMocks = (session: unknown = null) => {
     mockGetSession.mockResolvedValue({
       data: { session },
       error: null,

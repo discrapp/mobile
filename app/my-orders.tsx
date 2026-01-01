@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, ComponentProps } from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -15,6 +15,8 @@ import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
 import { OrderCardSkeleton } from '@/components/Skeleton';
 
+type FontAwesomeIconName = ComponentProps<typeof FontAwesome>['name'];
+
 interface StickerOrder {
   id: string;
   order_number: string;
@@ -26,7 +28,7 @@ interface StickerOrder {
   shipped_at: string | null;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: FontAwesomeIconName }> = {
   pending_payment: { label: 'Pending Payment', color: '#F39C12', icon: 'clock-o' },
   paid: { label: 'Order Placed', color: '#3498DB', icon: 'check' },
   processing: { label: 'Processing', color: '#9B59B6', icon: 'cog' },
@@ -142,7 +144,7 @@ export default function MyOrdersScreen() {
             <Text style={[styles.orderDate, dynamicStyles.orderDate]}>{formatDate(item.created_at)}</Text>
           </RNView>
           <RNView style={[styles.statusBadge, { backgroundColor: statusConfig.color }]}>
-            <FontAwesome name={statusConfig.icon as any} size={12} color="#fff" />
+            <FontAwesome name={statusConfig.icon} size={12} color="#fff" />
             <Text style={styles.statusText}>{statusConfig.label}</Text>
           </RNView>
         </RNView>

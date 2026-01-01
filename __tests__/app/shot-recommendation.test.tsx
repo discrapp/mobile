@@ -41,7 +41,7 @@ const mockGetRecommendation = jest.fn();
 const mockReset = jest.fn();
 let mockIsLoading = false;
 let mockError: string | null = null;
-let mockResult: any = null;
+let mockResult: unknown = null;
 
 jest.mock('../../hooks/useShotRecommendation', () => ({
   useShotRecommendation: () => ({

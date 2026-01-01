@@ -4,6 +4,11 @@ import { useRouter } from 'expo-router';
 
 import { checkClipboardForCode } from '@/lib/deferredLinking';
 
+// Minimal user type for testing - only needs truthy check
+interface MockUser {
+  id: string;
+}
+
 // Mock the dependencies
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
@@ -19,7 +24,7 @@ jest.spyOn(Alert, 'alert');
 let hasCheckedThisSession = false;
 
 // Recreate the hook for testing (mirrors _layout.tsx implementation)
-function useDeferredLinking(user: any, loading: boolean) {
+function useDeferredLinking(user: MockUser | null, loading: boolean) {
   const router = useRouter();
   const { useEffect } = require('react');
 

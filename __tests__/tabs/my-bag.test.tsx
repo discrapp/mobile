@@ -42,7 +42,7 @@ const mockSetCachedDiscs = jest.fn();
 const mockIsCacheStale = jest.fn();
 jest.mock('../../utils/discCache', () => ({
   getCachedDiscs: () => mockGetCachedDiscs(),
-  setCachedDiscs: (discs: any) => mockSetCachedDiscs(discs),
+  setCachedDiscs: (discs: unknown[]) => mockSetCachedDiscs(discs),
   isCacheStale: () => mockIsCacheStale(),
 }));
 

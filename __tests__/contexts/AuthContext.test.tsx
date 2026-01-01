@@ -1,7 +1,11 @@
 import React from 'react';
 import { render, waitFor, act } from '@testing-library/react-native';
 import { Text, Button } from 'react-native';
+import { Session } from '@supabase/supabase-js';
 import { AuthProvider, useAuth } from '../../contexts/AuthContext';
+
+// Type for deep link event handler
+type DeepLinkHandler = (event: { url: string }) => void;
 
 // Mock expo-linking
 jest.mock('expo-linking', () => ({
@@ -381,7 +385,7 @@ describe('AuthContext', () => {
     it('updates session when auth state changes', async () => {
       const mockUser = { id: '123', email: 'new@example.com' };
       const mockSession = { user: mockUser, access_token: 'token123' };
-      let authStateChangeCallback: (event: string, session: any) => void;
+      let authStateChangeCallback: (event: string, session: Session | null) => void;
 
       mockOnAuthStateChange.mockImplementation((callback) => {
         authStateChangeCallback = callback;
@@ -408,7 +412,7 @@ describe('AuthContext', () => {
     });
 
     it('clears session when user signs out via auth state change', async () => {
-      let authStateChangeCallback: (event: string, session: any) => void;
+      let authStateChangeCallback: (event: string, session: Session | null) => void;
 
       mockOnAuthStateChange.mockImplementation((callback) => {
         authStateChangeCallback = callback;
@@ -440,7 +444,7 @@ describe('AuthContext', () => {
       const { setUserContext } = require('../../lib/sentry');
       const mockUser = { id: '123', email: 'test@example.com' };
       const mockSession = { user: mockUser, access_token: 'token123' };
-      let authStateChangeCallback: (event: string, session: any) => void;
+      let authStateChangeCallback: (event: string, session: Session | null) => void;
 
       mockOnAuthStateChange.mockImplementation((callback) => {
         authStateChangeCallback = callback;
@@ -468,7 +472,7 @@ describe('AuthContext', () => {
 
     it('clears Sentry user context when user signs out', async () => {
       const { clearUserContext } = require('../../lib/sentry');
-      let authStateChangeCallback: (event: string, session: any) => void;
+      let authStateChangeCallback: (event: string, session: Session | null) => void;
 
       mockOnAuthStateChange.mockImplementation((callback) => {
         authStateChangeCallback = callback;
@@ -763,7 +767,7 @@ describe('AuthContext', () => {
       supabase.auth.setSession = mockSetSession;
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -799,7 +803,7 @@ describe('AuthContext', () => {
       supabase.auth.setSession = mockSetSession;
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -838,7 +842,7 @@ describe('AuthContext', () => {
       supabase.auth.setSession = mockSetSession;
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -875,7 +879,7 @@ describe('AuthContext', () => {
       supabase.auth.setSession = mockSetSession;
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -905,7 +909,7 @@ describe('AuthContext', () => {
     it('handles malformed deep link URL gracefully', async () => {
       const Linking = require('expo-linking');
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -1261,7 +1265,7 @@ describe('AuthContext', () => {
       supabase.auth.setSession = mockSetSession;
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });
@@ -1300,7 +1304,7 @@ describe('AuthContext', () => {
       const Linking = require('expo-linking');
 
       let urlHandler: (event: { url: string }) => void;
-      Linking.addEventListener.mockImplementation((event: string, handler: any) => {
+      Linking.addEventListener.mockImplementation((_event: string, handler: DeepLinkHandler) => {
         urlHandler = handler;
         return { remove: jest.fn() };
       });

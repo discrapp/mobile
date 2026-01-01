@@ -29,6 +29,16 @@ import { FormFieldSkeleton, Skeleton } from '@/components/Skeleton';
 import { formatFeeHint } from '@/lib/stripeFees';
 import { handleError, showSuccess } from '@/lib/errorHandler';
 
+/**
+ * React Native FormData file object structure.
+ * This is the format expected by FormData.append() for file uploads in React Native.
+ */
+interface FormDataFile {
+  uri: string;
+  type: string;
+  name: string;
+}
+
 interface FlightNumbers {
   speed: number | null;
   glide: number | null;
@@ -460,11 +470,13 @@ export default function EditDiscScreen() {
             formData.append('disc_id', id);
 
             // Create file object for FormData (always JPEG after compression)
-            formData.append('file', {
+            const fileObject: FormDataFile = {
               uri: compressed.uri,
               type: 'image/jpeg',
               name: 'disc-photo.jpg',
-            } as any);
+            };
+            // React Native's FormData.append accepts this file object structure
+            formData.append('file', fileObject as unknown as Blob);
 
             const photoResponse = await fetch(
               `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/upload-disc-photo`,

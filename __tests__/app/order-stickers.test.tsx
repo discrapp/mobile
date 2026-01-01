@@ -21,7 +21,7 @@ const getMockGetSession = () => mockGetSession;
 jest.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
-      getSession: (...args: any[]) => getMockGetSession()(...args),
+      getSession: (...args: unknown[]) => getMockGetSession()(...args),
     },
   },
 }));
@@ -1074,7 +1074,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows validating state while checking address', async () => {
-      let resolveValidation: (value: any) => void;
+      let resolveValidation: (value: unknown) => void;
       const validationPromise = new Promise((resolve) => {
         resolveValidation = resolve;
       });

@@ -1,7 +1,12 @@
 import React from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import { Alert } from 'react-native';
+import { Alert, AlertButton } from 'react-native';
 import ProfileScreen from '../../app/(tabs)/two';
+
+// Extended AlertButton type with onPress handler for testing
+interface AlertButtonWithHandler extends AlertButton {
+  onPress?: () => void;
+}
 
 // Mock expo-router
 const mockPush = jest.fn();
@@ -1048,7 +1053,7 @@ describe('ProfileScreen', () => {
 
       // Get the confirmation callback and call it
       const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
-      const confirmButton = alertCall[2].find((btn: any) => btn.text === 'Sign Out');
+      const confirmButton = alertCall[2].find((btn: AlertButtonWithHandler) => btn.text === 'Sign Out');
 
       if (confirmButton?.onPress) {
         confirmButton.onPress();
@@ -1966,7 +1971,7 @@ describe('ProfileScreen', () => {
       fireEvent.press(usernameElements[usernameElements.length - 1]);
 
       const alertCall = (Alert.alert as jest.Mock).mock.calls.slice(-1)[0];
-      const usernameButton = alertCall[2].find((btn: any) => btn.text === 'Username');
+      const usernameButton = alertCall[2].find((btn: AlertButtonWithHandler) => btn.text === 'Username');
 
       if (usernameButton?.onPress) {
         usernameButton.onPress();
@@ -1988,7 +1993,7 @@ describe('ProfileScreen', () => {
       fireEvent.press(usernameElements[usernameElements.length - 1]);
 
       const alertCall = (Alert.alert as jest.Mock).mock.calls.slice(-1)[0];
-      const fullNameButton = alertCall[2].find((btn: any) => btn.text === 'Full Name');
+      const fullNameButton = alertCall[2].find((btn: AlertButtonWithHandler) => btn.text === 'Full Name');
 
       if (fullNameButton?.onPress) {
         fullNameButton.onPress();
@@ -2242,7 +2247,7 @@ describe('ProfileScreen', () => {
       fireEvent.press(usernameElements[usernameElements.length - 1]);
 
       const alertCall = (Alert.alert as jest.Mock).mock.calls.slice(-1)[0];
-      const usernameButton = alertCall[2]?.find((btn: any) => btn.text === 'Username');
+      const usernameButton = alertCall[2]?.find((btn: AlertButtonWithHandler) => btn.text === 'Username');
 
       if (usernameButton?.onPress) {
         usernameButton.onPress();

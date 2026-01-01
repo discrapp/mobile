@@ -1,9 +1,15 @@
 import React, { act } from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import { Alert } from 'react-native';
+import { Alert, AlertButton } from 'react-native';
 import EditDiscScreen from '../../app/edit-disc/[id]';
 import { handleError, showSuccess } from '../../lib/errorHandler';
 import * as ImagePicker from 'expo-image-picker';
+import type { ImagePickerResult } from 'expo-image-picker';
+
+// Extended AlertButton type with onPress handler for testing
+interface AlertButtonWithHandler extends AlertButton {
+  onPress?: () => void;
+}
 
 // Set up environment variables for tests
 process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
@@ -65,9 +71,31 @@ jest.mock('../../lib/errorHandler', () => ({
   showSuccess: jest.fn(),
 }));
 
+// Mock component prop types
+interface MockPlasticPickerProps {
+  value: string;
+  onChange: (value: string) => void;
+  textColor: string;
+}
+
+interface MockCategoryPickerProps {
+  value: string;
+  onChange: (value: string) => void;
+  textColor: string;
+}
+
+interface MockDiscAutocompleteProps {
+  value: string;
+  onChangeText: (text: string) => void;
+  onSelectDisc: (disc: unknown) => void;
+  placeholder?: string;
+  error?: string;
+  textColor: string;
+}
+
 // Mock PlasticPicker - render as simple TextInput
 jest.mock('../../components/PlasticPicker', () => ({
-  PlasticPicker: ({ value, onChange, textColor }: any) => {
+  PlasticPicker: ({ value, onChange, textColor }: MockPlasticPickerProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput
@@ -82,7 +110,7 @@ jest.mock('../../components/PlasticPicker', () => ({
 
 // Mock CategoryPicker - render as simple TextInput
 jest.mock('../../components/CategoryPicker', () => ({
-  CategoryPicker: ({ value, onChange, textColor }: any) => {
+  CategoryPicker: ({ value, onChange, textColor }: MockCategoryPickerProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput
@@ -97,7 +125,7 @@ jest.mock('../../components/CategoryPicker', () => ({
 
 // Mock DiscAutocomplete - render as simple TextInput with testID
 jest.mock('../../components/DiscAutocomplete', () => ({
-  DiscAutocomplete: ({ value, onChangeText, onSelectDisc, placeholder, error, textColor }: any) => {
+  DiscAutocomplete: ({ value, onChangeText, placeholder, textColor }: MockDiscAutocompleteProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput
@@ -873,7 +901,7 @@ describe('EditDiscScreen', () => {
       mockImagePicker.launchImageLibraryAsync.mockResolvedValueOnce({
         canceled: false,
         assets: [{ uri: 'file://test-image.jpg', width: 100, height: 100 }],
-      } as any);
+      } as unknown as ImagePickerResult);
 
       const { getByText } = render(<EditDiscScreen />);
 
@@ -889,7 +917,7 @@ describe('EditDiscScreen', () => {
       expect(alertCall).toBeTruthy();
 
       const chooseLibraryOption = alertCall![2].find(
-        (option: any) => option.text === 'Choose from Library'
+        (option: AlertButtonWithHandler) => option.text === 'Choose from Library'
       );
       await chooseLibraryOption.onPress();
 
@@ -905,7 +933,7 @@ describe('EditDiscScreen', () => {
         granted: false,
         canAskAgain: true,
         expires: 'never',
-      } as any);
+      } as ImagePicker.MediaLibraryPermissionResponse);
 
       const { getByText } = render(<EditDiscScreen />);
 
@@ -919,7 +947,7 @@ describe('EditDiscScreen', () => {
         (call) => call[0] === 'Add Photo'
       );
       const chooseLibraryOption = alertCall![2].find(
-        (option: any) => option.text === 'Choose from Library'
+        (option: AlertButtonWithHandler) => option.text === 'Choose from Library'
       );
       await chooseLibraryOption.onPress();
 
@@ -963,7 +991,7 @@ describe('EditDiscScreen', () => {
       mockImagePicker.launchImageLibraryAsync.mockResolvedValueOnce({
         canceled: false,
         assets: [{ uri: 'file://new-photo.jpg', width: 100, height: 100 }],
-      } as any);
+      } as unknown as ImagePickerResult);
 
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -997,7 +1025,7 @@ describe('EditDiscScreen', () => {
         (call) => call[0] === 'Add Photo'
       );
       const chooseLibraryOption = alertCall![2].find(
-        (option: any) => option.text === 'Choose from Library'
+        (option: AlertButtonWithHandler) => option.text === 'Choose from Library'
       );
       await chooseLibraryOption.onPress();
 
@@ -1023,7 +1051,7 @@ describe('EditDiscScreen', () => {
       mockImagePicker.launchImageLibraryAsync.mockResolvedValueOnce({
         canceled: false,
         assets: [{ uri: 'file://new-photo.jpg', width: 100, height: 100 }],
-      } as any);
+      } as unknown as ImagePickerResult);
 
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -1057,7 +1085,7 @@ describe('EditDiscScreen', () => {
         (call) => call[0] === 'Add Photo'
       );
       const chooseLibraryOption = alertCall![2].find(
-        (option: any) => option.text === 'Choose from Library'
+        (option: AlertButtonWithHandler) => option.text === 'Choose from Library'
       );
       await chooseLibraryOption.onPress();
 

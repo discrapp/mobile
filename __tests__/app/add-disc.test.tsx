@@ -39,9 +39,31 @@ jest.mock('../../components/CameraWithOverlay', () => 'CameraWithOverlay');
 // Mock ImageCropperWithCircle
 jest.mock('../../components/ImageCropperWithCircle', () => 'ImageCropperWithCircle');
 
+// Mock component prop types
+interface MockPlasticPickerProps {
+  value: string;
+  onChange: (value: string) => void;
+  textColor: string;
+}
+
+interface MockCategoryPickerProps {
+  value: string;
+  onChange: (value: string) => void;
+  textColor: string;
+}
+
+interface MockDiscAutocompleteProps {
+  value: string;
+  onChangeText: (text: string) => void;
+  onSelectDisc: (disc: unknown) => void;
+  placeholder?: string;
+  error?: string;
+  textColor: string;
+}
+
 // Mock PlasticPicker - render as simple TextInput
 jest.mock('../../components/PlasticPicker', () => ({
-  PlasticPicker: ({ value, onChange, textColor }: any) => {
+  PlasticPicker: ({ value, onChange, textColor }: MockPlasticPickerProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput
@@ -56,7 +78,7 @@ jest.mock('../../components/PlasticPicker', () => ({
 
 // Mock CategoryPicker - render as simple TextInput
 jest.mock('../../components/CategoryPicker', () => ({
-  CategoryPicker: ({ value, onChange, textColor }: any) => {
+  CategoryPicker: ({ value, onChange, textColor }: MockCategoryPickerProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput
@@ -71,7 +93,7 @@ jest.mock('../../components/CategoryPicker', () => ({
 
 // Mock DiscAutocomplete - render as simple TextInput with testID
 jest.mock('../../components/DiscAutocomplete', () => ({
-  DiscAutocomplete: ({ value, onChangeText, onSelectDisc, placeholder, error, textColor }: any) => {
+  DiscAutocomplete: ({ value, onChangeText, placeholder, textColor }: MockDiscAutocompleteProps) => {
     const { TextInput } = require('react-native');
     return (
       <TextInput

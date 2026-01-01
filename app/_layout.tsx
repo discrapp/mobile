@@ -1,6 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Toasts } from '@backpackapp-io/react-native-toast';
+import { User } from '@supabase/supabase-js';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -60,7 +61,7 @@ export default function RootLayout() {
   );
 }
 
-function useProtectedRoute(user: any, loading: boolean) {
+function useProtectedRoute(user: User | null, loading: boolean) {
   const segments = useSegments();
   const router = useRouter();
 
@@ -86,7 +87,7 @@ function useProtectedRoute(user: any, loading: boolean) {
 // Track if we've checked this app session (in-memory, resets on app restart)
 let hasCheckedThisSession = false;
 
-function useDeferredLinking(user: any, loading: boolean) {
+function useDeferredLinking(user: User | null, loading: boolean) {
   const router = useRouter();
   const appState = useRef(AppState.currentState);
 

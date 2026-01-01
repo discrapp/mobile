@@ -1315,7 +1315,7 @@ describe('ProposeMeetupScreen', () => {
   // Skip - tests have test isolation issues (pass individually, fail when run together)
   describe.skip('button states during submission', () => {
     it('disables submit button while submitting', async () => {
-      let resolvePromise: (value: any) => void;
+      let resolvePromise: (value: unknown) => void;
       const pendingPromise = new Promise((resolve) => {
         resolvePromise = resolve;
       });

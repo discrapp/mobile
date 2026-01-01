@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, ComponentProps } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -14,6 +14,8 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+
+type FontAwesomeIconName = ComponentProps<typeof FontAwesome>['name'];
 
 interface ShippingAddress {
   name: string;
@@ -40,7 +42,7 @@ interface StickerOrder {
   shipping_address: ShippingAddress | null;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: FontAwesomeIconName }> = {
   pending_payment: { label: 'Pending Payment', color: '#F39C12', icon: 'clock-o' },
   paid: { label: 'Order Placed', color: '#3498DB', icon: 'check' },
   processing: { label: 'Processing', color: '#9B59B6', icon: 'cog' },
@@ -258,7 +260,7 @@ export default function OrderDetailScreen() {
       >
         {/* Status Header */}
         <RNView style={[styles.statusHeader, { backgroundColor: statusConfig.color }]}>
-          <FontAwesome name={statusConfig.icon as any} size={32} color="#fff" />
+          <FontAwesome name={statusConfig.icon} size={32} color="#fff" />
           <Text style={styles.statusHeaderText}>{statusConfig.label}</Text>
           {order.status === 'shipped' && order.tracking_number && (
             <Pressable style={styles.trackButton} onPress={handleTrackPackage}>
