@@ -597,7 +597,7 @@ describe('AuthContext', () => {
 
       await waitFor(() => {
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          'Failed to register push token:',
+          '[ERROR] Failed to register push token',
           expect.any(Error)
         );
       });
@@ -626,7 +626,7 @@ describe('AuthContext', () => {
       );
 
       await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalledWith('Push notifications require a physical device');
+        expect(consoleLogSpy).toHaveBeenCalledWith('[DEBUG] Push notifications require a physical device');
       });
 
       expect(Notifications.getExpoPushTokenAsync).not.toHaveBeenCalled();
@@ -659,7 +659,7 @@ describe('AuthContext', () => {
       );
 
       await waitFor(() => {
-        expect(consoleLogSpy).toHaveBeenCalledWith('Failed to get push token - permission not granted');
+        expect(consoleLogSpy).toHaveBeenCalledWith('[DEBUG] Failed to get push token - permission not granted');
       });
 
       expect(Notifications.getExpoPushTokenAsync).not.toHaveBeenCalled();
@@ -866,7 +866,7 @@ describe('AuthContext', () => {
       });
 
       await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith('OAuth error:', expect.any(Error));
+        expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] OAuth error', expect.any(Error));
       });
 
       consoleErrorSpy.mockRestore();
@@ -933,7 +933,7 @@ describe('AuthContext', () => {
       });
 
       await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith('Error parsing deep link:', expect.any(Error));
+        expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] Error parsing deep link', expect.any(Error));
       });
 
       consoleErrorSpy.mockRestore();

@@ -9,7 +9,7 @@ export function initSentry(): void {
   const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
   if (!dsn) {
-    console.log('Sentry DSN not configured, skipping initialization');
+    // Silently skip initialization when DSN is not configured
     return;
   }
 
