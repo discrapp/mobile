@@ -6,6 +6,7 @@ import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { setUserContext, clearUserContext, captureError } from '@/lib/sentry';
+import { logger } from '@/lib/logger';
 
 // Configure notification handler
 Notifications.setNotificationHandler({
@@ -63,7 +64,7 @@ async function registerForPushNotificationsAsync(): Promise<string | null> {
     }
 
     if (finalStatus !== 'granted') {
-      console.log('Failed to get push token - permission not granted');
+      logger.debug('Failed to get push token - permission not granted');
       return null;
     }
 
@@ -73,10 +74,11 @@ async function registerForPushNotificationsAsync(): Promise<string | null> {
       });
       token = tokenData.data;
     } catch (error) {
-      console.error('Error getting push token:', error);
+      captureError(error, { operation: 'getExpoPushToken' });
+      logger.error('Error getting push token', error);
     }
   } else {
-    console.log('Push notifications require a physical device');
+    logger.debug('Push notifications require a physical device');
   }
 
   return token;
@@ -93,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = await registerForPushNotificationsAsync();
       if (token) {
-        console.log('Registering push token:', token.substring(0, 30) + '...');
+        logger.debug('Registering push token', { tokenPreview: token.substring(0, 30) + '...' });
 
         const response = await supabase.functions.invoke('register-push-token', {
           headers: {
@@ -103,13 +105,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (response.error) {
-          console.error('Failed to register push token:', response.error);
+          captureError(response.error, { operation: 'registerPushToken' });
+          logger.error('Failed to register push token', response.error);
         } else {
-          console.log('Push token registered successfully');
+          logger.debug('Push token registered successfully');
         }
       }
     } catch (error) {
-      console.error('Error registering push token:', error);
+      captureError(error, { operation: 'registerPushToken' });
+      logger.error('Error registering push token', error);
     }
   }, [session?.access_token]);
 
@@ -122,8 +126,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Failed to get session:', error);
         captureError(error, { operation: 'getSession' });
+        logger.error('Failed to get session', error);
         setLoading(false);
       });
 
@@ -145,7 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Handle deep link OAuth callbacks
     const handleDeepLink = async (event: { url: string }) => {
-      console.log('Deep link received:', event.url);
+      logger.debug('Deep link received', { url: event.url });
 
       if (event.url && (event.url.includes('#access_token') || event.url.includes('?access_token'))) {
         try {
@@ -156,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const accessToken = params.get('access_token');
           const refreshToken = params.get('refresh_token');
 
-          console.log('Tokens found:', {
+          logger.debug('OAuth tokens parsed', {
             hasAccess: !!accessToken,
             hasRefresh: !!refreshToken,
           });
@@ -168,22 +172,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             });
 
             if (error) {
-              console.error('OAuth error:', error);
               captureError(error, {
                 operation: 'oauthCallback',
                 hasAccessToken: !!accessToken,
                 hasRefreshToken: !!refreshToken,
               });
+              logger.error('OAuth error', error);
             } else {
-              console.log('Session set successfully');
+              logger.debug('Session set successfully');
             }
           }
         } catch (err) {
-          console.error('Error parsing deep link:', err);
           captureError(err as Error, {
             operation: 'deepLinkParsing',
             url: event.url,
           });
+          logger.error('Error parsing deep link', err);
         }
       }
     };
@@ -215,12 +219,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Handle notification received while app is foregrounded
     const notificationListener = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
+      logger.debug('Notification received', { title: notification.request.content.title });
     });
 
     // Handle notification response (user tapped on notification)
     const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('Notification response:', response);
+      logger.debug('Notification response', { actionIdentifier: response.actionIdentifier });
       // Navigation to specific screen can be handled here based on notification data
     });
 
@@ -269,8 +273,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await supabase.auth.signOut();
     } catch (error) {
-      console.error('Sign out error:', error);
       captureError(error as Error, { operation: 'signOut' });
+      logger.error('Sign out error', error);
     }
     // Force clear state even if signOut fails
     setSession(null);
