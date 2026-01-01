@@ -21,9 +21,7 @@ export interface ApiRequestOptions {
  */
 export async function getSession(): Promise<Session> {
   try {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
       throw new ApiError('Not authenticated', {
@@ -129,8 +127,7 @@ export async function apiRequest<T = unknown>(
     }
 
     // Network or other errors
-    const message =
-      error instanceof Error ? error.message : 'Network request failed';
+    const message = error instanceof Error ? error.message : 'Network request failed';
     const isNetworkError =
       message.toLowerCase().includes('network') ||
       message.toLowerCase().includes('failed to fetch');

@@ -285,6 +285,14 @@ describe('apiRequest', () => {
     });
 
     expect(supabase.auth.getSession).not.toHaveBeenCalled();
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.not.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: expect.any(String),
+        }),
+      })
+    );
     expect(result).toEqual(mockData);
   });
 });
