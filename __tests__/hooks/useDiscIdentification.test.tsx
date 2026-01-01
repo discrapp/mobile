@@ -795,4 +795,70 @@ describe('useDiscIdentification', () => {
       expect(result.current.reset).toBe(initialReset);
     });
   });
+
+  describe('abort and cleanup', () => {
+    it('handles AbortError gracefully without setting error state', async () => {
+      const abortError = new Error('The operation was aborted');
+      abortError.name = 'AbortError';
+
+      (global.fetch as jest.Mock).mockRejectedValue(abortError);
+
+      const { result } = renderHook(() => useDiscIdentification());
+
+      await act(async () => {
+        await result.current.identify(testImageUri);
+      });
+
+      // AbortError should not set an error message
+      expect(result.current.error).toBeNull();
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    it('does not update state after unmount', async () => {
+      const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleError = jest.spyOn(console, 'error').mockImplementation();
+
+      // Create a delayed promise to simulate slow network
+      let resolveImageFetch: (value: Response) => void;
+      const imagePromise = new Promise<Response>((resolve) => {
+        resolveImageFetch = resolve;
+      });
+
+      (global.fetch as jest.Mock).mockImplementation(() => imagePromise);
+
+      const { result, unmount } = renderHook(() => useDiscIdentification());
+
+      // Start the request
+      act(() => {
+        result.current.identify(testImageUri);
+      });
+
+      // Should be loading
+      expect(result.current.isLoading).toBe(true);
+
+      // Unmount before the promise resolves
+      unmount();
+
+      // Now resolve the image fetch after unmount
+      resolveImageFetch!({
+        blob: () => Promise.resolve(new Blob(['test'], { type: 'image/jpeg' })),
+      } as Response);
+
+      // Wait a tick to ensure async operations complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Check that no warnings about state updates on unmounted components
+      const stateUpdateWarning = consoleWarn.mock.calls.find(
+        call => call[0]?.includes?.('state update on an unmounted')
+      ) || consoleError.mock.calls.find(
+        call => call[0]?.includes?.('state update on an unmounted') ||
+               call[0]?.includes?.("Can't perform a React state update")
+      );
+
+      expect(stateUpdateWarning).toBeUndefined();
+
+      consoleWarn.mockRestore();
+      consoleError.mockRestore();
+    });
+  });
 });

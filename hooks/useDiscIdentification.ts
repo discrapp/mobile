@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { handleError } from '@/lib/errorHandler';
 
@@ -54,28 +54,65 @@ export function useDiscIdentification(): UseDiscIdentificationResult {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<IdentificationResult | null>(null);
 
+  // Track mounted state to prevent state updates after unmount
+  const isMountedRef = useRef(true);
+  // Track current AbortController for cleanup
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      // Abort any in-flight requests
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   const reset = useCallback(() => {
-    setIsLoading(false);
-    setError(null);
-    setResult(null);
+    if (isMountedRef.current) {
+      setIsLoading(false);
+      setError(null);
+      setResult(null);
+    }
   }, []);
 
   const identify = useCallback(async (imageUri: string): Promise<IdentificationResult | null> => {
-    setIsLoading(true);
-    setError(null);
-    setResult(null);
+    // Abort previous request if any
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    if (isMountedRef.current) {
+      setIsLoading(true);
+      setError(null);
+      setResult(null);
+    }
 
     try {
       // Get session for authentication
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        setError('You must be signed in to identify discs');
+        if (isMountedRef.current) {
+          setError('You must be signed in to identify discs');
+        }
         return null;
       }
 
       // Fetch the image and convert to blob
-      const response = await fetch(imageUri);
+      const response = await fetch(imageUri, { signal: abortController.signal });
       const blob = await response.blob();
+
+      // Check if aborted after image fetch
+      if (abortController.signal.aborted || !isMountedRef.current) {
+        return null;
+      }
 
       // Create form data with the image
       const formData = new FormData();
@@ -94,15 +131,23 @@ export function useDiscIdentification(): UseDiscIdentificationResult {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: formData,
+          signal: abortController.signal,
         }
       );
+
+      // Check if aborted after API call
+      if (abortController.signal.aborted || !isMountedRef.current) {
+        return null;
+      }
 
       const data = await apiResponse.json();
 
       if (!apiResponse.ok) {
         const errorMessage = data.details || data.error || 'Failed to identify disc';
         console.error('AI identification API error:', apiResponse.status, errorMessage, data);
-        setError(errorMessage);
+        if (isMountedRef.current) {
+          setError(errorMessage);
+        }
         return null;
       }
 
@@ -114,15 +159,26 @@ export function useDiscIdentification(): UseDiscIdentificationResult {
         log_id: data.log_id || null,
       };
 
-      setResult(identificationResult);
+      if (isMountedRef.current) {
+        setResult(identificationResult);
+      }
       return identificationResult;
     } catch (err) {
+      // Handle AbortError gracefully - don't set error state
+      if (err instanceof Error && err.name === 'AbortError') {
+        return null;
+      }
+
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-      setError(errorMessage);
+      if (isMountedRef.current) {
+        setError(errorMessage);
+      }
       handleError(err, { operation: 'identify-disc-from-photo' });
       return null;
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, []);
 
