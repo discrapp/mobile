@@ -91,6 +91,19 @@ jest.mock('expo-image-manipulator', () => ({
   SaveFormat: { JPEG: 'jpeg', PNG: 'png' },
 }));
 
+// Mock Expo Local Authentication
+jest.mock('expo-local-authentication', () => ({
+  hasHardwareAsync: jest.fn(() => Promise.resolve(true)),
+  isEnrolledAsync: jest.fn(() => Promise.resolve(true)),
+  authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
+  supportedAuthenticationTypesAsync: jest.fn(() => Promise.resolve([2])),
+  AuthenticationType: {
+    FINGERPRINT: 1,
+    FACIAL_RECOGNITION: 2,
+    IRIS: 3,
+  },
+}));
+
 // Mock Sentry - prevent any real API calls during tests
 jest.mock('@sentry/react-native', () => ({
   init: jest.fn(),

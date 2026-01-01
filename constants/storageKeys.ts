@@ -16,6 +16,8 @@ export const STORAGE_KEYS = {
   DISC_CACHE: '@discr/discs_cache',
   /** Timestamp of when disc cache was last updated */
   DISC_CACHE_TIMESTAMP: '@discr/discs_cache_timestamp',
+  /** Whether biometric authentication is enabled */
+  BIOMETRIC_ENABLED: '@discr/biometric_enabled',
 } as const;
 
 /** Type representing all storage key values */
