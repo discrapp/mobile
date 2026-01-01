@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import { handleError, showSuccess } from '@/lib/errorHandler';
+import { useColorScheme } from '@/components/useColorScheme';
 
 /**
  * Claim Disc Screen
@@ -25,6 +26,8 @@ import { handleError, showSuccess } from '@/lib/errorHandler';
 export default function ClaimDiscScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const params = useLocalSearchParams<{
     discId: string;
     discName: string;
@@ -36,6 +39,46 @@ export default function ClaimDiscScreen() {
   }>();
 
   const [claiming, setClaiming] = useState(false);
+
+  // Dynamic styles for dark/light mode
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? '#000' : '#f5f5f5',
+    },
+    header: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    },
+    headerTitle: {
+      color: isDark ? '#fff' : '#333',
+    },
+    photoContainer: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    },
+    placeholderPhoto: {
+      backgroundColor: isDark ? '#333' : '#f0f0f0',
+    },
+    infoCard: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    },
+    discName: {
+      color: isDark ? '#fff' : '#333',
+    },
+    infoRow: {
+      borderBottomColor: isDark ? '#333' : '#f0f0f0',
+    },
+    infoLabel: {
+      color: isDark ? '#999' : '#666',
+    },
+    infoValue: {
+      color: isDark ? '#ccc' : '#333',
+    },
+    claimBannerSubtitle: {
+      color: isDark ? '#999' : '#666',
+    },
+    skipButtonText: {
+      color: isDark ? '#999' : '#666',
+    },
+  };
 
   // istanbul ignore next -- Claim flow tested via integration tests
   const handleClaimDisc = async () => {
@@ -97,56 +140,61 @@ export default function ClaimDiscScreen() {
   const handleBack = () => router.back();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.container, dynamicStyles.container]}
+      contentContainerStyle={styles.content}
+    >
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, dynamicStyles.header]}>
         <Pressable style={styles.backButton} onPress={handleBack}>
           <FontAwesome name="chevron-left" size={20} color={Colors.violet.primary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Claim Disc</Text>
+        <Text style={[styles.headerTitle, dynamicStyles.headerTitle]}>Claim Disc</Text>
         <View style={styles.backButton} />
       </View>
 
       {/* Disc Photo */}
-      <View style={styles.photoContainer}>
+      <View style={[styles.photoContainer, dynamicStyles.photoContainer]}>
         {params.discPhotoUrl ? (
           <Image source={{ uri: params.discPhotoUrl }} style={styles.photo} />
         ) : (
-          <View style={styles.placeholderPhoto}>
-            <FontAwesome name="circle" size={80} color="#ccc" />
+          <View style={[styles.placeholderPhoto, dynamicStyles.placeholderPhoto]}>
+            <FontAwesome name="circle" size={80} color={isDark ? '#666' : '#ccc'} />
           </View>
         )}
       </View>
 
       {/* Disc Info */}
-      <View style={styles.infoCard}>
-        <Text style={styles.discName}>{discName}</Text>
+      <View style={[styles.infoCard, dynamicStyles.infoCard]}>
+        <Text style={[styles.discName, dynamicStyles.discName]}>{discName}</Text>
 
         {params.discManufacturer && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Manufacturer</Text>
-            <Text style={styles.infoValue}>{params.discManufacturer}</Text>
+          <View style={[styles.infoRow, dynamicStyles.infoRow]}>
+            <Text style={[styles.infoLabel, dynamicStyles.infoLabel]}>Manufacturer</Text>
+            <Text style={[styles.infoValue, dynamicStyles.infoValue]}>
+              {params.discManufacturer}
+            </Text>
           </View>
         )}
 
         {params.discMold && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Mold</Text>
-            <Text style={styles.infoValue}>{params.discMold}</Text>
+          <View style={[styles.infoRow, dynamicStyles.infoRow]}>
+            <Text style={[styles.infoLabel, dynamicStyles.infoLabel]}>Mold</Text>
+            <Text style={[styles.infoValue, dynamicStyles.infoValue]}>{params.discMold}</Text>
           </View>
         )}
 
         {params.discPlastic && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Plastic</Text>
-            <Text style={styles.infoValue}>{params.discPlastic}</Text>
+          <View style={[styles.infoRow, dynamicStyles.infoRow]}>
+            <Text style={[styles.infoLabel, dynamicStyles.infoLabel]}>Plastic</Text>
+            <Text style={[styles.infoValue, dynamicStyles.infoValue]}>{params.discPlastic}</Text>
           </View>
         )}
 
         {params.discColor && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Color</Text>
-            <Text style={styles.infoValue}>{params.discColor}</Text>
+          <View style={[styles.infoRow, dynamicStyles.infoRow]}>
+            <Text style={[styles.infoLabel, dynamicStyles.infoLabel]}>Color</Text>
+            <Text style={[styles.infoValue, dynamicStyles.infoValue]}>{params.discColor}</Text>
           </View>
         )}
       </View>
@@ -156,7 +204,7 @@ export default function ClaimDiscScreen() {
         <FontAwesome name="gift" size={24} color={Colors.violet.primary} />
         <View style={styles.claimBannerText}>
           <Text style={styles.claimBannerTitle}>Available to Claim!</Text>
-          <Text style={styles.claimBannerSubtitle}>
+          <Text style={[styles.claimBannerSubtitle, dynamicStyles.claimBannerSubtitle]}>
             This disc has been abandoned by its previous owner. You can claim it
             and add it to your collection.
           </Text>
@@ -181,7 +229,9 @@ export default function ClaimDiscScreen() {
 
       {/* Skip Link */}
       <Pressable style={styles.skipButton} onPress={() => router.replace('/(tabs)')}>
-        <Text style={styles.skipButtonText}>No thanks, go to home</Text>
+        <Text style={[styles.skipButtonText, dynamicStyles.skipButtonText]}>
+          No thanks, go to home
+        </Text>
       </Pressable>
     </ScrollView>
   );
