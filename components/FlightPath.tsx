@@ -76,12 +76,14 @@ export default function FlightPath({
 
   // Fetch user's throwing hand preference
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchThrowingHand() {
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user || !isMounted) return;
 
         const { data, error } = await supabase
           .from('profiles')
@@ -89,7 +91,7 @@ export default function FlightPath({
           .eq('id', user.id)
           .single();
 
-        if (!error && data?.throwing_hand) {
+        if (!error && data?.throwing_hand && isMounted) {
           setThrowingHand(data.throwing_hand as ThrowingHand);
         }
       } catch {
@@ -98,6 +100,10 @@ export default function FlightPath({
     }
 
     fetchThrowingHand();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Calculate throw type based on hand and style

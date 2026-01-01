@@ -241,4 +241,53 @@ describe('FlightPath', () => {
       });
     });
   });
+
+  describe('useEffect cleanup', () => {
+    it('does not update state after unmount', async () => {
+      const { supabase } = require('@/lib/supabase');
+      const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleError = jest.spyOn(console, 'error').mockImplementation();
+
+      // Create a delayed promise to simulate slow network
+      let resolvePromise: (value: { data: { throwing_hand: string }; error: null }) => void;
+      const delayedPromise = new Promise<{ data: { throwing_hand: string }; error: null }>((resolve) => {
+        resolvePromise = resolve;
+      });
+
+      supabase.from.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            single: jest.fn().mockReturnValue(delayedPromise),
+          }),
+        }),
+      });
+
+      const { unmount, getByText } = render(<FlightPath {...defaultProps} />);
+
+      // Verify component rendered
+      expect(getByText('FLIGHT PATH')).toBeTruthy();
+
+      // Unmount before the promise resolves
+      unmount();
+
+      // Now resolve the promise after unmount
+      resolvePromise!({ data: { throwing_hand: 'left' }, error: null });
+
+      // Wait a tick to ensure async operations complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Check that no warnings about state updates on unmounted components
+      const stateUpdateWarning = consoleWarn.mock.calls.find(
+        call => call[0]?.includes?.('state update on an unmounted')
+      ) || consoleError.mock.calls.find(
+        call => call[0]?.includes?.('state update on an unmounted') ||
+               call[0]?.includes?.("Can't perform a React state update")
+      );
+
+      expect(stateUpdateWarning).toBeUndefined();
+
+      consoleWarn.mockRestore();
+      consoleError.mockRestore();
+    });
+  });
 });
