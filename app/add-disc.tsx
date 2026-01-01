@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -62,10 +62,11 @@ export default function AddDiscScreen() {
 
   // QR scanning state
   const [showQrScanner, setShowQrScanner] = useState(false);
-  const [hasScanned, setHasScanned] = useState(false);
+  const isProcessingQr = useRef(false);
   const [qrCodeId, setQrCodeId] = useState<string | null>(null);
   const [qrShortCode, setQrShortCode] = useState<string | null>(null);
   const [qrLoading, setQrLoading] = useState(false);
+  const [qrError, setQrError] = useState<string | null>(null);
 
   // Dynamic styles for dark/light mode
   const dynamicContainerStyle = {
@@ -165,7 +166,8 @@ export default function AddDiscScreen() {
           return;
         }
       }
-      setHasScanned(false);
+      isProcessingQr.current = false;
+      setQrError(null);
       setShowQrScanner(true);
     } finally {
       setQrLoading(false);
@@ -174,21 +176,30 @@ export default function AddDiscScreen() {
 
   // istanbul ignore next -- Barcode scanning callback requires device testing
   const handleBarcodeScan = async (result: BarcodeScanningResult) => {
-    if (hasScanned || qrLoading) return;
-    setHasScanned(true);
+    if (isProcessingQr.current || qrLoading) return;
+    isProcessingQr.current = true;
+    setQrError(null);
     setShowQrScanner(false);
 
-    let scannedCode = result.data;
+    try {
+      let scannedCode = result.data;
 
-    // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
-    if (scannedCode.includes('/d/')) {
-      const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
-      if (match) {
-        scannedCode = match[1];
+      // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
+      if (scannedCode.includes('/d/')) {
+        const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
+        if (match) {
+          scannedCode = match[1];
+        }
       }
-    }
 
-    await processScannedQrCode(scannedCode);
+      await processScannedQrCode(scannedCode);
+    } catch (error) {
+      setQrError('Failed to process QR code. Please try again.');
+      console.error('QR scan error:', error);
+      handleError(error, { operation: 'handle-barcode-scan' });
+    } finally {
+      isProcessingQr.current = false;
+    }
   };
 
   // istanbul ignore next -- QR code processing tested via integration tests
@@ -846,6 +857,14 @@ export default function AddDiscScreen() {
               </Pressable>
             )}
           </View>
+          {qrError && (
+            <View style={styles.qrErrorContainer}>
+              <Text style={styles.qrErrorText}>{qrError}</Text>
+              <Pressable onPress={() => setQrError(null)}>
+                <FontAwesome name="times" size={16} color="#ff4444" />
+              </Pressable>
+            </View>
+          )}
 
           {/* Photos */}
           <View style={styles.field}>
@@ -1140,7 +1159,7 @@ export default function AddDiscScreen() {
             barcodeScannerSettings={{
               barcodeTypes: ['qr'],
             }}
-            onBarcodeScanned={hasScanned ? undefined : handleBarcodeScan}
+            onBarcodeScanned={handleBarcodeScan}
           />
           <RNView style={styles.scannerOverlay}>
             <RNView style={styles.scannerHeader}>
@@ -1453,6 +1472,22 @@ const styles = StyleSheet.create({
   },
   qrRemoveButton: {
     padding: 4,
+  },
+  qrErrorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  qrErrorText: {
+    color: '#ff4444',
+    fontSize: 14,
+    flex: 1,
+    marginRight: 8,
   },
   // Scanner styles
   scannerContainer: {
