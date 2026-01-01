@@ -3,6 +3,7 @@ import { StyleSheet, View, Pressable, useColorScheme } from 'react-native';
 import { Text } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
+import { STRINGS } from '@/constants/strings';
 
 interface FullScreenErrorProps {
   message?: string;
@@ -16,9 +17,9 @@ interface FullScreenErrorProps {
  * Adapts to light/dark mode automatically.
  */
 export function FullScreenError({
-  message = 'Something went wrong. Please try again.',
+  message = STRINGS.ERRORS.GENERIC,
   onRetry,
-  retryLabel = 'Try Again',
+  retryLabel = STRINGS.ERRORS.TRY_AGAIN,
 }: FullScreenErrorProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -34,7 +35,7 @@ export function FullScreenError({
           <FontAwesome name="exclamation-triangle" size={48} color="#ef4444" />
         </View>
 
-        <Text style={styles.title}>Oops!</Text>
+        <Text style={styles.title}>{STRINGS.ERRORS.OOPS}</Text>
         <Text style={[styles.message, { color: isDark ? '#999' : '#666' }]}>
           {message}
         </Text>

@@ -1,3 +1,5 @@
+import { STRINGS } from '@/constants/strings';
+
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -5,10 +7,10 @@ export const validateEmail = (email: string): boolean => {
 
 export const validatePassword = (password: string): string | null => {
   if (!password.trim()) {
-    return 'Password is required';
+    return STRINGS.VALIDATION.PASSWORD_REQUIRED;
   }
   if (password.length < 8) {
-    return 'Password must be at least 8 characters';
+    return STRINGS.VALIDATION.PASSWORD_MIN_LENGTH;
   }
   return null;
 };
@@ -18,10 +20,10 @@ export const validatePasswordMatch = (
   confirmPassword: string
 ): string | null => {
   if (!confirmPassword.trim()) {
-    return 'Please confirm your password';
+    return STRINGS.VALIDATION.CONFIRM_PASSWORD_REQUIRED;
   }
   if (password !== confirmPassword) {
-    return 'Passwords do not match';
+    return STRINGS.VALIDATION.PASSWORDS_NO_MATCH;
   }
   return null;
 };
@@ -34,13 +36,13 @@ export const validateSignInForm = (
   const trimmedEmail = email.trim();
 
   if (!trimmedEmail) {
-    errors.email = 'Email is required';
+    errors.email = STRINGS.VALIDATION.EMAIL_REQUIRED;
   } else if (!validateEmail(trimmedEmail)) {
-    errors.email = 'Please enter a valid email';
+    errors.email = STRINGS.VALIDATION.EMAIL_INVALID;
   }
 
   if (!password.trim()) {
-    errors.password = 'Password is required';
+    errors.password = STRINGS.VALIDATION.PASSWORD_REQUIRED;
   }
 
   return errors;
@@ -59,9 +61,9 @@ export const validateSignUpForm = (
   const trimmedEmail = email.trim();
 
   if (!trimmedEmail) {
-    errors.email = 'Email is required';
+    errors.email = STRINGS.VALIDATION.EMAIL_REQUIRED;
   } else if (!validateEmail(trimmedEmail)) {
-    errors.email = 'Please enter a valid email';
+    errors.email = STRINGS.VALIDATION.EMAIL_INVALID;
   }
 
   const passwordError = validatePassword(password);
@@ -104,13 +106,13 @@ export interface ShippingAddress {
 export const validatePostalCode = (postalCode: string): string | null => {
   const trimmed = postalCode.trim();
   if (!trimmed) {
-    return 'ZIP code is required';
+    return STRINGS.VALIDATION.ZIP_REQUIRED;
   }
 
   // Match 5 digits or 5 digits + hyphen + 4 digits
   const zipRegex = /^\d{5}(-\d{4})?$/;
   if (!zipRegex.test(trimmed)) {
-    return 'ZIP code must be 5 digits (12345) or ZIP+4 format (12345-6789)';
+    return STRINGS.VALIDATION.ZIP_INVALID;
   }
 
   return null;
@@ -122,15 +124,15 @@ export const validatePostalCode = (postalCode: string): string | null => {
 export const validateStateCode = (state: string): string | null => {
   const trimmed = state.trim().toUpperCase();
   if (!trimmed) {
-    return 'State is required';
+    return STRINGS.VALIDATION.STATE_REQUIRED;
   }
 
   if (trimmed.length !== 2) {
-    return 'State must be a 2-letter code (e.g., CA)';
+    return STRINGS.VALIDATION.STATE_INVALID_LENGTH;
   }
 
   if (!US_STATE_CODES.includes(trimmed)) {
-    return 'Please enter a valid US state code';
+    return STRINGS.VALIDATION.STATE_INVALID;
   }
 
   return null;
@@ -147,28 +149,28 @@ export const validateShippingAddress = (
 
   // Name validation
   if (!address.name?.trim()) {
-    errors.name = 'Name is required';
+    errors.name = STRINGS.VALIDATION.NAME_REQUIRED;
   } else if (address.name.trim().length > 100) {
-    errors.name = 'Name is too long (max 100 characters)';
+    errors.name = STRINGS.VALIDATION.NAME_TOO_LONG;
   }
 
   // Street address validation
   if (!address.street_address?.trim()) {
-    errors.street_address = 'Street address is required';
+    errors.street_address = STRINGS.VALIDATION.STREET_REQUIRED;
   } else if (address.street_address.trim().length > 100) {
-    errors.street_address = 'Street address is too long (max 100 characters)';
+    errors.street_address = STRINGS.VALIDATION.STREET_TOO_LONG;
   }
 
   // Street address 2 validation (optional but with length limit)
   if (address.street_address_2 && address.street_address_2.trim().length > 100) {
-    errors.street_address_2 = 'Address line 2 is too long (max 100 characters)';
+    errors.street_address_2 = STRINGS.VALIDATION.ADDRESS_LINE_2_TOO_LONG;
   }
 
   // City validation
   if (!address.city?.trim()) {
-    errors.city = 'City is required';
+    errors.city = STRINGS.VALIDATION.CITY_REQUIRED;
   } else if (address.city.trim().length > 50) {
-    errors.city = 'City name is too long (max 50 characters)';
+    errors.city = STRINGS.VALIDATION.CITY_TOO_LONG;
   }
 
   // State validation
