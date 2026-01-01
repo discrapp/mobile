@@ -47,6 +47,9 @@ export function Avatar({ avatarUrl, name, size = 40, style }: AvatarProps) {
 
   const textSize = size * 0.4;
 
+  // Accessibility label based on name
+  const accessibilityLabel = name ? `${name}'s avatar` : 'User avatar';
+
   // Show image if URL exists and hasn't errored
   if (avatarUrl && !imageError) {
     return (
@@ -56,13 +59,19 @@ export function Avatar({ avatarUrl, name, size = 40, style }: AvatarProps) {
         onError={() => setImageError(true)}
         cachePolicy="memory-disk"
         transition={200}
+        accessibilityRole="image"
+        accessibilityLabel={accessibilityLabel}
       />
     );
   }
 
   // Fallback to initials
   return (
-    <View style={[styles.placeholder, containerStyle, style]}>
+    <View
+      style={[styles.placeholder, containerStyle, style]}
+      accessibilityRole="image"
+      accessibilityLabel={accessibilityLabel}
+    >
       <Text style={[styles.initials, { fontSize: textSize }]}>
         {getInitials(name)}
       </Text>

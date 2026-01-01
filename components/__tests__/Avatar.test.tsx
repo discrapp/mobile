@@ -89,4 +89,54 @@ describe('Avatar', () => {
       );
     });
   });
+
+  describe('accessibility', () => {
+    it('should have accessibilityRole of image when showing avatar URL', () => {
+      const { UNSAFE_getByType } = render(
+        <Avatar avatarUrl="https://example.com/avatar.jpg" name="John Doe" />
+      );
+      const { Image } = require('expo-image');
+      const image = UNSAFE_getByType(Image);
+      expect(image.props.accessibilityRole).toBe('image');
+    });
+
+    it('should have accessibilityLabel with user name when showing avatar URL', () => {
+      const { UNSAFE_getByType } = render(
+        <Avatar avatarUrl="https://example.com/avatar.jpg" name="John Doe" />
+      );
+      const { Image } = require('expo-image');
+      const image = UNSAFE_getByType(Image);
+      expect(image.props.accessibilityLabel).toBe("John Doe's avatar");
+    });
+
+    it('should have accessibilityLabel fallback when no name provided for avatar URL', () => {
+      const { UNSAFE_getByType } = render(
+        <Avatar avatarUrl="https://example.com/avatar.jpg" />
+      );
+      const { Image } = require('expo-image');
+      const image = UNSAFE_getByType(Image);
+      expect(image.props.accessibilityLabel).toBe('User avatar');
+    });
+
+    it('should have accessibilityRole of image when showing initials', () => {
+      const { UNSAFE_getByType } = render(<Avatar name="John Doe" />);
+      const View = require('react-native').View;
+      const container = UNSAFE_getByType(View);
+      expect(container.props.accessibilityRole).toBe('image');
+    });
+
+    it('should have accessibilityLabel with user name when showing initials', () => {
+      const { UNSAFE_getByType } = render(<Avatar name="John Doe" />);
+      const View = require('react-native').View;
+      const container = UNSAFE_getByType(View);
+      expect(container.props.accessibilityLabel).toBe("John Doe's avatar");
+    });
+
+    it('should have accessibilityLabel fallback when showing initials without name', () => {
+      const { UNSAFE_getByType } = render(<Avatar />);
+      const View = require('react-native').View;
+      const container = UNSAFE_getByType(View);
+      expect(container.props.accessibilityLabel).toBe('User avatar');
+    });
+  });
 });
