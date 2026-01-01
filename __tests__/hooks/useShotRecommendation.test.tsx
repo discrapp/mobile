@@ -15,6 +15,17 @@ jest.mock('@/lib/errorHandler', () => ({
   handleError: jest.fn(),
 }));
 
+// Mock image compression
+jest.mock('@/utils/imageCompression', () => ({
+  compressImage: jest.fn((uri: string) =>
+    Promise.resolve({
+      uri: `compressed-${uri}`,
+      width: 1600,
+      height: 1200,
+    })
+  ),
+}));
+
 // Mock fetch
 global.fetch = jest.fn();
 

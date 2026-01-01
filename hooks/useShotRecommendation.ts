@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { handleError } from '@/lib/errorHandler';
+import { compressImage } from '@/utils/imageCompression';
 
 export interface DiscInfo {
   id: string;
@@ -91,15 +92,22 @@ export function useShotRecommendation(): UseShotRecommendationResult {
           return null;
         }
 
-        // Fetch the image and convert to blob
-        const response = await fetch(imageUri);
+        // Compress image to ensure it's under 5MB limit
+        // Use 1600px max dimension and 70% quality for shot analysis
+        const compressed = await compressImage(imageUri, {
+          maxDimension: 1600,
+          quality: 0.7,
+        });
+
+        // Fetch the compressed image and convert to blob
+        const response = await fetch(compressed.uri);
         const blob = await response.blob();
 
-        // Create form data with the image
+        // Create form data with the compressed image
         const formData = new FormData();
         formData.append('image', {
-          uri: imageUri,
-          type: blob.type || 'image/jpeg',
+          uri: compressed.uri,
+          type: 'image/jpeg', // compressImage always outputs JPEG
           name: 'hole-photo.jpg',
         } as unknown as Blob);
 
