@@ -24,7 +24,11 @@ export function FullScreenError({
   const isDark = colorScheme === 'dark';
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+    <View
+      style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+      accessibilityRole="alert"
+      accessibilityLabel={`An error occurred. ${message}`}
+    >
       <View style={styles.content}>
         <View style={[styles.iconContainer, { backgroundColor: isDark ? '#2a1a1a' : '#fee2e2' }]}>
           <FontAwesome name="exclamation-triangle" size={48} color="#ef4444" />
@@ -36,7 +40,13 @@ export function FullScreenError({
         </Text>
 
         {onRetry && (
-          <Pressable style={styles.retryButton} onPress={onRetry}>
+          <Pressable
+            style={styles.retryButton}
+            onPress={onRetry}
+            accessibilityRole="button"
+            accessibilityLabel={retryLabel}
+            accessibilityHint="Attempts to recover from the error"
+          >
             <FontAwesome name="refresh" size={16} color="#fff" />
             <Text style={styles.retryButtonText}>{retryLabel}</Text>
           </Pressable>

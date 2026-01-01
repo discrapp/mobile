@@ -324,4 +324,63 @@ describe('ErrorBoundary', () => {
       }).not.toThrow();
     });
   });
+
+  describe('accessibility', () => {
+    it('should have accessibilityRole of alert for the error container', () => {
+      const { getByTestId } = render(
+        <ErrorBoundary>
+          <ErrorThrowingComponent shouldThrow />
+        </ErrorBoundary>
+      );
+
+      const container = getByTestId('error-boundary-container');
+      expect(container.props.accessibilityRole).toBe('alert');
+    });
+
+    it('should have accessibilityLabel describing the error state', () => {
+      const { getByTestId } = render(
+        <ErrorBoundary>
+          <ErrorThrowingComponent shouldThrow />
+        </ErrorBoundary>
+      );
+
+      const container = getByTestId('error-boundary-container');
+      expect(container.props.accessibilityLabel).toBe(
+        'An error occurred. Something went wrong. Please try again.'
+      );
+    });
+
+    it('should have accessibilityRole of button for Try Again', () => {
+      const { getByRole } = render(
+        <ErrorBoundary>
+          <ErrorThrowingComponent shouldThrow />
+        </ErrorBoundary>
+      );
+
+      const tryAgainButton = getByRole('button');
+      expect(tryAgainButton).toBeTruthy();
+    });
+
+    it('should have accessibilityLabel for Try Again button', () => {
+      const { getByLabelText } = render(
+        <ErrorBoundary>
+          <ErrorThrowingComponent shouldThrow />
+        </ErrorBoundary>
+      );
+
+      const tryAgainButton = getByLabelText('Try Again');
+      expect(tryAgainButton).toBeTruthy();
+    });
+
+    it('should have accessibilityHint for Try Again button', () => {
+      const { getByHintText } = render(
+        <ErrorBoundary>
+          <ErrorThrowingComponent shouldThrow />
+        </ErrorBoundary>
+      );
+
+      const tryAgainButton = getByHintText('Attempts to recover from the error');
+      expect(tryAgainButton).toBeTruthy();
+    });
+  });
 });
