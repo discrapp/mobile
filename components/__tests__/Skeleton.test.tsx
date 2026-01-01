@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
-import { useColorScheme } from 'react-native';
+import * as ReactNative from 'react-native';
 import {
   Skeleton,
   DiscCardSkeleton,
@@ -11,23 +11,14 @@ import {
   ProfileHeaderSkeleton,
 } from '../Skeleton';
 
-// Mock useColorScheme
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    useColorScheme: jest.fn(() => 'light'),
-  };
-});
-
-const mockedUseColorScheme = useColorScheme as jest.MockedFunction<
-  typeof useColorScheme
->;
+// Spy on useColorScheme instead of mocking entire react-native module
+let mockColorScheme: ReactNative.ColorSchemeName = 'light';
+jest.spyOn(ReactNative, 'useColorScheme').mockImplementation(() => mockColorScheme);
 
 describe('Skeleton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseColorScheme.mockReturnValue('light');
+    mockColorScheme = 'light';
   });
 
   describe('base Skeleton component', () => {
@@ -105,7 +96,7 @@ describe('Skeleton', () => {
     });
 
     it('should use light mode colors when colorScheme is light', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getByType } = render(<Skeleton />);
       const { Animated } = require('react-native');
       const skeleton = UNSAFE_getByType(Animated.View);
@@ -120,7 +111,7 @@ describe('Skeleton', () => {
     });
 
     it('should use dark mode colors when colorScheme is dark', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getByType } = render(<Skeleton />);
       const { Animated } = require('react-native');
       const skeleton = UNSAFE_getByType(Animated.View);
@@ -137,7 +128,7 @@ describe('Skeleton', () => {
 
   describe('DiscCardSkeleton', () => {
     it('should render in light mode', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<DiscCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -149,7 +140,7 @@ describe('Skeleton', () => {
     });
 
     it('should render in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<DiscCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -173,7 +164,7 @@ describe('Skeleton', () => {
 
   describe('DiscDetailSkeleton', () => {
     it('should render in light mode', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<DiscDetailSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -186,7 +177,7 @@ describe('Skeleton', () => {
     });
 
     it('should render in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<DiscDetailSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -246,7 +237,7 @@ describe('Skeleton', () => {
 
   describe('RecoveryCardSkeleton', () => {
     it('should render in light mode', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<RecoveryCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -258,7 +249,7 @@ describe('Skeleton', () => {
     });
 
     it('should render in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<RecoveryCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -286,7 +277,7 @@ describe('Skeleton', () => {
 
   describe('OrderCardSkeleton', () => {
     it('should render in light mode', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<OrderCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -298,7 +289,7 @@ describe('Skeleton', () => {
     });
 
     it('should render in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<OrderCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -310,7 +301,7 @@ describe('Skeleton', () => {
     });
 
     it('should render divider with appropriate color', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<OrderCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -326,7 +317,7 @@ describe('Skeleton', () => {
     });
 
     it('should render divider with dark color in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<OrderCardSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -358,7 +349,7 @@ describe('Skeleton', () => {
 
   describe('ProfileHeaderSkeleton', () => {
     it('should render in light mode', () => {
-      mockedUseColorScheme.mockReturnValue('light');
+      mockColorScheme = 'light';
       const { UNSAFE_getAllByType } = render(<ProfileHeaderSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -370,7 +361,7 @@ describe('Skeleton', () => {
     });
 
     it('should render in dark mode', () => {
-      mockedUseColorScheme.mockReturnValue('dark');
+      mockColorScheme = 'dark';
       const { UNSAFE_getAllByType } = render(<ProfileHeaderSkeleton />);
       const { Animated } = require('react-native');
       const views = UNSAFE_getAllByType(Animated.View);
@@ -456,7 +447,7 @@ describe('Skeleton', () => {
 
   describe('null colorScheme handling', () => {
     it('should default to light mode when colorScheme is null', () => {
-      mockedUseColorScheme.mockReturnValue(null);
+      mockColorScheme = null;
       const { UNSAFE_getByType } = render(<Skeleton />);
       const { Animated } = require('react-native');
       const skeleton = UNSAFE_getByType(Animated.View);
