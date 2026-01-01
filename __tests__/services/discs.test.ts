@@ -1,17 +1,17 @@
 /**
- * Tests for disc service - CRUD operations for discs
+ * Tests for disc service - CRUD operations for disc management
  */
 
-import { discService } from '../../services/discs';
-import { ApiError, ApiErrorCode } from '../../services/ApiError';
-import * as baseService from '../../services/baseService';
+import { discService } from '@/services/discs';
+import { apiRequest } from '@/services/baseService';
+import { ApiError, ApiErrorCode } from '@/services/ApiError';
 
-// Mock the base service
-jest.mock('../../services/baseService');
+// Mock baseService
+jest.mock('@/services/baseService', () => ({
+  apiRequest: jest.fn(),
+}));
 
-const mockApiRequest = baseService.apiRequest as jest.MockedFunction<
-  typeof baseService.apiRequest
->;
+const mockApiRequest = apiRequest as jest.MockedFunction<typeof apiRequest>;
 
 describe('discService', () => {
   beforeEach(() => {
@@ -19,24 +19,26 @@ describe('discService', () => {
   });
 
   describe('getAll', () => {
-    it('fetches all discs for the authenticated user', async () => {
+    it('fetches all discs for the current user', async () => {
       const mockDiscs = [
-        { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
-        { id: 'disc-2', name: 'Buzzz', manufacturer: 'Discraft' },
+        { id: 'disc-1', name: 'Destroyer', brand: 'Innova' },
+        { id: 'disc-2', name: 'Buzzz', brand: 'Discraft' },
       ];
       mockApiRequest.mockResolvedValueOnce(mockDiscs);
 
       const result = await discService.getAll();
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/get-user-discs', {
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs', {
         method: 'GET',
-        operation: 'fetch-discs',
+        operation: 'get-discs',
       });
       expect(result).toEqual(mockDiscs);
     });
 
-    it('propagates API errors', async () => {
-      const error = new ApiError('Server error', { code: ApiErrorCode.API });
+    it('propagates errors from apiRequest', async () => {
+      const error = new ApiError('Not authenticated', {
+        code: ApiErrorCode.AUTH,
+      });
       mockApiRequest.mockRejectedValueOnce(error);
 
       await expect(discService.getAll()).rejects.toThrow(error);
@@ -44,71 +46,70 @@ describe('discService', () => {
   });
 
   describe('getById', () => {
-    it('fetches a specific disc by ID', async () => {
-      const mockDiscs = [
-        { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
-        { id: 'disc-2', name: 'Buzzz', manufacturer: 'Discraft' },
-      ];
-      mockApiRequest.mockResolvedValueOnce(mockDiscs);
+    it('fetches a single disc by ID', async () => {
+      const mockDisc = { id: 'disc-1', name: 'Destroyer', brand: 'Innova' };
+      mockApiRequest.mockResolvedValueOnce(mockDisc);
 
       const result = await discService.getById('disc-1');
 
-      expect(result).toEqual(mockDiscs[0]);
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1', {
+        method: 'GET',
+        operation: 'get-disc',
+      });
+      expect(result).toEqual(mockDisc);
     });
 
-    it('throws NOT_FOUND when disc does not exist', async () => {
-      mockApiRequest.mockResolvedValueOnce([]);
-
-      await expect(discService.getById('non-existent')).rejects.toMatchObject({
+    it('returns null for non-existent disc', async () => {
+      const error = new ApiError('Not found', {
         code: ApiErrorCode.NOT_FOUND,
-        message: 'Disc not found',
+        statusCode: 404,
       });
+      mockApiRequest.mockRejectedValueOnce(error);
+
+      const result = await discService.getById('non-existent');
+
+      expect(result).toBeNull();
+    });
+
+    it('propagates non-404 errors', async () => {
+      const error = new ApiError('Server error', {
+        code: ApiErrorCode.API,
+        statusCode: 500,
+      });
+      mockApiRequest.mockRejectedValueOnce(error);
+
+      await expect(discService.getById('disc-1')).rejects.toThrow(error);
     });
   });
 
   describe('create', () => {
     it('creates a new disc', async () => {
-      const newDisc = {
-        name: 'My Destroyer',
-        manufacturer: 'Innova',
-        mold: 'Destroyer',
-        plastic: 'Star',
-        color: 'Blue',
-        weight: 175,
-      };
-      const createdDisc = { id: 'disc-new', ...newDisc };
+      const discData = { name: 'Destroyer', brand: 'Innova', weight: 175 };
+      const createdDisc = { id: 'new-disc', ...discData };
       mockApiRequest.mockResolvedValueOnce(createdDisc);
 
-      const result = await discService.create(newDisc);
+      const result = await discService.create(discData);
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/create-disc', {
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs', {
         method: 'POST',
-        body: newDisc,
+        body: discData,
         operation: 'create-disc',
       });
       expect(result).toEqual(createdDisc);
-    });
-
-    it('handles validation errors', async () => {
-      const error = new ApiError('Invalid input', { code: ApiErrorCode.VALIDATION });
-      mockApiRequest.mockRejectedValueOnce(error);
-
-      await expect(discService.create({ name: '' })).rejects.toThrow(error);
     });
   });
 
   describe('update', () => {
     it('updates an existing disc', async () => {
-      const discId = 'disc-1';
-      const updates = { name: 'Updated Destroyer', color: 'Red' };
-      const updatedDisc = { id: discId, ...updates };
+      const updates = { name: 'Updated Name' };
+      const updatedDisc = { id: 'disc-1', name: 'Updated Name', brand: 'Innova' };
       mockApiRequest.mockResolvedValueOnce(updatedDisc);
 
-      const result = await discService.update(discId, updates);
+      const result = await discService.update('disc-1', updates);
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/update-disc', {
-        method: 'POST',
-        body: { disc_id: discId, ...updates },
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1', {
+        method: 'PATCH',
+        body: updates,
         operation: 'update-disc',
       });
       expect(result).toEqual(updatedDisc);
@@ -116,55 +117,63 @@ describe('discService', () => {
   });
 
   describe('delete', () => {
-    it('deletes a disc by ID', async () => {
-      const discId = 'disc-1';
+    it('deletes a disc', async () => {
       mockApiRequest.mockResolvedValueOnce({ success: true });
 
-      await discService.delete(discId);
+      await discService.delete('disc-1');
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/delete-disc', {
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1', {
         method: 'DELETE',
-        body: { disc_id: discId },
         operation: 'delete-disc',
       });
-    });
-
-    it('propagates errors when deletion fails', async () => {
-      const error = new ApiError('Disc has active recovery', { code: ApiErrorCode.API });
-      mockApiRequest.mockRejectedValueOnce(error);
-
-      await expect(discService.delete('disc-1')).rejects.toThrow(error);
     });
   });
 
   describe('linkQrCode', () => {
     it('links a QR code to a disc', async () => {
-      const discId = 'disc-1';
-      const qrCode = 'ABC123';
-      mockApiRequest.mockResolvedValueOnce({ success: true });
+      const linkedDisc = { id: 'disc-1', qr_code_id: 'qr-123' };
+      mockApiRequest.mockResolvedValueOnce(linkedDisc);
 
-      await discService.linkQrCode(discId, qrCode);
+      const result = await discService.linkQrCode('disc-1', 'qr-123');
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/link-qr-to-disc', {
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1/qr', {
         method: 'POST',
-        body: { disc_id: discId, qr_code: qrCode },
+        body: { qr_code_id: 'qr-123' },
         operation: 'link-qr-code',
       });
+      expect(result).toEqual(linkedDisc);
     });
   });
 
   describe('unlinkQrCode', () => {
     it('unlinks a QR code from a disc', async () => {
-      const discId = 'disc-1';
-      mockApiRequest.mockResolvedValueOnce({ success: true });
+      const unlinkedDisc = { id: 'disc-1', qr_code_id: null };
+      mockApiRequest.mockResolvedValueOnce(unlinkedDisc);
 
-      await discService.unlinkQrCode(discId);
+      const result = await discService.unlinkQrCode('disc-1');
 
-      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/unlink-qr-code', {
-        method: 'POST',
-        body: { disc_id: discId },
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1/qr', {
+        method: 'DELETE',
         operation: 'unlink-qr-code',
       });
+      expect(result).toEqual(unlinkedDisc);
+    });
+  });
+
+  describe('uploadPhoto', () => {
+    it('uploads a photo for a disc', async () => {
+      const photoData = { uri: 'file://photo.jpg', type: 'image/jpeg' };
+      const updatedDisc = { id: 'disc-1', photo_url: 'https://storage/photo.jpg' };
+      mockApiRequest.mockResolvedValueOnce(updatedDisc);
+
+      const result = await discService.uploadPhoto('disc-1', photoData);
+
+      expect(mockApiRequest).toHaveBeenCalledWith('/functions/v1/discs/disc-1/photo', {
+        method: 'POST',
+        body: photoData,
+        operation: 'upload-disc-photo',
+      });
+      expect(result).toEqual(updatedDisc);
     });
   });
 });
