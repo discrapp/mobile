@@ -59,7 +59,13 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "@sentry/react-native/expo"
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "discrapp",
+          "project": "discr-mobile"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

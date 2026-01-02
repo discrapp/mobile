@@ -1,5 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, Image, View, Pressable, Dimensions, Modal, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native';
+import React, { useState, useRef, useCallback } from 'react';
+import {
+  StyleSheet,
+  Image,
+  View,
+  Pressable,
+  Dimensions,
+  Modal,
+  PanResponder,
+  GestureResponderEvent,
+  PanResponderGestureState,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import Svg, { Path, Circle, Text as SvgText, G } from 'react-native-svg';
 import { useColorScheme } from '@/components/useColorScheme';
 import { calculateRealFlightPath, FlightNumbers } from '@/lib/flightCalculator';
@@ -55,24 +67,31 @@ export default function FlightPathOverlay({
   throwType,
   throwingHand,
   onPositionChange,
-  onDragStart,
-  onDragEnd,
+  onDragStart: _onDragStart,
+  onDragEnd: _onDragEnd,
 }: FlightPathOverlayProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Editable positions (start from AI estimates)
-  const [editableTee, setEditableTee] = useState(teePosition);
-  const [editableBasket, setEditableBasket] = useState(basketPosition);
+  // Current saved positions (what's displayed on small preview)
+  const [savedTee, setSavedTee] = useState(teePosition);
+  const [savedBasket, setSavedBasket] = useState(basketPosition);
   const originalTeeRef = useRef(teePosition);
   const originalBasketRef = useRef(basketPosition);
 
-  // Update editable positions when props change (new photo/analysis)
+  // Modal editing positions (temporary while editing)
+  const [modalTee, setModalTee] = useState(teePosition);
+  const [modalBasket, setModalBasket] = useState(basketPosition);
+  const [modalImageSize, setModalImageSize] = useState({ width: 0, height: 0 });
+
+  // Update positions when props change (new photo/analysis)
   React.useEffect(() => {
-    setEditableTee(teePosition);
-    setEditableBasket(basketPosition);
+    setSavedTee(teePosition);
+    setSavedBasket(basketPosition);
+    setModalTee(teePosition);
+    setModalBasket(basketPosition);
     originalTeeRef.current = teePosition;
     originalBasketRef.current = basketPosition;
   }, [teePosition.x, teePosition.y, basketPosition.x, basketPosition.y]);
@@ -82,32 +101,58 @@ export default function FlightPathOverlay({
     setImageSize({ width, height });
   };
 
-  // Use refs to track current values for PanResponder (avoids stale closure)
-  const editableTeeRef = useRef(editableTee);
-  const editableBasketRef = useRef(editableBasket);
-  const imageSizeRef = useRef(imageSize);
-  const onDragStartRef = useRef(onDragStart);
-  const onDragEndRef = useRef(onDragEnd);
-  const onPositionChangeRef = useRef(onPositionChange);
+  const handleModalImageLayout = (event: { nativeEvent: { layout: { width: number; height: number } } }) => {
+    const { width, height } = event.nativeEvent.layout;
+    setModalImageSize({ width, height });
+  };
 
-  // Keep refs in sync with state/props
+  // Open modal and reset modal positions to current saved
+  const openModal = useCallback(() => {
+    setModalTee(savedTee);
+    setModalBasket(savedBasket);
+    setIsExpanded(true);
+  }, [savedTee, savedBasket]);
+
+  // Save changes and close modal
+  const handleSave = useCallback(() => {
+    setSavedTee(modalTee);
+    setSavedBasket(modalBasket);
+    setIsExpanded(false);
+
+    // Notify parent of position change
+    if (onPositionChange) {
+      onPositionChange({
+        teePosition: modalTee,
+        basketPosition: modalBasket,
+        originalTeePosition: originalTeeRef.current,
+        originalBasketPosition: originalBasketRef.current,
+      });
+    }
+  }, [modalTee, modalBasket, onPositionChange]);
+
+  // Cancel and close modal (revert to saved positions)
+  const handleCancel = useCallback(() => {
+    setModalTee(savedTee);
+    setModalBasket(savedBasket);
+    setIsExpanded(false);
+  }, [savedTee, savedBasket]);
+
+  // Refs for PanResponder (modal editing)
+  const modalTeeRef = useRef(modalTee);
+  const modalBasketRef = useRef(modalBasket);
+  const modalImageSizeRef = useRef(modalImageSize);
+
   React.useEffect(() => {
-    editableTeeRef.current = editableTee;
-    editableBasketRef.current = editableBasket;
-  }, [editableTee, editableBasket]);
+    modalTeeRef.current = modalTee;
+    modalBasketRef.current = modalBasket;
+  }, [modalTee, modalBasket]);
 
   React.useEffect(() => {
-    imageSizeRef.current = imageSize;
-  }, [imageSize]);
+    modalImageSizeRef.current = modalImageSize;
+  }, [modalImageSize]);
 
-  React.useEffect(() => {
-    onDragStartRef.current = onDragStart;
-    onDragEndRef.current = onDragEnd;
-    onPositionChangeRef.current = onPositionChange;
-  }, [onDragStart, onDragEnd, onPositionChange]);
-
-  // Create drag handler for markers
-  const createDragHandler = (
+  // Create drag handler for modal markers
+  const createModalDragHandler = (
     setPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
     positionRef: React.MutableRefObject<{ x: number; y: number }>
   ) => {
@@ -121,10 +166,9 @@ export default function FlightPathOverlay({
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => {
         startPos = { ...positionRef.current };
-        onDragStartRef.current?.();
       },
       onPanResponderMove: (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-        const currentImageSize = imageSizeRef.current;
+        const currentImageSize = modalImageSizeRef.current;
         if (currentImageSize.width === 0 || currentImageSize.height === 0) return;
 
         // Convert pixel movement to percentage
@@ -138,41 +182,31 @@ export default function FlightPathOverlay({
         setPosition({ x: newX, y: newY });
       },
       onPanResponderRelease: () => {
-        onDragEndRef.current?.();
-        // Notify parent of position change using refs for current values
-        if (onPositionChangeRef.current) {
-          onPositionChangeRef.current({
-            teePosition: editableTeeRef.current,
-            basketPosition: editableBasketRef.current,
-            originalTeePosition: originalTeeRef.current,
-            originalBasketPosition: originalBasketRef.current,
-          });
-        }
+        // Don't save yet - wait for Save button
       },
       onPanResponderTerminate: () => {
-        onDragEndRef.current?.();
+        // Don't save yet - wait for Save button
       },
     });
   };
 
-  const teePanResponder = useRef(
-    createDragHandler(setEditableTee, editableTeeRef)
-  ).current;
-
-  const basketPanResponder = useRef(
-    createDragHandler(setEditableBasket, editableBasketRef)
-  ).current;
+  const modalTeePanResponder = useRef(createModalDragHandler(setModalTee, modalTeeRef)).current;
+  const modalBasketPanResponder = useRef(createModalDragHandler(setModalBasket, modalBasketRef)).current;
 
   const pathColor = PATH_COLORS[throwType];
   const normalizedFlightNumbers = toFlightNumbers(flightNumbers);
 
-  // Convert percentage positions to pixels for drag handles
-  const teePixelX = (editableTee.x / 100) * imageSize.width;
-  const teePixelY = (editableTee.y / 100) * imageSize.height;
-  const basketPixelX = (editableBasket.x / 100) * imageSize.width;
-  const basketPixelY = (editableBasket.y / 100) * imageSize.height;
-
   const screenDimensions = Dimensions.get('window');
+
+  // Calculate modal image dimensions (maintain aspect ratio)
+  const modalImageWidth = screenDimensions.width;
+  const modalImageHeight = screenDimensions.height * 0.7;
+
+  // Modal drag handle positions
+  const modalTeePixelX = (modalTee.x / 100) * modalImageSize.width;
+  const modalTeePixelY = (modalTee.y / 100) * modalImageSize.height;
+  const modalBasketPixelX = (modalBasket.x / 100) * modalImageSize.width;
+  const modalBasketPixelY = (modalBasket.y / 100) * modalImageSize.height;
 
   const renderOverlay = (
     width: number,
@@ -302,59 +336,85 @@ export default function FlightPathOverlay({
   return (
     <>
       <View style={[styles.container, isDark && styles.containerDark]}>
-        <Pressable style={styles.imageWrapper} onLayout={handleImageLayout} onPress={() => setIsExpanded(true)}>
+        <Pressable style={styles.imageWrapper} onLayout={handleImageLayout} onPress={openModal}>
           <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" />
 
-          {/* SVG Overlay with editable positions */}
-          {imageSize.width > 0 && imageSize.height > 0 && renderOverlay(imageSize.width, imageSize.height, editableTee, editableBasket)}
-        </Pressable>
+          {/* SVG Overlay with saved positions (read-only on preview) */}
+          {imageSize.width > 0 &&
+            imageSize.height > 0 &&
+            renderOverlay(imageSize.width, imageSize.height, savedTee, savedBasket)}
 
-        {/* Draggable touch targets for markers - OUTSIDE Pressable */}
-        {imageSize.width > 0 && imageSize.height > 0 && (
-          <>
-            {/* Tee drag handle */}
-            <View
-              {...teePanResponder.panHandlers}
-              style={[
-                styles.dragHandle,
-                {
-                  left: teePixelX - 25,
-                  top: teePixelY - 25,
-                  borderColor: '#22C55E',
-                },
-              ]}
-            />
-            {/* Basket drag handle */}
-            <View
-              {...basketPanResponder.panHandlers}
-              style={[
-                styles.dragHandle,
-                {
-                  left: basketPixelX - 25,
-                  top: basketPixelY - 25,
-                  borderColor: '#EF4444',
-                },
-              ]}
-            />
-          </>
-        )}
+          {/* Tap to edit hint */}
+          <View style={styles.editHint}>
+            <Text style={styles.editHintText}>Tap to edit positions</Text>
+          </View>
+        </Pressable>
       </View>
 
-      {/* Fullscreen Modal */}
-      <Modal visible={isExpanded} transparent animationType="fade" onRequestClose={() => setIsExpanded(false)}>
-        <Pressable style={styles.modalBackdrop} onPress={() => setIsExpanded(false)}>
-          <View style={styles.modalContent}>
+      {/* Fullscreen Modal for editing */}
+      <Modal visible={isExpanded} transparent animationType="fade" onRequestClose={handleCancel}>
+        <View style={styles.modalBackdrop}>
+          {/* Header with instructions */}
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Drag markers to correct positions</Text>
+          </View>
+
+          {/* Image container with overlay */}
+          <View style={styles.modalImageContainer} onLayout={handleModalImageLayout}>
             <Image
               source={{ uri: photoUri }}
               style={{
-                width: screenDimensions.width,
-                height: screenDimensions.height * 0.8,
+                width: modalImageWidth,
+                height: modalImageHeight,
               }}
               resizeMode="contain"
             />
-            {renderOverlay(screenDimensions.width, screenDimensions.height * 0.8, teePosition, basketPosition)}
+            {/* SVG Overlay with modal editing positions */}
+            {modalImageSize.width > 0 &&
+              modalImageSize.height > 0 &&
+              renderOverlay(modalImageSize.width, modalImageSize.height, modalTee, modalBasket)}
+
+            {/* Draggable touch targets for markers in modal */}
+            {modalImageSize.width > 0 && modalImageSize.height > 0 && (
+              <>
+                {/* Tee drag handle */}
+                <View
+                  {...modalTeePanResponder.panHandlers}
+                  style={[
+                    styles.dragHandle,
+                    {
+                      left: modalTeePixelX - 25,
+                      top: modalTeePixelY - 25,
+                      borderColor: '#22C55E',
+                    },
+                  ]}
+                />
+                {/* Basket drag handle */}
+                <View
+                  {...modalBasketPanResponder.panHandlers}
+                  style={[
+                    styles.dragHandle,
+                    {
+                      left: modalBasketPixelX - 25,
+                      top: modalBasketPixelY - 25,
+                      borderColor: '#EF4444',
+                    },
+                  ]}
+                />
+              </>
+            )}
           </View>
-        </Pressable>
+
+          {/* Save/Cancel buttons */}
+          <View style={styles.modalButtons}>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Save Changes</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
     </>
   );
@@ -382,14 +442,75 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  editHint: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  editHintText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    justifyContent: 'space-between',
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  modalImageContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  modalContent: {
     position: 'relative',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    paddingHorizontal: 20,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  saveButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: Colors.violet.primary,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   dragHandle: {
     position: 'absolute',
