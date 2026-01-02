@@ -1300,12 +1300,12 @@ describe('EditDiscScreen', () => {
       const { getByPlaceholderText } = render(<EditDiscScreen />);
 
       await waitFor(() => {
-        expect(getByPlaceholderText('-5 to 1')).toBeTruthy();
+        expect(getByPlaceholderText('-5 to 5')).toBeTruthy();
       });
 
-      fireEvent.changeText(getByPlaceholderText('-5 to 1'), '-2');
+      fireEvent.changeText(getByPlaceholderText('-5 to 5'), '-2');
 
-      expect(getByPlaceholderText('-5 to 1').props.value).toBe('-2');
+      expect(getByPlaceholderText('-5 to 5').props.value).toBe('-2');
     });
 
     it('updates fade field', async () => {
@@ -1467,7 +1467,7 @@ describe('EditDiscScreen', () => {
       await waitFor(() => {
         expect(getByPlaceholderText('1-15').props.value).toBe('12');
         expect(getByPlaceholderText('1-7').props.value).toBe('5');
-        expect(getByPlaceholderText('-5 to 1').props.value).toBe('-1');
+        expect(getByPlaceholderText('-5 to 5').props.value).toBe('-1');
         expect(getByPlaceholderText('0-5').props.value).toBe('3');
       });
     });
@@ -1490,7 +1490,7 @@ describe('EditDiscScreen', () => {
       await waitFor(() => {
         expect(getByPlaceholderText('1-15').props.value).toBe('');
         expect(getByPlaceholderText('1-7').props.value).toBe('');
-        expect(getByPlaceholderText('-5 to 1').props.value).toBe('');
+        expect(getByPlaceholderText('-5 to 5').props.value).toBe('');
         expect(getByPlaceholderText('0-5').props.value).toBe('');
       });
     });
