@@ -1186,7 +1186,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       await waitFor(() => {
@@ -1259,7 +1259,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       // Enter notes with leading/trailing whitespace
@@ -1312,7 +1312,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1352,7 +1352,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1396,7 +1396,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1434,7 +1434,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1466,7 +1466,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1511,7 +1511,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///original.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///original.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1585,7 +1585,7 @@ describe('DropOffScreen', () => {
 
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///test-photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///test-photo.jpg' });
       });
 
       await waitFor(() => {
@@ -1619,7 +1619,7 @@ describe('DropOffScreen', () => {
       // Take first photo
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///first-photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///first-photo.jpg' });
       });
 
       await waitFor(() => {
@@ -1632,7 +1632,7 @@ describe('DropOffScreen', () => {
       // Take second photo
       const updatedCameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await updatedCameraProps.onPhotoTaken('file:///second-photo.jpg');
+        await updatedCameraProps.onPhotoTaken({ uri: 'file:///second-photo.jpg' });
       });
 
       await waitFor(() => {
@@ -1731,7 +1731,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1775,7 +1775,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));
@@ -1818,7 +1818,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       const confirmButton = getByText('Confirm Drop-off');
@@ -1858,7 +1858,7 @@ describe('DropOffScreen', () => {
       // Simulate photo being taken
       const cameraProps = UNSAFE_root.findAllByType('CameraWithOverlay')[0].props;
       await act(async () => {
-        await cameraProps.onPhotoTaken('file:///photo.jpg');
+        await cameraProps.onPhotoTaken({ uri: 'file:///photo.jpg' });
       });
 
       fireEvent.press(getByText('Confirm Drop-off'));

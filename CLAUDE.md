@@ -129,6 +129,7 @@ pre-commit autoupdate           # Update hook versions
    - All hooks must be tested
    - All API interactions must be tested
    - All user flows must have integration tests
+   - **Coverage must not decrease** - CI enforces coverage thresholds
 1. **Test file locations:**
    - Component tests: `__tests__/<component>.test.tsx`
    - Hook tests: `__tests__/hooks/<hook>.test.ts`
@@ -140,6 +141,14 @@ pre-commit autoupdate           # Update hook versions
    npm test -- --watch         # Watch mode
    npm test -- --coverage      # With coverage report
    ```
+
+1. **Coverage enforcement:**
+   - CI runs `npm run test:coverage` on every PR
+   - PRs that decrease coverage will fail CI checks
+   - Before pushing, run `npm run test:coverage` locally to verify
+   - If adding new code, ensure it has corresponding tests
+   - Use `istanbul ignore next` comments sparingly and only for truly
+     untestable code (native modules, device-specific features)
 
 **DO NOT write implementation code without tests. This is non-negotiable.**
 
@@ -358,7 +367,7 @@ useProtectedRoute checks user state
 
 ---
 
-**Last Updated:** 2025-12-19
+**Last Updated:** 2026-01-02
 
 This file should be updated whenever:
 
