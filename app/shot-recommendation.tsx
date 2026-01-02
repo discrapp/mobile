@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -20,6 +20,7 @@ import { useShotRecommendation } from '@/hooks/useShotRecommendation';
 import DiscAvatar from '@/components/DiscAvatar';
 import FlightPathOverlay from '@/components/FlightPathOverlay';
 import { supabase } from '@/lib/supabase';
+import { handleError } from '@/lib/errorHandler';
 
 export default function ShotRecommendationScreen() {
   const router = useRouter();
@@ -66,6 +67,72 @@ export default function ShotRecommendationScreen() {
 
   // Shot recommendation hook
   const { getRecommendation, isLoading, error, result, reset } = useShotRecommendation();
+
+  // Track if correction has been saved to prevent duplicate saves
+  const correctionSavedRef = useRef(false);
+
+  // Reset correction saved flag when result changes
+  useEffect(() => {
+    correctionSavedRef.current = false;
+  }, [result?.log_id]);
+
+  // Save position correction to API
+  const savePositionCorrection = useCallback(async (
+    logId: string,
+    correctedTeePosition: { x: number; y: number },
+    correctedBasketPosition: { x: number; y: number }
+  ) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/save-position-correction`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            log_id: logId,
+            corrected_tee_position: correctedTeePosition,
+            corrected_basket_position: correctedBasketPosition,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to save position correction:', errorData);
+      }
+    } catch (err) {
+      handleError(err, { operation: 'save-position-correction' });
+    }
+  }, []);
+
+  // Handle position change from FlightPathOverlay
+  const handlePositionChange = useCallback((data: {
+    teePosition: { x: number; y: number };
+    basketPosition: { x: number; y: number };
+    originalTeePosition: { x: number; y: number };
+    originalBasketPosition: { x: number; y: number };
+  }) => {
+    if (!result?.log_id || correctionSavedRef.current) return;
+
+    // Check if positions actually changed from original
+    const teeChanged =
+      Math.abs(data.teePosition.x - data.originalTeePosition.x) > 1 ||
+      Math.abs(data.teePosition.y - data.originalTeePosition.y) > 1;
+    const basketChanged =
+      Math.abs(data.basketPosition.x - data.originalBasketPosition.x) > 1 ||
+      Math.abs(data.basketPosition.y - data.originalBasketPosition.y) > 1;
+
+    if (teeChanged || basketChanged) {
+      correctionSavedRef.current = true;
+      savePositionCorrection(result.log_id, data.teePosition, data.basketPosition);
+    }
+  }, [result?.log_id, savePositionCorrection]);
 
   // Dynamic styles for dark/light mode
   const dynamicStyles = {
@@ -205,6 +272,7 @@ export default function ShotRecommendationScreen() {
             flightNumbers={disc?.flight_numbers || null}
             throwType={recommendation.throw_type}
             throwingHand={throwingHand}
+            onPositionChange={handlePositionChange}
           />
         )}
 

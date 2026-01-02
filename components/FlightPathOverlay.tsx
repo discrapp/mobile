@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { StyleSheet, Image, View, Pressable, Dimensions, Modal } from 'react-native';
-import Svg, { Path, Circle, Rect, Text as SvgText, G } from 'react-native-svg';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Image, View, Pressable, Dimensions, Modal, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native';
+import Svg, { Path, Circle, Text as SvgText, G } from 'react-native-svg';
 import { useColorScheme } from '@/components/useColorScheme';
 import { calculateRealFlightPath, FlightNumbers } from '@/lib/flightCalculator';
 import Colors from '@/constants/Colors';
@@ -12,6 +12,13 @@ interface NullableFlightNumbers {
   fade: number | null;
 }
 
+interface PositionChangeData {
+  teePosition: { x: number; y: number };
+  basketPosition: { x: number; y: number };
+  originalTeePosition: { x: number; y: number };
+  originalBasketPosition: { x: number; y: number };
+}
+
 interface FlightPathOverlayProps {
   photoUri: string;
   teePosition: { x: number; y: number };
@@ -19,6 +26,7 @@ interface FlightPathOverlayProps {
   flightNumbers: NullableFlightNumbers | null;
   throwType: 'hyzer' | 'flat' | 'anhyzer';
   throwingHand: 'right' | 'left';
+  onPositionChange?: (data: PositionChangeData) => void;
 }
 
 function toFlightNumbers(fn: NullableFlightNumbers | null): FlightNumbers | null {
@@ -44,60 +52,124 @@ export default function FlightPathOverlay({
   flightNumbers,
   throwType,
   throwingHand,
+  onPositionChange,
 }: FlightPathOverlayProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Editable positions (start from AI estimates)
+  const [editableTee, setEditableTee] = useState(teePosition);
+  const [editableBasket, setEditableBasket] = useState(basketPosition);
+  const originalTeeRef = useRef(teePosition);
+  const originalBasketRef = useRef(basketPosition);
+
+  // Update editable positions when props change (new photo/analysis)
+  React.useEffect(() => {
+    setEditableTee(teePosition);
+    setEditableBasket(basketPosition);
+    originalTeeRef.current = teePosition;
+    originalBasketRef.current = basketPosition;
+  }, [teePosition.x, teePosition.y, basketPosition.x, basketPosition.y]);
+
   const handleImageLayout = (event: { nativeEvent: { layout: { width: number; height: number } } }) => {
     const { width, height } = event.nativeEvent.layout;
     setImageSize({ width, height });
   };
 
+  // Use refs to track current positions for PanResponder (avoids stale closure)
+  const editableTeeRef = useRef(editableTee);
+  const editableBasketRef = useRef(editableBasket);
+
+  // Keep refs in sync with state
+  React.useEffect(() => {
+    editableTeeRef.current = editableTee;
+    editableBasketRef.current = editableBasket;
+  }, [editableTee, editableBasket]);
+
+  // Create drag handler for markers
+  const createDragHandler = (
+    setPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
+    positionRef: React.MutableRefObject<{ x: number; y: number }>
+  ) => {
+    let startPos = { x: 0, y: 0 };
+
+    return PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        startPos = { ...positionRef.current };
+      },
+      onPanResponderMove: (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        if (imageSize.width === 0 || imageSize.height === 0) return;
+
+        // Convert pixel movement to percentage
+        const deltaXPercent = (gestureState.dx / imageSize.width) * 100;
+        const deltaYPercent = (gestureState.dy / imageSize.height) * 100;
+
+        // Clamp to 0-100 range
+        const newX = Math.max(0, Math.min(100, startPos.x + deltaXPercent));
+        const newY = Math.max(0, Math.min(100, startPos.y + deltaYPercent));
+
+        setPosition({ x: newX, y: newY });
+      },
+      onPanResponderRelease: () => {
+        // Notify parent of position change using refs for current values
+        if (onPositionChange) {
+          onPositionChange({
+            teePosition: editableTeeRef.current,
+            basketPosition: editableBasketRef.current,
+            originalTeePosition: originalTeeRef.current,
+            originalBasketPosition: originalBasketRef.current,
+          });
+        }
+      },
+    });
+  };
+
+  const teePanResponder = useRef(
+    createDragHandler(setEditableTee, editableTeeRef)
+  ).current;
+
+  const basketPanResponder = useRef(
+    createDragHandler(setEditableBasket, editableBasketRef)
+  ).current;
+
   const pathColor = PATH_COLORS[throwType];
   const normalizedFlightNumbers = toFlightNumbers(flightNumbers);
 
-  // Calculate the SVG path
-  const pathD =
-    imageSize.width > 0 && imageSize.height > 0
-      ? calculateRealFlightPath(
-          normalizedFlightNumbers,
-          throwType,
-          throwingHand,
-          teePosition,
-          basketPosition,
-          imageSize.width,
-          imageSize.height
-        )
-      : '';
-
-  // Convert percentage positions to pixels
-  const teeX = (teePosition.x / 100) * imageSize.width;
-  const teeY = (teePosition.y / 100) * imageSize.height;
-  const basketX = (basketPosition.x / 100) * imageSize.width;
-  const basketY = (basketPosition.y / 100) * imageSize.height;
+  // Convert percentage positions to pixels for drag handles
+  const teePixelX = (editableTee.x / 100) * imageSize.width;
+  const teePixelY = (editableTee.y / 100) * imageSize.height;
+  const basketPixelX = (editableBasket.x / 100) * imageSize.width;
+  const basketPixelY = (editableBasket.y / 100) * imageSize.height;
 
   const screenDimensions = Dimensions.get('window');
 
-  const renderOverlay = (width: number, height: number) => {
+  const renderOverlay = (
+    width: number,
+    height: number,
+    teePos: { x: number; y: number },
+    basketPos: { x: number; y: number }
+  ) => {
     const scaledPath =
       width > 0 && height > 0
         ? calculateRealFlightPath(
             normalizedFlightNumbers,
             throwType,
             throwingHand,
-            teePosition,
-            basketPosition,
+            teePos,
+            basketPos,
             width,
             height
           )
         : '';
 
-    const scaledTeeX = (teePosition.x / 100) * width;
-    const scaledTeeY = (teePosition.y / 100) * height;
-    const scaledBasketX = (basketPosition.x / 100) * width;
-    const scaledBasketY = (basketPosition.y / 100) * height;
+    const scaledTeeX = (teePos.x / 100) * width;
+    const scaledTeeY = (teePos.y / 100) * height;
+    const scaledBasketX = (basketPos.x / 100) * width;
+    const scaledBasketY = (basketPos.y / 100) * height;
 
     // Box dimensions for demo mode markers
     const boxSize = Math.min(width, height) * 0.12; // 12% of smallest dimension
@@ -206,8 +278,38 @@ export default function FlightPathOverlay({
         <View style={styles.imageWrapper} onLayout={handleImageLayout}>
           <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" />
 
-          {/* SVG Overlay */}
-          {imageSize.width > 0 && imageSize.height > 0 && renderOverlay(imageSize.width, imageSize.height)}
+          {/* SVG Overlay with editable positions */}
+          {imageSize.width > 0 && imageSize.height > 0 && renderOverlay(imageSize.width, imageSize.height, editableTee, editableBasket)}
+
+          {/* Draggable touch targets for markers */}
+          {imageSize.width > 0 && imageSize.height > 0 && (
+            <>
+              {/* Tee drag handle */}
+              <View
+                {...teePanResponder.panHandlers}
+                style={[
+                  styles.dragHandle,
+                  {
+                    left: teePixelX - 25,
+                    top: teePixelY - 25,
+                    borderColor: '#22C55E',
+                  },
+                ]}
+              />
+              {/* Basket drag handle */}
+              <View
+                {...basketPanResponder.panHandlers}
+                style={[
+                  styles.dragHandle,
+                  {
+                    left: basketPixelX - 25,
+                    top: basketPixelY - 25,
+                    borderColor: '#EF4444',
+                  },
+                ]}
+              />
+            </>
+          )}
         </View>
       </Pressable>
 
@@ -223,7 +325,7 @@ export default function FlightPathOverlay({
               }}
               resizeMode="contain"
             />
-            {renderOverlay(screenDimensions.width, screenDimensions.height * 0.8)}
+            {renderOverlay(screenDimensions.width, screenDimensions.height * 0.8, teePosition, basketPosition)}
           </View>
         </Pressable>
       </Modal>
@@ -261,5 +363,14 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     position: 'relative',
+  },
+  dragHandle: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
 });
