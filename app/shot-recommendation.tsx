@@ -15,7 +15,7 @@ import { Text } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import CameraWithOverlay from '@/components/CameraWithOverlay';
+import CameraWithOverlay, { PhotoCaptureResult } from '@/components/CameraWithOverlay';
 import { useShotRecommendation } from '@/hooks/useShotRecommendation';
 import DiscAvatar from '@/components/DiscAvatar';
 import FlightPathOverlay from '@/components/FlightPathOverlay';
@@ -166,9 +166,9 @@ export default function ShotRecommendationScreen() {
     setShowCamera(true);
   };
 
-  const handlePhotoTaken = useCallback(async (uri: string) => {
+  const handlePhotoTaken = useCallback(async (result: PhotoCaptureResult) => {
     setShowCamera(false);
-    await getRecommendation(uri);
+    await getRecommendation(result.uri);
   }, [getRecommendation]);
 
   const handleTryAgain = () => {

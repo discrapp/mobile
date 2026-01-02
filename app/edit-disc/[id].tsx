@@ -19,8 +19,9 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import CameraWithOverlay from '@/components/CameraWithOverlay';
+import CameraWithOverlay, { PhotoCaptureResult } from '@/components/CameraWithOverlay';
 import ImageCropperWithCircle from '@/components/ImageCropperWithCircle';
+import { CameraCaptureMeta } from '@/lib/cameraAlignment';
 import { DiscAutocomplete } from '@/components/DiscAutocomplete';
 import { PlasticPicker } from '@/components/PlasticPicker';
 import { CategoryPicker } from '@/components/CategoryPicker';
@@ -124,6 +125,7 @@ export default function EditDiscScreen() {
   const [showCamera, setShowCamera] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState('');
+  const [captureMeta, setCaptureMeta] = useState<CameraCaptureMeta | undefined>(undefined);
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
@@ -286,6 +288,7 @@ export default function EditDiscScreen() {
 
     if (!result.canceled && result.assets[0]) {
       setSelectedImageUri(result.assets[0].uri);
+      setCaptureMeta(undefined); // No camera metadata for library picks
       setShowCropper(true);
     }
   };
@@ -306,9 +309,10 @@ export default function EditDiscScreen() {
   };
 
   // istanbul ignore next -- Native camera callback requires device testing
-  const handlePhotoTaken = (uri: string) => {
+  const handlePhotoTaken = (result: PhotoCaptureResult) => {
     // Route camera photos through the cropper like library photos
-    setSelectedImageUri(uri);
+    setSelectedImageUri(result.uri);
+    setCaptureMeta(result.meta); // Pass metadata for alignment
     setShowCropper(true);
   };
 
@@ -827,6 +831,7 @@ export default function EditDiscScreen() {
         imageUri={selectedImageUri}
         onClose={() => setShowCropper(false)}
         onCropComplete={handleCropComplete}
+        captureMeta={captureMeta}
       />
     </>
   );

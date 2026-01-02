@@ -1,16 +1,30 @@
-import { useState, useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Modal, Dimensions } from 'react-native';
+import { useState, useRef, useCallback } from 'react';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Modal,
+  Dimensions,
+  LayoutChangeEvent,
+} from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
+import { CameraCaptureMeta } from '@/lib/cameraAlignment';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CIRCLE_SIZE = Math.min(SCREEN_WIDTH * 0.7, 280); // 70% of screen width, max 280
+
+export interface PhotoCaptureResult {
+  uri: string;
+  meta?: CameraCaptureMeta;
+}
 
 interface CameraWithOverlayProps {
   visible: boolean;
   onClose: () => void;
-  onPhotoTaken: (uri: string) => void;
+  onPhotoTaken: (result: PhotoCaptureResult) => void;
   showCircleGuide?: boolean;
   helperText?: string;
 }
@@ -25,6 +39,12 @@ export default function CameraWithOverlay({
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
+  const [cameraLayout, setCameraLayout] = useState({ width: 0, height: 0 });
+
+  const handleCameraLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setCameraLayout({ width, height });
+  }, []);
 
   if (!permission) {
     return null;
@@ -57,7 +77,22 @@ export default function CameraWithOverlay({
         quality: 0.8,
       });
       if (photo) {
-        onPhotoTaken(photo.uri);
+        // Build capture metadata for alignment calculation
+        const meta: CameraCaptureMeta | undefined =
+          showCircleGuide && cameraLayout.width > 0 && cameraLayout.height > 0
+            ? {
+                photoWidth: photo.width,
+                photoHeight: photo.height,
+                previewWidth: cameraLayout.width,
+                previewHeight: cameraLayout.height,
+                circleSize: CIRCLE_SIZE,
+                // Circle is centered in the camera view
+                circleCenterX: cameraLayout.width / 2,
+                circleCenterY: cameraLayout.height / 2,
+              }
+            : undefined;
+
+        onPhotoTaken({ uri: photo.uri, meta });
         onClose();
       }
     }
@@ -66,7 +101,12 @@ export default function CameraWithOverlay({
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.container}>
-        <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          facing={facing}
+          onLayout={handleCameraLayout}
+        >
           {/* Overlay with optional circle guide */}
           <View style={styles.overlay}>
             {showCircleGuide && (

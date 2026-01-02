@@ -20,7 +20,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
-import CameraWithOverlay from '@/components/CameraWithOverlay';
+import CameraWithOverlay, { PhotoCaptureResult } from '@/components/CameraWithOverlay';
 import { compressImage } from '@/utils/imageCompression';
 import { handleError, showSuccess } from '@/lib/errorHandler';
 
@@ -113,8 +113,8 @@ export default function DropOffScreen() {
     requestLocation();
   }, []);
 
-  const handlePhotoTaken = (uri: string) => {
-    setPhotoUri(uri);
+  const handlePhotoTaken = (result: PhotoCaptureResult) => {
+    setPhotoUri(result.uri);
   };
 
   const openMapsPreview = () => {

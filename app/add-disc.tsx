@@ -23,8 +23,9 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import CameraWithOverlay from '@/components/CameraWithOverlay';
+import CameraWithOverlay, { PhotoCaptureResult } from '@/components/CameraWithOverlay';
 import ImageCropperWithCircle from '@/components/ImageCropperWithCircle';
+import { CameraCaptureMeta } from '@/lib/cameraAlignment';
 import { DiscAutocomplete } from '@/components/DiscAutocomplete';
 import { PlasticPicker } from '@/components/PlasticPicker';
 import { CategoryPicker } from '@/components/CategoryPicker';
@@ -113,6 +114,7 @@ export default function AddDiscScreen() {
   const [showCamera, setShowCamera] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState('');
+  const [captureMeta, setCaptureMeta] = useState<CameraCaptureMeta | undefined>(undefined);
 
   // Entry mode selection
   type EntryMode = 'qr' | 'photo-ai' | 'manual' | null;
@@ -124,6 +126,7 @@ export default function AddDiscScreen() {
   const [showAiCamera, setShowAiCamera] = useState(false);
   const [showAiCropper, setShowAiCropper] = useState(false);
   const [aiImageUri, setAiImageUri] = useState('');
+  const [aiCaptureMeta, setAiCaptureMeta] = useState<CameraCaptureMeta | undefined>(undefined);
   const [showIdentificationResult, setShowIdentificationResult] = useState(false);
   const [aiLogId, setAiLogId] = useState<string | null>(null);
 
@@ -350,6 +353,7 @@ export default function AddDiscScreen() {
 
     if (!result.canceled && result.assets[0]) {
       setSelectedImageUri(result.assets[0].uri);
+      setCaptureMeta(undefined); // No camera metadata for library picks
       setShowCropper(true);
     }
   };
@@ -370,9 +374,10 @@ export default function AddDiscScreen() {
   };
 
   // istanbul ignore next -- Native camera callback requires device/emulator testing
-  const handlePhotoTaken = (uri: string) => {
+  const handlePhotoTaken = (result: PhotoCaptureResult) => {
     // Route camera photos through the cropper like library photos
-    setSelectedImageUri(uri);
+    setSelectedImageUri(result.uri);
+    setCaptureMeta(result.meta); // Pass metadata for alignment
     setShowCropper(true);
   };
 
@@ -418,8 +423,9 @@ export default function AddDiscScreen() {
     setShowAiCamera(true);
   };
 
-  const handleAiPhotoTaken = (uri: string) => {
-    setAiImageUri(uri);
+  const handleAiPhotoTaken = (result: PhotoCaptureResult) => {
+    setAiImageUri(result.uri);
+    setAiCaptureMeta(result.meta); // Pass metadata for alignment
     setShowAiCropper(true);
   };
 
@@ -1133,6 +1139,7 @@ export default function AddDiscScreen() {
         imageUri={selectedImageUri}
         onClose={() => setShowCropper(false)}
         onCropComplete={handleCropComplete}
+        captureMeta={captureMeta}
       />
 
       {/* AI Photo Camera */}
@@ -1149,6 +1156,7 @@ export default function AddDiscScreen() {
         imageUri={aiImageUri}
         onClose={() => setShowAiCropper(false)}
         onCropComplete={handleAiCropComplete}
+        captureMeta={aiCaptureMeta}
       />
 
       {/* istanbul ignore next -- Native camera/QR scanner requires device testing */}

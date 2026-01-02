@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Modal, Dimensions } from 'react-native';
 import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
+import {
+  CameraCaptureMeta,
+  calculateInitialCropperTransforms,
+  InitialTransforms,
+} from '@/lib/cameraAlignment';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CIRCLE_SIZE = Math.min(SCREEN_WIDTH * 0.7, 280);
 const IMAGE_CONTAINER_SIZE = SCREEN_WIDTH;
 
@@ -16,6 +21,8 @@ interface ImageCropperWithCircleProps {
   imageUri: string;
   onClose: () => void;
   onCropComplete: (uri: string) => void;
+  /** Optional metadata from camera capture for initial alignment */
+  captureMeta?: CameraCaptureMeta;
 }
 
 export default function ImageCropperWithCircle({
@@ -23,25 +30,10 @@ export default function ImageCropperWithCircle({
   imageUri,
   onClose,
   onCropComplete,
+  captureMeta,
 }: ImageCropperWithCircleProps) {
   const [processing, setProcessing] = useState(false);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
-
-  // Get image dimensions when URI changes
-  useEffect(() => {
-    if (imageUri) {
-      Image.getSize(imageUri, (width, height) => {
-        setImageDimensions({ width, height });
-        // Reset transforms when new image loads
-        scale.value = 1;
-        savedScale.value = 1;
-        translateX.value = 0;
-        translateY.value = 0;
-        savedTranslateX.value = 0;
-        savedTranslateY.value = 0;
-      });
-    }
-  }, [imageUri]);
 
   // Gesture values
   const scale = useSharedValue(1);
@@ -50,6 +42,40 @@ export default function ImageCropperWithCircle({
   const translateY = useSharedValue(0);
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
+
+  // Get image dimensions when URI changes and apply initial transforms
+  useEffect(() => {
+    if (imageUri) {
+      Image.getSize(imageUri, (width, height) => {
+        setImageDimensions({ width, height });
+
+        // Calculate initial transforms if we have camera capture metadata
+        if (captureMeta) {
+          const cropperConfig = {
+            containerSize: IMAGE_CONTAINER_SIZE,
+            circleSize: CIRCLE_SIZE,
+          };
+          const initialTransforms = calculateInitialCropperTransforms(captureMeta, cropperConfig);
+
+          // Apply initial transforms with animation for smooth appearance
+          scale.value = withSpring(initialTransforms.scale, { damping: 15 });
+          savedScale.value = initialTransforms.scale;
+          translateX.value = withSpring(initialTransforms.translateX, { damping: 15 });
+          translateY.value = withSpring(initialTransforms.translateY, { damping: 15 });
+          savedTranslateX.value = initialTransforms.translateX;
+          savedTranslateY.value = initialTransforms.translateY;
+        } else {
+          // Reset transforms when no metadata (e.g., from photo library)
+          scale.value = 1;
+          savedScale.value = 1;
+          translateX.value = 0;
+          translateY.value = 0;
+          savedTranslateX.value = 0;
+          savedTranslateY.value = 0;
+        }
+      });
+    }
+  }, [imageUri, captureMeta]);
 
   // Pinch gesture for zoom
   const pinchGesture = Gesture.Pinch()
