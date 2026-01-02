@@ -1037,9 +1037,9 @@ export default function AddDiscScreen() {
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
-                placeholder="-5 to 1"
+                placeholder="-5 to 5"
                 placeholderTextColor="#999"
-                keyboardType="numeric"
+                keyboardType="numbers-and-punctuation"
               />
             </View>
             <View style={styles.fieldSmall}>
