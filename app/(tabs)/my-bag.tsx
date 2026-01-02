@@ -300,6 +300,42 @@ export default function MyBagScreen() {
     );
   };
 
+  const renderFillBagBanner = () => {
+    if (discs.length < 3) return null; // Need at least 3 discs for meaningful analysis
+
+    const bannerStyles = {
+      backgroundColor: isDark ? 'rgba(243, 156, 18, 0.15)' : '#FFF8E7',
+      borderColor: isDark ? 'rgba(243, 156, 18, 0.3)' : '#FFE4B5',
+    };
+
+    const iconBgColor = isDark ? 'rgba(243, 156, 18, 0.2)' : '#fff';
+    const subtitleColor = isDark ? '#aaa' : '#666';
+
+    return (
+      <Pressable style={[styles.protectBanner, bannerStyles]} onPress={() => router.push('/disc-recommendations')}>
+        <RNView style={styles.protectBannerContent}>
+          <RNView style={[styles.protectBannerIcon, { backgroundColor: iconBgColor }]}>
+            <FontAwesome name="lightbulb-o" size={18} color={isDark ? '#fbbf24' : '#F39C12'} />
+          </RNView>
+          <RNView style={styles.protectBannerText}>
+            <Text style={styles.protectBannerTitle}>Fill Your Bag</Text>
+            <Text style={[styles.protectBannerSubtitle, { color: subtitleColor }]}>
+              Get AI-powered disc recommendations
+            </Text>
+          </RNView>
+          <FontAwesome name="chevron-right" size={14} color={isDark ? '#888' : '#999'} />
+        </RNView>
+      </Pressable>
+    );
+  };
+
+  const renderListHeader = () => (
+    <>
+      {renderProtectDiscsBanner()}
+      {renderFillBagBanner()}
+    </>
+  );
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -308,7 +344,7 @@ export default function MyBagScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={[styles.listContent, discs.length === 0 && styles.emptyList]}
         ListEmptyComponent={renderEmptyState}
-        ListHeaderComponent={renderProtectDiscsBanner}
+        ListHeaderComponent={renderListHeader}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
 

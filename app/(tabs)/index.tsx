@@ -100,6 +100,13 @@ export default function HomeScreen() {
           </RNView>
           <Text style={styles.quickActionText}>Shot Advisor</Text>
         </Pressable>
+
+        <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/disc-recommendations')}>
+          <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(243, 156, 18, 0.2)' : '#FFF3E0' }]}>
+            <FontAwesome name="lightbulb-o" size={20} color={isDark ? '#fbbf24' : '#F39C12'} />
+          </RNView>
+          <Text style={styles.quickActionText}>Fill My Bag</Text>
+        </Pressable>
       </RNView>
     </ScrollView>
   );
