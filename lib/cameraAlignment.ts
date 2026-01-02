@@ -83,6 +83,14 @@ function calculateCoverDisplay(
  *
  * This ensures that what the user saw inside the camera circle will appear
  * inside the cropper circle without requiring manual adjustment.
+ *
+ * Key insight: The camera preview shows a portion of the full sensor image.
+ * When a portrait preview shows a landscape photo, the preview is essentially
+ * showing the vertical center of the photo. The cropper then shows the photo
+ * in a square container, which will crop differently.
+ *
+ * We need to calculate where the center of the camera preview maps to in the
+ * cropper's coordinate system.
  */
 export function calculateInitialCropperTransforms(
   captureMeta: CameraCaptureMeta,
@@ -100,29 +108,11 @@ export function calculateInitialCropperTransforms(
 
   const { containerSize, circleSize: cropperCircleSize } = cropperConfig;
 
-  // Step 1: Calculate how the photo was displayed in the camera preview
-  // (Camera uses resizeMode="cover" to fill the preview area)
-  const cameraDisplay = calculateCoverDisplay(
-    photoWidth,
-    photoHeight,
-    previewWidth,
-    previewHeight
-  );
+  const photoAspect = photoWidth / photoHeight;
+  const previewAspect = previewWidth / previewHeight;
+  const cropperAspect = 1; // Square
 
-  // Step 2: Find the circle center position in the displayed image coordinates
-  // The camera circle center is at (cameraCircleCenterX, cameraCircleCenterY) in preview coords
-  // We need to find where this maps to in the photo
-
-  // Position relative to displayed image (accounting for cover mode offset)
-  const circleInDisplayX = cameraCircleCenterX - cameraDisplay.offsetX;
-  const circleInDisplayY = cameraCircleCenterY - cameraDisplay.offsetY;
-
-  // Convert to normalized position (0-1 range) in the displayed image
-  const normalizedX = circleInDisplayX / cameraDisplay.displayWidth;
-  const normalizedY = circleInDisplayY / cameraDisplay.displayHeight;
-
-  // Step 3: Calculate how the photo displays in the cropper
-  // Cropper uses a square container with resizeMode="cover"
+  // Calculate how the photo displays in the cropper (square container, cover mode)
   const cropperDisplay = calculateCoverDisplay(
     photoWidth,
     photoHeight,
@@ -130,42 +120,82 @@ export function calculateInitialCropperTransforms(
     containerSize
   );
 
-  // Step 4: Find where the same normalized position appears in the cropper
-  const targetInCropperDisplayX = normalizedX * cropperDisplay.displayWidth;
-  const targetInCropperDisplayY = normalizedY * cropperDisplay.displayHeight;
+  // For landscape photos (photoAspect > 1) in portrait preview (previewAspect < 1):
+  // The camera shows the photo filling the width and cropping top/bottom
+  // The circle is centered in the preview, so it's at the vertical center of what's visible
 
-  // Position in cropper container coordinates
-  const targetInContainerX = targetInCropperDisplayX + cropperDisplay.offsetX;
-  const targetInContainerY = targetInCropperDisplayY + cropperDisplay.offsetY;
+  // For landscape photos in square cropper (cover mode):
+  // The photo fills the width, and height overflows (top/bottom cropped equally)
 
-  // Step 5: Calculate the translation needed to center this point
-  // Cropper circle is always centered at (containerSize/2, containerSize/2)
-  const cropperCircleCenterX = containerSize / 2;
-  const cropperCircleCenterY = containerSize / 2;
+  // The key question: where does the camera's circle center map to in the photo?
+  // If the camera fills width and crops height, the circle center Y in preview
+  // corresponds to a specific Y in the photo based on how much is cropped.
 
-  // Base translation to align centers
-  let translateX = cropperCircleCenterX - targetInContainerX;
-  let translateY = cropperCircleCenterY - targetInContainerY;
+  // Simplified approach for the common case (landscape photo, portrait preview):
+  // The camera likely shows the photo scaled to fill the preview width,
+  // with the photo vertically centered (cropping top and bottom equally).
 
-  // Step 6: Calculate scale adjustment if circle sizes differ
-  // We need to scale so the same amount of content fits in the cropper circle
-  const cameraCircleRadiusInPhoto =
-    (cameraCircleSize / 2) * (photoWidth / cameraDisplay.displayWidth);
-  const cropperCircleRadiusInPhoto =
-    (cropperCircleSize / 2) * (photoWidth / cropperDisplay.displayWidth);
+  let translateX = 0;
+  let translateY = 0;
+  let scale = 1;
 
-  let scale = cropperCircleRadiusInPhoto / cameraCircleRadiusInPhoto;
+  if (photoAspect > 1 && previewAspect < 1) {
+    // Landscape photo in portrait preview (most common case)
+    // Camera preview fills width, crops height (centered)
+    // The visible portion of the photo in the preview is centered vertically
 
-  // Clamp scale to cropper limits (1x to 3x)
-  scale = Math.max(1, Math.min(scale, 3));
+    // In the square cropper with cover mode for landscape photo:
+    // Photo fills width, height overflows equally on top/bottom
+    // The cropper's center shows the photo's center
 
-  // Adjust translation for scale (transforms apply as: scale first, then translate)
-  // If we're scaling around center, the translation needs adjustment
-  if (scale !== 1) {
-    // The translation calculated above is for scale=1
-    // For a different scale, we need to adjust
-    translateX = translateX / scale;
-    translateY = translateY / scale;
+    // Since both camera and cropper center the photo vertically,
+    // no vertical translation should be needed for a centered circle.
+    // But the circle might not be exactly centered in the preview...
+
+    // Circle position relative to preview center
+    const circleDeltaY = cameraCircleCenterY - previewHeight / 2;
+
+    // This delta needs to be scaled based on how the preview displays the photo
+    // vs how the cropper displays it
+
+    // Camera preview: photo scaled to fill width
+    const cameraPhotoScale = previewWidth / photoWidth;
+    const cameraDisplayedHeight = photoHeight * cameraPhotoScale;
+
+    // Cropper: photo scaled to fill width (since it's landscape in square)
+    // Already calculated: cropperDisplay.displayHeight
+
+    // The ratio of display heights tells us how to scale the delta
+    const heightRatio = cropperDisplay.displayHeight / cameraDisplayedHeight;
+
+    translateY = -circleDeltaY * heightRatio;
+  } else if (photoAspect < 1 && previewAspect < 1) {
+    // Portrait photo in portrait preview
+    // Both are portrait, so horizontal alignment is the issue
+
+    const circleDeltaX = cameraCircleCenterX - previewWidth / 2;
+
+    // Similar calculation for horizontal offset
+    const cameraPhotoScale = previewHeight / photoHeight;
+    const cameraDisplayedWidth = photoWidth * cameraPhotoScale;
+
+    const widthRatio = cropperDisplay.displayWidth / cameraDisplayedWidth;
+
+    translateX = -circleDeltaX * widthRatio;
+  }
+  // For other cases (square photo, etc.), default to no translation
+
+  // Scale adjustment if circle sizes differ
+  // This ensures the same physical disc size appears in both circles
+  if (cameraCircleSize !== cropperCircleSize) {
+    scale = cropperCircleSize / cameraCircleSize;
+    scale = Math.max(1, Math.min(scale, 3));
+
+    // Adjust translation for scale
+    if (scale !== 1) {
+      translateX = translateX / scale;
+      translateY = translateY / scale;
+    }
   }
 
   return {

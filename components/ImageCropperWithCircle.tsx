@@ -1,20 +1,15 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Modal, Dimensions } from 'react-native';
 import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
-import {
-  CameraCaptureMeta,
-  calculateInitialCropperTransforms,
-  InitialTransforms,
-} from '@/lib/cameraAlignment';
+import { CameraCaptureMeta } from '@/lib/cameraAlignment';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CIRCLE_SIZE = Math.min(SCREEN_WIDTH * 0.7, 280);
-const IMAGE_CONTAINER_SIZE = SCREEN_WIDTH;
 
 interface ImageCropperWithCircleProps {
   visible: boolean;
@@ -35,6 +30,13 @@ export default function ImageCropperWithCircle({
   const [processing, setProcessing] = useState(false);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 
+  // Calculate image container size to match camera preview aspect ratio
+  // This ensures the image is displayed identically to how it appeared in the camera
+  const imageContainerWidth = SCREEN_WIDTH;
+  const imageContainerHeight = captureMeta
+    ? (captureMeta.previewHeight / captureMeta.previewWidth) * SCREEN_WIDTH
+    : SCREEN_WIDTH; // Fall back to square for library photos
+
   // Gesture values
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
@@ -43,39 +45,30 @@ export default function ImageCropperWithCircle({
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
 
-  // Get image dimensions when URI changes and apply initial transforms
+  // Get image dimensions when URI changes and reset transforms
   useEffect(() => {
     if (imageUri) {
       Image.getSize(imageUri, (width, height) => {
         setImageDimensions({ width, height });
 
-        // Calculate initial transforms if we have camera capture metadata
-        if (captureMeta) {
-          const cropperConfig = {
-            containerSize: IMAGE_CONTAINER_SIZE,
-            circleSize: CIRCLE_SIZE,
-          };
-          const initialTransforms = calculateInitialCropperTransforms(captureMeta, cropperConfig);
+        console.log('Cropper alignment debug:', {
+          captureMeta,
+          imageContainerWidth,
+          imageContainerHeight,
+          imageDimensions: { width, height },
+        });
 
-          // Apply initial transforms with animation for smooth appearance
-          scale.value = withSpring(initialTransforms.scale, { damping: 15 });
-          savedScale.value = initialTransforms.scale;
-          translateX.value = withSpring(initialTransforms.translateX, { damping: 15 });
-          translateY.value = withSpring(initialTransforms.translateY, { damping: 15 });
-          savedTranslateX.value = initialTransforms.translateX;
-          savedTranslateY.value = initialTransforms.translateY;
-        } else {
-          // Reset transforms when no metadata (e.g., from photo library)
-          scale.value = 1;
-          savedScale.value = 1;
-          translateX.value = 0;
-          translateY.value = 0;
-          savedTranslateX.value = 0;
-          savedTranslateY.value = 0;
-        }
+        // Reset transforms - since we now match the camera preview aspect ratio,
+        // no translation/scale adjustment should be needed
+        scale.value = 1;
+        savedScale.value = 1;
+        translateX.value = 0;
+        translateY.value = 0;
+        savedTranslateX.value = 0;
+        savedTranslateY.value = 0;
       });
     }
-  }, [imageUri, captureMeta]);
+  }, [imageUri, captureMeta, imageContainerWidth, imageContainerHeight]);
 
   // Pinch gesture for zoom
   const pinchGesture = Gesture.Pinch()
@@ -131,36 +124,37 @@ export default function ImageCropperWithCircle({
         userTranslateY,
         imgWidth,
         imgHeight,
-        IMAGE_CONTAINER_SIZE,
+        imageContainerWidth,
+        imageContainerHeight,
         CIRCLE_SIZE,
       });
 
       // Calculate how the image is displayed with resizeMode="cover"
       // Cover mode: image scales to fill the container, larger dimension overflows
       const imageAspect = imgWidth / imgHeight;
-      const containerAspect = 1; // Square container
+      const containerAspect = imageContainerWidth / imageContainerHeight;
       let displayWidth: number, displayHeight: number;
 
       if (imageAspect > containerAspect) {
         // Image is wider - scale to fit height, width overflows
-        displayHeight = IMAGE_CONTAINER_SIZE;
-        displayWidth = IMAGE_CONTAINER_SIZE * imageAspect;
+        displayHeight = imageContainerHeight;
+        displayWidth = imageContainerHeight * imageAspect;
       } else {
         // Image is taller - scale to fit width, height overflows
-        displayWidth = IMAGE_CONTAINER_SIZE;
-        displayHeight = IMAGE_CONTAINER_SIZE / imageAspect;
+        displayWidth = imageContainerWidth;
+        displayHeight = imageContainerWidth / imageAspect;
       }
 
       // Ratio to convert from display coordinates to original image coordinates
       const displayToOriginalRatio = imgWidth / displayWidth;
 
       // Circle center in screen coordinates (center of the container)
-      const circleCenterScreenX = IMAGE_CONTAINER_SIZE / 2;
-      const circleCenterScreenY = IMAGE_CONTAINER_SIZE / 2;
+      const circleCenterScreenX = imageContainerWidth / 2;
+      const circleCenterScreenY = imageContainerHeight / 2;
 
       // Image center in screen coordinates (before any transforms)
-      const imageCenterScreenX = IMAGE_CONTAINER_SIZE / 2;
-      const imageCenterScreenY = IMAGE_CONTAINER_SIZE / 2;
+      const imageCenterScreenX = imageContainerWidth / 2;
+      const imageCenterScreenY = imageContainerHeight / 2;
 
       // Transform order is: scale (around center), then translate
       // To find what original image point is at the circle center:
@@ -232,6 +226,12 @@ export default function ImageCropperWithCircle({
 
   if (!imageUri) return null;
 
+  // Dynamic styles for image container that matches camera preview aspect ratio
+  const dynamicImageStyle = {
+    width: imageContainerWidth,
+    height: imageContainerHeight,
+  };
+
   return (
     <Modal visible={visible} animationType="slide">
       <GestureHandlerRootView style={styles.container}>
@@ -239,13 +239,15 @@ export default function ImageCropperWithCircle({
           <GestureDetector gesture={composedGesture}>
             <Animated.Image
               source={{ uri: imageUri }}
-              style={[styles.image, animatedStyle]}
+              style={[dynamicImageStyle, animatedStyle]}
               resizeMode="cover"
             />
           </GestureDetector>
 
-          {/* Circular guide overlay - circle centered independently from helper text */}
-          <View style={styles.overlay} pointerEvents="none">
+          {/* Circular guide overlay - positioned to match the image area */}
+          <View
+            style={[styles.overlay, { width: imageContainerWidth, height: imageContainerHeight }]}
+            pointerEvents="none">
             <View style={styles.circleContainer}>
               <View style={styles.circleGuide}>
                 <View style={styles.circle} />
@@ -292,15 +294,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
-    width: IMAGE_CONTAINER_SIZE,
-    height: IMAGE_CONTAINER_SIZE,
-  },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
   },
   circleContainer: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
