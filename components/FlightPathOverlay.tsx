@@ -82,15 +82,29 @@ export default function FlightPathOverlay({
     setImageSize({ width, height });
   };
 
-  // Use refs to track current positions for PanResponder (avoids stale closure)
+  // Use refs to track current values for PanResponder (avoids stale closure)
   const editableTeeRef = useRef(editableTee);
   const editableBasketRef = useRef(editableBasket);
+  const imageSizeRef = useRef(imageSize);
+  const onDragStartRef = useRef(onDragStart);
+  const onDragEndRef = useRef(onDragEnd);
+  const onPositionChangeRef = useRef(onPositionChange);
 
-  // Keep refs in sync with state
+  // Keep refs in sync with state/props
   React.useEffect(() => {
     editableTeeRef.current = editableTee;
     editableBasketRef.current = editableBasket;
   }, [editableTee, editableBasket]);
+
+  React.useEffect(() => {
+    imageSizeRef.current = imageSize;
+  }, [imageSize]);
+
+  React.useEffect(() => {
+    onDragStartRef.current = onDragStart;
+    onDragEndRef.current = onDragEnd;
+    onPositionChangeRef.current = onPositionChange;
+  }, [onDragStart, onDragEnd, onPositionChange]);
 
   // Create drag handler for markers
   const createDragHandler = (
@@ -107,14 +121,15 @@ export default function FlightPathOverlay({
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => {
         startPos = { ...positionRef.current };
-        onDragStart?.();
+        onDragStartRef.current?.();
       },
       onPanResponderMove: (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-        if (imageSize.width === 0 || imageSize.height === 0) return;
+        const currentImageSize = imageSizeRef.current;
+        if (currentImageSize.width === 0 || currentImageSize.height === 0) return;
 
         // Convert pixel movement to percentage
-        const deltaXPercent = (gestureState.dx / imageSize.width) * 100;
-        const deltaYPercent = (gestureState.dy / imageSize.height) * 100;
+        const deltaXPercent = (gestureState.dx / currentImageSize.width) * 100;
+        const deltaYPercent = (gestureState.dy / currentImageSize.height) * 100;
 
         // Clamp to 0-100 range
         const newX = Math.max(0, Math.min(100, startPos.x + deltaXPercent));
@@ -123,10 +138,10 @@ export default function FlightPathOverlay({
         setPosition({ x: newX, y: newY });
       },
       onPanResponderRelease: () => {
-        onDragEnd?.();
+        onDragEndRef.current?.();
         // Notify parent of position change using refs for current values
-        if (onPositionChange) {
-          onPositionChange({
+        if (onPositionChangeRef.current) {
+          onPositionChangeRef.current({
             teePosition: editableTeeRef.current,
             basketPosition: editableBasketRef.current,
             originalTeePosition: originalTeeRef.current,
@@ -135,7 +150,7 @@ export default function FlightPathOverlay({
         }
       },
       onPanResponderTerminate: () => {
-        onDragEnd?.();
+        onDragEndRef.current?.();
       },
     });
   };
