@@ -534,7 +534,7 @@ describe('AddDiscScreen', () => {
   it('shows turn and fade flight number inputs', () => {
     const { getByPlaceholderText } = renderAndSelectManualEntry();
 
-    expect(getByPlaceholderText('-5 to 1')).toBeTruthy();
+    expect(getByPlaceholderText('-5 to 5')).toBeTruthy();
     expect(getByPlaceholderText('0-5')).toBeTruthy();
   });
 
@@ -547,7 +547,7 @@ describe('AddDiscScreen', () => {
     const { getByText, getByPlaceholderText } = renderAndSelectManualEntry();
 
     fireEvent.changeText(getByPlaceholderText('e.g., Destroyer'), 'Destroyer');
-    fireEvent.changeText(getByPlaceholderText('-5 to 1'), '-2');
+    fireEvent.changeText(getByPlaceholderText('-5 to 5'), '-2');
     fireEvent.changeText(getByPlaceholderText('0-5'), '3');
     fireEvent.press(getByText('Save Disc'));
 
@@ -738,7 +738,7 @@ describe('AddDiscScreen', () => {
       const { getByText, getByPlaceholderText } = renderAndSelectManualEntry();
 
       fireEvent.changeText(getByPlaceholderText('e.g., Destroyer'), 'Destroyer');
-      fireEvent.changeText(getByPlaceholderText('-5 to 1'), '-3');
+      fireEvent.changeText(getByPlaceholderText('-5 to 5'), '-3');
       fireEvent.press(getByText('Save Disc'));
 
       await waitFor(() => {
@@ -978,12 +978,12 @@ describe('AddDiscScreen', () => {
 
       fireEvent.changeText(getByPlaceholderText('1-15'), '12');
       fireEvent.changeText(getByPlaceholderText('1-7'), '5');
-      fireEvent.changeText(getByPlaceholderText('-5 to 1'), '-2');
+      fireEvent.changeText(getByPlaceholderText('-5 to 5'), '-2');
       fireEvent.changeText(getByPlaceholderText('0-5'), '3');
 
       expect(getByPlaceholderText('1-15').props.value).toBe('12');
       expect(getByPlaceholderText('1-7').props.value).toBe('5');
-      expect(getByPlaceholderText('-5 to 1').props.value).toBe('-2');
+      expect(getByPlaceholderText('-5 to 5').props.value).toBe('-2');
       expect(getByPlaceholderText('0-5').props.value).toBe('3');
     });
 
@@ -1951,7 +1951,7 @@ describe('AddDiscScreen', () => {
       const { getByText, getByPlaceholderText } = renderAndSelectManualEntry();
 
       fireEvent.changeText(getByPlaceholderText('e.g., Destroyer'), 'Destroyer');
-      fireEvent.changeText(getByPlaceholderText('-5 to 1'), '-1.5');
+      fireEvent.changeText(getByPlaceholderText('-5 to 5'), '-1.5');
       fireEvent.press(getByText('Save Disc'));
 
       await waitFor(() => {
