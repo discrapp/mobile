@@ -18,17 +18,27 @@ export interface BagStatsDisc {
   };
 }
 
+export interface StabilityBreakdown {
+  understable: number;
+  stable: number;
+  overstable: number;
+}
+
 export interface BagStats {
   totalDiscs: number;
   speedRange: { min: number; max: number } | null;
   topBrand: { name: string; count: number } | null;
   categoriesCount: number;
   totalCategories: number;
-  stability: {
+  stability: StabilityBreakdown;
+  stabilityByCategory: Array<{
+    category: string;
     understable: number;
     stable: number;
     overstable: number;
-  };
+  }>;
+  categoryDistribution: Array<{ category: string; count: number }>;
+  speedDistribution: Array<{ speed: number; count: number }>;
   topPlastics: Array<{ name: string; count: number }>;
   colorDistribution: Array<{ color: string; count: number }>;
 }
@@ -46,6 +56,9 @@ export function calculateBagStats(discs: BagStatsDisc[]): BagStats {
       categoriesCount: 0,
       totalCategories: DISC_CATEGORIES.length,
       stability: { understable: 0, stable: 0, overstable: 0 },
+      stabilityByCategory: [],
+      categoryDistribution: [],
+      speedDistribution: [],
       topPlastics: [],
       colorDistribution: [],
     };
@@ -70,20 +83,52 @@ export function calculateBagStats(discs: BagStatsDisc[]): BagStats {
   );
   const categoriesCount = categories.size;
 
-  // Calculate stability breakdown
+  // Calculate stability breakdown (overall and by category)
   const stability = { understable: 0, stable: 0, overstable: 0 };
+  const stabilityByCategoryMap = new Map<
+    string,
+    { understable: number; stable: number; overstable: number }
+  >();
+
   for (const disc of discs) {
     const turn = disc.flight_numbers?.turn;
     if (turn === null || turn === undefined) continue;
 
+    let stabilityType: 'understable' | 'stable' | 'overstable';
     if (turn <= -2) {
+      stabilityType = 'understable';
       stability.understable++;
     } else if (turn <= 0) {
+      stabilityType = 'stable';
       stability.stable++;
     } else {
+      stabilityType = 'overstable';
       stability.overstable++;
     }
+
+    // Track by category if available
+    if (disc.category) {
+      const catStability = stabilityByCategoryMap.get(disc.category) || {
+        understable: 0,
+        stable: 0,
+        overstable: 0,
+      };
+      catStability[stabilityType]++;
+      stabilityByCategoryMap.set(disc.category, catStability);
+    }
   }
+
+  // Convert stability by category map to sorted array
+  const stabilityByCategory = Array.from(stabilityByCategoryMap.entries())
+    .map(([category, counts]) => ({
+      category,
+      ...counts,
+    }))
+    .sort((a, b) => {
+      const totalA = a.understable + a.stable + a.overstable;
+      const totalB = b.understable + b.stable + b.overstable;
+      return totalB - totalA; // Sort by total count descending
+    });
 
   // Calculate top plastics (top 3)
   const plasticCounts = countBy(discs, (d) => d.plastic);
@@ -98,6 +143,27 @@ export function calculateBagStats(discs: BagStatsDisc[]): BagStats {
     })
   );
 
+  // Calculate category distribution
+  const categoryCounts = countBy(discs, (d) => d.category);
+  const categoryDistribution = getSortedItems(categoryCounts).map(
+    ({ name, count }) => ({
+      category: name,
+      count,
+    })
+  );
+
+  // Calculate speed distribution
+  const speedCounts = new Map<number, number>();
+  for (const disc of discs) {
+    const speed = disc.flight_numbers?.speed;
+    if (speed !== null && speed !== undefined) {
+      speedCounts.set(speed, (speedCounts.get(speed) || 0) + 1);
+    }
+  }
+  const speedDistribution = Array.from(speedCounts.entries())
+    .map(([speed, count]) => ({ speed, count }))
+    .sort((a, b) => a.speed - b.speed); // Sort by speed ascending
+
   return {
     totalDiscs: discs.length,
     speedRange,
@@ -105,6 +171,9 @@ export function calculateBagStats(discs: BagStatsDisc[]): BagStats {
     categoriesCount,
     totalCategories: DISC_CATEGORIES.length,
     stability,
+    stabilityByCategory,
+    categoryDistribution,
+    speedDistribution,
     topPlastics,
     colorDistribution,
   };

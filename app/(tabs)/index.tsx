@@ -130,15 +130,6 @@ export default function HomeScreen() {
         </Text>
       </RNView>
 
-      {/* Bag Dashboard */}
-      <BagDashboard
-        stats={bagStats}
-        activeRecoveryCount={activeRecoveryCount}
-        loading={loadingDiscs}
-        onRecoveryPress={handleRecoveryPress}
-        onAnalyzePress={handleAnalyzePress}
-      />
-
       {/* Order Stickers CTA Card */}
       <Pressable style={[styles.stickerCard, dynamicStyles.stickerCard]} onPress={() => router.push('/order-stickers')}>
         <RNView style={styles.stickerCardContent}>
@@ -199,6 +190,15 @@ export default function HomeScreen() {
           <Text style={styles.quickActionText}>Fill My Bag</Text>
         </Pressable>
       </RNView>
+
+      {/* Bag Dashboard - Stats and Charts */}
+      <BagDashboard
+        stats={bagStats}
+        activeRecoveryCount={activeRecoveryCount}
+        loading={loadingDiscs}
+        onRecoveryPress={handleRecoveryPress}
+        onAnalyzePress={handleAnalyzePress}
+      />
     </ScrollView>
   );
 }

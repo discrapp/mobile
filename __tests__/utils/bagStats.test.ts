@@ -17,6 +17,9 @@ describe('calculateBagStats', () => {
       expect(result.stability.understable).toBe(0);
       expect(result.stability.stable).toBe(0);
       expect(result.stability.overstable).toBe(0);
+      expect(result.stabilityByCategory).toEqual([]);
+      expect(result.categoryDistribution).toEqual([]);
+      expect(result.speedDistribution).toEqual([]);
       expect(result.topPlastics).toEqual([]);
       expect(result.colorDistribution).toEqual([]);
     });
@@ -42,6 +45,11 @@ describe('calculateBagStats', () => {
       expect(result.topBrand).toEqual({ name: 'Innova', count: 1 });
       expect(result.categoriesCount).toBe(1);
       expect(result.stability.stable).toBe(1); // turn -1 is stable
+      expect(result.categoryDistribution).toEqual([{ category: 'Distance Driver', count: 1 }]);
+      expect(result.speedDistribution).toEqual([{ speed: 12, count: 1 }]);
+      expect(result.stabilityByCategory).toEqual([
+        { category: 'Distance Driver', understable: 0, stable: 1, overstable: 0 },
+      ]);
       expect(result.topPlastics).toEqual([{ name: 'Star', count: 1 }]);
       expect(result.colorDistribution).toEqual([{ color: 'Blue', count: 1 }]);
     });
@@ -131,6 +139,41 @@ describe('calculateBagStats', () => {
       const result = calculateBagStats(discs);
       expect(result.colorDistribution[0]).toEqual({ color: 'Blue', count: 2 });
       expect(result.colorDistribution.length).toBe(4); // Blue, Red, Yellow, Green
+    });
+
+    it('calculates category distribution sorted by count', () => {
+      const result = calculateBagStats(discs);
+      expect(result.categoryDistribution[0]).toEqual({ category: 'Distance Driver', count: 2 });
+      expect(result.categoryDistribution.length).toBe(4);
+    });
+
+    it('calculates speed distribution sorted by speed', () => {
+      const result = calculateBagStats(discs);
+      // Speeds: 3, 5, 7, 12, 13
+      expect(result.speedDistribution).toEqual([
+        { speed: 3, count: 1 },
+        { speed: 5, count: 1 },
+        { speed: 7, count: 1 },
+        { speed: 12, count: 1 },
+        { speed: 13, count: 1 },
+      ]);
+    });
+
+    it('calculates stability by category', () => {
+      const result = calculateBagStats(discs);
+      // Distance Driver: 1 understable (-3), 1 overstable (1)
+      // Fairway: 1 stable (0)
+      // Midrange: 1 stable (-1)
+      // Putter: 1 stable (0)
+      const distanceDriver = result.stabilityByCategory.find(
+        (c) => c.category === 'Distance Driver'
+      );
+      expect(distanceDriver).toEqual({
+        category: 'Distance Driver',
+        understable: 1,
+        stable: 0,
+        overstable: 1,
+      });
     });
   });
 

@@ -5,6 +5,9 @@ import Colors from '@/constants/Colors';
 import { DISC_COLORS } from '@/constants/discColors';
 import StatCard from './StatCard';
 import StabilityChart from './StabilityChart';
+import CategoryChart from './CategoryChart';
+import SpeedChart from './SpeedChart';
+import StabilityByCategoryChart from './StabilityByCategoryChart';
 import RecoveryAlert from './RecoveryAlert';
 import { BagStats } from '@/utils/bagStats';
 import { Skeleton } from './Skeleton';
@@ -57,6 +60,11 @@ export default function BagDashboard({
       {/* Recovery Alert */}
       <RecoveryAlert count={activeRecoveryCount} onPress={onRecoveryPress} />
 
+      {/* Section Title */}
+      <Text style={[styles.sectionHeader, dynamicStyles.sectionTitle]}>
+        Bag Insights
+      </Text>
+
       {/* Quick Stats Grid */}
       <RNView style={styles.statsGrid}>
         <StatCard
@@ -70,27 +78,54 @@ export default function BagDashboard({
           label="Speed Range"
         />
       </RNView>
-      <RNView style={styles.statsGrid}>
-        <StatCard
-          icon="star"
-          value={stats.topBrand?.name || '--'}
-          label={stats.topBrand ? `${stats.topBrand.count} discs` : 'Top Brand'}
-        />
-        <StatCard
-          icon="th-large"
-          value={`${stats.categoriesCount}/${stats.totalCategories}`}
-          label="Categories"
-        />
+
+      {/* Top Brand - with "Most Popular" label */}
+      {stats.topBrand && (
+        <RNView style={[styles.topBrandCard, dynamicStyles.section]}>
+          <RNView style={styles.topBrandHeader}>
+            <FontAwesome
+              name="trophy"
+              size={16}
+              color={isDark ? '#fbbf24' : '#F39C12'}
+            />
+            <Text style={[styles.topBrandLabel, dynamicStyles.secondaryText]}>
+              Most Popular Brand
+            </Text>
+          </RNView>
+          <Text style={[styles.topBrandName, dynamicStyles.sectionTitle]}>
+            {stats.topBrand.name}
+          </Text>
+          <Text style={[styles.topBrandCount, dynamicStyles.secondaryText]}>
+            {stats.topBrand.count} disc{stats.topBrand.count !== 1 ? 's' : ''}
+          </Text>
+        </RNView>
+      )}
+
+      {/* Disc Types Chart */}
+      <RNView style={styles.chartSection}>
+        <CategoryChart distribution={stats.categoryDistribution} />
       </RNView>
 
-      {/* Stability Breakdown */}
-      <RNView style={styles.stabilitySection}>
+      {/* Speed Distribution Chart */}
+      <RNView style={styles.chartSection}>
+        <SpeedChart distribution={stats.speedDistribution} />
+      </RNView>
+
+      {/* Overall Stability Breakdown */}
+      <RNView style={styles.chartSection}>
         <StabilityChart
           understable={stats.stability.understable}
           stable={stats.stability.stable}
           overstable={stats.stability.overstable}
         />
       </RNView>
+
+      {/* Stability by Category */}
+      {stats.stabilityByCategory.length > 0 && (
+        <RNView style={styles.chartSection}>
+          <StabilityByCategoryChart data={stats.stabilityByCategory} />
+        </RNView>
+      )}
 
       {/* Plastics & Colors Section */}
       {(stats.topPlastics.length > 0 || stats.colorDistribution.length > 0) && (
@@ -207,20 +242,8 @@ function DashboardSkeleton({ isDark }: { isDark: boolean }) {
           <Skeleton width={60} height={12} style={{ marginTop: 4 }} />
         </RNView>
       </RNView>
-      <RNView style={styles.statsGrid}>
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
-          <Skeleton width={32} height={32} borderRadius={16} />
-          <Skeleton width={50} height={20} style={{ marginTop: 8 }} />
-          <Skeleton width={60} height={12} style={{ marginTop: 4 }} />
-        </RNView>
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
-          <Skeleton width={32} height={32} borderRadius={16} />
-          <Skeleton width={30} height={20} style={{ marginTop: 8 }} />
-          <Skeleton width={60} height={12} style={{ marginTop: 4 }} />
-        </RNView>
-      </RNView>
 
-      {/* Stability Chart Skeleton */}
+      {/* Chart Skeleton */}
       <RNView style={[styles.skeletonStability, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
         <Skeleton width={120} height={16} style={{ marginBottom: 12 }} />
         <Skeleton width="100%" height={8} style={{ marginBottom: 10 }} />
@@ -233,6 +256,12 @@ function DashboardSkeleton({ isDark }: { isDark: boolean }) {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: '700',
     marginBottom: 16,
   },
   statsGrid: {
@@ -240,7 +269,32 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 12,
   },
-  stabilitySection: {
+  topBrandCard: {
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  topBrandHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  topBrandLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  topBrandName: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  topBrandCount: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  chartSection: {
     marginBottom: 12,
   },
   preferencesSection: {
@@ -326,6 +380,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
     borderRadius: 12,
+    marginTop: 24,
     marginBottom: 16,
   },
   emptyTitle: {
