@@ -50,6 +50,7 @@ interface Disc {
   plastic?: string;
   weight?: number;
   color?: string;
+  category?: string;
   flight_numbers: FlightNumbers;
   reward_amount?: string;
   notes?: string;

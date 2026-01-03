@@ -17,6 +17,7 @@ export interface CachedDisc {
   plastic?: string;
   weight?: number;
   color?: string;
+  category?: string;
   flight_numbers?: {
     speed: number | null;
     glide: number | null;
