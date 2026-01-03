@@ -58,13 +58,13 @@ export function PlasticPicker({
   const dynamicStyles = {
     picker: {
       borderColor: isDark ? '#333' : '#ccc',
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     modalOverlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     optionItem: {
       borderBottomColor: isDark ? '#333' : '#eee',

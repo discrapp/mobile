@@ -26,7 +26,7 @@ export function FullScreenError({
 
   return (
     <View
-      style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+      style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}
       accessibilityRole="alert"
       accessibilityLabel={`An error occurred. ${message}`}
     >

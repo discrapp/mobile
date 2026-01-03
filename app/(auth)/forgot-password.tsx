@@ -79,7 +79,7 @@ export default function ForgotPassword() {
 
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     text: {
       color: isDark ? '#fff' : '#000',
@@ -88,7 +88,7 @@ export default function ForgotPassword() {
       color: isDark ? '#999' : '#666',
     },
     input: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#ddd',
       color: isDark ? '#fff' : '#000',
     },

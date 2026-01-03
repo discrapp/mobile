@@ -38,7 +38,7 @@ export default function LinkStickerScreen() {
 
   // Dynamic styles for dark/light mode
   const dynamicContainerStyle = {
-    backgroundColor: isDark ? '#000' : '#fff',
+    backgroundColor: isDark ? '#121212' : '#fff',
   };
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);

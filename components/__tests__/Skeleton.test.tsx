@@ -147,7 +147,7 @@ describe('Skeleton', () => {
 
       // Should have the card container with dark background
       expect(views[0].props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1a1a1a' })])
+        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1e1e1e' })])
       );
     });
 
@@ -184,7 +184,7 @@ describe('Skeleton', () => {
 
       // Flight numbers card should have dark background
       const flightCard = views.find((v) =>
-        v.props.style?.some?.((s: Record<string, unknown>) => s?.backgroundColor === '#1a1a1a')
+        v.props.style?.some?.((s: Record<string, unknown>) => s?.backgroundColor === '#1e1e1e')
       );
       expect(flightCard).toBeTruthy();
     });
@@ -256,7 +256,7 @@ describe('Skeleton', () => {
 
       // Card should have dark background
       expect(views[0].props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1a1a1a' })])
+        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1e1e1e' })])
       );
     });
 
@@ -296,7 +296,7 @@ describe('Skeleton', () => {
 
       // Card should have dark background
       expect(views[0].props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1a1a1a' })])
+        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1e1e1e' })])
       );
     });
 
@@ -368,7 +368,7 @@ describe('Skeleton', () => {
 
       // Header should have dark background
       expect(views[0].props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1a1a1a' })])
+        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#1e1e1e' })])
       );
     });
 

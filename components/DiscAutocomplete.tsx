@@ -74,10 +74,10 @@ export function DiscAutocomplete({
   const dynamicStyles = useMemo(() => ({
     input: {
       borderColor: error ? '#ff4444' : isDark ? '#333' : '#ccc',
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     dropdown: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#ccc',
     },
     suggestionItem: {

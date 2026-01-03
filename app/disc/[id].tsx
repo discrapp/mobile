@@ -693,7 +693,7 @@ export default function DiscDetailScreen() {
             </RNView>
           ) : (
             <Pressable
-              style={[styles.linkQrButton, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5', borderColor: isDark ? '#333' : '#eee' }]}
+              style={[styles.linkQrButton, { backgroundColor: isDark ? '#1e1e1e' : '#f5f5f5', borderColor: isDark ? '#333' : '#eee' }]}
               onPress={startScanning}>
               <FontAwesome name="qrcode" size={20} color={isDark ? '#a78bfa' : Colors.violet.primary} />
               <RNView style={styles.linkQrTextContainer}>

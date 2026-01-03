@@ -190,13 +190,13 @@ export default function OrderStickersScreen() {
 
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     scrollView: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     productCard: {
-      backgroundColor: isDark ? '#1a1a1a' : Colors.violet[50],
+      backgroundColor: isDark ? '#1e1e1e' : Colors.violet[50],
     },
     productImageContainer: {
       backgroundColor: isDark ? '#2a2a2a' : '#fff',
@@ -211,12 +211,12 @@ export default function OrderStickersScreen() {
       color: isDark ? '#ccc' : '#333',
     },
     input: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#ddd',
       color: isDark ? '#fff' : '#000',
     },
     summaryCard: {
-      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+      backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
       borderColor: isDark ? '#333' : '#eee',
     },
     summaryLabel: {
@@ -226,7 +226,7 @@ export default function OrderStickersScreen() {
       color: isDark ? '#ccc' : '#333',
     },
     checkoutContainer: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
       borderTopColor: isDark ? '#333' : '#eee',
     },
     secureText: {
@@ -242,7 +242,7 @@ export default function OrderStickersScreen() {
       backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)',
     },
     modalContent: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     modalText: {
       color: isDark ? '#ccc' : '#333',
@@ -756,7 +756,7 @@ export default function OrderStickersScreen() {
         <InputAccessoryView nativeID={inputAccessoryViewID}>
           <RNView
             style={{
-              backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
               borderTopWidth: 1,
               borderTopColor: isDark ? '#333' : '#ddd',
               flexDirection: 'row',

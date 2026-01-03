@@ -190,7 +190,7 @@ describe('ClaimDiscScreen', () => {
       const flatStyle = Array.isArray(containerStyle)
         ? Object.assign({}, ...containerStyle)
         : containerStyle;
-      expect(flatStyle.backgroundColor).toBe('#000');
+      expect(flatStyle.backgroundColor).toBe('#121212');
     });
 
     it('applies dark mode styles to header', () => {
@@ -199,17 +199,17 @@ describe('ClaimDiscScreen', () => {
       // Find all Views and look for header with dark background
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
-      // Header should have dark background (#000 or #1a1a1a)
+      // Header should have dark background (#000 or #1e1e1e)
       const headerView = views.find((view) => {
         const style = view.props.style;
         if (Array.isArray(style)) {
           return style.some(
-            (s) => s?.backgroundColor === '#000' || s?.backgroundColor === '#1a1a1a'
+            (s) => s?.backgroundColor === '#121212' || s?.backgroundColor === '#1e1e1e'
           );
         }
         return (
-          style?.backgroundColor === '#000' ||
-          style?.backgroundColor === '#1a1a1a'
+          style?.backgroundColor === '#121212' ||
+          style?.backgroundColor === '#1e1e1e'
         );
       });
       expect(headerView).toBeTruthy();
@@ -238,9 +238,9 @@ describe('ClaimDiscScreen', () => {
       const infoCardView = views.find((view) => {
         const style = view.props.style;
         if (Array.isArray(style)) {
-          return style.some((s) => s?.backgroundColor === '#1a1a1a');
+          return style.some((s) => s?.backgroundColor === '#1e1e1e');
         }
-        return style?.backgroundColor === '#1a1a1a';
+        return style?.backgroundColor === '#1e1e1e';
       });
       expect(infoCardView).toBeTruthy();
     });
@@ -272,12 +272,12 @@ describe('ClaimDiscScreen', () => {
         if (Array.isArray(style)) {
           return style.some(
             (s) =>
-              s?.backgroundColor === '#000' || s?.backgroundColor === '#1a1a1a'
+              s?.backgroundColor === '#121212' || s?.backgroundColor === '#1e1e1e'
           );
         }
         return (
-          style?.backgroundColor === '#000' ||
-          style?.backgroundColor === '#1a1a1a'
+          style?.backgroundColor === '#121212' ||
+          style?.backgroundColor === '#1e1e1e'
         );
       });
       expect(photoContainerView).toBeTruthy();

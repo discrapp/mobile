@@ -223,7 +223,7 @@ export default function ProposeMeetupScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+      style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
@@ -243,7 +243,7 @@ export default function ProposeMeetupScreen() {
           </Text>
           <TextInput
             style={[styles.input, {
-              backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
               borderColor: isDark ? '#333' : '#ddd',
               color: isDark ? '#fff' : '#000',
             }]}
@@ -264,7 +264,7 @@ export default function ProposeMeetupScreen() {
           </Text>
           <Pressable
             style={[styles.pickerButton, {
-              backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
               borderColor: isDark ? '#333' : '#ddd',
             }]}
             onPress={openDatePicker}
@@ -285,7 +285,7 @@ export default function ProposeMeetupScreen() {
             animationType="slide"
           >
             <View style={styles.modalOverlay}>
-              <View style={[styles.modalContent, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+              <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
                 <View style={styles.modalHeader}>
                   <Pressable onPress={() => setShowDatePicker(false)}>
                     <Text style={styles.modalCancel}>Cancel</Text>
@@ -325,7 +325,7 @@ export default function ProposeMeetupScreen() {
           </Text>
           <Pressable
             style={[styles.pickerButton, {
-              backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
               borderColor: isDark ? '#333' : '#ddd',
             }]}
             onPress={openTimePicker}
@@ -346,7 +346,7 @@ export default function ProposeMeetupScreen() {
             animationType="slide"
           >
             <View style={styles.modalOverlay}>
-              <View style={[styles.modalContent, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+              <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
                 <View style={styles.modalHeader}>
                   <Pressable onPress={() => setShowTimePicker(false)}>
                     <Text style={styles.modalCancel}>Cancel</Text>
@@ -384,7 +384,7 @@ export default function ProposeMeetupScreen() {
           </Text>
           <TextInput
             style={[styles.input, styles.messageInput, {
-              backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
               borderColor: isDark ? '#333' : '#ddd',
               color: isDark ? '#fff' : '#000',
             }]}

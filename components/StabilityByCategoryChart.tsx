@@ -27,7 +27,7 @@ export default function StabilityByCategoryChart({
       <RNView
         style={[
           styles.container,
-          { backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8' },
+          { backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8' },
         ]}
       >
         <Text style={[styles.title, { color: isDark ? '#fff' : '#000' }]}>
@@ -42,7 +42,7 @@ export default function StabilityByCategoryChart({
 
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#e0e0e0',
     },
     title: {

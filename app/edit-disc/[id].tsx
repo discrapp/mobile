@@ -82,11 +82,11 @@ export default function EditDiscScreen() {
 
   // Dynamic styles for dark/light mode
   const dynamicContainerStyle = {
-    backgroundColor: isDark ? '#000' : '#fff',
+    backgroundColor: isDark ? '#121212' : '#fff',
   };
 
   const dynamicInputStyle = {
-    backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    backgroundColor: isDark ? '#1e1e1e' : '#fff',
     borderColor: isDark ? '#333' : '#ccc',
   };
 

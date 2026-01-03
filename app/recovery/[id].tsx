@@ -626,7 +626,7 @@ export default function RecoveryDetailScreen() {
         <Skeleton width={120} height={32} borderRadius={16} style={{ marginBottom: 16, alignSelf: 'center' }} />
 
         {/* Disc info skeleton */}
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
           <Skeleton width={80} height={80} borderRadius={40} style={{ marginBottom: 12 }} />
           <Skeleton width={150} height={20} style={{ marginBottom: 8 }} />
           <Skeleton width={100} height={16} style={{ marginBottom: 8 }} />
@@ -634,7 +634,7 @@ export default function RecoveryDetailScreen() {
         </RNView>
 
         {/* People involved skeleton */}
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
           <Skeleton width={100} height={14} style={{ marginBottom: 16 }} />
           <RNView style={styles.skeletonPeopleRow}>
             <Skeleton width={50} height={50} borderRadius={25} />
@@ -959,7 +959,7 @@ export default function RecoveryDetailScreen() {
         <RNView style={[
           styles.section,
           recovery.status === 'recovered'
-            ? { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }
+            ? { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1e1e1e' : '#fff' }
             : styles.acceptedSection
         ]}>
           <Text style={styles.sectionTitle}>
@@ -1011,7 +1011,7 @@ export default function RecoveryDetailScreen() {
       )}
 
       {/* Disc Card */}
-      <View style={[styles.discCard, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+      <View style={[styles.discCard, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
         {recovery.disc?.photo_url ? (
           <Image source={{ uri: recovery.disc.photo_url }} style={styles.discPhoto} />
         ) : (
@@ -1038,7 +1038,7 @@ export default function RecoveryDetailScreen() {
       </View>
 
       {/* People Involved */}
-      <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+      <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
         <Text style={styles.sectionTitle}>People</Text>
         <RNView style={styles.personRow}>
           <Avatar
@@ -1070,7 +1070,7 @@ export default function RecoveryDetailScreen() {
 
       {/* Finder Message */}
       {recovery.finder_message && (
-        <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+        <RNView style={[styles.section, { borderColor: isDark ? '#444' : '#eee', backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
           <Text style={styles.sectionTitle}>Finder's Message</Text>
           <Text style={styles.messageText}>{recovery.finder_message}</Text>
           <Text style={styles.timestamp}>Found {formatDate(recovery.found_at)}</Text>

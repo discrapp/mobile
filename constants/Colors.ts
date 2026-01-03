@@ -12,10 +12,17 @@ export default {
   },
   dark: {
     text: '#fff',
-    background: '#000',
+    background: '#121212',
     tint: violetLight,
     tabIconDefault: '#ccc',
     tabIconSelected: violetLight,
+  },
+  // Dark mode surface colors (for cards, inputs, etc.)
+  darkSurface: {
+    background: '#121212',    // Main background
+    card: '#1e1e1e',          // Cards, modals
+    elevated: '#252525',      // Elevated surfaces, inputs
+    border: '#2e2e2e',        // Borders, dividers
   },
   violet: {
     primary: violetPrimary,

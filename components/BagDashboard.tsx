@@ -40,7 +40,7 @@ export default function BagDashboard({
 
   const dynamicStyles = {
     section: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#e0e0e0',
     },
     sectionTitle: {
@@ -214,7 +214,7 @@ function ColorDot({ color }: { color: string }) {
 
 function EmptyState({ isDark }: { isDark: boolean }) {
   return (
-    <RNView style={[styles.emptyState, { backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8' }]}>
+    <RNView style={[styles.emptyState, { backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8' }]}>
       <FontAwesome name="pie-chart" size={32} color={isDark ? '#666' : '#ccc'} />
       <Text style={[styles.emptyTitle, { color: isDark ? '#fff' : '#000' }]}>
         No Bag Insights Yet
@@ -231,12 +231,12 @@ function DashboardSkeleton({ isDark }: { isDark: boolean }) {
     <RNView style={styles.container}>
       {/* Stats Grid Skeleton */}
       <RNView style={styles.statsGrid}>
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
+        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1e1e1e' : '#f0f0f0' }]}>
           <Skeleton width={32} height={32} borderRadius={16} />
           <Skeleton width={40} height={20} style={{ marginTop: 8 }} />
           <Skeleton width={60} height={12} style={{ marginTop: 4 }} />
         </RNView>
-        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
+        <RNView style={[styles.skeletonCard, { backgroundColor: isDark ? '#1e1e1e' : '#f0f0f0' }]}>
           <Skeleton width={32} height={32} borderRadius={16} />
           <Skeleton width={40} height={20} style={{ marginTop: 8 }} />
           <Skeleton width={60} height={12} style={{ marginTop: 4 }} />
@@ -244,7 +244,7 @@ function DashboardSkeleton({ isDark }: { isDark: boolean }) {
       </RNView>
 
       {/* Chart Skeleton */}
-      <RNView style={[styles.skeletonStability, { backgroundColor: isDark ? '#1a1a1a' : '#f0f0f0' }]}>
+      <RNView style={[styles.skeletonStability, { backgroundColor: isDark ? '#1e1e1e' : '#f0f0f0' }]}>
         <Skeleton width={120} height={16} style={{ marginBottom: 12 }} />
         <Skeleton width="100%" height={8} style={{ marginBottom: 10 }} />
         <Skeleton width="100%" height={8} style={{ marginBottom: 10 }} />

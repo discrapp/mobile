@@ -69,7 +69,7 @@ export function DiscCardSkeleton() {
     <Animated.View
       style={[
         styles.discCard,
-        { backgroundColor: isDark ? '#1a1a1a' : '#fff' },
+        { backgroundColor: isDark ? '#1e1e1e' : '#fff' },
       ]}
     >
       {/* Photo placeholder */}
@@ -110,7 +110,7 @@ export function DiscDetailSkeleton() {
       <Animated.View
         style={[
           styles.flightNumbersCard,
-          { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' },
+          { backgroundColor: isDark ? '#1e1e1e' : '#f5f5f5' },
         ]}
       >
         <Animated.View style={styles.flightNumbersRow}>
@@ -157,7 +157,7 @@ export function RecoveryCardSkeleton() {
     <Animated.View
       style={[
         styles.recoveryCard,
-        { backgroundColor: isDark ? '#1a1a1a' : '#fff' },
+        { backgroundColor: isDark ? '#1e1e1e' : '#fff' },
       ]}
     >
       <Animated.View style={styles.recoveryCardHeader}>
@@ -183,7 +183,7 @@ export function OrderCardSkeleton() {
     <Animated.View
       style={[
         styles.orderCard,
-        { backgroundColor: isDark ? '#1a1a1a' : '#fff' },
+        { backgroundColor: isDark ? '#1e1e1e' : '#fff' },
       ]}
     >
       {/* Header row: order number and status badge */}
@@ -220,7 +220,7 @@ export function ProfileHeaderSkeleton() {
     <Animated.View
       style={[
         styles.profileHeader,
-        { backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8' },
+        { backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8' },
       ]}
     >
       {/* Avatar */}

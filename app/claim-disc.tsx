@@ -43,22 +43,22 @@ export default function ClaimDiscScreen() {
   // Dynamic styles for dark/light mode
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#f5f5f5',
+      backgroundColor: isDark ? '#121212' : '#f5f5f5',
     },
     header: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     headerTitle: {
       color: isDark ? '#fff' : '#333',
     },
     photoContainer: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     placeholderPhoto: {
       backgroundColor: isDark ? '#333' : '#f0f0f0',
     },
     infoCard: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
     },
     discName: {
       color: isDark ? '#fff' : '#333',

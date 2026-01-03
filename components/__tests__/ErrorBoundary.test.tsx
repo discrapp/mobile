@@ -257,7 +257,7 @@ describe('ErrorBoundary', () => {
 
       const container = getByTestId('error-boundary-container');
       expect(container.props.style).toEqual(
-        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#000' })])
+        expect.arrayContaining([expect.objectContaining({ backgroundColor: '#121212' })])
       );
     });
 
