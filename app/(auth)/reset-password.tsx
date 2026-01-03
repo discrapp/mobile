@@ -10,10 +10,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   useColorScheme,
+  Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
+
+const logoLight = require('@/assets/images/logo.png');
+const logoDark = require('@/assets/images/logo-white.png');
 
 export default function ResetPassword() {
   const colorScheme = useColorScheme();
@@ -103,7 +107,12 @@ export default function ResetPassword() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logo}>Discr</Text>
+          <Image
+            source={isDark ? logoDark : logoLight}
+            style={styles.logo}
+            resizeMode="contain"
+            testID="app-logo"
+          />
         </View>
 
         <Text style={[styles.title, dynamicStyles.text]}>Create New Password</Text>
@@ -187,10 +196,8 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   logo: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: Colors.violet.primary,
-    letterSpacing: -1,
+    width: 180,
+    height: 60,
   },
   title: {
     fontSize: 32,

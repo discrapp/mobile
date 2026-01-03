@@ -9,16 +9,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   useColorScheme,
+  Image,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { validateSignInForm } from '@/lib/validation';
 import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
 
-const logoLight = require('@/assets/images/logo.webp');
-const logoDark = require('@/assets/images/logo-white.webp');
+const logoLight = require('@/assets/images/logo.png');
+const logoDark = require('@/assets/images/logo-white.png');
 
 export default function SignIn() {
   const colorScheme = useColorScheme();
@@ -98,7 +98,7 @@ export default function SignIn() {
           <Image
             source={isDark ? logoDark : logoLight}
             style={styles.logo}
-            contentFit="contain"
+            resizeMode="contain"
             testID="app-logo"
           />
         </View>
