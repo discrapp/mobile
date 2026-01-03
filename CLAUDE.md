@@ -367,6 +367,395 @@ When adding new user-facing features, consider updating the web landing page:
   - Add screenshots or descriptions of new functionality
   - Ensure marketing copy reflects current app capabilities
 
+---
+
+## Implementation Patterns (For Claude)
+
+### Screen Pattern (Auth Screen)
+
+```typescript
+// app/(auth)/sign-in.tsx
+import React, { useState, useRef } from 'react';
+import {
+  View as RNView, TextInput, TouchableOpacity, StyleSheet,
+  ActivityIndicator, KeyboardAvoidingView, Platform, useColorScheme,
+} from 'react-native';
+import { router } from 'expo-router';
+import { Text } from '@/components/Themed';
+import { useAuth } from '@/contexts/AuthContext';
+import { validateSignInForm } from '@/lib/validation';
+import { handleError } from '@/lib/errorHandler';
+import Colors from '@/constants/Colors';
+
+export default function SignIn() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const isSubmitting = useRef(false);
+
+  const dynamicStyles = {
+    container: { backgroundColor: isDark ? '#000' : '#fff' },
+    text: { color: isDark ? '#fff' : '#000' },
+    input: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#333' : '#ddd',
+      color: isDark ? '#fff' : '#000',
+    },
+  };
+
+  const handleSignIn = async () => {
+    if (isSubmitting.current) return;
+    const newErrors = validateSignInForm(email, password);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    isSubmitting.current = true;
+    setLoading(true);
+    try {
+      const { error } = await signIn(email.trim(), password);
+      if (error) {
+        handleError(error, { operation: 'sign-in' });
+      } else {
+        router.replace('/(tabs)');
+      }
+    } catch (error) {
+      handleError(error, { operation: 'sign-in' });
+    } finally {
+      setLoading(false);
+      isSubmitting.current = false;
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={[styles.container, dynamicStyles.container]}
+    >
+      {/* Form content */}
+    </KeyboardAvoidingView>
+  );
+}
+```
+
+### Tab Screen Pattern
+
+```typescript
+// app/(tabs)/index.tsx
+import { StyleSheet, Pressable, ScrollView, View as RNView, useColorScheme } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Text } from '@/components/Themed';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Colors from '@/constants/Colors';
+import { useAuth } from '@/contexts/AuthContext';
+
+export default function HomeScreen() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const dynamicStyles = {
+    container: { backgroundColor: isDark ? '#000' : '#fff' },
+    card: {
+      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(150,150,150,0.2)',
+    },
+  };
+
+  return (
+    <ScrollView style={[styles.container, dynamicStyles.container]}>
+      <RNView style={styles.content}>
+        <Text style={styles.title}>Welcome to Discr!</Text>
+        <Pressable
+          style={[styles.card, dynamicStyles.card]}
+          onPress={() => router.push('/add-disc')}
+        >
+          <FontAwesome name="plus" size={20} color={Colors.violet.primary} />
+          <Text>Add Disc</Text>
+        </Pressable>
+      </RNView>
+    </ScrollView>
+  );
+}
+```
+
+### Custom Hook Pattern
+
+```typescript
+// hooks/useDiscIdentification.ts
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { handleError } from '@/lib/errorHandler';
+
+export function useDiscIdentification() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<IdentificationResult | null>(null);
+  const isMountedRef = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const identify = useCallback(async (imageUri: string) => {
+    abortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    if (isMountedRef.current) {
+      setIsLoading(true);
+      setError(null);
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        if (isMountedRef.current) setError('Must be signed in');
+        return null;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/identify-disc`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          body: formData,
+          signal: abortController.signal,
+        }
+      );
+
+      const data = await response.json();
+      if (isMountedRef.current) setResult(data);
+      return data;
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') return null;
+      handleError(err, { operation: 'identify-disc' });
+      if (isMountedRef.current) setError('Failed to identify');
+      return null;
+    } finally {
+      if (isMountedRef.current) setIsLoading(false);
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    if (isMountedRef.current) {
+      setIsLoading(false);
+      setError(null);
+      setResult(null);
+    }
+  }, []);
+
+  return { identify, isLoading, error, result, reset };
+}
+```
+
+### Service Layer Pattern
+
+```typescript
+// services/discs.ts
+import { apiRequestValidated } from '@/services/baseService';
+import { z } from 'zod';
+
+const discSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  mold: z.string().nullable(),
+  manufacturer: z.string().nullable(),
+});
+
+type Disc = z.infer<typeof discSchema>;
+
+export const discService = {
+  async getAll(): Promise<Disc[]> {
+    return apiRequestValidated('/functions/v1/discs', { method: 'GET' }, z.array(discSchema));
+  },
+
+  async getById(id: string): Promise<Disc | null> {
+    try {
+      return await apiRequestValidated(`/functions/v1/discs/${id}`, { method: 'GET' }, discSchema);
+    } catch (error) {
+      if (isApiError(error) && error.code === 'NOT_FOUND') return null;
+      throw error;
+    }
+  },
+
+  async create(data: CreateDiscData): Promise<Disc> {
+    return apiRequestValidated('/functions/v1/discs', { method: 'POST', body: data }, discSchema);
+  },
+};
+```
+
+### Zod Validation Pattern
+
+```typescript
+// lib/zodSchemas.ts
+import { z } from 'zod';
+
+export const signInSchema = z.object({
+  email: z.string().trim().email('Invalid email'),
+  password: z.string().min(8, 'Password must be 8+ characters'),
+});
+
+export type SignInData = z.infer<typeof signInSchema>;
+
+export function validateSignInWithZod(data: Partial<SignInData>): Record<string, string> {
+  const result = signInSchema.safeParse(data);
+  if (result.success) return {};
+  const errors: Record<string, string> = {};
+  result.error.issues.forEach((issue) => {
+    const field = issue.path[0] as string;
+    errors[field] = issue.message;
+  });
+  return errors;
+}
+```
+
+### Component Pattern
+
+```typescript
+// components/Avatar.tsx
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
+import Colors from '@/constants/Colors';
+
+interface AvatarProps {
+  avatarUrl?: string | null;
+  name?: string;
+  size?: number;
+}
+
+export function Avatar({ avatarUrl, name, size = 40 }: AvatarProps) {
+  const [imageError, setImageError] = useState(false);
+
+  const getInitials = useCallback((displayName?: string): string => {
+    if (!displayName) return '?';
+    const parts = displayName.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+    return displayName.charAt(0).toUpperCase();
+  }, []);
+
+  const containerStyle = useMemo(() => ({
+    width: size, height: size, borderRadius: size / 2,
+  }), [size]);
+
+  if (avatarUrl && !imageError) {
+    return (
+      <Image
+        source={{ uri: avatarUrl }}
+        style={[styles.image, containerStyle]}
+        onError={() => setImageError(true)}
+        cachePolicy="memory-disk"
+      />
+    );
+  }
+
+  return (
+    <View style={[styles.placeholder, containerStyle]}>
+      <Text style={[styles.initials, { fontSize: size * 0.4 }]}>
+        {getInitials(name)}
+      </Text>
+    </View>
+  );
+}
+```
+
+### File Map - Where to Edit
+
+| Task | Files to Edit |
+|------|---------------|
+| Add auth screen | `app/(auth)/[name].tsx` |
+| Add tab screen | `app/(tabs)/[name].tsx`, update `app/(tabs)/_layout.tsx` |
+| Add modal | `app/[name].tsx`, configure in `app/_layout.tsx` |
+| Add component | `components/[Name].tsx` |
+| Add custom hook | `hooks/use[Name].ts` |
+| Add API service | `services/[name].ts` |
+| Add validation | `lib/zodSchemas.ts`, `lib/validation.ts` |
+| Update colors | `constants/Colors.ts` |
+
+### Adding a New Screen
+
+1. Create screen file:
+
+```typescript
+// app/new-screen.tsx
+import { StyleSheet, ScrollView, View as RNView, useColorScheme } from 'react-native';
+import { Text } from '@/components/Themed';
+import { handleError } from '@/lib/errorHandler';
+import Colors from '@/constants/Colors';
+
+export default function NewScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const dynamicStyles = {
+    container: { backgroundColor: isDark ? '#000' : '#fff' },
+  };
+
+  return (
+    <ScrollView style={[styles.container, dynamicStyles.container]}>
+      <Text>Content</Text>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+});
+```
+
+2. Register in `app/_layout.tsx` if needed:
+
+```typescript
+<Stack.Screen
+  name="new-screen"
+  options={{ title: 'New Screen', headerTintColor: Colors.violet.primary }}
+/>
+```
+
+### Navigation Patterns
+
+```typescript
+import { router } from 'expo-router';
+
+// Basic navigation
+router.push('/add-disc');
+router.replace('/(tabs)');
+router.back();
+
+// With params
+router.push(`/disc/${discId}`);
+router.push({ pathname: '/edit-disc/[id]', params: { id: discId } });
+```
+
+### Error Handling Pattern
+
+```typescript
+import { handleError } from '@/lib/errorHandler';
+
+try {
+  const data = await apiCall();
+} catch (error) {
+  handleError(error, {
+    operation: 'operation-name',
+    context: { key: 'value' },
+  });
+}
+```
+
 ## References
 
 - @README.md - Repository overview
