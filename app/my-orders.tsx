@@ -58,10 +58,10 @@ export default function MyOrdersScreen() {
 
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     orderCard: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : 'rgba(150, 150, 150, 0.2)',
     },
     orderDate: {

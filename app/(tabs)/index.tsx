@@ -95,7 +95,7 @@ export default function HomeScreen() {
 
   const dynamicStyles = {
     scrollView: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     email: {
       color: isDark ? '#999' : '#666',
@@ -104,7 +104,7 @@ export default function HomeScreen() {
       color: isDark ? '#999' : '#666',
     },
     stickerCard: {
-      backgroundColor: isDark ? '#1a1a1a' : Colors.violet[50],
+      backgroundColor: isDark ? '#1e1e1e' : Colors.violet[50],
     },
     stickerIconContainer: {
       backgroundColor: isDark ? '#2a2a2a' : '#fff',
@@ -113,7 +113,7 @@ export default function HomeScreen() {
       color: isDark ? '#999' : '#666',
     },
     quickAction: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(150, 150, 150, 0.2)',
     },
   };

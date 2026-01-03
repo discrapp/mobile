@@ -206,21 +206,21 @@ export default function MyScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  // Create dynamic styles based on theme
+  // Create dynamic styles based on theme (unified across all Discr repos)
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',  // Main background
     },
     text: {
       color: isDark ? '#ccc' : '#333',
     },
     card: {
-      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
-      borderColor: isDark ? '#333' : '#eee',
+      backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',  // Card/surface
+      borderColor: isDark ? '#2e2e2e' : '#eee',         // Border
     },
     input: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
-      borderColor: isDark ? '#333' : '#ddd',
+      backgroundColor: isDark ? '#252525' : '#fff',  // Elevated/input
+      borderColor: isDark ? '#2e2e2e' : '#ddd',      // Border
       color: isDark ? '#fff' : '#000',
     },
   };
@@ -244,20 +244,23 @@ const styles = StyleSheet.create({
 });
 ```
 
-**Color Guidelines:**
+**Unified Color System (consistent across mobile, web, admin):**
 
-- **Backgrounds:**
-  - Light mode: `#fff` (white), `#f8f8f8` (light gray cards)
-  - Dark mode: `#000` (black), `#1a1a1a` (dark gray cards)
+- **Dark Mode Surfaces (Material Design elevation):**
+  - `#121212` - Main background
+  - `#1e1e1e` - Cards, modals, surfaces
+  - `#252525` - Elevated surfaces, inputs, hover states
+  - `#2e2e2e` - Borders, dividers
+- **Light Mode Surfaces:**
+  - `#fff` - Main background
+  - `#f8f8f8` - Cards, surfaces
+  - `#eee`, `#ddd` - Borders
 - **Text:**
-  - Light mode: `#333` (dark gray), `#666` (medium gray)
-  - Dark mode: `#fff` (white), `#ccc` (light gray), `#999` (medium gray)
-- **Borders:**
-  - Light mode: `#eee`, `#ddd`
-  - Dark mode: `#333`, `rgba(255,255,255,0.1)`
-- **Inputs:**
-  - Light mode: white background, light borders
-  - Dark mode: `#1a1a1a` background, `#333` borders
+  - Light mode: `#333` (primary), `#666` (secondary)
+  - Dark mode: `#fff` (primary), `#ccc` (secondary), `#999` (muted)
+- **Use Colors.ts:**
+  - Import from `@/constants/Colors` for violet brand colors
+  - Use `Colors.darkSurface` for consistent dark mode surfaces
 
 **Testing:**
 
@@ -398,11 +401,11 @@ export default function SignIn() {
   const isSubmitting = useRef(false);
 
   const dynamicStyles = {
-    container: { backgroundColor: isDark ? '#000' : '#fff' },
+    container: { backgroundColor: isDark ? '#121212' : '#fff' },
     text: { color: isDark ? '#fff' : '#000' },
     input: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
-      borderColor: isDark ? '#333' : '#ddd',
+      backgroundColor: isDark ? '#252525' : '#fff',
+      borderColor: isDark ? '#2e2e2e' : '#ddd',
       color: isDark ? '#fff' : '#000',
     },
   };
@@ -461,10 +464,10 @@ export default function HomeScreen() {
   const isDark = colorScheme === 'dark';
 
   const dynamicStyles = {
-    container: { backgroundColor: isDark ? '#000' : '#fff' },
+    container: { backgroundColor: isDark ? '#121212' : '#fff' },
     card: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
-      borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(150,150,150,0.2)',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
+      borderColor: isDark ? '#2e2e2e' : 'rgba(150,150,150,0.2)',
     },
   };
 
@@ -702,7 +705,7 @@ export default function NewScreen() {
   const isDark = colorScheme === 'dark';
 
   const dynamicStyles = {
-    container: { backgroundColor: isDark ? '#000' : '#fff' },
+    container: { backgroundColor: isDark ? '#121212' : '#fff' },
   };
 
   return (

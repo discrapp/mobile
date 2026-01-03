@@ -21,7 +21,7 @@ export default function CheckoutCancelScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
       justifyContent: 'center',
       alignItems: 'center',
     },

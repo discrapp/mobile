@@ -111,7 +111,7 @@ export default function OrderDetailScreen() {
 
   const dynamicStyles = {
     container: {
-      backgroundColor: isDark ? '#000' : '#fff',
+      backgroundColor: isDark ? '#121212' : '#fff',
     },
     errorText: {
       color: isDark ? '#999' : '#666',
@@ -120,7 +120,7 @@ export default function OrderDetailScreen() {
       backgroundColor: isDark ? '#444' : '#ddd',
     },
     timelineDotCurrentBorder: {
-      borderColor: isDark ? '#1a1a1a' : '#fff',
+      borderColor: isDark ? '#1e1e1e' : '#fff',
     },
     timelineLine: {
       backgroundColor: isDark ? '#444' : '#ddd',
@@ -135,13 +135,13 @@ export default function OrderDetailScreen() {
       color: isDark ? '#999' : '#666',
     },
     detailCard: {
-      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+      backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
     },
     detailLabel: {
       color: isDark ? '#999' : '#666',
     },
     trackingCard: {
-      backgroundColor: isDark ? '#1a1a1a' : Colors.violet[50],
+      backgroundColor: isDark ? '#1e1e1e' : Colors.violet[50],
     },
     trackingIconContainer: {
       backgroundColor: isDark ? '#2a2a2a' : '#fff',
@@ -150,7 +150,7 @@ export default function OrderDetailScreen() {
       color: isDark ? '#999' : '#666',
     },
     addressCard: {
-      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+      backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
     },
     addressLine: {
       color: isDark ? '#999' : '#666',

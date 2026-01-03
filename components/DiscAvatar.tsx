@@ -44,7 +44,7 @@ export default function DiscAvatar({ photoUrl, color, size = 60 }: DiscAvatarPro
     borderRadius: innerSize / 2,
   }) : null, [color, innerSize]);
 
-  const placeholderBgColor = useMemo(() => isDark ? '#1a1a1a' : '#e0e0e0', [isDark]);
+  const placeholderBgColor = useMemo(() => isDark ? '#1e1e1e' : '#e0e0e0', [isDark]);
   const placeholderIconColor = useMemo(() => isDark ? '#555' : '#999', [isDark]);
 
   if (photoUrl) {

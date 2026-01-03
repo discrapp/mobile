@@ -32,7 +32,7 @@ export default function DiscRecommendationCard({
 
   const dynamicStyles = {
     card: {
-      backgroundColor: isDark ? '#1a1a1a' : '#fff',
+      backgroundColor: isDark ? '#1e1e1e' : '#fff',
       borderColor: isDark ? '#333' : '#e0e0e0',
     },
     text: {

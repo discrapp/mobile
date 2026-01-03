@@ -501,7 +501,7 @@ export default function FoundDiscScreen() {
   if (screenState === 'input') {
     return (
       <KeyboardAvoidingView
-        style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+        style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -662,7 +662,7 @@ export default function FoundDiscScreen() {
     // Double-check permission before rendering camera
     if (!permission?.granted) {
       return (
-        <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+        <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
           <FontAwesome name="camera" size={48} color="#ccc" />
           <Text style={styles.errorTitle}>Camera Permission Required</Text>
           <Text style={styles.errorMessage}>
@@ -713,7 +713,7 @@ export default function FoundDiscScreen() {
   // Loading State
   if (screenState === 'loading' || screenState === 'reporting' || screenState === 'claiming') {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <ActivityIndicator size="large" color={Colors.violet.primary} />
         <Text style={styles.loadingText}>
           {screenState === 'loading' ? 'Looking up disc...' : screenState === 'claiming' ? 'Claiming QR code...' : 'Reporting found disc...'}
@@ -725,7 +725,7 @@ export default function FoundDiscScreen() {
   // QR Claim State - Unclaimed QR code that can be claimed
   if (screenState === 'qr_claim' && unclaimedQrCode) {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <FontAwesome name="qrcode" size={64} color={Colors.violet.primary} />
         <Text style={styles.successTitle}>New QR Code!</Text>
         <Text style={styles.qrCodeDisplay}>{unclaimedQrCode}</Text>
@@ -746,7 +746,7 @@ export default function FoundDiscScreen() {
   // QR Link State - Already claimed by user, needs to be linked
   if (screenState === 'qr_link' && unclaimedQrCode) {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <FontAwesome name="link" size={64} color={Colors.violet.primary} />
         <Text style={styles.successTitle}>Your QR Code</Text>
         <Text style={styles.qrCodeDisplay}>{unclaimedQrCode}</Text>
@@ -768,7 +768,7 @@ export default function FoundDiscScreen() {
   // Claim Success State
   if (screenState === 'claim_success') {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <FontAwesome name="check-circle" size={80} color="#2ECC71" />
         <Text style={styles.successTitle}>QR Code Claimed!</Text>
         <Text style={styles.successMessage}>
@@ -792,7 +792,7 @@ export default function FoundDiscScreen() {
   // Error State
   if (screenState === 'error') {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <FontAwesome name="exclamation-circle" size={64} color="#E74C3C" />
         <Text style={styles.errorTitle}>Oops!</Text>
         <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -808,7 +808,7 @@ export default function FoundDiscScreen() {
   if (screenState === 'found' && discInfo) {
     return (
       <KeyboardAvoidingView
-        style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+        style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
@@ -900,7 +900,7 @@ export default function FoundDiscScreen() {
     };
 
     return (
-      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <FontAwesome name="check-circle" size={80} color="#2ECC71" />
         <Text style={styles.successTitle}>Thank You!</Text>
         <Text style={styles.successMessage}>

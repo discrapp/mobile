@@ -72,11 +72,11 @@ export default function AddDiscScreen() {
 
   // Dynamic styles for dark/light mode
   const dynamicContainerStyle = {
-    backgroundColor: isDark ? '#000' : '#fff',
+    backgroundColor: isDark ? '#121212' : '#fff',
   };
 
   const dynamicInputStyle = {
-    backgroundColor: isDark ? '#1a1a1a' : '#fff',
+    backgroundColor: isDark ? '#1e1e1e' : '#fff',
     borderColor: isDark ? '#333' : '#ccc',
   };
 
@@ -662,7 +662,7 @@ export default function AddDiscScreen() {
         animationType="fade"
         onRequestClose={() => setShowOptionsModal(false)}>
         <View style={[styles.optionsModalOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-          <View style={[styles.optionsModalContent, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+          <View style={[styles.optionsModalContent, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
             <Text style={[styles.optionsModalTitle, { color: textColor }]}>Add a Disc</Text>
             <Text style={[styles.optionsModalSubtitle, { color: isDark ? '#999' : '#666' }]}>
               How would you like to add your disc?
@@ -729,7 +729,7 @@ export default function AddDiscScreen() {
         animationType="slide"
         onRequestClose={() => setShowIdentificationResult(false)}>
         <View style={[styles.optionsModalOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-          <View style={[styles.identificationResultModal, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+          <View style={[styles.identificationResultModal, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
             <View style={styles.identificationHeader}>
               <Text style={[styles.identificationTitle, { color: textColor }]}>Disc Identified!</Text>
               {identificationResult && (
@@ -797,7 +797,7 @@ export default function AddDiscScreen() {
       {/* AI Identifying Loading Overlay */}
       {isIdentifying && (
         <View style={styles.identifyingOverlay}>
-          <View style={[styles.identifyingContent, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+          <View style={[styles.identifyingContent, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
             <ActivityIndicator size="large" color={Colors.violet.primary} />
             <Text style={[styles.identifyingText, { color: textColor }]}>Analyzing disc...</Text>
             <Text style={[styles.identifyingSubtext, { color: isDark ? '#999' : '#666' }]}>
@@ -829,7 +829,7 @@ export default function AddDiscScreen() {
       <ScrollView style={[styles.scrollView, dynamicContainerStyle]} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.form}>
           {/* QR Code Section */}
-          <View style={[styles.qrSection, { backgroundColor: isDark ? '#1a1a1a' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }]}>
+          <View style={[styles.qrSection, { backgroundColor: isDark ? '#1e1e1e' : '#fff', borderColor: isDark ? '#333' : '#e0e0e0' }]}>
             {qrShortCode ? (
               <View style={styles.qrLinkedContainer}>
                 <View style={styles.qrLinkedInfo}>

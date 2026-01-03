@@ -27,7 +27,7 @@ export default function BagAnalysisCard({
 
   const dynamicStyles = {
     card: {
-      backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+      backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
       borderColor: isDark ? '#333' : '#e0e0e0',
     },
     text: {

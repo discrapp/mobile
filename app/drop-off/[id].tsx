@@ -247,7 +247,7 @@ export default function DropOffScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+      style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -281,7 +281,7 @@ export default function DropOffScreen() {
               style={[
                 styles.photoButton,
                 {
-                  backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+                  backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
                   borderColor: isDark ? '#333' : '#ddd',
                 },
               ]}
@@ -309,7 +309,7 @@ export default function DropOffScreen() {
               style={[
                 styles.locationBox,
                 {
-                  backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+                  backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
                   borderColor: isDark ? '#333' : '#ddd',
                 },
               ]}
@@ -347,7 +347,7 @@ export default function DropOffScreen() {
               style={[
                 styles.locationBox,
                 {
-                  backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+                  backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
                   borderColor: isDark ? '#333' : '#ddd',
                 },
               ]}
@@ -374,7 +374,7 @@ export default function DropOffScreen() {
               styles.input,
               styles.notesInput,
               {
-                backgroundColor: isDark ? '#1a1a1a' : '#f8f8f8',
+                backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
                 borderColor: isDark ? '#333' : '#ddd',
                 color: isDark ? '#fff' : '#000',
               },
