@@ -1,15 +1,97 @@
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { StyleSheet, Pressable, ScrollView, View as RNView, useColorScheme } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { getCachedDiscs, CachedDisc } from '@/utils/discCache';
+import { calculateBagStats } from '@/utils/bagStats';
+import BagDashboard from '@/components/BagDashboard';
+import { logger } from '@/lib/logger';
 
 export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  const [discs, setDiscs] = useState<CachedDisc[]>([]);
+  const [loadingDiscs, setLoadingDiscs] = useState(true);
+  const [activeRecoveryCount, setActiveRecoveryCount] = useState(0);
+
+  // Calculate bag stats from discs
+  const bagStats = useMemo(() => calculateBagStats(discs), [discs]);
+
+  // Load cached discs
+  const loadDiscs = useCallback(async () => {
+    try {
+      const cached = await getCachedDiscs();
+      if (cached) {
+        setDiscs(cached);
+      }
+    } catch (error) {
+      logger.error('Error loading cached discs:', error);
+    } finally {
+      setLoadingDiscs(false);
+    }
+  }, []);
+
+  // Fetch active recovery count
+  const fetchActiveRecoveryCount = useCallback(async () => {
+    if (!user?.id) return;
+
+    try {
+      // Get all discs owned by the user
+      const { data: userDiscs, error: discsError } = await supabase
+        .from('discs')
+        .select('id')
+        .eq('owner_id', user.id);
+
+      if (discsError || !userDiscs || userDiscs.length === 0) {
+        setActiveRecoveryCount(0);
+        return;
+      }
+
+      const discIds = userDiscs.map((d) => d.id);
+
+      // Count active recovery events for those discs
+      const { count, error } = await supabase
+        .from('recovery_events')
+        .select('*', { count: 'exact', head: true })
+        .in('disc_id', discIds)
+        .not('status', 'in', '("recovered","cancelled","surrendered")');
+
+      if (!error && count !== null) {
+        setActiveRecoveryCount(count);
+      }
+    } catch (error) {
+      logger.error('Error fetching active recovery count:', error);
+    }
+  }, [user?.id]);
+
+  // Load data on mount
+  useEffect(() => {
+    loadDiscs();
+    fetchActiveRecoveryCount();
+  }, [loadDiscs, fetchActiveRecoveryCount]);
+
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadDiscs();
+      fetchActiveRecoveryCount();
+    }, [loadDiscs, fetchActiveRecoveryCount])
+  );
+
+  const handleRecoveryPress = () => {
+    router.push('/(tabs)/two');
+  };
+
+  const handleAnalyzePress = () => {
+    router.push('/disc-recommendations');
+  };
 
   const dynamicStyles = {
     scrollView: {
@@ -47,6 +129,15 @@ export default function HomeScreen() {
           discs.
         </Text>
       </RNView>
+
+      {/* Bag Dashboard */}
+      <BagDashboard
+        stats={bagStats}
+        activeRecoveryCount={activeRecoveryCount}
+        loading={loadingDiscs}
+        onRecoveryPress={handleRecoveryPress}
+        onAnalyzePress={handleAnalyzePress}
+      />
 
       {/* Order Stickers CTA Card */}
       <Pressable style={[styles.stickerCard, dynamicStyles.stickerCard]} onPress={() => router.push('/order-stickers')}>
