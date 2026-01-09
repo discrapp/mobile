@@ -724,7 +724,7 @@ export default function OrderStickersScreen() {
                     </Text>
                     {isSelected && (
                       <RNView style={styles.selectedCheckmark}>
-                        <FontAwesome name="check-circle" size={24} color={Colors.violet[400]} />
+                        <FontAwesome name="check-circle" size={24} color="#fff" />
                       </RNView>
                     )}
                   </Pressable>
