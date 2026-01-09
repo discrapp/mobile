@@ -421,12 +421,19 @@ export default function OrderStickersScreen() {
       );
 
       if (!response.ok) {
-        // API error - let user proceed with unvalidated address
-        logger.error('USPS validation API error:', response.status);
+        // API error (503 = service unavailable) - let user proceed with unvalidated address
+        logger.warn('USPS validation unavailable, skipping:', response.status);
         return { valid: true };
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        // JSON parse error - let user proceed
+        logger.warn('USPS response parse error, skipping validation');
+        return { valid: true };
+      }
 
       if (!data.valid) {
         // Address is invalid
