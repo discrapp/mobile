@@ -278,7 +278,7 @@ export default function DiscDetailScreen() {
   };
 
   // istanbul ignore next -- QR linking tested via integration tests
-  const linkQrCode = async (qrCode: string) => {
+  const linkQrCode = async (scannedCode: string) => {
     if (!disc) return;
 
     setLinking(true);
@@ -294,36 +294,124 @@ export default function DiscDetailScreen() {
         return;
       }
 
-      const response = await fetch(
+      // Normalize to uppercase for consistency
+      const normalizedCode = scannedCode.trim().toUpperCase();
+
+      // Step 1: Look up the QR code to check its status
+      const lookupResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/lookup-qr-code?code=${encodeURIComponent(normalizedCode)}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      const lookupData = await lookupResponse.json();
+
+      // Handle different QR code states
+      if (lookupData.found) {
+        // QR code is already linked to a disc
+        Alert.alert(
+          'Already Linked',
+          'This QR code is already linked to another disc.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      if (!lookupData.qr_exists) {
+        Alert.alert('Not Found', 'This QR code does not exist.', [{ text: 'OK' }]);
+        return;
+      }
+
+      if (lookupData.qr_status === 'deactivated') {
+        Alert.alert(
+          'Deactivated',
+          'This QR code has been deactivated and cannot be used.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      if (lookupData.qr_status === 'assigned' && !lookupData.is_assignee) {
+        Alert.alert(
+          'Belongs to Someone Else',
+          'This QR code is already claimed by another user.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      // QR code is valid - ask user to confirm before linking
+      setLinking(false);
+      Alert.alert(
+        'Link QR Code?',
+        `Link QR code "${normalizedCode}" to ${disc.mold || disc.name}?`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Link',
+            onPress: () => performLink(normalizedCode, lookupData.qr_status, session.access_token),
+          },
+        ]
+      );
+    } catch (error) {
+      handleError(error, { operation: 'link-qr-code' });
+      setLinking(false);
+    }
+  };
+
+  // istanbul ignore next -- QR linking tested via integration tests
+  const performLink = async (code: string, qrStatus: string, accessToken: string) => {
+    if (!disc) return;
+
+    setLinking(true);
+
+    try {
+      // Step 2: If QR code is unclaimed (generated), claim it first
+      if (qrStatus === 'generated') {
+        const assignResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/assign-qr-code`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ qr_code: code }),
+          }
+        );
+
+        const assignData = await assignResponse.json();
+
+        if (!assignResponse.ok) {
+          Alert.alert('Error', assignData.error || 'Failed to claim QR code');
+          return;
+        }
+      }
+
+      // Step 3: Link the QR code to this disc
+      const linkResponse = await fetch(
         `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/link-qr-to-disc`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.access_token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ qr_code: qrCode, disc_id: disc.id }),
+          body: JSON.stringify({ qr_code: code, disc_id: disc.id }),
         }
       );
 
-      const data = await response.json();
+      const linkData = await linkResponse.json();
 
-      if (!response.ok) {
-        if (data.error === 'QR code is not assigned to you') {
-          Alert.alert(
-            'Claim First',
-            'You need to claim this QR code first. Go to the Found Disc screen to claim it.',
-            [{ text: 'OK' }]
-          );
-        } else if (data.error === 'QR code must be assigned before linking to a disc') {
-          Alert.alert(
-            'Claim First',
-            'This QR code is unclaimed. Go to the Found Disc screen to claim it first.',
-            [{ text: 'OK' }]
-          );
-        } else {
-          Alert.alert('Error', data.error || 'Failed to link QR code');
-        }
+      if (!linkResponse.ok) {
+        Alert.alert('Error', linkData.error || 'Failed to link QR code');
         return;
       }
 
