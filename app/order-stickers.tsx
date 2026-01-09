@@ -1130,7 +1130,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   packageCardFeatured: {
-    borderWidth: 0,
+    // Keep same border as other unselected packages
   },
   featuredBadge: {
     position: 'absolute',
