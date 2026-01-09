@@ -314,8 +314,8 @@ export default function OrderStickersScreen() {
       borderColor: isDark ? '#333' : '#ddd',
     },
     packageCardSelected: {
-      backgroundColor: isDark ? '#252525' : Colors.violet[50],
-      borderColor: Colors.violet.primary,
+      backgroundColor: isDark ? Colors.violet[900] : Colors.violet[100],
+      borderColor: Colors.violet[400],
     },
     packageCardFeatured: {
       backgroundColor: isDark ? Colors.violet[900] : Colors.violet[600],
@@ -729,7 +729,7 @@ export default function OrderStickersScreen() {
                     </Text>
                     {isSelected && (
                       <RNView style={styles.selectedCheckmark}>
-                        <FontAwesome name="check-circle" size={20} color={Colors.violet.primary} />
+                        <FontAwesome name="check-circle" size={24} color={Colors.violet[400]} />
                       </RNView>
                     )}
                   </Pressable>
@@ -1132,7 +1132,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   packageCardSelected: {
-    borderWidth: 2,
+    borderWidth: 3,
   },
   packageCardFeatured: {
     borderWidth: 0,
