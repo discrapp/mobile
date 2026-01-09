@@ -26,7 +26,12 @@
       "splash": {
         "image": "./assets/images/splash-icon.png",
         "resizeMode": "contain",
-        "backgroundColor": "#3b1877"
+        "backgroundColor": "#3b1877",
+        "dark": {
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#121212"
+        }
       }
     },
     "android": {
@@ -59,6 +64,12 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
+      [
+        "expo-system-ui",
+        {
+          "backgroundColor": "#121212"
+        }
+      ],
       [
         "@sentry/react-native/expo",
         {
