@@ -909,7 +909,7 @@ export default function FoundDiscScreen() {
               placeholder="Enter code (e.g., TEST001)"
               placeholderTextColor="#999"
               value={qrCode}
-              onChangeText={setQrCode}
+              onChangeText={(text) => setQrCode(text.toUpperCase())}
               autoCapitalize="characters"
               autoCorrect={false}
             />
@@ -1088,11 +1088,11 @@ export default function FoundDiscScreen() {
         <Text style={styles.successTitle}>Your QR Code</Text>
         <Text style={styles.qrCodeDisplay}>{unclaimedQrCode}</Text>
         <Text style={styles.successMessage}>
-          You've already claimed this QR code. Link it to one of your discs in your bag.
+          This QR code is yours! Select a disc from your bag to link it to.
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => { resetScreen(); router.push('/(tabs)/my-bag'); }}>
-          <FontAwesome name="briefcase" size={18} color="#fff" />
-          <Text style={styles.primaryButtonText}>Go to My Bag</Text>
+        <Pressable style={styles.primaryButton} onPress={() => { resetScreen(); router.push(`/link-sticker?code=${unclaimedQrCode}`); }}>
+          <FontAwesome name="link" size={18} color="#fff" />
+          <Text style={styles.primaryButtonText}>Link to a Disc</Text>
         </Pressable>
         <Pressable style={styles.textButton} onPress={resetScreen}>
           <Text style={styles.textButtonText}>Cancel</Text>
@@ -1111,9 +1111,9 @@ export default function FoundDiscScreen() {
         <Text style={styles.successMessage}>
           The QR code is now yours. Link it to one of your discs so finders can return it to you.
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => { resetScreen(); router.push('/(tabs)/my-bag'); }}>
-          <FontAwesome name="briefcase" size={18} color="#fff" />
-          <Text style={styles.primaryButtonText}>Go to My Bag</Text>
+        <Pressable style={styles.primaryButton} onPress={() => { const code = unclaimedQrCode; resetScreen(); router.push(`/link-sticker?code=${code}`); }}>
+          <FontAwesome name="link" size={18} color="#fff" />
+          <Text style={styles.primaryButtonText}>Link to a Disc</Text>
         </Pressable>
         <Pressable style={styles.secondaryButton} onPress={() => router.push('/add-disc')}>
           <FontAwesome name="plus" size={18} color="#fff" />
