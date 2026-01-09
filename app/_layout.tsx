@@ -5,9 +5,8 @@ import { User } from '@supabase/supabase-js';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import * as SystemUI from 'expo-system-ui';
 import { useEffect, useRef } from 'react';
-import { Alert, AppState, AppStateStatus, Pressable, useColorScheme as useRNColorScheme, View } from 'react-native';
+import { Alert, AppState, AppStateStatus, Pressable } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useColorScheme } from '@/components/useColorScheme';
@@ -32,34 +31,24 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-// Set initial root background color based on system color scheme
-// This ensures the root view matches dark mode before the app renders
-SystemUI.setBackgroundColorAsync('#121212').catch(() => {
-  // Ignore errors - this is a best-effort optimization
-});
-
 export default function RootLayout() {
-  const systemColorScheme = useRNColorScheme();
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
-
-  // Set root background color based on system color scheme
-  useEffect(() => {
-    const backgroundColor = systemColorScheme === 'dark' ? '#121212' : '#ffffff';
-    SystemUI.setBackgroundColorAsync(backgroundColor).catch(() => {
-      // Ignore errors
-    });
-  }, [systemColorScheme]);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
-  // Note: Splash screen is hidden in RootLayoutNav after auth loading completes
-  // This prevents a white flash between splash hide and app render
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync().catch(() => {
+        // Ignore - splash screen may already be hidden during hot reload
+      });
+    }
+  }, [loaded]);
 
   if (!loaded) {
     return null;
@@ -165,21 +154,8 @@ function RootLayoutNav() {
   useProtectedRoute(user, loading);
   useDeferredLinking(user, loading);
 
-  // Hide splash screen only after auth loading is complete
-  // This prevents the white flash between splash hide and app render
-  useEffect(() => {
-    if (!loading) {
-      SplashScreen.hideAsync().catch(() => {
-        // Ignore - splash screen may already be hidden during hot reload
-      });
-    }
-  }, [loading]);
-
-  // Show a loading view with proper dark mode background instead of null
   if (loading) {
-    return (
-      <View style={{ flex: 1, backgroundColor: colorScheme === 'dark' ? '#121212' : '#ffffff' }} />
-    );
+    return null;
   }
 
   return (
