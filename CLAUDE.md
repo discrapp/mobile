@@ -25,6 +25,10 @@ powered by Supabase for backend services.
 mobile/
 ├── .expo/              # Expo build artifacts
 ├── .github/workflows/  # CI/CD workflows
+├── .maestro/           # Maestro e2e tests
+│   ├── config.yaml     # Maestro configuration
+│   └── flows/          # Test flows organized by feature
+├── __tests__/          # Jest unit/component tests
 ├── app/                # Expo Router app directory (file-based routing)
 │   ├── (auth)/         # Authentication screens (sign-in, sign-up)
 │   ├── (tabs)/         # Main app tab navigation
@@ -151,6 +155,69 @@ pre-commit autoupdate           # Update hook versions
      untestable code (native modules, device-specific features)
 
 **DO NOT write implementation code without tests. This is non-negotiable.**
+
+### E2E Testing with Maestro - REQUIRED FOR NEW FEATURES
+
+**CRITICAL:** All new user-facing features MUST include Maestro e2e tests.
+
+**When to add e2e tests:**
+
+- New screens or flows (e.g., order stickers, my orders)
+- New user interactions (e.g., buttons, forms, navigation)
+- Bug fixes that affect user-visible behavior
+
+**E2E test location:** `.maestro/flows/`
+
+**Test file structure:**
+
+```text
+.maestro/flows/
+├── auth/                    # Authentication flows
+├── helpers/                 # Reusable test helpers
+├── order-stickers/          # Order stickers feature tests
+│   ├── package-selection.yaml
+│   └── address-validation.yaml
+└── my-orders/               # My orders feature tests
+    ├── view-orders.yaml
+    ├── mark-delivered.yaml
+    └── cancel-order.yaml
+```
+
+**Example test flow:**
+
+```yaml
+# .maestro/flows/my-orders/mark-delivered.yaml
+appId: com.discr.app
+---
+- launchApp
+- tapOn: "My Orders"
+- waitForAnimationToEnd
+- assertVisible: "Shipped"
+- tapOn: "Mark as Delivered"
+- assertVisible: "Did you receive order"
+- tapOn: "Yes, Received"
+- assertVisible: "Order Delivered"
+```
+
+**Running e2e tests:**
+
+```bash
+npm run e2e                  # Run all tests
+npm run e2e:flow <path>      # Run specific flow
+npm run e2e:studio           # Interactive test builder
+```
+
+**Key commands in Maestro:**
+
+- `tapOn: "Text"` or `tapOn: { id: "element-id" }` - Tap element
+- `inputText: "value"` - Type text
+- `assertVisible: "Text"` - Assert element is visible
+- `assertNotVisible: "Text"` - Assert element is not visible
+- `waitForAnimationToEnd` - Wait for animations
+- `scrollUntilVisible` - Scroll to find element
+- `runFlow: { when: { visible: "X" }, commands: [...] }` - Conditional
+
+**DO NOT ship new features without corresponding e2e tests.**
 
 ### Code Quality Standards
 
@@ -688,6 +755,8 @@ export function Avatar({ avatarUrl, name, size = 40 }: AvatarProps) {
 | Add API service | `services/[name].ts` |
 | Add validation | `lib/zodSchemas.ts`, `lib/validation.ts` |
 | Update colors | `constants/Colors.ts` |
+| Add e2e test | `.maestro/flows/[feature]/[test].yaml` |
+| Add unit test | `__tests__/[feature]/[name].test.tsx` |
 
 ### Adding a New Screen
 
@@ -768,7 +837,7 @@ try {
 
 ---
 
-**Last Updated:** 2026-01-02
+**Last Updated:** 2026-01-09
 
 This file should be updated whenever:
 
