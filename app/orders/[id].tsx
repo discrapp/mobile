@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { useState, useCallback, ComponentProps } from 'react';
+import { useState, useCallback, useEffect, useRef, ComponentProps } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -9,12 +9,16 @@ import {
   RefreshControl,
   View as RNView,
   useColorScheme,
+  Alert,
+  AppState,
+  AppStateStatus,
 } from 'react-native';
 import { useLocalSearchParams, Stack, useFocusEffect, useRouter } from 'expo-router';
 import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
+import { handleError } from '@/lib/errorHandler';
 
 type FontAwesomeIconName = ComponentProps<typeof FontAwesome>['name'];
 
@@ -45,7 +49,7 @@ interface StickerOrder {
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: FontAwesomeIconName }> = {
   pending_payment: { label: 'Pending Payment', color: '#F39C12', icon: 'clock-o' },
-  paid: { label: 'Order Placed', color: '#3498DB', icon: 'check' },
+  paid: { label: 'Paid', color: '#3498DB', icon: 'credit-card' },
   processing: { label: 'Processing', color: '#9B59B6', icon: 'cog' },
   printed: { label: 'Printed', color: '#1ABC9C', icon: 'print' },
   shipped: { label: 'Shipped', color: '#27AE60', icon: 'truck' },
@@ -108,6 +112,8 @@ export default function OrderDetailScreen() {
   const [order, setOrder] = useState<StickerOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [resumingPayment, setResumingPayment] = useState(false);
+  const [cancellingOrder, setCancellingOrder] = useState(false);
 
   const dynamicStyles = {
     container: {
@@ -206,6 +212,23 @@ export default function OrderDetailScreen() {
     }, [id])
   );
 
+  // Auto-refresh when app returns to foreground (e.g., after Stripe checkout)
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      // When app comes back to foreground and order is pending payment, refresh
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        logger.info('App returned to foreground, refreshing order');
+        fetchOrder(true);
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [id]);
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchOrder(true);
@@ -218,6 +241,106 @@ export default function OrderDetailScreen() {
     if (supported) {
       await Linking.openURL(url);
     }
+  };
+
+  const handleResumePayment = async () => {
+    if (!order) return;
+    setResumingPayment(true);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        Alert.alert('Error', 'Please sign in to complete payment');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/resume-sticker-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ order_id: order.id }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to resume checkout');
+      }
+
+      const data = await response.json();
+
+      if (data.checkout_url) {
+        const supported = await Linking.canOpenURL(data.checkout_url);
+        if (supported) {
+          await Linking.openURL(data.checkout_url);
+        } else {
+          throw new Error('Cannot open checkout URL');
+        }
+      }
+    } catch (error) {
+      handleError(error, { operation: 'resume-payment' });
+    } finally {
+      setResumingPayment(false);
+    }
+  };
+
+  const handleCancelOrder = () => {
+    if (!order) return;
+    Alert.alert(
+      'Cancel Order',
+      `Are you sure you want to cancel order ${order.order_number}? This cannot be undone.`,
+      [
+        { text: 'Keep Order', style: 'cancel' },
+        {
+          text: 'Cancel Order',
+          style: 'destructive',
+          onPress: async () => {
+            setCancellingOrder(true);
+            try {
+              const {
+                data: { session },
+              } = await supabase.auth.getSession();
+
+              if (!session) {
+                Alert.alert('Error', 'Please sign in to cancel order');
+                return;
+              }
+
+              const response = await fetch(
+                `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/cancel-sticker-order`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
+                  },
+                  body: JSON.stringify({ order_id: order.id }),
+                }
+              );
+
+              if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to cancel order');
+              }
+
+              Alert.alert('Order Cancelled', `Order ${order.order_number} has been cancelled.`, [
+                { text: 'OK', onPress: () => router.back() },
+              ]);
+            } catch (error) {
+              handleError(error, { operation: 'cancel-order' });
+            } finally {
+              setCancellingOrder(false);
+            }
+          },
+        },
+      ]
+    );
   };
 
   if (loading) {
@@ -270,6 +393,40 @@ export default function OrderDetailScreen() {
                 Track Package
               </Text>
             </Pressable>
+          )}
+          {order.status === 'pending_payment' && (
+            <RNView style={styles.pendingPaymentActions}>
+              <Pressable
+                style={[styles.completePaymentButton, resumingPayment && styles.buttonDisabled]}
+                onPress={handleResumePayment}
+                disabled={resumingPayment || cancellingOrder}
+              >
+                {resumingPayment ? (
+                  <ActivityIndicator size="small" color={statusConfig.color} />
+                ) : (
+                  <>
+                    <FontAwesome name="credit-card" size={14} color={statusConfig.color} />
+                    <Text style={[styles.completePaymentText, { color: statusConfig.color }]}>
+                      Complete Payment
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+              <Pressable
+                style={[styles.cancelButton, cancellingOrder && styles.buttonDisabled]}
+                onPress={handleCancelOrder}
+                disabled={resumingPayment || cancellingOrder}
+              >
+                {cancellingOrder ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <>
+                    <FontAwesome name="times" size={14} color="#fff" />
+                    <Text style={styles.cancelButtonText}>Cancel Order</Text>
+                  </>
+                )}
+              </Pressable>
+            </RNView>
           )}
         </RNView>
 
@@ -338,6 +495,12 @@ export default function OrderDetailScreen() {
               <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Order Date</Text>
               <Text style={styles.detailValue}>{formatDate(order.created_at)}</Text>
             </RNView>
+            {order.paid_at && (
+              <RNView style={styles.detailRow}>
+                <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Payment Received</Text>
+                <Text style={[styles.detailValue, styles.paidText]}>{formatDateTime(order.paid_at)}</Text>
+              </RNView>
+            )}
             <RNView style={styles.detailRow}>
               <Text style={[styles.detailLabel, dynamicStyles.detailLabel]}>Quantity</Text>
               <Text style={styles.detailValue}>
@@ -462,6 +625,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  pendingPaymentActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 16,
+  },
+  completePaymentButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  completePaymentText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.5)',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   section: {
     padding: 16,
     paddingBottom: 0,
@@ -539,6 +739,9 @@ const styles = StyleSheet.create({
   },
   freeText: {
     color: '#27AE60',
+  },
+  paidText: {
+    color: '#3498DB',
   },
   totalLabel: {
     fontSize: 16,
