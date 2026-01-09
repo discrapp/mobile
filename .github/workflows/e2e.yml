@@ -52,15 +52,17 @@ jobs:
 
       - name: Start iOS Simulator
         run: |
-          # Boot the default iOS simulator
-          xcrun simctl boot "iPhone 15 Pro" || true
+          # List available simulators and boot the first iPhone
+          SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone [0-9]+" | head -1 | sed 's/.*(\([^)]*\)).*/\1/')
+          echo "Booting simulator: $SIMULATOR"
+          xcrun simctl boot "$SIMULATOR" || true
           # Wait for simulator to be ready
           sleep 10
 
       - name: Build and install app
         run: |
-          # Build development client
-          npx expo run:ios --no-install --configuration Release
+          # Build for simulator (avoids code signing requirements)
+          npx expo run:ios --device simulator --configuration Release
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
           EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
