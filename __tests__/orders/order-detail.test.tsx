@@ -1,15 +1,20 @@
 import React from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import OrderDetailScreen from '../../app/orders/[id]';
+
+// Mock Alert
+jest.spyOn(Alert, 'alert');
 
 // Mock expo-router
 const mockRouterPush = jest.fn();
+const mockRouterBack = jest.fn();
 jest.mock('expo-router', () => {
   const React = require('react');
   return {
     useRouter: () => ({
       push: mockRouterPush,
+      back: mockRouterBack,
     }),
     useLocalSearchParams: () => ({ id: 'order-123' }),
     Stack: {
@@ -70,6 +75,20 @@ const mockShippedOrder = {
   ...mockOrder,
   status: 'shipped',
   tracking_number: '1Z999AA10123456784',
+  printed_at: '2024-01-16T10:00:00Z',
+  shipped_at: '2024-01-17T10:00:00Z',
+};
+
+const mockPendingPaymentOrder = {
+  ...mockOrder,
+  status: 'pending_payment',
+  paid_at: null,
+};
+
+const mockShippedNoTrackingOrder = {
+  ...mockOrder,
+  status: 'shipped',
+  tracking_number: null,
   printed_at: '2024-01-16T10:00:00Z',
   shipped_at: '2024-01-17T10:00:00Z',
 };
@@ -331,6 +350,319 @@ describe('OrderDetailScreen', () => {
       expect(Linking.openURL).toHaveBeenCalledWith(
         expect.stringContaining('usps.com')
       );
+    });
+  });
+
+  describe('Resume Payment', () => {
+    it('shows resume payment button for pending_payment orders', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Complete Payment')).toBeTruthy();
+      });
+    });
+
+    it('calls resume-sticker-checkout API when resume payment is pressed', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ checkout_url: 'https://checkout.stripe.com/test' }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Complete Payment')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Complete Payment'));
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('resume-sticker-checkout'),
+          expect.objectContaining({
+            method: 'POST',
+            body: expect.stringContaining('order-123'),
+          })
+        );
+      });
+
+      await waitFor(() => {
+        expect(Linking.openURL).toHaveBeenCalledWith('https://checkout.stripe.com/test');
+      });
+    });
+
+    it('handles resume payment API error', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          json: () => Promise.resolve({ error: 'Checkout expired' }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Complete Payment')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Complete Payment'));
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('resume-sticker-checkout'),
+          expect.any(Object)
+        );
+      });
+    });
+
+    it('handles no session for resume payment', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Complete Payment')).toBeTruthy();
+      });
+
+      // Clear session for the resume payment call
+      mockGetSession.mockResolvedValueOnce({
+        data: { session: null },
+      });
+
+      fireEvent.press(getByText('Complete Payment'));
+
+      await waitFor(() => {
+        expect(Alert.alert).toHaveBeenCalledWith('Error', 'Please sign in to complete payment');
+      });
+    });
+  });
+
+  describe('Cancel Order', () => {
+    it('shows cancel order button for pending_payment orders', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Cancel Order')).toBeTruthy();
+      });
+    });
+
+    it('shows confirmation dialog when cancel is pressed', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Cancel Order')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Cancel Order'));
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        'Cancel Order',
+        expect.stringContaining('Are you sure'),
+        expect.arrayContaining([
+          expect.objectContaining({ text: 'Keep Order' }),
+          expect.objectContaining({ text: 'Cancel Order', style: 'destructive' }),
+        ])
+      );
+    });
+
+    it('calls cancel-sticker-order API when confirmed', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Cancel Order')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Cancel Order'));
+
+      // Get the confirm callback from Alert.alert
+      const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
+      const confirmButton = alertCall[2].find((btn: { text: string }) => btn.text === 'Cancel Order');
+      await confirmButton.onPress();
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('cancel-sticker-order'),
+          expect.objectContaining({
+            method: 'POST',
+            body: expect.stringContaining('order-123'),
+          })
+        );
+      });
+    });
+
+    it('handles cancel order API error', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          json: () => Promise.resolve({ error: 'Cannot cancel' }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Cancel Order')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Cancel Order'));
+
+      const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
+      const confirmButton = alertCall[2].find((btn: { text: string }) => btn.text === 'Cancel Order');
+      await confirmButton.onPress();
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('cancel-sticker-order'),
+          expect.any(Object)
+        );
+      });
+    });
+  });
+
+  describe('Mark Delivered', () => {
+    it('shows mark delivered button for shipped orders without tracking', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Mark as Delivered')).toBeTruthy();
+      });
+    });
+
+    it('shows confirmation dialog when mark delivered is pressed', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
+      });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Mark as Delivered')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Mark as Delivered'));
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        'Mark as Delivered',
+        expect.stringContaining('Did you receive'),
+        expect.arrayContaining([
+          expect.objectContaining({ text: 'Not Yet' }),
+          expect.objectContaining({ text: 'Yes, Received' }),
+        ])
+      );
+    });
+
+    it('calls mark-order-delivered API when confirmed', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: { ...mockShippedNoTrackingOrder, status: 'delivered' } }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Mark as Delivered')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Mark as Delivered'));
+
+      const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
+      const confirmButton = alertCall[2].find((btn: { text: string }) => btn.text === 'Yes, Received');
+      await confirmButton.onPress();
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('mark-order-delivered'),
+          expect.objectContaining({
+            method: 'POST',
+            body: expect.stringContaining('order-123'),
+          })
+        );
+      });
+    });
+
+    it('handles mark delivered API error', async () => {
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          json: () => Promise.resolve({ error: 'Failed to update' }),
+        });
+
+      const { getByText } = render(<OrderDetailScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Mark as Delivered')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Mark as Delivered'));
+
+      const alertCall = (Alert.alert as jest.Mock).mock.calls[0];
+      const confirmButton = alertCall[2].find((btn: { text: string }) => btn.text === 'Yes, Received');
+      await confirmButton.onPress();
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith(
+          expect.stringContaining('mark-order-delivered'),
+          expect.any(Object)
+        );
+      });
     });
   });
 });
