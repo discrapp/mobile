@@ -103,12 +103,14 @@ describe('OrderStickersScreen', () => {
       });
     });
 
-    it('shows quantity selector', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+    it('shows package selection', async () => {
+      const { getByText, getAllByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText('Quantity')).toBeTruthy();
-        expect(getByText('5')).toBeTruthy(); // default quantity
+        expect(getByText('Starter')).toBeTruthy();
+        // "Popular" appears twice: once as a badge and once as package name
+        expect(getAllByText('Popular').length).toBeGreaterThan(0);
+        expect(getByText('Best Value')).toBeTruthy();
       });
     });
 
@@ -518,70 +520,67 @@ describe('OrderStickersScreen', () => {
     });
   });
 
-  describe('quantity controls', () => {
-    it('shows default quantity of 5', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
-
-      await waitFor(() => {
-        expect(getByText('5')).toBeTruthy();
-      });
-    });
-
-    it('enforces minimum quantity of 1', async () => {
-      const { getByText, getAllByText } = render(<OrderStickersScreen />);
-
-      await waitFor(() => {
-        expect(getByText('5')).toBeTruthy();
-      });
-
-      // At quantity 5, should show $5.00
-      expect(getAllByText('$5.00').length).toBeGreaterThan(0);
-    });
-
-    it('enforces maximum quantity of 100', async () => {
-      const { getByText, getAllByText } = render(<OrderStickersScreen />);
-
-      await waitFor(() => {
-        expect(getByText('5')).toBeTruthy();
-      });
-
-      // Default quantity is 5, price is $5.00
-      expect(getAllByText('$5.00').length).toBeGreaterThan(0);
-    });
-
-    it('updates total price based on quantity', async () => {
+  describe('package selection', () => {
+    it('defaults to Popular package', async () => {
       const { getAllByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        // Default 5 stickers at $1 each = $5.00
-        // Multiple elements show this price (summary and button)
-        expect(getAllByText('$5.00').length).toBeGreaterThan(0);
+        // Popular package is selected by default
+        // "Popular" appears twice: once as a badge and once as package name
+        expect(getAllByText('Popular').length).toBeGreaterThan(0);
+        // Popular has 10 stickers at $15.00
+        expect(getAllByText('$15.00').length).toBeGreaterThan(0);
       });
     });
 
-    it('displays price per unit', async () => {
+    it('shows all package options', async () => {
+      const { getByText, getAllByText } = render(<OrderStickersScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Starter')).toBeTruthy();
+        // "Popular" appears twice: once as a badge and once as package name
+        expect(getAllByText('Popular').length).toBeGreaterThan(0);
+        expect(getByText('Best Value')).toBeTruthy();
+      });
+    });
+
+    it('shows package quantities in cards', async () => {
+      const { getByText, getAllByText } = render(<OrderStickersScreen />);
+
+      await waitFor(() => {
+        // Each package card shows its quantity
+        // Note: "10 stickers" may appear twice (in package card and order summary)
+        expect(getByText('5 stickers')).toBeTruthy();
+        expect(getAllByText('10 stickers').length).toBeGreaterThan(0);
+        expect(getByText('25 stickers')).toBeTruthy();
+      });
+    });
+
+    it('displays correct price for Popular package', async () => {
+      const { getAllByText } = render(<OrderStickersScreen />);
+
+      await waitFor(() => {
+        // Popular package: 10 stickers at $15.00
+        // Multiple elements show this price (summary and button)
+        expect(getAllByText('$15.00').length).toBeGreaterThan(0);
+      });
+    });
+
+    it('displays price per sticker for Popular package', async () => {
       const { getByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText(/\$1\.00 per sticker/)).toBeTruthy();
+        // Popular package is $1.50 per sticker (displayed as /ea)
+        expect(getByText(/\$1\.50\/ea/)).toBeTruthy();
       });
     });
 
     it('shows correct sticker count in order summary', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getAllByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText('5 stickers')).toBeTruthy();
-      });
-    });
-
-    it('uses singular form for quantity of 1', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
-
-      await waitFor(() => {
-        // Default is 5, but we're testing the logic exists
-        // The component should show "1 sticker" vs "5 stickers"
-        expect(getByText('5 stickers')).toBeTruthy();
+        // Popular package has 10 stickers (appears in package card and order summary)
+        expect(getAllByText('10 stickers').length).toBeGreaterThan(0);
       });
     });
   });
@@ -607,7 +606,8 @@ describe('OrderStickersScreen', () => {
       const { getByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText(/Pay \$5\.00/)).toBeTruthy();
+        // Popular package default: $15.00
+        expect(getByText(/Pay \$15\.00/)).toBeTruthy();
       });
     });
   });
@@ -626,7 +626,7 @@ describe('OrderStickersScreen', () => {
   });
 
   describe('header section', () => {
-    it('shows sticker icon', async () => {
+    it('shows sticker icon and title', async () => {
       const { getByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
@@ -634,11 +634,11 @@ describe('OrderStickersScreen', () => {
       });
     });
 
-    it('shows price per sticker', async () => {
+    it('shows product description', async () => {
       const { getByText } = render(<OrderStickersScreen />);
 
       await waitFor(() => {
-        expect(getByText(/\$1\.00 per sticker/)).toBeTruthy();
+        expect(getByText(/Durable, weatherproof QR stickers/)).toBeTruthy();
       });
     });
   });
@@ -1215,7 +1215,7 @@ describe('OrderStickersScreen', () => {
         );
         expect(orderCall).toBeTruthy();
         const body = JSON.parse(orderCall[1].body);
-        expect(body.quantity).toBe(5);
+        expect(body.quantity).toBe(10); // Popular package default
         expect(body.shipping_address.name).toBe('John Doe');
         expect(body.shipping_address.street_address).toBe('456 Oak Ave');
         expect(body.shipping_address.street_address_2).toBe('Suite 100');

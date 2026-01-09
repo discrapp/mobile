@@ -101,8 +101,8 @@ describe('OrderDetailScreen', () => {
     const { getByText, getAllByText } = render(<OrderDetailScreen />);
 
     await waitFor(() => {
-      // "Order Placed" appears in both status badge and timeline
-      expect(getAllByText('Order Placed').length).toBeGreaterThan(0);
+      // "Paid" appears in both status badge and timeline
+      expect(getAllByText('Paid').length).toBeGreaterThan(0);
       expect(getByText('ORD-12345')).toBeTruthy();
       expect(getByText('5 stickers')).toBeTruthy();
       // Total price may appear in multiple places
@@ -187,8 +187,8 @@ describe('OrderDetailScreen', () => {
 
     await waitFor(() => {
       expect(getByText('Order Progress')).toBeTruthy();
-      // "Order Placed" appears in both status badge and timeline
-      expect(getAllByText('Order Placed').length).toBeGreaterThan(0);
+      // "Paid" appears in both status badge and timeline
+      expect(getAllByText('Paid').length).toBeGreaterThan(0);
       expect(getByText('Processing')).toBeTruthy();
       expect(getByText('Printed')).toBeTruthy();
       expect(getByText('Delivered')).toBeTruthy();

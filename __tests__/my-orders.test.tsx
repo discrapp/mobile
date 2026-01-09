@@ -102,7 +102,7 @@ describe('MyOrdersScreen', () => {
       expect(getByText('ORD-12345')).toBeTruthy();
       expect(getByText('5 stickers')).toBeTruthy();
       expect(getByText('$15.00')).toBeTruthy();
-      expect(getByText('Order Placed')).toBeTruthy();
+      expect(getByText('Paid')).toBeTruthy();
     });
   });
 
