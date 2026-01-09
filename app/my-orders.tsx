@@ -442,23 +442,25 @@ export default function MyOrdersScreen() {
         )}
 
         {item.status === 'shipped' && !item.tracking_number && (
-          <Pressable
-            style={[styles.markDeliveredButton, markingDelivered === item.id && styles.buttonDisabled]}
-            onPress={(e) => {
-              e.stopPropagation();
-              handleMarkDelivered(item.id, item.order_number);
-            }}
-            disabled={markingDelivered === item.id}
-          >
-            {markingDelivered === item.id ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <>
-                <FontAwesome name="check-circle" size={14} color="#fff" />
-                <Text style={styles.markDeliveredText}>Mark as Delivered</Text>
-              </>
-            )}
-          </Pressable>
+          <RNView style={[styles.markDeliveredSection, dynamicStyles.trackingRow]}>
+            <Pressable
+              style={[styles.markDeliveredButton, markingDelivered === item.id && styles.buttonDisabled]}
+              onPress={(e) => {
+                e.stopPropagation();
+                handleMarkDelivered(item.id, item.order_number);
+              }}
+              disabled={markingDelivered === item.id}
+            >
+              {markingDelivered === item.id ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <FontAwesome name="check-circle" size={14} color="#fff" />
+                  <Text style={styles.markDeliveredText}>Mark as Delivered</Text>
+                </>
+              )}
+            </Pressable>
+          </RNView>
         )}
 
         <RNView style={styles.chevronContainer}>
@@ -661,6 +663,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  markDeliveredSection: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+  },
   markDeliveredButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -670,7 +677,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
-    marginTop: 12,
   },
   markDeliveredText: {
     color: '#fff',
@@ -683,8 +689,7 @@ const styles = StyleSheet.create({
   chevronContainer: {
     position: 'absolute',
     right: 16,
-    top: '50%',
-    marginTop: -7,
+    top: 32,
   },
   emptyState: {
     flex: 1,
