@@ -697,7 +697,7 @@ export default function OrderStickersScreen() {
                   >
                     {isFeatured && (
                       <RNView style={styles.featuredBadge}>
-                        <Text style={styles.featuredBadgeText}>Most Popular</Text>
+                        <Text style={styles.featuredBadgeText}>Popular</Text>
                       </RNView>
                     )}
                     <Text style={[
@@ -1168,7 +1168,7 @@ const styles = StyleSheet.create({
   },
   packageQuantity: {
     fontSize: 12,
-    color: Colors.violet.primary,
+    color: Colors.violet[300],
     marginTop: 2,
   },
   packageQuantityFeatured: {
