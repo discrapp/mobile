@@ -1456,11 +1456,11 @@ describe('FoundDiscScreen', () => {
 
       await waitFor(() => {
         expect(getByText('Your QR Code')).toBeTruthy();
-        expect(getByText('Go to My Bag')).toBeTruthy();
+        expect(getByText('Link to a Disc')).toBeTruthy();
       });
     });
 
-    it('navigates to my bag when Go to My Bag pressed', async () => {
+    it('navigates to link-sticker when Link to a Disc pressed', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
           return Promise.resolve({
@@ -1487,12 +1487,12 @@ describe('FoundDiscScreen', () => {
       fireEvent.press(getByText('Look Up Disc'));
 
       await waitFor(() => {
-        expect(getByText('Go to My Bag')).toBeTruthy();
+        expect(getByText('Link to a Disc')).toBeTruthy();
       });
 
-      fireEvent.press(getByText('Go to My Bag'));
+      fireEvent.press(getByText('Link to a Disc'));
 
-      expect(mockRouter.push).toHaveBeenCalledWith('/(tabs)/my-bag');
+      expect(mockRouter.push).toHaveBeenCalledWith('/link-sticker?code=QR456');
     });
   });
 
