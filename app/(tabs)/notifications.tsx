@@ -219,7 +219,7 @@ export default function NotificationsScreen() {
   }, []);
 
   // istanbul ignore next -- Swipeable gesture handling requires device testing
-  const SwipeableNotification = ({ item }: { item: Notification }) => {
+  const SwipeableNotification = ({ item, isDarkMode }: { item: Notification; isDarkMode: boolean }) => {
     const translateX = useRef(new Animated.Value(0)).current;
     const SWIPE_THRESHOLD = -80;
 
@@ -275,7 +275,7 @@ export default function NotificationsScreen() {
         <Animated.View
           style={[
             styles.notificationSlider,
-            isDark ? styles.notificationSliderDark : styles.notificationSliderLight,
+            { backgroundColor: isDarkMode ? '#121212' : '#fff' },
             { transform: [{ translateX }] },
           ]}
           {...panResponder.panHandlers}
@@ -294,16 +294,16 @@ export default function NotificationsScreen() {
               <FontAwesome name={iconName} size={20} color={iconColor} />
             </RNView>
             <RNView style={styles.notificationContent}>
-              <Text style={[styles.notificationTitle, isDark && styles.textDark]}>
+              <Text style={[styles.notificationTitle, isDarkMode && styles.textDark]}>
                 {item.title}
               </Text>
               <Text
-                style={[styles.notificationBody, isDark && styles.textMutedDark]}
+                style={[styles.notificationBody, isDarkMode && styles.textMutedDark]}
                 numberOfLines={2}
               >
                 {item.body}
               </Text>
-              <Text style={[styles.notificationTime, isDark && styles.textMutedDark]}>
+              <Text style={[styles.notificationTime, isDarkMode && styles.textMutedDark]}>
                 {formatTimeAgo(item.created_at)}
               </Text>
             </RNView>
@@ -315,8 +315,8 @@ export default function NotificationsScreen() {
   };
 
   const renderNotification = useCallback(({ item }: { item: Notification }) => {
-    return <SwipeableNotification item={item} />;
-  }, []);
+    return <SwipeableNotification item={item} isDarkMode={isDark} />;
+  }, [isDark]);
 
   const renderEmpty = useCallback(() => (
     <View style={styles.emptyContainer}>
