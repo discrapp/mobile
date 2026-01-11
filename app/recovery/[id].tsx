@@ -1049,7 +1049,7 @@ export default function RecoveryDetailScreen() {
           <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Owner</Text>
             <Text style={[styles.personName, isOwner && styles.youText]} numberOfLines={1} ellipsizeMode="tail">
-              {isOwner ? 'You' : recovery.owner.display_name}
+              {isOwner ? 'You' : `@${recovery.owner.display_name}`}
             </Text>
           </RNView>
         </RNView>
@@ -1062,7 +1062,7 @@ export default function RecoveryDetailScreen() {
           <RNView style={styles.personInfo}>
             <Text style={styles.personLabel}>Finder</Text>
             <Text style={[styles.personName, !isOwner && styles.youText]} numberOfLines={1} ellipsizeMode="tail">
-              {!isOwner ? 'You' : recovery.finder.display_name}
+              {!isOwner ? 'You' : `@${recovery.finder.display_name}`}
             </Text>
           </RNView>
         </RNView>

@@ -1381,8 +1381,8 @@ describe('RecoveryDetailScreen', () => {
       const { getByText } = render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
-        // When user_role is 'owner', the finder's name is displayed
-        expect(getByText('Finder User')).toBeTruthy();
+        // When user_role is 'owner', the finder's name is displayed with @ prefix
+        expect(getByText('@Finder User')).toBeTruthy();
       });
     });
   });

@@ -979,7 +979,7 @@ export default function FoundDiscScreen() {
                         <Text style={styles.statusText}>{formatStatus(recovery.status)}</Text>
                       </View>
                       {recovery.status !== 'abandoned' && recovery.disc?.owner_display_name && (
-                        <Text style={styles.pendingOwner} numberOfLines={1} ellipsizeMode="tail">→ {recovery.disc.owner_display_name}</Text>
+                        <Text style={styles.pendingOwner} numberOfLines={1} ellipsizeMode="tail">→ {recovery.disc.owner_display_name === 'You' ? 'You' : `@${recovery.disc.owner_display_name}`}</Text>
                       )}
                     </View>
                   </View>
@@ -1192,7 +1192,7 @@ export default function FoundDiscScreen() {
             )}
             <View style={styles.ownerInfo}>
               <FontAwesome name="user" size={14} color="#666" />
-              <Text style={styles.ownerName} numberOfLines={1} ellipsizeMode="tail">{discInfo.owner_display_name}</Text>
+              <Text style={styles.ownerName} numberOfLines={1} ellipsizeMode="tail">{discInfo.owner_display_name === 'You' ? 'You' : `@${discInfo.owner_display_name}`}</Text>
             </View>
             {discInfo.reward_amount && discInfo.reward_amount > 0 && (
               <View style={styles.rewardBadge}>
@@ -1519,7 +1519,7 @@ export default function FoundDiscScreen() {
             <RNView style={styles.ownerAvatar}>
               <Text style={styles.ownerAvatarText}>{getInitial(ownerInfo.display_name)}</Text>
             </RNView>
-            <Text style={styles.ownerDisplayName}>{ownerInfo.display_name}</Text>
+            <Text style={styles.ownerDisplayName}>@{ownerInfo.display_name}</Text>
             <Text style={styles.ownerDiscCount}>
               {ownerInfo.disc_count} disc{ownerInfo.disc_count !== 1 ? 's' : ''} registered
             </Text>
