@@ -3317,13 +3317,27 @@ describe('RecoveryDetailScreen', () => {
   });
 
   describe('Navigation after successful actions', () => {
-    it('navigates back after complete recovery', async () => {
+    it('stays on page and refreshes after complete recovery to show payment options', async () => {
       jest.clearAllMocks();
+      let fetchCallCount = 0;
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('complete-recovery')) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({ success: true }),
+          });
+        }
+        fetchCallCount++;
+        // After complete-recovery, return recovered status with payment options
+        if (fetchCallCount > 1) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              ...mockRecoveryData,
+              status: 'recovered',
+              user_role: 'owner',
+              recovered_at: '2024-01-25T15:00:00Z',
+            }),
           });
         }
         return Promise.resolve({
@@ -3358,8 +3372,12 @@ describe('RecoveryDetailScreen', () => {
       const confirmButton = alertCall[2].find((b: { text: string }) => b.text === 'Confirm');
       await confirmButton.onPress();
 
+      // Should NOT navigate away - stay on page to show payment options
+      expect(mockBack).not.toHaveBeenCalled();
+
+      // Should refresh the page to show recovered status
       await waitFor(() => {
-        expect(mockBack).toHaveBeenCalled();
+        expect(getByText('Disc Recovered!')).toBeTruthy();
       });
     });
 

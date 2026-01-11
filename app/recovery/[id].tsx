@@ -287,7 +287,8 @@ export default function RecoveryDetailScreen() {
               if (!response.ok) throw new Error(data.error || 'Failed to complete recovery');
 
               showSuccess('Your disc has been marked as recovered!');
-              router.back();
+              // Stay on page to show payment options instead of navigating away
+              fetchRecoveryDetails();
             } catch (err) {
               handleError(err, { operation: 'complete-recovery' });
             } finally {
