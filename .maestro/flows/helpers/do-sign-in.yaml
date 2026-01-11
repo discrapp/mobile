@@ -23,7 +23,7 @@ appId: com.discr.app
 # Wait for navigation to complete
 - waitForAnimationToEnd
 
-# Verify we're logged in (should see home screen or tabs)
-- assertVisible:
-    text: ".*"
+# Verify we're logged in - wait for home screen content to appear
+- extendedWaitUntil:
+    visible: "Home"
     timeout: 10000
