@@ -2,6 +2,8 @@
 name: E2E Tests
 
 on:
+  # Run on PRs to test workflow changes
+  pull_request:
   # Run on push to main after PRs are merged
   push:
     branches:
