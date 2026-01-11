@@ -190,7 +190,7 @@ jobs:
           if [ -n "${{ github.event.inputs.flow }}" ]; then
             maestro test "${{ github.event.inputs.flow }}"
           else
-            maestro test .maestro/
+            maestro test .maestro/flows/
           fi
         env:
           E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
