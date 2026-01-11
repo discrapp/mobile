@@ -82,7 +82,7 @@ appId: com.discr.app
     optional: true
 
 # Fill valid postal code
-- clearText
+- eraseText
 - inputText: "12345"
 - hideKeyboard
 - assertNotVisible: "Postal code is required"
