@@ -117,8 +117,9 @@ jobs:
         if: ${{ github.event.inputs.skip_cache != 'true' }}
         uses: actions/cache/restore@v4
         with:
-          path: ios/build/Build/Products/Release-iphonesimulator/*.app
-          key: ios-build-arm64-${{ steps.build-key.outputs.hash }}
+          # Restore entire DerivedData for incremental builds
+          path: ios/build
+          key: ios-build-debug-${{ steps.build-key.outputs.hash }}
 
       # Cache 3: CocoaPods
       - name: Cache CocoaPods
@@ -141,11 +142,12 @@ jobs:
         run: |
           cd ios
           # Build for simulator without code signing
+          # Use Debug for faster builds in CI (no optimizations)
           # ONLY_ACTIVE_ARCH=YES builds only for the destination's architecture
           xcodebuild \
             -workspace Discr.xcworkspace \
             -scheme Discr \
-            -configuration Release \
+            -configuration Debug \
             -sdk iphonesimulator \
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
@@ -163,8 +165,9 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: ios/build/Build/Products/Release-iphonesimulator/*.app
-          key: ios-build-arm64-${{ steps.build-key.outputs.hash }}
+          # Cache entire DerivedData for incremental builds
+          path: ios/build
+          key: ios-build-debug-${{ steps.build-key.outputs.hash }}
 
       - name: Install app on simulator
         run: |
@@ -177,8 +180,8 @@ jobs:
           fi
           echo "Installing app: $APP_PATH"
           xcrun simctl install "${{ steps.simulator.outputs.udid }}" "$APP_PATH"
-          # Launch the app
-          BUNDLE_ID=$(defaults read "$APP_PATH/Info.plist" CFBundleIdentifier)
+          # Launch the app - use PlistBuddy for reliable plist reading
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP_PATH/Info.plist")
           echo "Launching app: $BUNDLE_ID"
           xcrun simctl launch "${{ steps.simulator.outputs.udid }}" "$BUNDLE_ID"
 
