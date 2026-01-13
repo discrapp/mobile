@@ -4,6 +4,12 @@ appId: com.discr.app
 ---
 - launchApp
 
+# Sign in if needed
+- runFlow:
+    when:
+      visible: "Sign In"
+    file: ../helpers/do-sign-in.yaml
+
 # Navigate to My Orders
 - tapOn: "My Orders"
 - waitForAnimationToEnd

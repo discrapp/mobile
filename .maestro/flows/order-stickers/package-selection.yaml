@@ -4,8 +4,14 @@ appId: com.discr.app
 ---
 - launchApp
 
-# Navigate to Order Stickers
-- tapOn: "Order Stickers"
+# Sign in if needed
+- runFlow:
+    when:
+      visible: "Sign In"
+    file: ../helpers/do-sign-in.yaml
+
+# Navigate to Order Stickers (card shows "Protect Your Discs")
+- tapOn: "Protect Your Discs"
 - waitForAnimationToEnd
 
 # Verify all 3 packages are visible

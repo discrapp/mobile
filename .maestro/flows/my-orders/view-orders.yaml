@@ -4,6 +4,12 @@ appId: com.discr.app
 ---
 - launchApp
 
+# Sign in if needed
+- runFlow:
+    when:
+      visible: "Sign In"
+    file: ../helpers/do-sign-in.yaml
+
 # Navigate to My Orders (from profile or menu)
 - tapOn: "My Orders"
 - waitForAnimationToEnd
@@ -28,4 +34,4 @@ appId: com.discr.app
     when:
       visible: "No Orders Yet"
     commands:
-      - assertVisible: "Order Stickers"
+      - assertVisible: "Protect Your Discs"
