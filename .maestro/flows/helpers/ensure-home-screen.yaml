@@ -1,0 +1,21 @@
+# Helper: Ensure app is on home screen (sign in if needed)
+# This handles both fresh app (needs sign-in) and already signed-in states
+# Uses environment variables for credentials:
+#   E2E_TEST_EMAIL - test account email
+#   E2E_TEST_PASSWORD - test account password
+appId: com.discr.app
+---
+# Wait for app to load
+- waitForAnimationToEnd
+
+# Sign in if needed
+- runFlow:
+    when:
+      visible: "Sign In"
+    file: do-sign-in.yaml
+
+# Wait for home screen content to be visible
+# This ensures we're ready to interact regardless of sign-in state
+- extendedWaitUntil:
+    visible: "Protect Your Discs"
+    timeout: 15000

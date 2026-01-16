@@ -4,13 +4,11 @@ appId: com.discr.app
 ---
 - launchApp
 
-# Sign in if needed
+# Ensure we're on home screen (sign in if needed)
 - runFlow:
-    when:
-      visible: "Sign In"
-    file: ../helpers/do-sign-in.yaml
+    file: ../helpers/ensure-home-screen.yaml
 
-# Navigate to My Orders
+# Navigate to My Orders (from home screen quick action)
 - tapOn: "My Orders"
 - waitForAnimationToEnd
 
