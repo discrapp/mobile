@@ -2,7 +2,8 @@
 # Verifies inline validation works on blur for all address fields
 appId: com.discr.app
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
 # Ensure we're on home screen (sign in if needed)
 - runFlow:

@@ -4,7 +4,8 @@
 # Note: This test stops at opening Stripe (can't automate external browser)
 appId: com.discr.app
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
 # Ensure we're on home screen (sign in if needed)
 - runFlow:

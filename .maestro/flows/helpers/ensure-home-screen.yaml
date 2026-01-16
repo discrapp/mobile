@@ -5,19 +5,21 @@
 #   E2E_TEST_PASSWORD - test account password
 appId: com.discr.app
 ---
-# Wait for app to load
-- waitForAnimationToEnd
+# Wait for app to fully load - gives time for splash screen, auth check, etc.
+- extendedWaitUntil:
+    visible:
+      anyOf:
+        - "Sign In"
+        - "Home"
+        - "My Bag"
+        - "Profile"
+    timeout: 30000
 
 # Sign in if needed
 - runFlow:
     when:
       visible: "Sign In"
     file: do-sign-in.yaml
-
-# Wait for home tab to be visible (indicates app is loaded and on tabs)
-- extendedWaitUntil:
-    visible: "Home"
-    timeout: 15000
 
 # Tap Home tab to ensure we're on the home screen
 - tapOn: "Home"

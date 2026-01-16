@@ -2,7 +2,8 @@
 # Verifies the 3-tier package selection UI works correctly
 appId: com.discr.app
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
 # Ensure we're on home screen (sign in if needed)
 - runFlow:

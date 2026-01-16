@@ -3,7 +3,8 @@
 # Prerequisites: Must have a pending_payment order
 appId: com.discr.app
 ---
-- launchApp
+- launchApp:
+    clearState: true
 
 # Ensure we're on home screen (sign in if needed)
 - runFlow:
