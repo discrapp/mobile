@@ -168,6 +168,14 @@ function RootLayoutNav() {
           <Stack.Screen name="(auth)/reset-password" options={{ title: 'Reset Password', headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
+            name="select-entry-mode"
+            options={{
+              presentation: 'transparentModal',
+              headerShown: false,
+              animation: 'fade',
+            }}
+          />
+          <Stack.Screen
             name="add-disc"
             options={{
               title: 'Add Disc',

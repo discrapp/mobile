@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -15,7 +15,7 @@ import {
   View as RNView,
   Modal,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text } from '@/components/Themed';
@@ -56,6 +56,7 @@ interface FlightNumbers {
 
 export default function AddDiscScreen() {
   const router = useRouter();
+  const { mode } = useLocalSearchParams<{ mode?: 'qr' | 'photo-ai' | 'manual' }>();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const textColor = Colors[colorScheme ?? 'light'].text;
@@ -116,10 +117,9 @@ export default function AddDiscScreen() {
   const [selectedImageUri, setSelectedImageUri] = useState('');
   const [captureMeta, setCaptureMeta] = useState<CameraCaptureMeta | undefined>(undefined);
 
-  // Entry mode selection
-  type EntryMode = 'qr' | 'photo-ai' | 'manual' | null;
-  const [entryMode, setEntryMode] = useState<EntryMode>(null);
-  const [showOptionsModal, setShowOptionsModal] = useState(true);
+  // Entry mode from route params
+  type EntryMode = 'qr' | 'photo-ai' | 'manual';
+  const entryMode: EntryMode = mode || 'manual';
 
   // AI Identification
   const { identify, isLoading: isIdentifying, error: identifyError, result: identificationResult, reset: resetIdentification } = useDiscIdentification();
@@ -132,6 +132,19 @@ export default function AddDiscScreen() {
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
+
+  // Trigger QR/AI flow on mount based on entry mode
+  const hasTriggeredMode = useRef(false);
+  useEffect(() => {
+    if (hasTriggeredMode.current) return;
+    hasTriggeredMode.current = true;
+
+    if (entryMode === 'qr') {
+      startQrScanning();
+    } else if (entryMode === 'photo-ai') {
+      startAiPhotoFlow();
+    }
+  }, [entryMode]);
 
   // istanbul ignore next -- Autocomplete selection callback tested via integration tests
   const handleDiscSelected = useCallback((disc: CatalogDisc) => {
@@ -394,19 +407,6 @@ export default function AddDiscScreen() {
     ]);
   };
 
-  // Entry mode handlers
-  const handleSelectEntryMode = (mode: EntryMode) => {
-    setEntryMode(mode);
-    setShowOptionsModal(false);
-
-    if (mode === 'qr') {
-      startQrScanning();
-    } else if (mode === 'photo-ai') {
-      startAiPhotoFlow();
-    }
-    // 'manual' just shows the form
-  };
-
   // AI Photo Flow handlers
   const startAiPhotoFlow = async () => {
     if (!permission?.granted) {
@@ -652,74 +652,6 @@ export default function AddDiscScreen() {
 
   return (
     <View style={[styles.screenContainer, dynamicContainerStyle]}>
-      {/* Entry Mode Selection - shown as initial screen content */}
-      {/* Entry Mode Options Modal */}
-      <Modal
-        visible={showOptionsModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => router.back()}>
-        <View style={[styles.optionsModalOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}>
-          <View style={[styles.optionsModalContent, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}>
-            <Text style={[styles.optionsModalTitle, { color: textColor }]}>Add a Disc</Text>
-            <Text style={[styles.optionsModalSubtitle, { color: isDark ? '#999' : '#666' }]}>
-              How would you like to add your disc?
-            </Text>
-
-            <Pressable
-              style={[styles.optionCard, { backgroundColor: isDark ? '#252525' : '#f8f8f8', borderColor: isDark ? '#333' : '#e0e0e0' }]}
-              onPress={() => handleSelectEntryMode('qr')}>
-              <View style={[styles.optionIconContainer, { backgroundColor: 'rgba(127, 34, 206, 0.1)' }]}>
-                <FontAwesome name="qrcode" size={28} color={Colors.violet.primary} />
-              </View>
-              <View style={styles.optionTextContainer}>
-                <Text style={[styles.optionTitle, { color: textColor }]}>Scan QR Sticker</Text>
-                <Text style={[styles.optionDescription, { color: isDark ? '#999' : '#666' }]}>
-                  Link a Discr sticker to this disc
-                </Text>
-              </View>
-              <FontAwesome name="chevron-right" size={16} color="#999" />
-            </Pressable>
-
-            <Pressable
-              style={[styles.optionCard, { backgroundColor: isDark ? '#252525' : '#f8f8f8', borderColor: isDark ? '#333' : '#e0e0e0' }]}
-              onPress={() => handleSelectEntryMode('photo-ai')}>
-              <View style={[styles.optionIconContainer, { backgroundColor: 'rgba(127, 34, 206, 0.1)' }]}>
-                <FontAwesome name="magic" size={28} color={Colors.violet.primary} />
-              </View>
-              <View style={styles.optionTextContainer}>
-                <Text style={[styles.optionTitle, { color: textColor }]}>Photo + AI Identify</Text>
-                <Text style={[styles.optionDescription, { color: isDark ? '#999' : '#666' }]}>
-                  Take a photo and let AI fill in the details
-                </Text>
-              </View>
-              <FontAwesome name="chevron-right" size={16} color="#999" />
-            </Pressable>
-
-            <Pressable
-              style={[styles.optionCard, { backgroundColor: isDark ? '#252525' : '#f8f8f8', borderColor: isDark ? '#333' : '#e0e0e0' }]}
-              onPress={() => handleSelectEntryMode('manual')}>
-              <View style={[styles.optionIconContainer, { backgroundColor: 'rgba(127, 34, 206, 0.1)' }]}>
-                <FontAwesome name="pencil" size={28} color={Colors.violet.primary} />
-              </View>
-              <View style={styles.optionTextContainer}>
-                <Text style={[styles.optionTitle, { color: textColor }]}>Manual Entry</Text>
-                <Text style={[styles.optionDescription, { color: isDark ? '#999' : '#666' }]}>
-                  Enter disc details yourself
-                </Text>
-              </View>
-              <FontAwesome name="chevron-right" size={16} color="#999" />
-            </Pressable>
-
-            <Pressable
-              style={styles.optionsCancelButton}
-              onPress={() => router.back()}>
-              <Text style={styles.optionsCancelText}>Cancel</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-
       {/* AI Identification Result Modal */}
       <Modal
         visible={showIdentificationResult && identificationResult !== null}
@@ -805,8 +737,7 @@ export default function AddDiscScreen() {
         </View>
       )}
 
-      {/* Only render the form after user selects an entry mode */}
-      {entryMode !== null && (
+      {/* Form content */}
       <View style={[styles.container, dynamicContainerStyle]}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
@@ -1110,7 +1041,6 @@ export default function AddDiscScreen() {
       </ScrollView>
       </KeyboardAvoidingView>
       </View>
-      )}
 
       {/* istanbul ignore next -- Native camera component requires device testing */}
       <CameraWithOverlay

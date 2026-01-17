@@ -148,7 +148,7 @@ export default function HomeScreen() {
 
       {/* Quick Actions */}
       <RNView style={styles.quickActions}>
-        <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/add-disc')}>
+        <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/select-entry-mode')}>
           <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : Colors.violet[100] }]}>
             <FontAwesome name="plus" size={20} color={isDark ? '#a78bfa' : Colors.violet.primary} />
           </RNView>
