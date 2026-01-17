@@ -251,7 +251,7 @@ export default function MyBagScreen() {
       <Text style={styles.emptyDescription}>
         Start building your disc collection by adding your first disc!
       </Text>
-      <Pressable style={styles.emptyButton} onPress={() => router.push('/add-disc')}>
+      <Pressable style={styles.emptyButton} onPress={() => router.push('/select-entry-mode')}>
         <FontAwesome name="plus" size={16} color="#fff" />
         <Text style={styles.emptyButtonText}>Add Your First Disc</Text>
       </Pressable>
@@ -351,7 +351,7 @@ export default function MyBagScreen() {
 
       {/* Floating Add Button - Always show when not in empty state */}
       {discs.length > 0 && (
-        <Pressable style={styles.fab} onPress={() => router.push('/add-disc')}>
+        <Pressable style={styles.fab} onPress={() => router.push('/select-entry-mode')}>
           <FontAwesome name="plus" size={24} color="#fff" />
         </Pressable>
       )}

@@ -331,7 +331,7 @@ export default function LinkStickerScreen() {
                   </Text>
                   <Pressable
                     style={styles.addDiscButton}
-                    onPress={() => router.push('/add-disc')}>
+                    onPress={() => router.push('/select-entry-mode')}>
                     <FontAwesome name="plus" size={14} color="#fff" />
                     <Text style={styles.addDiscButtonText}>Add Disc</Text>
                   </Pressable>

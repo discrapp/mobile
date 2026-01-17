@@ -228,7 +228,7 @@ describe('MyBagScreen', () => {
 
     fireEvent.press(getByText('Add Your First Disc'));
 
-    expect(mockRouterPush).toHaveBeenCalledWith('/add-disc');
+    expect(mockRouterPush).toHaveBeenCalledWith('/select-entry-mode');
   });
 
   it('shows recovery badge for disc with active recovery', async () => {

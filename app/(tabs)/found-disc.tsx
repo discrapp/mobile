@@ -1115,7 +1115,7 @@ export default function FoundDiscScreen() {
           <FontAwesome name="link" size={18} color="#fff" />
           <Text style={styles.primaryButtonText}>Link to a Disc</Text>
         </Pressable>
-        <Pressable style={styles.secondaryButton} onPress={() => router.push('/add-disc')}>
+        <Pressable style={styles.secondaryButton} onPress={() => router.push('/select-entry-mode')}>
           <FontAwesome name="plus" size={18} color="#fff" />
           <Text style={styles.secondaryButtonText}>Create New Disc</Text>
         </Pressable>

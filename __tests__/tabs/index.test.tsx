@@ -121,7 +121,7 @@ describe('HomeScreen', () => {
 
     fireEvent.press(getByText('Add Disc'));
 
-    expect(mockPush).toHaveBeenCalledWith('/add-disc');
+    expect(mockPush).toHaveBeenCalledWith('/select-entry-mode');
   });
 
   it('shows My Orders quick action', async () => {
