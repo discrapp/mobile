@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, forwardRef } from 'react';
 import {
   View,
   TextInput,
@@ -18,6 +18,10 @@ interface DiscAutocompleteProps {
   placeholder?: string;
   error?: string;
   textColor: string;
+  /** Optional inputAccessoryViewID for iOS keyboard toolbar */
+  inputAccessoryViewID?: string;
+  /** Optional onFocus callback for keyboard navigation */
+  onInputFocus?: () => void;
 }
 
 /**
@@ -25,14 +29,16 @@ interface DiscAutocompleteProps {
  * Searches the disc catalog API and shows suggestions.
  * When a disc is selected, it passes the full disc data to the parent.
  */
-export function DiscAutocomplete({
+export const DiscAutocomplete = forwardRef<TextInput, DiscAutocompleteProps>(function DiscAutocomplete({
   value,
   onChangeText,
   onSelectDisc,
   placeholder = 'e.g., Destroyer',
   error,
   textColor,
-}: DiscAutocompleteProps) {
+  inputAccessoryViewID,
+  onInputFocus,
+}, ref) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -69,7 +75,9 @@ export function DiscAutocomplete({
     if (value.length >= 2 && results.length > 0) {
       setShowSuggestions(true);
     }
-  }, [value, results]);
+    // Call parent's onFocus for keyboard navigation
+    onInputFocus?.();
+  }, [value, results, onInputFocus]);
 
   const dynamicStyles = useMemo(() => ({
     input: {
@@ -95,6 +103,7 @@ export function DiscAutocomplete({
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
+          ref={ref}
           style={[styles.input, dynamicStyles.input, { color: textColor }]}
           value={value}
           onChangeText={handleChangeText}
@@ -104,6 +113,7 @@ export function DiscAutocomplete({
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}
+          inputAccessoryViewID={inputAccessoryViewID}
         />
         {loading && (
           <View style={styles.loadingIndicator}>
@@ -141,7 +151,7 @@ export function DiscAutocomplete({
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

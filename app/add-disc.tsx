@@ -135,7 +135,7 @@ export default function AddDiscScreen() {
   // Validation errors
   const [moldError, setMoldError] = useState('');
 
-  // Keyboard navigation for form fields (8 TextInputs)
+  // Keyboard navigation for form fields (9 TextInputs: mold, manufacturer, weight, speed, glide, turn, fade, reward, notes)
   const inputAccessoryViewID = 'addDiscFormAccessory';
   const {
     refs: inputRefs,
@@ -144,7 +144,7 @@ export default function AddDiscScreen() {
     createFocusHandler,
     isFirst,
     isLast,
-  } = useKeyboardNavigation(8);
+  } = useKeyboardNavigation(9);
 
   // Trigger QR/AI flow on mount based on entry mode
   const hasTriggeredMode = useRef(false);
@@ -854,6 +854,7 @@ export default function AddDiscScreen() {
               Mold <Text style={styles.required}>*</Text>
             </Text>
             <DiscAutocomplete
+              ref={inputRefs[0]}
               value={mold}
               onChangeText={(text) => {
                 setMold(text);
@@ -863,6 +864,8 @@ export default function AddDiscScreen() {
               placeholder="e.g., Destroyer"
               error={moldError}
               textColor={textColor}
+              inputAccessoryViewID={inputAccessoryViewID}
+              onInputFocus={createFocusHandler(0)}
             />
             {moldError ? <Text style={styles.errorText}>{moldError}</Text> : null}
             <Text style={styles.hintText}>
@@ -874,7 +877,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Manufacturer</Text>
             <TextInput
-              ref={inputRefs[0]}
+              ref={inputRefs[1]}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={manufacturer}
               onChangeText={(text) => {
@@ -885,7 +888,7 @@ export default function AddDiscScreen() {
               placeholder="e.g., Innova"
               placeholderTextColor="#999"
               inputAccessoryViewID={inputAccessoryViewID}
-              onFocus={createFocusHandler(0)}
+              onFocus={createFocusHandler(1)}
             />
           </View>
 
@@ -914,7 +917,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Weight (grams)</Text>
             <TextInput
-              ref={inputRefs[1]}
+              ref={inputRefs[2]}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={weight}
               onChangeText={setWeight}
@@ -922,7 +925,7 @@ export default function AddDiscScreen() {
               placeholderTextColor="#999"
               keyboardType="numeric"
               inputAccessoryViewID={inputAccessoryViewID}
-              onFocus={createFocusHandler(1)}
+              onFocus={createFocusHandler(2)}
             />
           </View>
 
@@ -966,7 +969,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Speed</Text>
               <TextInput
-                ref={inputRefs[2]}
+                ref={inputRefs[3]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={speed}
                 onChangeText={setSpeed}
@@ -974,13 +977,13 @@ export default function AddDiscScreen() {
                 placeholderTextColor="#999"
                 keyboardType="numeric"
                 inputAccessoryViewID={inputAccessoryViewID}
-                onFocus={createFocusHandler(2)}
+                onFocus={createFocusHandler(3)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Glide</Text>
               <TextInput
-                ref={inputRefs[3]}
+                ref={inputRefs[4]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={glide}
                 onChangeText={setGlide}
@@ -988,7 +991,7 @@ export default function AddDiscScreen() {
                 placeholderTextColor="#999"
                 keyboardType="numeric"
                 inputAccessoryViewID={inputAccessoryViewID}
-                onFocus={createFocusHandler(3)}
+                onFocus={createFocusHandler(4)}
               />
             </View>
           </View>
@@ -997,7 +1000,7 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Turn</Text>
               <TextInput
-                ref={inputRefs[4]}
+                ref={inputRefs[5]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
@@ -1005,13 +1008,13 @@ export default function AddDiscScreen() {
                 placeholderTextColor="#999"
                 keyboardType="numbers-and-punctuation"
                 inputAccessoryViewID={inputAccessoryViewID}
-                onFocus={createFocusHandler(4)}
+                onFocus={createFocusHandler(5)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Fade</Text>
               <TextInput
-                ref={inputRefs[5]}
+                ref={inputRefs[6]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={fade}
                 onChangeText={setFade}
@@ -1019,7 +1022,7 @@ export default function AddDiscScreen() {
                 placeholderTextColor="#999"
                 keyboardType="numeric"
                 inputAccessoryViewID={inputAccessoryViewID}
-                onFocus={createFocusHandler(5)}
+                onFocus={createFocusHandler(6)}
               />
             </View>
           </View>
@@ -1030,7 +1033,7 @@ export default function AddDiscScreen() {
             <View style={[styles.inputWithPrefix, dynamicInputStyle]}>
               <Text style={styles.inputPrefix}>$</Text>
               <TextInput
-                ref={inputRefs[6]}
+                ref={inputRefs[7]}
                 style={[styles.input, styles.inputWithPrefixText, { color: textColor }]}
                 value={rewardAmount}
                 onChangeText={(text) => {
@@ -1047,7 +1050,7 @@ export default function AddDiscScreen() {
                 placeholderTextColor="#999"
                 keyboardType="decimal-pad"
                 inputAccessoryViewID={inputAccessoryViewID}
-                onFocus={createFocusHandler(6)}
+                onFocus={createFocusHandler(7)}
               />
             </View>
             {rewardAmount && parseFloat(rewardAmount) > 0 && (
@@ -1061,7 +1064,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Notes</Text>
             <TextInput
-              ref={inputRefs[7]}
+              ref={inputRefs[8]}
               style={[styles.input, styles.textArea, dynamicInputStyle, { color: textColor }]}
               value={notes}
               onChangeText={setNotes}
@@ -1071,7 +1074,7 @@ export default function AddDiscScreen() {
               numberOfLines={4}
               textAlignVertical="top"
               inputAccessoryViewID={inputAccessoryViewID}
-              onFocus={createFocusHandler(7)}
+              onFocus={createFocusHandler(8)}
             />
           </View>
 
