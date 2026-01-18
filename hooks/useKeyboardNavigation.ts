@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, createRef, RefObject } from 'react';
+import { useRef, useState, useCallback, MutableRefObject } from 'react';
 import { TextInput } from 'react-native';
 
 /**
@@ -6,10 +6,18 @@ import { TextInput } from 'react-native';
  * Provides refs, focus management, and navigation functions for InputAccessoryView.
  */
 export function useKeyboardNavigation(fieldCount: number) {
-  // Create refs array using createRef for proper typing
-  const refs = useRef<RefObject<TextInput | null>[]>(
-    Array.from({ length: fieldCount }, () => createRef<TextInput>())
-  ).current;
+  // Create stable refs array using MutableRefObject pattern
+  // This ensures refs persist across renders and work with TextInput ref prop
+  const refsContainer = useRef<MutableRefObject<TextInput | null>[]>([]);
+
+  // Initialize refs array only once
+  if (refsContainer.current.length !== fieldCount) {
+    refsContainer.current = Array.from({ length: fieldCount }, () => ({
+      current: null,
+    }));
+  }
+
+  const refs = refsContainer.current;
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
