@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, InputAccessoryView, Pressable, View } from 'react-native';
+import { Platform, InputAccessoryView, Pressable, View, Text, Keyboard } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -9,11 +9,11 @@ interface KeyboardNavToolbarProps {
   nativeID: string;
   /** Called when up arrow is pressed */
   onPrevious: () => void;
-  /** Called when down arrow or check is pressed */
+  /** Called when down arrow is pressed */
   onNext: () => void;
   /** Whether the up arrow should be disabled */
   isFirst: boolean;
-  /** Whether to show a checkmark instead of down arrow */
+  /** Whether this is the last field */
   isLast: boolean;
 }
 
@@ -37,42 +37,68 @@ export function KeyboardNavToolbar({
     return null;
   }
 
+  // istanbul ignore next -- Keyboard dismiss handler
+  const handleDone = () => {
+    Keyboard.dismiss();
+  };
+
   return (
     <InputAccessoryView nativeID={nativeID}>
       <View
         style={{
-          backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
-          borderTopWidth: 1,
-          borderTopColor: isDark ? '#333' : '#ddd',
+          backgroundColor: isDark ? '#2c2c2e' : '#d1d5db',
+          borderTopWidth: 0.5,
+          borderTopColor: isDark ? '#3a3a3c' : '#b5b5b5',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          paddingHorizontal: 12,
-          paddingVertical: 8,
+          alignItems: 'center',
+          paddingHorizontal: 8,
+          height: 44,
         }}
       >
+        {/* Navigation arrows grouped on the left */}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Pressable
+            onPress={onPrevious}
+            disabled={isFirst}
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+              opacity: isFirst ? 0.3 : 1,
+            }}
+          >
+            <FontAwesome name="chevron-up" size={18} color={Colors.violet.primary} />
+          </Pressable>
+          <Pressable
+            onPress={onNext}
+            disabled={isLast}
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+              opacity: isLast ? 0.3 : 1,
+            }}
+          >
+            <FontAwesome name="chevron-down" size={18} color={Colors.violet.primary} />
+          </Pressable>
+        </View>
+
+        {/* Done button on the right */}
         <Pressable
-          onPress={onPrevious}
-          disabled={isFirst}
+          onPress={handleDone}
           style={{
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-            opacity: isFirst ? 0.3 : 1,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
           }}
         >
-          <FontAwesome name="chevron-up" size={20} color={Colors.violet.primary} />
-        </Pressable>
-        <Pressable
-          onPress={onNext}
-          style={{
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-          }}
-        >
-          <FontAwesome
-            name={isLast ? 'check' : 'chevron-down'}
-            size={20}
-            color={Colors.violet.primary}
-          />
+          <Text
+            style={{
+              color: Colors.violet.primary,
+              fontSize: 17,
+              fontWeight: '600',
+            }}
+          >
+            Done
+          </Text>
         </Pressable>
       </View>
     </InputAccessoryView>
