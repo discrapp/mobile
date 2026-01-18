@@ -30,6 +30,8 @@ import { compressImage } from '@/utils/imageCompression';
 import { FormFieldSkeleton, Skeleton } from '@/components/Skeleton';
 import { formatFeeHint } from '@/lib/stripeFees';
 import { handleError, showSuccess } from '@/lib/errorHandler';
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
+import { KeyboardNavToolbar } from '@/components/KeyboardNavToolbar';
 
 /**
  * React Native FormData file object structure.
@@ -129,6 +131,17 @@ export default function EditDiscScreen() {
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
+
+  // Keyboard navigation for form fields (8 TextInputs)
+  const inputAccessoryViewID = 'editDiscFormAccessory';
+  const {
+    refs: inputRefs,
+    focusPrevious,
+    focusNext,
+    createFocusHandler,
+    isFirst,
+    isLast,
+  } = useKeyboardNavigation(8);
 
   // istanbul ignore next -- Autocomplete selection callback tested via integration tests
   const handleDiscSelected = useCallback((disc: CatalogDisc) => {
@@ -570,6 +583,7 @@ export default function EditDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Manufacturer</Text>
             <TextInput
+              ref={inputRefs[0]}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={manufacturer}
               onChangeText={(text) => {
@@ -579,6 +593,8 @@ export default function EditDiscScreen() {
               }}
               placeholder="e.g., Innova"
               placeholderTextColor="#999"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={createFocusHandler(0)}
             />
           </View>
 
@@ -607,12 +623,15 @@ export default function EditDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Weight (grams)</Text>
             <TextInput
+              ref={inputRefs[1]}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={weight}
               onChangeText={setWeight}
               placeholder="e.g., 175"
               placeholderTextColor="#999"
               keyboardType="numeric"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={createFocusHandler(1)}
             />
           </View>
 
@@ -656,23 +675,29 @@ export default function EditDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Speed</Text>
               <TextInput
+                ref={inputRefs[2]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={speed}
                 onChangeText={setSpeed}
                 placeholder="1-15"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={createFocusHandler(2)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Glide</Text>
               <TextInput
+                ref={inputRefs[3]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={glide}
                 onChangeText={setGlide}
                 placeholder="1-7"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={createFocusHandler(3)}
               />
             </View>
           </View>
@@ -681,23 +706,29 @@ export default function EditDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Turn</Text>
               <TextInput
+                ref={inputRefs[4]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
                 placeholder="-5 to 5"
                 placeholderTextColor="#999"
                 keyboardType="numbers-and-punctuation"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={createFocusHandler(4)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Fade</Text>
               <TextInput
+                ref={inputRefs[5]}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={fade}
                 onChangeText={setFade}
                 placeholder="0-5"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={createFocusHandler(5)}
               />
             </View>
           </View>
@@ -708,6 +739,7 @@ export default function EditDiscScreen() {
             <View style={[styles.inputWithPrefix, dynamicInputStyle]}>
               <Text style={styles.inputPrefix}>$</Text>
               <TextInput
+                ref={inputRefs[6]}
                 style={[styles.input, styles.inputWithPrefixText, { color: textColor }]}
                 value={rewardAmount}
                 onChangeText={(text) => {
@@ -723,6 +755,8 @@ export default function EditDiscScreen() {
                 placeholder="0.00"
                 placeholderTextColor="#999"
                 keyboardType="decimal-pad"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={createFocusHandler(6)}
               />
             </View>
             {rewardAmount && parseFloat(rewardAmount) > 0 && (
@@ -736,6 +770,7 @@ export default function EditDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Notes</Text>
             <TextInput
+              ref={inputRefs[7]}
               style={[styles.input, styles.textArea, dynamicInputStyle, { color: textColor }]}
               value={notes}
               onChangeText={setNotes}
@@ -744,6 +779,8 @@ export default function EditDiscScreen() {
               multiline
               numberOfLines={4}
               textAlignVertical="top"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={createFocusHandler(7)}
             />
           </View>
 
@@ -832,6 +869,15 @@ export default function EditDiscScreen() {
         onClose={() => setShowCropper(false)}
         onCropComplete={handleCropComplete}
         captureMeta={captureMeta}
+      />
+
+      {/* Keyboard navigation toolbar */}
+      <KeyboardNavToolbar
+        nativeID={inputAccessoryViewID}
+        onPrevious={focusPrevious}
+        onNext={focusNext}
+        isFirst={isFirst}
+        isLast={isLast}
       />
     </>
   );

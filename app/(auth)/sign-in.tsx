@@ -16,6 +16,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { validateSignInForm } from '@/lib/validation';
 import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
+import { KeyboardNavToolbar } from '@/components/KeyboardNavToolbar';
 
 const logoLight = require('@/assets/images/logo.png');
 const logoDark = require('@/assets/images/logo-white.png');
@@ -31,6 +33,17 @@ export default function SignIn() {
     {}
   );
   const isSubmitting = useRef(false);
+
+  // Keyboard navigation for form fields (2 TextInputs)
+  const inputAccessoryViewID = 'signInFormAccessory';
+  const {
+    refs: inputRefs,
+    focusPrevious,
+    focusNext,
+    createFocusHandler,
+    isFirst,
+    isLast,
+  } = useKeyboardNavigation(2);
 
   const validateForm = () => {
     const newErrors = validateSignInForm(email, password);
@@ -110,6 +123,7 @@ export default function SignIn() {
           <View style={styles.inputContainer}>
             <Text style={[styles.label, dynamicStyles.label]}>Email</Text>
             <TextInput
+              ref={inputRefs[0]}
               style={[styles.input, dynamicStyles.input, errors.email && styles.inputError]}
               placeholder="Enter your email"
               placeholderTextColor={isDark ? '#666' : '#999'}
@@ -123,6 +137,8 @@ export default function SignIn() {
               autoCapitalize="none"
               keyboardType="email-address"
               editable={!loading}
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={createFocusHandler(0)}
             />
             {errors.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
@@ -132,6 +148,7 @@ export default function SignIn() {
           <View style={styles.inputContainer}>
             <Text style={[styles.label, dynamicStyles.label]}>Password</Text>
             <TextInput
+              ref={inputRefs[1]}
               style={[styles.input, dynamicStyles.input, errors.password && styles.inputError]}
               placeholder="Enter your password"
               placeholderTextColor={isDark ? '#666' : '#999'}
@@ -144,6 +161,8 @@ export default function SignIn() {
               }}
               secureTextEntry
               editable={!loading}
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={createFocusHandler(1)}
             />
             {errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
@@ -178,6 +197,15 @@ export default function SignIn() {
           </View>
         </View>
       </View>
+
+      {/* Keyboard navigation toolbar */}
+      <KeyboardNavToolbar
+        nativeID={inputAccessoryViewID}
+        onPrevious={focusPrevious}
+        onNext={focusNext}
+        isFirst={isFirst}
+        isLast={isLast}
+      />
     </KeyboardAvoidingView>
   );
 }
