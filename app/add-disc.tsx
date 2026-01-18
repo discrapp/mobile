@@ -14,6 +14,7 @@ import {
   Dimensions,
   View as RNView,
   Modal,
+  InputAccessoryView,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -132,6 +133,39 @@ export default function AddDiscScreen() {
 
   // Validation errors
   const [moldError, setMoldError] = useState('');
+
+  // Input refs for keyboard navigation
+  const manufacturerRef = useRef<TextInput>(null);
+  const weightRef = useRef<TextInput>(null);
+  const speedRef = useRef<TextInput>(null);
+  const glideRef = useRef<TextInput>(null);
+  const turnRef = useRef<TextInput>(null);
+  const fadeRef = useRef<TextInput>(null);
+  const rewardRef = useRef<TextInput>(null);
+  const notesRef = useRef<TextInput>(null);
+
+  const inputRefs = [manufacturerRef, weightRef, speedRef, glideRef, turnRef, fadeRef, rewardRef, notesRef];
+  const [currentInputIndex, setCurrentInputIndex] = useState(0);
+  const inputAccessoryViewID = 'addDiscFormAccessory';
+
+  // istanbul ignore next -- iOS keyboard navigation requires device testing
+  const focusPreviousInput = () => {
+    if (currentInputIndex > 0) {
+      inputRefs[currentInputIndex - 1].current?.focus();
+      setCurrentInputIndex(currentInputIndex - 1);
+    }
+  };
+
+  // istanbul ignore next -- iOS keyboard navigation requires device testing
+  const focusNextInput = () => {
+    if (currentInputIndex < inputRefs.length - 1) {
+      inputRefs[currentInputIndex + 1].current?.focus();
+      setCurrentInputIndex(currentInputIndex + 1);
+    } else {
+      // Last input, dismiss keyboard
+      inputRefs[currentInputIndex].current?.blur();
+    }
+  };
 
   // Trigger QR/AI flow on mount based on entry mode
   const hasTriggeredMode = useRef(false);
@@ -861,6 +895,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Manufacturer</Text>
             <TextInput
+              ref={manufacturerRef}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={manufacturer}
               onChangeText={(text) => {
@@ -870,6 +905,8 @@ export default function AddDiscScreen() {
               }}
               placeholder="e.g., Innova"
               placeholderTextColor="#999"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={() => setCurrentInputIndex(0)}
             />
           </View>
 
@@ -898,12 +935,15 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Weight (grams)</Text>
             <TextInput
+              ref={weightRef}
               style={[styles.input, dynamicInputStyle, { color: textColor }]}
               value={weight}
               onChangeText={setWeight}
               placeholder="e.g., 175"
               placeholderTextColor="#999"
               keyboardType="numeric"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={() => setCurrentInputIndex(1)}
             />
           </View>
 
@@ -947,23 +987,29 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Speed</Text>
               <TextInput
+                ref={speedRef}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={speed}
                 onChangeText={setSpeed}
                 placeholder="1-15"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={() => setCurrentInputIndex(2)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Glide</Text>
               <TextInput
+                ref={glideRef}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={glide}
                 onChangeText={setGlide}
                 placeholder="1-7"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={() => setCurrentInputIndex(3)}
               />
             </View>
           </View>
@@ -972,23 +1018,29 @@ export default function AddDiscScreen() {
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Turn</Text>
               <TextInput
+                ref={turnRef}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={turn}
                 onChangeText={setTurn}
                 placeholder="-5 to 5"
                 placeholderTextColor="#999"
                 keyboardType="numbers-and-punctuation"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={() => setCurrentInputIndex(4)}
               />
             </View>
             <View style={styles.fieldSmall}>
               <Text style={styles.label}>Fade</Text>
               <TextInput
+                ref={fadeRef}
                 style={[styles.input, dynamicInputStyle, { color: textColor }]}
                 value={fade}
                 onChangeText={setFade}
                 placeholder="0-5"
                 placeholderTextColor="#999"
                 keyboardType="numeric"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={() => setCurrentInputIndex(5)}
               />
             </View>
           </View>
@@ -999,6 +1051,7 @@ export default function AddDiscScreen() {
             <View style={[styles.inputWithPrefix, dynamicInputStyle]}>
               <Text style={styles.inputPrefix}>$</Text>
               <TextInput
+                ref={rewardRef}
                 style={[styles.input, styles.inputWithPrefixText, { color: textColor }]}
                 value={rewardAmount}
                 onChangeText={(text) => {
@@ -1014,6 +1067,8 @@ export default function AddDiscScreen() {
                 placeholder="0.00"
                 placeholderTextColor="#999"
                 keyboardType="decimal-pad"
+                inputAccessoryViewID={inputAccessoryViewID}
+                onFocus={() => setCurrentInputIndex(6)}
               />
             </View>
             {rewardAmount && parseFloat(rewardAmount) > 0 && (
@@ -1027,6 +1082,7 @@ export default function AddDiscScreen() {
           <View style={styles.field}>
             <Text style={styles.label}>Notes</Text>
             <TextInput
+              ref={notesRef}
               style={[styles.input, styles.textArea, dynamicInputStyle, { color: textColor }]}
               value={notes}
               onChangeText={setNotes}
@@ -1035,6 +1091,8 @@ export default function AddDiscScreen() {
               multiline
               numberOfLines={4}
               textAlignVertical="top"
+              inputAccessoryViewID={inputAccessoryViewID}
+              onFocus={() => setCurrentInputIndex(7)}
             />
           </View>
 
@@ -1125,6 +1183,48 @@ export default function AddDiscScreen() {
             </Pressable>
           </RNView>
         </RNView>
+      )}
+
+      {/* istanbul ignore next -- iOS InputAccessoryView requires device testing */}
+      {Platform.OS === 'ios' && (
+        <InputAccessoryView nativeID={inputAccessoryViewID}>
+          <RNView
+            style={{
+              backgroundColor: isDark ? '#1e1e1e' : '#f8f8f8',
+              borderTopWidth: 1,
+              borderTopColor: isDark ? '#333' : '#ddd',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+            }}
+          >
+            <Pressable
+              onPress={focusPreviousInput}
+              disabled={currentInputIndex === 0}
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                opacity: currentInputIndex === 0 ? 0.3 : 1,
+              }}
+            >
+              <FontAwesome name="chevron-up" size={20} color={Colors.violet.primary} />
+            </Pressable>
+            <Pressable
+              onPress={focusNextInput}
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+            >
+              <FontAwesome
+                name={currentInputIndex === inputRefs.length - 1 ? 'check' : 'chevron-down'}
+                size={20}
+                color={Colors.violet.primary}
+              />
+            </Pressable>
+          </RNView>
+        </InputAccessoryView>
       )}
     </View>
   );
