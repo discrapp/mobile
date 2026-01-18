@@ -22,6 +22,7 @@ export const PLASTIC_TYPES: Record<string, string[]> = {
     'Color Glow',
     'Blizzard Champion',
     'Echo Star',
+    'Factory Second',
   ],
   Discraft: [
     'ESP',
@@ -149,6 +150,7 @@ export const PLASTIC_TYPES: Record<string, string[]> = {
     '500',
     '750',
     '750G',
+    'Pro Flex',
   ],
   'Infinite Discs': [
     'I-Blend',
