@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Pressable,
@@ -7,37 +7,45 @@ import {
   useColorScheme,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { Text } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { getPlasticTypes } from '@/constants/plasticTypes';
+import { usePlasticTypes } from '@/hooks/usePlasticTypes';
+import Colors from '@/constants/Colors';
 
 interface PlasticPickerProps {
   value: string;
   onChange: (value: string) => void;
   manufacturer: string;
   textColor: string;
+  /** Optional array of user's custom plastics from their discs */
+  userPlastics?: string[];
 }
 
 /**
- * Plastic type picker that shows manufacturer-specific options.
+ * Plastic type picker that shows manufacturer-specific options from the API.
  * Falls back to text input if no plastics are available for the manufacturer.
+ * Custom plastics can be submitted for admin approval.
  */
 export function PlasticPicker({
   value,
   onChange,
   manufacturer,
   textColor,
+  userPlastics = [],
 }: PlasticPickerProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [modalVisible, setModalVisible] = useState(false);
   const [customValue, setCustomValue] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  // Get plastic types for current manufacturer
-  const plasticOptions = useMemo(() => {
-    return getPlasticTypes(manufacturer);
-  }, [manufacturer]);
+  // Get plastic types from API
+  const { plastics: plasticOptions, loading, error, submitPlastic } = usePlasticTypes(
+    manufacturer,
+    userPlastics
+  );
 
   const handleSelect = useCallback(
     (plastic: string) => {
@@ -47,13 +55,22 @@ export function PlasticPicker({
     [onChange]
   );
 
-  const handleCustomSubmit = useCallback(() => {
-    if (customValue.trim()) {
-      onChange(customValue.trim());
+  const handleCustomSubmit = useCallback(async () => {
+    const trimmed = customValue.trim();
+    if (!trimmed || !manufacturer) return;
+
+    setSubmitting(true);
+    try {
+      // Submit to API for approval (will be pending until admin approves)
+      await submitPlastic(manufacturer, trimmed);
+      // Use the custom value immediately
+      onChange(trimmed);
       setCustomValue('');
       setModalVisible(false);
+    } finally {
+      setSubmitting(false);
     }
-  }, [customValue, onChange]);
+  }, [customValue, manufacturer, onChange, submitPlastic]);
 
   const dynamicStyles = {
     picker: {
@@ -79,8 +96,46 @@ export function PlasticPicker({
     },
   };
 
-  // If no manufacturer selected or no plastics for this manufacturer, show text input
-  if (!manufacturer || plasticOptions.length === 0) {
+  // If no manufacturer selected, show text input
+  if (!manufacturer) {
+    return (
+      <TextInput
+        style={[styles.textInput, dynamicStyles.picker, { color: textColor }]}
+        value={value}
+        onChangeText={onChange}
+        placeholder="e.g., Star"
+        placeholderTextColor="#999"
+      />
+    );
+  }
+
+  // If loading and no cached plastics, show loading placeholder
+  if (loading && plasticOptions.length === 0) {
+    return (
+      <View style={[styles.picker, dynamicStyles.picker]}>
+        <ActivityIndicator size="small" color={Colors.violet.primary} />
+        <Text style={[styles.pickerText, { color: '#999', marginLeft: 8 }]}>
+          Loading plastics...
+        </Text>
+      </View>
+    );
+  }
+
+  // If error and no plastics, fall back to text input
+  if (error && plasticOptions.length === 0) {
+    return (
+      <TextInput
+        style={[styles.textInput, dynamicStyles.picker, { color: textColor }]}
+        value={value}
+        onChangeText={onChange}
+        placeholder="e.g., Star"
+        placeholderTextColor="#999"
+      />
+    );
+  }
+
+  // If no plastics available for this manufacturer (even after loading), fall back to text input
+  if (plasticOptions.length === 0) {
     return (
       <TextInput
         style={[styles.textInput, dynamicStyles.picker, { color: textColor }]}
@@ -150,14 +205,25 @@ export function PlasticPicker({
                   placeholder="Custom plastic"
                   placeholderTextColor="#999"
                   onSubmitEditing={handleCustomSubmit}
+                  editable={!submitting}
                 />
                 <Pressable
-                  style={[styles.customButton, !customValue.trim() && styles.customButtonDisabled]}
+                  style={[
+                    styles.customButton,
+                    (!customValue.trim() || submitting) && styles.customButtonDisabled,
+                  ]}
                   onPress={handleCustomSubmit}
-                  disabled={!customValue.trim()}>
-                  <Text style={styles.customButtonText}>Add</Text>
+                  disabled={!customValue.trim() || submitting}>
+                  {submitting ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.customButtonText}>Add</Text>
+                  )}
                 </Pressable>
               </View>
+              <Text style={[styles.customHint, { color: isDark ? '#666' : '#999' }]}>
+                Custom plastics will be submitted for approval
+              </Text>
             </View>
           </View>
         </Pressable>
@@ -255,5 +321,9 @@ const styles = StyleSheet.create({
   customButtonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  customHint: {
+    fontSize: 12,
+    marginTop: 8,
   },
 });
