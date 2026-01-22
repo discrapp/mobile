@@ -76,19 +76,25 @@ export default function BagAnalysisCard({
 
       {/* Speed Coverage */}
       <RNView style={[styles.section, dynamicStyles.sectionBorder]}>
-        <Text style={[styles.sectionTitle, dynamicStyles.text]}>Speed Coverage</Text>
-        <Text style={[styles.speedRange, dynamicStyles.secondaryText]}>
-          Speed {speed_coverage.min} - {speed_coverage.max}
-        </Text>
-        {speed_coverage.gaps.length > 0 && (
-          <RNView style={styles.speedGaps}>
-            {speed_coverage.gaps.map((gap, index) => (
-              <RNView key={index} style={styles.speedGapBadge}>
-                <Text style={styles.speedGapText}>Gap: {gap.from}-{gap.to}</Text>
+        <RNView style={styles.speedCoverageRow}>
+          <Text style={[styles.sectionTitle, styles.speedCoverageTitle, dynamicStyles.text]}>
+            Speed Coverage
+          </Text>
+          <RNView style={styles.speedCoverageRight}>
+            <Text style={[styles.speedRange, dynamicStyles.secondaryText]}>
+              {speed_coverage.min} - {speed_coverage.max}
+            </Text>
+            {speed_coverage.gaps.length > 0 && (
+              <RNView style={styles.speedGaps}>
+                {speed_coverage.gaps.map((gap, index) => (
+                  <RNView key={index} style={styles.speedGapBadge}>
+                    <Text style={styles.speedGapText}>Gap: {gap.from}-{gap.to}</Text>
+                  </RNView>
+                ))}
               </RNView>
-            ))}
+            )}
           </RNView>
-        )}
+        </RNView>
       </RNView>
 
       {/* Brand Preferences */}
@@ -116,13 +122,31 @@ export default function BagAnalysisCard({
             <RNView key={index} style={styles.stabilityRow}>
               <Text style={[styles.categoryName, dynamicStyles.text]}>{category.category}</Text>
               <RNView style={styles.stabilityBadges}>
-                <RNView style={[styles.stabilityBadge, styles.understableBadge]}>
+                <RNView
+                  style={[
+                    styles.stabilityBadge,
+                    styles.understableBadge,
+                    category.understable === 0 && styles.fadedBadge,
+                  ]}
+                >
                   <Text style={styles.stabilityBadgeText}>US: {category.understable}</Text>
                 </RNView>
-                <RNView style={[styles.stabilityBadge, styles.stableBadge]}>
+                <RNView
+                  style={[
+                    styles.stabilityBadge,
+                    styles.stableBadge,
+                    category.stable === 0 && styles.fadedBadge,
+                  ]}
+                >
                   <Text style={styles.stabilityBadgeText}>S: {category.stable}</Text>
                 </RNView>
-                <RNView style={[styles.stabilityBadge, styles.overstableBadge]}>
+                <RNView
+                  style={[
+                    styles.stabilityBadge,
+                    styles.overstableBadge,
+                    category.overstable === 0 && styles.fadedBadge,
+                  ]}
+                >
                   <Text style={styles.stabilityBadgeText}>OS: {category.overstable}</Text>
                 </RNView>
               </RNView>
@@ -193,14 +217,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
+  speedCoverageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  speedCoverageTitle: {
+    marginBottom: 0,
+  },
+  speedCoverageRight: {
+    alignItems: 'flex-end',
+  },
   speedRange: {
     fontSize: 14,
+    fontWeight: '600',
   },
   speedGaps: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginTop: 8,
+    marginTop: 6,
+    justifyContent: 'flex-end',
   },
   speedGapBadge: {
     backgroundColor: 'rgba(231, 76, 60, 0.15)',
@@ -261,6 +298,9 @@ const styles = StyleSheet.create({
   },
   overstableBadge: {
     backgroundColor: '#E74C3C',
+  },
+  fadedBadge: {
+    opacity: 0.3,
   },
   gapsSection: {
     paddingTop: 12,

@@ -182,6 +182,15 @@ export default function DiscRecommendationsScreen() {
           <FontAwesome name="refresh" size={20} color="#fff" style={{ marginRight: 8 }} />
           <Text style={styles.actionButtonText}>New Analysis</Text>
         </Pressable>
+
+        {/* Back Button */}
+        <Pressable
+          style={[styles.backButtonBottom, dynamicStyles.card]}
+          onPress={() => router.back()}
+        >
+          <FontAwesome name="chevron-left" size={16} color={textColor} style={{ marginRight: 8 }} />
+          <Text style={[styles.backButtonBottomText, dynamicStyles.text]}>Back to My Bag</Text>
+        </Pressable>
       </ScrollView>
     );
   };
@@ -352,5 +361,19 @@ const styles = StyleSheet.create({
   },
   tryAnotherButton: {
     marginTop: 8,
+  },
+  backButtonBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginTop: 12,
+  },
+  backButtonBottomText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
