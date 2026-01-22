@@ -3,6 +3,13 @@ import { render, waitFor, fireEvent } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import LinkStickerScreen from '../app/link-sticker';
 
+// Mock expo-camera
+const mockRequestPermission = jest.fn();
+jest.mock('expo-camera', () => ({
+  CameraView: 'CameraView',
+  useCameraPermissions: () => [{ granted: false }, mockRequestPermission],
+}));
+
 // Mock expo-router
 const mockRouterBack = jest.fn();
 const mockRouterPush = jest.fn();
@@ -49,7 +56,7 @@ describe('LinkStickerScreen', () => {
     const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
 
     await waitFor(() => {
-      expect(getByText('Enter Sticker Code')).toBeTruthy();
+      expect(getByText('Link Your Sticker')).toBeTruthy();
       expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
       expect(getByText('Verify Code')).toBeTruthy();
       expect(getByText('Cancel')).toBeTruthy();
@@ -257,7 +264,7 @@ describe('LinkStickerScreen', () => {
 
       // Should still render without crashing
       await waitFor(() => {
-        expect(getByText('Enter Sticker Code')).toBeTruthy();
+        expect(getByText('Link Your Sticker')).toBeTruthy();
       });
     });
 
@@ -283,7 +290,7 @@ describe('LinkStickerScreen', () => {
 
       // Should handle not found status
       await waitFor(() => {
-        expect(getByText('Enter Sticker Code')).toBeTruthy();
+        expect(getByText('Link Your Sticker')).toBeTruthy();
       });
     });
   });
@@ -315,6 +322,78 @@ describe('LinkStickerScreen', () => {
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
         expect(input.props.autoCapitalize).toBe('characters');
+      });
+    });
+  });
+
+  describe('QR scanning', () => {
+    it('renders Scan QR Code button', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      });
+
+      const { getByText } = render(<LinkStickerScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Scan QR Code')).toBeTruthy();
+      });
+    });
+
+    it('renders "or enter manually" divider', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      });
+
+      const { getByText } = render(<LinkStickerScreen />);
+
+      await waitFor(() => {
+        expect(getByText('or enter manually')).toBeTruthy();
+      });
+    });
+
+    it('requests camera permission when Scan QR Code is pressed', async () => {
+      mockRequestPermission.mockResolvedValue({ granted: false });
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      });
+
+      const { getByText } = render(<LinkStickerScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Scan QR Code')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Scan QR Code'));
+
+      await waitFor(() => {
+        expect(mockRequestPermission).toHaveBeenCalled();
+      });
+    });
+
+    it('shows alert when camera permission is denied', async () => {
+      mockRequestPermission.mockResolvedValue({ granted: false });
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      });
+
+      const { getByText } = render(<LinkStickerScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Scan QR Code')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Scan QR Code'));
+
+      await waitFor(() => {
+        expect(Alert.alert).toHaveBeenCalledWith(
+          'Camera Permission Required',
+          'Please grant camera permission to scan QR codes.',
+          [{ text: 'OK' }]
+        );
       });
     });
   });

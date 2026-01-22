@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -10,14 +10,18 @@ import {
   Platform,
   ScrollView,
   View as RNView,
+  Dimensions,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { CameraView, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { Text } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/components/useColorScheme';
 import { handleError, showSuccess } from '@/lib/errorHandler';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface Disc {
   id: string;
@@ -32,9 +36,12 @@ export default function LinkStickerScreen() {
   const params = useLocalSearchParams<{ code?: string }>();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const [permission, requestPermission] = useCameraPermissions();
 
   const [shortCode, setShortCode] = useState(params.code || '');
   const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
 
   // Dynamic styles for dark/light mode
   const dynamicContainerStyle = {
@@ -90,6 +97,43 @@ export default function LinkStickerScreen() {
     } finally {
       setLoadingDiscs(false);
     }
+  };
+
+  // istanbul ignore next -- Native camera permission requires device testing
+  const startScanning = async () => {
+    if (!permission?.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert(
+          'Camera Permission Required',
+          'Please grant camera permission to scan QR codes.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+    }
+    setHasScanned(false);
+    setScanning(true);
+  };
+
+  // istanbul ignore next -- Native barcode scanning requires device testing
+  const handleBarcodeScan = (result: BarcodeScanningResult) => {
+    if (hasScanned) return;
+    setHasScanned(true);
+    let scannedCode = result.data;
+
+    // Extract code from URL if QR contains a URL like https://discrapp.com/d/CODE
+    if (scannedCode.includes('/d/')) {
+      const match = scannedCode.match(/\/d\/([A-Za-z0-9]+)/);
+      if (match) {
+        scannedCode = match[1];
+      }
+    }
+
+    setShortCode(scannedCode.toUpperCase());
+    setScanning(false);
+    // Auto-verify after scanning
+    verifyCode(scannedCode.toUpperCase());
   };
 
   // istanbul ignore next -- Code verification tested via integration tests
@@ -246,6 +290,60 @@ export default function LinkStickerScreen() {
     );
   };
 
+  // istanbul ignore next -- Native camera scanning requires device testing
+  // Scanning State
+  if (scanning) {
+    // Double-check permission before rendering camera
+    if (!permission?.granted) {
+      return (
+        <RNView style={[styles.container, dynamicContainerStyle, styles.centerContainer]}>
+          <FontAwesome name="camera" size={48} color="#ccc" />
+          <Text style={styles.title}>Camera Permission Required</Text>
+          <Text style={styles.description}>
+            Please grant camera permission to scan QR codes.
+          </Text>
+          <Pressable style={styles.button} onPress={requestPermission}>
+            <Text style={styles.buttonText}>Grant Permission</Text>
+          </Pressable>
+          <Pressable style={styles.cancelButton} onPress={() => setScanning(false)}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </Pressable>
+        </RNView>
+      );
+    }
+
+    return (
+      <RNView style={styles.scannerContainer}>
+        <CameraView
+          style={styles.camera}
+          facing="back"
+          active={true}
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarcodeScanned={hasScanned ? undefined : handleBarcodeScan}
+        />
+        <RNView style={styles.scannerOverlay}>
+          <RNView style={styles.scannerHeader}>
+            <Text style={styles.scannerTitle}>Scan Sticker QR Code</Text>
+            <Text style={styles.scannerSubtitle}>
+              Point your camera at the QR code on your sticker
+            </Text>
+          </RNView>
+          <RNView style={styles.scannerFrame}>
+            <RNView style={[styles.cornerBorder, styles.topLeft]} />
+            <RNView style={[styles.cornerBorder, styles.topRight]} />
+            <RNView style={[styles.cornerBorder, styles.bottomLeft]} />
+            <RNView style={[styles.cornerBorder, styles.bottomRight]} />
+          </RNView>
+          <Pressable style={styles.cancelScanButton} onPress={() => setScanning(false)}>
+            <Text style={styles.cancelScanText}>Cancel</Text>
+          </Pressable>
+        </RNView>
+      </RNView>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       style={[styles.container, dynamicContainerStyle]}
@@ -260,10 +358,22 @@ export default function LinkStickerScreen() {
               <RNView style={styles.iconContainer}>
                 <FontAwesome name="qrcode" size={48} color={Colors.violet.primary} />
               </RNView>
-              <Text style={styles.title}>Enter Sticker Code</Text>
+              <Text style={styles.title}>Link Your Sticker</Text>
               <Text style={styles.description}>
-                Find the code printed on your sticker and enter it below
+                Scan the QR code on your sticker or enter the code manually
               </Text>
+
+              {/* Scan QR Code Button */}
+              <Pressable style={styles.button} onPress={startScanning}>
+                <FontAwesome name="camera" size={16} color="#fff" />
+                <Text style={styles.buttonText}>Scan QR Code</Text>
+              </Pressable>
+
+              <RNView style={styles.orDivider}>
+                <RNView style={[styles.dividerLine, { backgroundColor: isDark ? '#444' : '#ddd' }]} />
+                <Text style={[styles.orText, { color: isDark ? '#888' : '#999' }]}>or enter manually</Text>
+                <RNView style={[styles.dividerLine, { backgroundColor: isDark ? '#444' : '#ddd' }]} />
+              </RNView>
 
               <TextInput
                 style={[
@@ -551,5 +661,108 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: '#666',
     fontSize: 16,
+  },
+  centerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  orDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    width: '100%',
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  orText: {
+    fontSize: 14,
+    paddingHorizontal: 16,
+  },
+  scannerContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  camera: {
+    flex: 1,
+  },
+  scannerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  scannerHeader: {
+    alignItems: 'center',
+  },
+  scannerTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerSubtitle: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  scannerFrame: {
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_WIDTH * 0.7,
+    position: 'relative',
+  },
+  cornerBorder: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderColor: Colors.violet.primary,
+  },
+  topLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderTopLeftRadius: 8,
+  },
+  topRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderTopRightRadius: 8,
+  },
+  bottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderBottomLeftRadius: 8,
+  },
+  bottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderBottomRightRadius: 8,
+  },
+  cancelScanButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+  },
+  cancelScanText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
