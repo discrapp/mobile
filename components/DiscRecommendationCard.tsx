@@ -22,6 +22,14 @@ const GAP_TYPE_LABELS: Record<string, string> = {
   category: 'Category Gap',
 };
 
+const PRIORITY_LABELS: Record<number, string> = {
+  1: 'Top Pick',
+  2: '2nd Pick',
+  3: '3rd Pick',
+  4: '4th Pick',
+  5: '5th Pick',
+};
+
 export default function DiscRecommendationCard({
   recommendation,
   isDark,
@@ -53,7 +61,9 @@ export default function DiscRecommendationCard({
       {/* Header with priority and gap type */}
       <RNView style={styles.cardHeader}>
         <RNView style={[styles.priorityBadge, dynamicStyles.priorityBadge]}>
-          <Text style={[styles.priorityText, { color: Colors.violet.primary }]}>#{priority}</Text>
+          <Text style={[styles.priorityText, { color: Colors.violet.primary }]}>
+            {PRIORITY_LABELS[priority] || `#${priority}`}
+          </Text>
         </RNView>
         <RNView style={styles.gapBadge}>
           <Text style={styles.gapText}>{GAP_TYPE_LABELS[gap_type] || gap_type}</Text>
@@ -148,7 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   priorityText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   gapBadge: {
