@@ -3,6 +3,13 @@ import { render, waitFor, fireEvent } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import LinkStickerScreen from '../../app/link-sticker';
 
+// Mock expo-camera
+const mockRequestPermission = jest.fn();
+jest.mock('expo-camera', () => ({
+  CameraView: 'CameraView',
+  useCameraPermissions: () => [{ granted: false }, mockRequestPermission],
+}));
+
 // Mock expo-router
 const mockBack = jest.fn();
 const mockReplace = jest.fn();
@@ -48,7 +55,7 @@ describe('LinkStickerScreen', () => {
     const { getByText } = render(<LinkStickerScreen />);
 
     await waitFor(() => {
-      expect(getByText('Enter Sticker Code')).toBeTruthy();
+      expect(getByText('Link Your Sticker')).toBeTruthy();
     });
   });
 
@@ -106,7 +113,7 @@ describe('LinkStickerScreen', () => {
     const { getByText } = render(<LinkStickerScreen />);
 
     await waitFor(() => {
-      expect(getByText('Find the code printed on your sticker and enter it below')).toBeTruthy();
+      expect(getByText('Scan the QR code on your sticker or enter the code manually')).toBeTruthy();
     });
   });
 
