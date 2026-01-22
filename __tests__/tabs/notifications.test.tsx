@@ -1592,4 +1592,61 @@ describe('NotificationsScreen', () => {
       expect(() => fireEvent.press(getByText('Test'))).not.toThrow();
     });
   });
+
+  describe('contribution_approved notifications', () => {
+    it('displays contribution_approved notifications correctly', async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          notifications: [{
+            id: 'n1',
+            type: 'contribution_approved',
+            title: 'Plastic Type Approved!',
+            body: 'Your submitted plastic type "Halo Star" for Innova has been approved. Thanks for contributing!',
+            data: { plastic_type_id: 'plastic-1' },
+            read: false,
+            created_at: new Date().toISOString(),
+          }],
+          unread_count: 1,
+        }),
+      });
+
+      const { getByText } = render(<NotificationsScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Plastic Type Approved!')).toBeTruthy();
+        expect(getByText(/Halo Star/)).toBeTruthy();
+      });
+    });
+
+    it('does not navigate when contribution_approved notification is pressed', async () => {
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          notifications: [{
+            id: 'n1',
+            type: 'contribution_approved',
+            title: 'Plastic Type Approved!',
+            body: 'Your contribution was approved',
+            data: { plastic_type_id: 'plastic-1' },
+            read: true, // Already read to avoid mark-as-read call
+            created_at: new Date().toISOString(),
+          }],
+          unread_count: 0,
+        }),
+      });
+
+      const { getByText } = render(<NotificationsScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Plastic Type Approved!')).toBeTruthy();
+      });
+
+      // Press the notification - should not navigate anywhere
+      fireEvent.press(getByText('Plastic Type Approved!'));
+
+      // Should not navigate since contribution_approved has no target screen
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+  });
 });

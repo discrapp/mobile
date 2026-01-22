@@ -20,13 +20,14 @@ import { useColorScheme } from '@/components/useColorScheme';
 
 interface Notification {
   id: string;
-  type: 'disc_found' | 'meetup_proposed' | 'meetup_accepted' | 'meetup_declined' | 'disc_recovered' | 'disc_surrendered';
+  type: 'disc_found' | 'meetup_proposed' | 'meetup_accepted' | 'meetup_declined' | 'disc_recovered' | 'disc_surrendered' | 'contribution_approved';
   title: string;
   body: string;
   data: {
     recovery_event_id?: string;
     disc_id?: string;
     proposal_id?: string;
+    plastic_type_id?: string;
   };
   read: boolean;
   created_at: string;
@@ -39,6 +40,7 @@ const NOTIFICATION_ICONS: Record<string, React.ComponentProps<typeof FontAwesome
   meetup_declined: 'times-circle',
   disc_recovered: 'trophy',
   disc_surrendered: 'gift',
+  contribution_approved: 'star',
 };
 
 const NOTIFICATION_COLORS: Record<string, string> = {
@@ -48,6 +50,7 @@ const NOTIFICATION_COLORS: Record<string, string> = {
   meetup_declined: '#E74C3C',
   disc_recovered: '#10b981',
   disc_surrendered: '#9B59B6',
+  contribution_approved: '#F1C40F',
 };
 
 // Memoized separator component for FlatList
