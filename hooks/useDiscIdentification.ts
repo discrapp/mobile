@@ -5,6 +5,7 @@ import { handleError } from '@/lib/errorHandler';
 export interface DiscIdentification {
   manufacturer: string | null;
   mold: string | null;
+  disc_type: string | null;
   confidence: number;
   raw_text: string;
   flight_numbers: {

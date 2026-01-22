@@ -519,8 +519,8 @@ export default function AddDiscScreen() {
 
     // If we have a catalog match, use its flight numbers (more reliable)
     if (catalog_match) {
-      // Use API category or infer from speed
-      const matchCategory = catalog_match.category || inferCategoryFromSpeed(catalog_match.speed);
+      // Priority: 1) AI-detected disc_type (read from disc), 2) catalog category, 3) infer from speed
+      const matchCategory = identification.disc_type || catalog_match.category || inferCategoryFromSpeed(catalog_match.speed);
       if (matchCategory) setCategory(matchCategory);
       if (catalog_match.speed !== null) setSpeed(catalog_match.speed.toString());
       if (catalog_match.glide !== null) setGlide(catalog_match.glide.toString());
@@ -528,12 +528,16 @@ export default function AddDiscScreen() {
       if (catalog_match.fade !== null) setFade(catalog_match.fade.toString());
     } else if (identification.flight_numbers) {
       // Fall back to AI-detected flight numbers
-      const inferredCategory = inferCategoryFromSpeed(identification.flight_numbers.speed);
-      if (inferredCategory) setCategory(inferredCategory);
+      // Priority: 1) AI-detected disc_type (read from disc), 2) infer from speed
+      const discCategory = identification.disc_type || inferCategoryFromSpeed(identification.flight_numbers.speed);
+      if (discCategory) setCategory(discCategory);
       if (identification.flight_numbers.speed !== null) setSpeed(identification.flight_numbers.speed.toString());
       if (identification.flight_numbers.glide !== null) setGlide(identification.flight_numbers.glide.toString());
       if (identification.flight_numbers.turn !== null) setTurn(identification.flight_numbers.turn.toString());
       if (identification.flight_numbers.fade !== null) setFade(identification.flight_numbers.fade.toString());
+    } else if (identification.disc_type) {
+      // No catalog match and no flight numbers, but we have AI-detected disc_type
+      setCategory(identification.disc_type);
     }
 
     setShowIdentificationResult(false);
