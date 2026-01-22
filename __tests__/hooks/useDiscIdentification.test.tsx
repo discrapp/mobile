@@ -35,6 +35,7 @@ describe('useDiscIdentification', () => {
   const mockIdentification: DiscIdentification = {
     manufacturer: 'Innova',
     mold: 'Destroyer',
+    disc_type: 'Distance Driver',
     confidence: 0.92,
     raw_text: 'INNOVA DESTROYER 12 5 -1 3',
     flight_numbers: {
