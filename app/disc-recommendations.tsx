@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   Pressable,
   View,
   Linking,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
@@ -19,6 +20,22 @@ import BagAnalysisCard from '@/components/BagAnalysisCard';
 
 type RecommendationCount = 1 | 3 | 5;
 
+const LOADING_STEPS = [
+  { icon: 'search', text: 'Scanning your disc bag...' },
+  { icon: 'bar-chart', text: 'Analyzing flight numbers...' },
+  { icon: 'pie-chart', text: 'Identifying coverage gaps...' },
+  { icon: 'database', text: 'Searching disc catalog...' },
+  { icon: 'lightbulb-o', text: 'Building recommendations...' },
+];
+
+const DISC_FACTS = [
+  'The world record for longest disc golf throw is over 1,100 feet!',
+  'Most pros carry 15-25 discs in their tournament bag.',
+  'Understable discs are great for beginners and turnover shots.',
+  'Speed isn\'t everything - a well-thrown putter can beat a poorly-thrown driver.',
+  'The "Buzz" by Discraft is one of the most popular midranges ever made.',
+];
+
 export default function DiscRecommendationsScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -28,8 +45,51 @@ export default function DiscRecommendationsScreen() {
   // Count selection state
   const [selectedCount, setSelectedCount] = useState<RecommendationCount>(3);
 
+  // Loading animation state
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [discFact, setDiscFact] = useState('');
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
   // Disc recommendations hook
   const { getRecommendations, isLoading, error, result, reset } = useDiscRecommendations();
+
+  // Animate loading steps
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingStep(0);
+      return;
+    }
+
+    // Set random disc fact when loading starts
+    setDiscFact(DISC_FACTS[Math.floor(Math.random() * DISC_FACTS.length)]);
+
+    // Cycle through loading steps
+    const stepInterval = setInterval(() => {
+      setLoadingStep((prev) => (prev + 1) % LOADING_STEPS.length);
+    }, 2000);
+
+    // Pulse animation
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    pulse.start();
+
+    return () => {
+      clearInterval(stepInterval);
+      pulse.stop();
+    };
+  }, [isLoading, pulseAnim]);
 
   // Dynamic styles for dark/light mode
   const dynamicStyles = {
@@ -122,15 +182,54 @@ export default function DiscRecommendationsScreen() {
     </View>
   );
 
-  const renderLoadingState = () => (
-    <View style={styles.centeredContent}>
-      <ActivityIndicator size="large" color={Colors.violet.primary} />
-      <Text style={[styles.loadingTitle, dynamicStyles.text]}>Analyzing your bag...</Text>
-      <Text style={[styles.loadingSubtitle, dynamicStyles.secondaryText]}>
-        AI is identifying gaps and finding perfect disc matches
-      </Text>
-    </View>
-  );
+  const renderLoadingState = () => {
+    const currentStep = LOADING_STEPS[loadingStep];
+    return (
+      <View style={styles.centeredContent}>
+        {/* Animated icon */}
+        <Animated.View
+          style={[
+            styles.loadingIconContainer,
+            { transform: [{ scale: pulseAnim }] },
+          ]}
+        >
+          <FontAwesome
+            name={currentStep.icon as keyof typeof FontAwesome.glyphMap}
+            size={48}
+            color={Colors.violet.primary}
+          />
+        </Animated.View>
+
+        {/* Current step */}
+        <Text style={[styles.loadingTitle, dynamicStyles.text]}>{currentStep.text}</Text>
+
+        {/* Progress dots */}
+        <View style={styles.loadingDots}>
+          {LOADING_STEPS.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.loadingDot,
+                index === loadingStep && styles.loadingDotActive,
+                { backgroundColor: index === loadingStep ? Colors.violet.primary : isDark ? '#444' : '#ddd' },
+              ]}
+            />
+          ))}
+        </View>
+
+        {/* Disc fact */}
+        <View style={[styles.factContainer, dynamicStyles.card]}>
+          <FontAwesome
+            name="star"
+            size={14}
+            color={isDark ? '#F39C12' : '#F39C12'}
+            style={{ marginRight: 8 }}
+          />
+          <Text style={[styles.factText, dynamicStyles.secondaryText]}>{discFact}</Text>
+        </View>
+      </View>
+    );
+  };
 
   const renderErrorState = () => (
     <View style={styles.centeredContent}>
@@ -312,15 +411,47 @@ const styles = StyleSheet.create({
   countButtonLabelSelected: {
     color: Colors.violet.primary,
   },
-  loadingTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginTop: 24,
+  loadingIconContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: 'rgba(127, 34, 206, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  loadingSubtitle: {
-    fontSize: 14,
-    marginTop: 8,
+  loadingTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
     textAlign: 'center',
+  },
+  loadingDots: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 32,
+  },
+  loadingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  loadingDotActive: {
+    width: 24,
+  },
+  factContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    maxWidth: 300,
+  },
+  factText: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 18,
+    fontStyle: 'italic',
   },
   errorTitle: {
     fontSize: 20,
