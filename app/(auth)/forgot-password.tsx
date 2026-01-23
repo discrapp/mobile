@@ -16,8 +16,7 @@ import { Link, router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import Colors from '@/constants/Colors';
 
-const logoLight = require('@/assets/images/logo.png');
-const logoDark = require('@/assets/images/logo-white.png');
+const logo = require('@/assets/images/logo.png');
 
 export default function ForgotPassword() {
   const colorScheme = useColorScheme();
@@ -51,7 +50,7 @@ export default function ForgotPassword() {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         email.trim(),
         {
-          redirectTo: 'com.discrapp.com://reset-password',
+          redirectTo: 'com.discr.app://reset-password',
         }
       );
 
@@ -95,6 +94,9 @@ export default function ForgotPassword() {
     label: {
       color: isDark ? '#fff' : '#000',
     },
+    link: {
+      color: isDark ? Colors.violet[400] : Colors.violet.primary,
+    },
   };
 
   return (
@@ -105,7 +107,7 @@ export default function ForgotPassword() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
-            source={isDark ? logoDark : logoLight}
+            source={logo}
             style={styles.logo}
             resizeMode="contain"
             testID="app-logo"
@@ -123,7 +125,7 @@ export default function ForgotPassword() {
             <TextInput
               style={[styles.input, dynamicStyles.input, error ? styles.inputError : null]}
               placeholder="Enter your email"
-              placeholderTextColor={isDark ? '#666' : '#999'}
+              placeholderTextColor={isDark ? '#888' : '#999'}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -152,8 +154,8 @@ export default function ForgotPassword() {
 
           <View style={styles.footer}>
             <Link href="/(auth)/sign-in" asChild>
-              <TouchableOpacity disabled={loading}>
-                <Text style={styles.link}>Back to Sign In</Text>
+              <TouchableOpacity disabled={loading} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text style={[styles.link, dynamicStyles.link]}>Back to Sign In</Text>
               </TouchableOpacity>
             </Link>
           </View>
@@ -233,7 +235,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   link: {
-    color: Colors.violet.primary,
     fontSize: 14,
     fontWeight: '600',
   },
