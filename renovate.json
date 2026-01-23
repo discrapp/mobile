@@ -53,11 +53,22 @@
       ]
     },
     {
-      "description": "Allow Expo core SDK updates - run `npx expo install --fix` after updating",
+      "description": "Expo core SDK updates - auto-fix all related packages",
       "enabled": true,
       "matchPackageNames": [
         "expo"
-      ]
+      ],
+      "postUpgradeTasks": {
+        "commands": [
+          "npm install",
+          "npx expo install --fix"
+        ],
+        "fileFilters": [
+          "package.json",
+          "package-lock.json"
+        ],
+        "executionMode": "branch"
+      }
     },
     {
       "description": "Group testing packages",
