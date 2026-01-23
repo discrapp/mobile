@@ -275,7 +275,7 @@ describe('DiscRecommendationCard', () => {
       ...mockRecommendation,
       disc: {
         ...mockRecommendation.disc,
-        category: undefined,
+        category: null,
       },
     };
 
@@ -296,7 +296,7 @@ describe('DiscRecommendationCard', () => {
       ...mockRecommendation,
       disc: {
         ...mockRecommendation.disc,
-        stability: undefined,
+        stability: null,
       },
     };
 
@@ -319,7 +319,7 @@ describe('DiscRecommendationCard', () => {
       ...mockRecommendation,
       disc: {
         ...mockRecommendation.disc,
-        flight_numbers: undefined,
+        flight_numbers: null,
       },
     };
 
