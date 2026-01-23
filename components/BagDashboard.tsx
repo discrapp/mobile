@@ -186,7 +186,11 @@ export default function BagDashboard({
 }
 
 function ColorDot({ color }: { color: string }) {
-  const hexColor = DISC_COLORS[color as keyof typeof DISC_COLORS] || '#666';
+  // Case-insensitive color lookup
+  const normalizedColor = Object.keys(DISC_COLORS).find(
+    (key) => key.toLowerCase() === color.toLowerCase()
+  ) as keyof typeof DISC_COLORS | undefined;
+  const hexColor = normalizedColor ? DISC_COLORS[normalizedColor] : '#666';
 
   if (hexColor === 'rainbow') {
     return (
