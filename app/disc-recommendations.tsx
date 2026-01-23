@@ -17,6 +17,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useDiscRecommendations } from '@/hooks/useDiscRecommendations';
 import DiscRecommendationCard from '@/components/DiscRecommendationCard';
 import BagAnalysisCard from '@/components/BagAnalysisCard';
+import TradeInCandidateCard from '@/components/TradeInCandidateCard';
 
 type RecommendationCount = 1 | 3 | 5;
 
@@ -160,8 +161,8 @@ export default function DiscRecommendationsScreen() {
 
   const renderInitialState = () => (
     <View style={styles.centeredContent}>
-      <View style={[styles.iconContainer, { backgroundColor: 'rgba(127, 34, 206, 0.1)' }]}>
-        <FontAwesome name="lightbulb-o" size={48} color={Colors.violet.primary} />
+      <View style={[styles.iconContainer, { backgroundColor: isDark ? 'rgba(127, 34, 206, 0.3)' : 'rgba(127, 34, 206, 0.1)' }]}>
+        <FontAwesome name="lightbulb-o" size={48} color={isDark ? '#a78bfa' : Colors.violet.primary} />
       </View>
       <Text style={[styles.promptTitle, dynamicStyles.text]}>Fill Your Bag</Text>
       <Text style={[styles.promptSubtitle, dynamicStyles.secondaryText]}>
@@ -190,13 +191,16 @@ export default function DiscRecommendationsScreen() {
         <Animated.View
           style={[
             styles.loadingIconContainer,
-            { transform: [{ scale: pulseAnim }] },
+            {
+              transform: [{ scale: pulseAnim }],
+              backgroundColor: isDark ? 'rgba(127, 34, 206, 0.3)' : 'rgba(127, 34, 206, 0.1)',
+            },
           ]}
         >
           <FontAwesome
             name={currentStep.icon as keyof typeof FontAwesome.glyphMap}
             size={48}
-            color={Colors.violet.primary}
+            color={isDark ? '#a78bfa' : Colors.violet.primary}
           />
         </Animated.View>
 
@@ -211,7 +215,7 @@ export default function DiscRecommendationsScreen() {
               style={[
                 styles.loadingDot,
                 index === loadingStep && styles.loadingDotActive,
-                { backgroundColor: index === loadingStep ? Colors.violet.primary : isDark ? '#444' : '#ddd' },
+                { backgroundColor: index === loadingStep ? (isDark ? '#a78bfa' : Colors.violet.primary) : isDark ? '#444' : '#ddd' },
               ]}
             />
           ))}
@@ -250,7 +254,7 @@ export default function DiscRecommendationsScreen() {
   const renderResult = () => {
     if (!result) return null;
 
-    const { recommendations, bag_analysis, confidence, processing_time_ms } = result;
+    const { recommendations, trade_in_candidates, bag_analysis, confidence, processing_time_ms } = result;
 
     return (
       <ScrollView style={styles.resultScroll} contentContainerStyle={styles.resultContent}>
@@ -272,6 +276,23 @@ export default function DiscRecommendationsScreen() {
             onBuyPress={() => handleOpenLink(rec.purchase_url)}
           />
         ))}
+
+        {/* Trade-in Candidates */}
+        {trade_in_candidates && trade_in_candidates.length > 0 && (
+          <>
+            <Text style={[styles.sectionTitle, dynamicStyles.text]}>Consider Trading</Text>
+            <Text style={[styles.sectionSubtitle, dynamicStyles.secondaryText]}>
+              These discs may be redundant in your bag
+            </Text>
+            {trade_in_candidates.map((candidate, index) => (
+              <TradeInCandidateCard
+                key={candidate.disc.id || index}
+                candidate={candidate}
+                isDark={isDark}
+              />
+            ))}
+          </>
+        )}
 
         {/* Try Another Analysis Button */}
         <Pressable
@@ -395,21 +416,21 @@ const styles = StyleSheet.create({
   },
   countButtonSelected: {
     borderColor: Colors.violet.primary,
-    backgroundColor: 'rgba(127, 34, 206, 0.1)',
+    backgroundColor: 'rgba(127, 34, 206, 0.6)',
   },
   countButtonText: {
     fontSize: 24,
     fontWeight: '700',
   },
   countButtonTextSelected: {
-    color: Colors.violet.primary,
+    color: '#fff',
   },
   countButtonLabel: {
     fontSize: 12,
     marginTop: 2,
   },
   countButtonLabelSelected: {
-    color: Colors.violet.primary,
+    color: '#fff',
   },
   loadingIconContainer: {
     width: 96,
@@ -489,6 +510,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
     marginTop: 8,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    marginTop: -12,
+    marginBottom: 16,
   },
   tryAnotherButton: {
     marginTop: 8,

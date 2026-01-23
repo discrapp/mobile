@@ -63,6 +63,17 @@ jest.mock('@/components/BagAnalysisCard', () => {
   };
 });
 
+jest.mock('@/components/TradeInCandidateCard', () => {
+  const { View, Text } = require('react-native');
+  return function MockTradeInCandidateCard({ candidate }: { candidate: { disc: { name: string | null; mold: string | null } } }) {
+    return (
+      <View testID="trade-in-candidate-card">
+        <Text>{candidate.disc.name || candidate.disc.mold}</Text>
+      </View>
+    );
+  };
+});
+
 const mockResult = {
   recommendations: [
     {
@@ -78,6 +89,19 @@ const mockResult = {
       gap_type: 'speed_range' as const,
       priority: 1,
       purchase_url: 'https://example.com/destroyer',
+    },
+  ],
+  trade_in_candidates: [
+    {
+      disc: {
+        id: 'user-disc-1',
+        name: 'Old Wraith',
+        manufacturer: 'Innova',
+        mold: 'Wraith',
+        plastic: 'Star',
+        flight_numbers: { speed: 11, glide: 5, turn: -1, fade: 3 },
+      },
+      reason: 'Similar flight to your Destroyer, may be redundant',
     },
   ],
   bag_analysis: {
@@ -199,6 +223,18 @@ describe('DiscRecommendationsScreen', () => {
       expect(getByText('Recommended Discs')).toBeTruthy();
       expect(getByTestId('disc-recommendation-card')).toBeTruthy();
       expect(getByText('New Analysis')).toBeTruthy();
+    });
+  });
+
+  it('shows trade-in candidates when present', async () => {
+    mockHookState.result = mockResult;
+
+    const { getByText, getByTestId } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByText('Consider Trading')).toBeTruthy();
+      expect(getByText('These discs may be redundant in your bag')).toBeTruthy();
+      expect(getByTestId('trade-in-candidate-card')).toBeTruthy();
     });
   });
 

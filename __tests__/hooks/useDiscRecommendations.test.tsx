@@ -49,6 +49,7 @@ describe('useDiscRecommendations', () => {
         purchase_url: 'https://infinitediscs.com/search?s=Innova%20Leopard&aff=test',
       },
     ],
+    trade_in_candidates: [],
     bag_analysis: {
       total_discs: 5,
       brand_preferences: [

@@ -26,6 +26,20 @@ export interface DiscRecommendation {
   purchase_url: string;
 }
 
+export interface TradeInDisc {
+  id: string;
+  name: string | null;
+  manufacturer: string | null;
+  mold: string | null;
+  plastic: string | null;
+  flight_numbers: FlightNumbers | null;
+}
+
+export interface TradeInCandidate {
+  disc: TradeInDisc;
+  reason: string;
+}
+
 export interface BrandPreference {
   manufacturer: string;
   count: number;
@@ -63,6 +77,7 @@ export interface BagAnalysis {
 
 export interface DiscRecommendationResult {
   recommendations: DiscRecommendation[];
+  trade_in_candidates: TradeInCandidate[];
   bag_analysis: BagAnalysis;
   confidence: number;
   processing_time_ms: number;
@@ -132,6 +147,7 @@ export function useDiscRecommendations(): UseDiscRecommendationsResult {
 
         const recommendationResult: DiscRecommendationResult = {
           recommendations: data.recommendations,
+          trade_in_candidates: data.trade_in_candidates || [],
           bag_analysis: data.bag_analysis,
           confidence: data.confidence,
           processing_time_ms: data.processing_time_ms,
