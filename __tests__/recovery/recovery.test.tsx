@@ -3419,13 +3419,33 @@ describe('RecoveryDetailScreen', () => {
       });
     });
 
-    it('navigates back after mark retrieved', async () => {
+    it('stays on page and refreshes details after mark retrieved', async () => {
       jest.clearAllMocks();
+      let fetchCallCount = 0;
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('mark-disc-retrieved')) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({ success: true }),
+          });
+        }
+        if (url.includes('get-recovery-details')) {
+          fetchCallCount++;
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              ...mockRecoveryData,
+              status: fetchCallCount > 1 ? 'recovered' : 'dropped_off',
+              user_role: 'owner',
+              drop_off: {
+                id: 'drop-1',
+                latitude: 42.123,
+                longitude: -71.456,
+                photo_url: 'https://example.com/photo.jpg',
+                dropped_off_at: '2024-01-16T10:00:00Z',
+                created_at: '2024-01-16T10:00:00Z',
+              },
+            }),
           });
         }
         return Promise.resolve({
@@ -3460,8 +3480,12 @@ describe('RecoveryDetailScreen', () => {
       const confirmButton = alertCall[2].find((b: { text: string }) => b.text === 'Confirm');
       await confirmButton.onPress();
 
+      // Should NOT navigate away - stays on page to show payment options
+      expect(mockBack).not.toHaveBeenCalled();
+
+      // Should fetch recovery details again to refresh the page
       await waitFor(() => {
-        expect(mockBack).toHaveBeenCalled();
+        expect(fetchCallCount).toBeGreaterThan(1);
       });
     });
   });
