@@ -19,9 +19,13 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "associatedDomains": ["applinks:discrapp.com"],
+      "associatedDomains": [
+        "applinks:discrapp.com"
+      ],
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["venmo"]
+        "LSApplicationQueriesSchemes": [
+          "venmo"
+        ]
       },
       "splash": {
         "image": "./assets/images/splash-icon.png",
@@ -46,7 +50,10 @@
               "pathPrefix": "/d/"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -65,7 +72,8 @@
           "organization": "discrapp",
           "project": "discr-mobile"
         }
-      ]
+      ],
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true
