@@ -378,7 +378,8 @@ export default function RecoveryDetailScreen() {
               if (!response.ok) throw new Error(data.error || 'Failed to mark as retrieved');
 
               showSuccess('Your disc has been marked as retrieved!');
-              router.back();
+              // Stay on page to show payment options instead of navigating away
+              fetchRecoveryDetails();
             } catch (err) {
               handleError(err, { operation: 'mark-retrieved' });
             } finally {
