@@ -48,16 +48,65 @@ export const validateSignInForm = (
   return errors;
 };
 
+export const validateUsername = (username: string, required = false): string | null => {
+  const trimmed = username.trim();
+  if (!trimmed) {
+    return required ? 'Username is required' : null;
+  }
+  if (trimmed.length < 3) {
+    return 'Username must be at least 3 characters';
+  }
+  if (trimmed.length > 30) {
+    return 'Username must be less than 30 characters';
+  }
+  // Only allow alphanumeric, underscores, and hyphens
+  if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
+    return 'Username can only contain letters, numbers, underscores, and hyphens';
+  }
+  return null;
+};
+
+export const validatePhoneNumber = (phone: string, required = false): string | null => {
+  const trimmed = phone.trim().replace(/[\s\-\(\)]/g, '');
+  if (!trimmed) {
+    return required ? 'Phone number is required' : null;
+  }
+  // Accept formats: 1234567890, +11234567890, etc.
+  if (!/^\+?1?\d{10,14}$/.test(trimmed)) {
+    return 'Please enter a valid phone number';
+  }
+  return null;
+};
+
+export interface SignUpFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  username: string;
+  fullName?: string;
+  phoneNumber: string;
+  throwingHand: string;
+  preferredThrowStyle: string;
+}
+
+export interface SignUpFormErrors {
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  username?: string;
+  fullName?: string;
+  phoneNumber?: string;
+  throwingHand?: string;
+  preferredThrowStyle?: string;
+}
+
 export const validateSignUpForm = (
   email: string,
   password: string,
-  confirmPassword: string
-): { email?: string; password?: string; confirmPassword?: string } => {
-  const errors: {
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-  } = {};
+  confirmPassword: string,
+  username?: string
+): SignUpFormErrors => {
+  const errors: SignUpFormErrors = {};
   const trimmedEmail = email.trim();
 
   if (!trimmedEmail) {
@@ -75,6 +124,53 @@ export const validateSignUpForm = (
   if (passwordMatchError) {
     errors.confirmPassword = passwordMatchError;
   }
+
+  if (username) {
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      errors.username = usernameError;
+    }
+  }
+
+  return errors;
+};
+
+export const validateFullSignUpForm = (data: SignUpFormData): SignUpFormErrors => {
+  const errors: SignUpFormErrors = {};
+  const trimmedEmail = data.email.trim();
+
+  // Email validation
+  if (!trimmedEmail) {
+    errors.email = STRINGS.VALIDATION.EMAIL_REQUIRED;
+  } else if (!validateEmail(trimmedEmail)) {
+    errors.email = STRINGS.VALIDATION.EMAIL_INVALID;
+  }
+
+  // Password validation
+  const passwordError = validatePassword(data.password);
+  if (passwordError) {
+    errors.password = passwordError;
+  }
+
+  // Confirm password validation
+  const passwordMatchError = validatePasswordMatch(data.password, data.confirmPassword);
+  if (passwordMatchError) {
+    errors.confirmPassword = passwordMatchError;
+  }
+
+  // Username validation (required)
+  const usernameError = validateUsername(data.username, true);
+  if (usernameError) {
+    errors.username = usernameError;
+  }
+
+  // Phone number validation (required)
+  const phoneError = validatePhoneNumber(data.phoneNumber, true);
+  if (phoneError) {
+    errors.phoneNumber = phoneError;
+  }
+
+  // Throwing hand and preferred throw style are optional (have defaults)
 
   return errors;
 };

@@ -64,6 +64,15 @@ const getButton = (getAllByText: (text: string) => any[], text: string) => {
   return elements[elements.length - 1];
 };
 
+// Helper to fill all required form fields
+const fillRequiredFields = (getByPlaceholderText: (text: string) => any) => {
+  fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
+  fireEvent.changeText(getByPlaceholderText('Choose a username'), 'testuser');
+  fireEvent.changeText(getByPlaceholderText('Enter your phone number'), '1234567890');
+  fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
+  fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
+};
+
 describe('SignUp', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -147,15 +156,22 @@ describe('SignUp', () => {
 
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
-    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
-    fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
+    fillRequiredFields(getByPlaceholderText);
     await act(async () => {
       fireEvent.press(getButton(getAllByText, 'Create Account'));
     });
 
     await waitFor(() => {
-      expect(mockSignUp).toHaveBeenCalledWith('test@example.com', 'password123');
+      expect(mockSignUp).toHaveBeenCalledWith(
+        'test@example.com',
+        'password123',
+        expect.objectContaining({
+          username: 'testuser',
+          phone_number: '1234567890',
+          throwing_hand: 'right',
+          preferred_throw_style: 'backhand',
+        })
+      );
     });
   });
 
@@ -164,9 +180,7 @@ describe('SignUp', () => {
 
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
-    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
-    fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
+    fillRequiredFields(getByPlaceholderText);
     await act(async () => {
       fireEvent.press(getButton(getAllByText, 'Create Account'));
     });
@@ -186,6 +200,8 @@ describe('SignUp', () => {
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'existing@example.com');
+    fireEvent.changeText(getByPlaceholderText('Choose a username'), 'testuser');
+    fireEvent.changeText(getByPlaceholderText('Enter your phone number'), '1234567890');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
     await act(async () => {
@@ -205,9 +221,7 @@ describe('SignUp', () => {
 
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
-    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
-    fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
+    fillRequiredFields(getByPlaceholderText);
     await act(async () => {
       fireEvent.press(getButton(getAllByText, 'Create Account'));
     });
@@ -296,6 +310,8 @@ describe('SignUp', () => {
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), '  test@example.com  ');
+    fireEvent.changeText(getByPlaceholderText('Choose a username'), 'testuser');
+    fireEvent.changeText(getByPlaceholderText('Enter your phone number'), '1234567890');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
 
@@ -304,7 +320,11 @@ describe('SignUp', () => {
       await Promise.resolve(); // Allow promises to resolve
     });
 
-    expect(mockSignUp).toHaveBeenCalledWith('test@example.com', 'password123');
+    expect(mockSignUp).toHaveBeenCalledWith(
+      'test@example.com',
+      'password123',
+      expect.objectContaining({ username: 'testuser' })
+    );
   });
 
   // Skip - test isolation issues (passes individually, fails when run together)
@@ -364,9 +384,7 @@ describe('SignUp', () => {
 
     const { getAllByText, getByPlaceholderText } = render(<SignUp />);
 
-    fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
-    fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
-    fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
+    fillRequiredFields(getByPlaceholderText);
     await act(async () => {
       fireEvent.press(getButton(getAllByText, 'Create Account'));
     });

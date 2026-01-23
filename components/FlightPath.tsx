@@ -80,11 +80,11 @@ export default function FlightPath({
     anhyzer: selectedPath === null || selectedPath === 'anhyzer',
   }), [selectedPath]);
 
-  // Fetch user's throwing hand preference
+  // Fetch user's throwing hand and preferred throw style
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchThrowingHand() {
+    async function fetchUserPreferences() {
       try {
         const {
           data: { user },
@@ -93,19 +93,24 @@ export default function FlightPath({
 
         const { data, error } = await supabase
           .from('profiles')
-          .select('throwing_hand')
+          .select('throwing_hand, preferred_throw_style')
           .eq('id', user.id)
           .single();
 
-        if (!error && data?.throwing_hand && isMounted) {
-          setThrowingHand(data.throwing_hand as ThrowingHand);
+        if (!error && data && isMounted) {
+          if (data.throwing_hand) {
+            setThrowingHand(data.throwing_hand as ThrowingHand);
+          }
+          if (data.preferred_throw_style && data.preferred_throw_style !== 'both') {
+            setThrowStyle(data.preferred_throw_style as ThrowStyle);
+          }
         }
       } catch {
-        // Use default (right) if fetch fails
+        // Use defaults if fetch fails
       }
     }
 
-    fetchThrowingHand();
+    fetchUserPreferences();
 
     return () => {
       isMounted = false;

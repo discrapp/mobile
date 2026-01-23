@@ -6,16 +6,21 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export type ThrowingHand = 'right' | 'left';
+export type PreferredThrowStyle = 'backhand' | 'forehand' | 'both';
 
 interface DiscPreferencesSectionProps {
   throwingHand: ThrowingHand;
   onThrowingHandChange: (hand: ThrowingHand) => void;
+  preferredThrowStyle: PreferredThrowStyle;
+  onPreferredThrowStyleChange: (style: PreferredThrowStyle) => void;
   saving?: boolean;
 }
 
 export default function DiscPreferencesSection({
   throwingHand,
   onThrowingHandChange,
+  preferredThrowStyle,
+  onPreferredThrowStyleChange,
   saving = false,
 }: DiscPreferencesSectionProps) {
   const colorScheme = useColorScheme();
@@ -39,6 +44,41 @@ export default function DiscPreferencesSection({
     );
   }, [onThrowingHandChange]);
 
+  const handlePreferredThrowStylePress = useCallback(() => {
+    Alert.alert(
+      'Preferred Throw Style',
+      'Select your preferred throwing style',
+      [
+        {
+          text: 'Backhand',
+          onPress: () => onPreferredThrowStyleChange('backhand'),
+        },
+        {
+          text: 'Forehand',
+          onPress: () => onPreferredThrowStyleChange('forehand'),
+        },
+        {
+          text: 'Both',
+          onPress: () => onPreferredThrowStyleChange('both'),
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
+  }, [onPreferredThrowStyleChange]);
+
+  const getThrowStyleLabel = (style: PreferredThrowStyle): string => {
+    switch (style) {
+      case 'backhand':
+        return 'Backhand';
+      case 'forehand':
+        return 'Forehand';
+      case 'both':
+        return 'Both';
+      default:
+        return 'Backhand';
+    }
+  };
+
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Disc Preferences</Text>
@@ -54,6 +94,23 @@ export default function DiscPreferencesSection({
             disabled={saving}>
             <Text style={styles.detailValue}>
               {throwingHand === 'right' ? 'Right Hand' : 'Left Hand'}
+            </Text>
+            <FontAwesome name="chevron-down" size={12} color="#999" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Preferred Throw Style */}
+      <View style={[styles.editableRow, styles.rowBorder]}>
+        <FontAwesome name="repeat" size={16} color="#666" style={styles.detailIcon} />
+        <View style={styles.editableContent}>
+          <Text style={styles.detailLabel}>Preferred Throw Style</Text>
+          <TouchableOpacity
+            style={styles.dropdownRow}
+            onPress={handlePreferredThrowStylePress}
+            disabled={saving}>
+            <Text style={styles.detailValue}>
+              {getThrowStyleLabel(preferredThrowStyle)}
             </Text>
             <FontAwesome name="chevron-down" size={12} color="#999" />
           </TouchableOpacity>
@@ -84,6 +141,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingVertical: 12,
+  },
+  rowBorder: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(150, 150, 150, 0.2)',
   },
   detailIcon: {
     marginRight: 12,
