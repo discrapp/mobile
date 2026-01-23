@@ -14,10 +14,12 @@ import { Text } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useDiscRecommendations } from '@/hooks/useDiscRecommendations';
+import { useDiscRecommendations, DiscRecommendation } from '@/hooks/useDiscRecommendations';
+import { useDismissRecommendation } from '@/hooks/useDismissRecommendation';
 import DiscRecommendationCard from '@/components/DiscRecommendationCard';
 import BagAnalysisCard from '@/components/BagAnalysisCard';
 import TradeInCandidateCard from '@/components/TradeInCandidateCard';
+import { showSuccess, handleError } from '@/lib/errorHandler';
 
 type RecommendationCount = 1 | 3 | 5;
 
@@ -53,6 +55,20 @@ export default function DiscRecommendationsScreen() {
 
   // Disc recommendations hook
   const { getRecommendations, isLoading, error, result, reset } = useDiscRecommendations();
+
+  // Dismiss recommendation hook
+  const { dismissDisc, isLoading: isDismissing } = useDismissRecommendation();
+  const [dismissingDiscId, setDismissingDiscId] = useState<string | null>(null);
+  const [localRecommendations, setLocalRecommendations] = useState<DiscRecommendation[]>([]);
+
+  // Sync local recommendations with result
+  useEffect(() => {
+    if (result?.recommendations) {
+      setLocalRecommendations(result.recommendations);
+    } else {
+      setLocalRecommendations([]);
+    }
+  }, [result]);
 
   // Animate loading steps
   useEffect(() => {
@@ -121,6 +137,23 @@ export default function DiscRecommendationsScreen() {
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       await Linking.openURL(url);
+    }
+  };
+
+  const handleDismissDisc = async (discCatalogId: string, discName: string) => {
+    setDismissingDiscId(discCatalogId);
+    const success = await dismissDisc(discCatalogId);
+    setDismissingDiscId(null);
+
+    if (success) {
+      // Remove from local recommendations
+      setLocalRecommendations((prev) => prev.filter((rec) => rec.disc.id !== discCatalogId));
+      showSuccess(`${discName} won't be recommended again`);
+    } else {
+      handleError(new Error('Failed to dismiss recommendation'), {
+        operation: 'dismiss-disc-recommendation',
+        context: { discCatalogId, discName },
+      });
     }
   };
 
@@ -254,7 +287,7 @@ export default function DiscRecommendationsScreen() {
   const renderResult = () => {
     if (!result) return null;
 
-    const { recommendations, trade_in_candidates, bag_analysis, confidence, processing_time_ms } = result;
+    const { trade_in_candidates, bag_analysis, confidence, processing_time_ms } = result;
 
     return (
       <ScrollView style={styles.resultScroll} contentContainerStyle={styles.resultContent}>
@@ -268,14 +301,22 @@ export default function DiscRecommendationsScreen() {
 
         {/* Recommendations */}
         <Text style={[styles.sectionTitle, dynamicStyles.text]}>Recommended Discs</Text>
-        {recommendations.map((rec, index) => (
-          <DiscRecommendationCard
-            key={rec.disc.id || index}
-            recommendation={rec}
-            isDark={isDark}
-            onBuyPress={() => handleOpenLink(rec.purchase_url)}
-          />
-        ))}
+        {localRecommendations.length === 0 ? (
+          <Text style={[styles.noRecommendationsText, dynamicStyles.secondaryText]}>
+            All recommendations have been dismissed. Try a new analysis for fresh suggestions.
+          </Text>
+        ) : (
+          localRecommendations.map((rec, index) => (
+            <DiscRecommendationCard
+              key={rec.disc.id || index}
+              recommendation={rec}
+              isDark={isDark}
+              onBuyPress={() => handleOpenLink(rec.purchase_url)}
+              onDismissPress={() => handleDismissDisc(rec.disc.id, `${rec.disc.manufacturer} ${rec.disc.mold}`)}
+              isDismissing={dismissingDiscId === rec.disc.id}
+            />
+          ))
+        )}
 
         {/* Trade-in Candidates */}
         {trade_in_candidates && trade_in_candidates.length > 0 && (
@@ -532,5 +573,11 @@ const styles = StyleSheet.create({
   backButtonBottomText: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  noRecommendationsText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginVertical: 24,
+    lineHeight: 20,
   },
 });

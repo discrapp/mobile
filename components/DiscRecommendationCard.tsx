@@ -8,6 +8,8 @@ interface DiscRecommendationCardProps {
   recommendation: DiscRecommendation;
   isDark: boolean;
   onBuyPress: () => void;
+  onDismissPress?: () => void;
+  isDismissing?: boolean;
 }
 
 const STABILITY_COLORS: Record<string, { bg: string; text: string }> = {
@@ -34,6 +36,8 @@ export default function DiscRecommendationCard({
   recommendation,
   isDark,
   onBuyPress,
+  onDismissPress,
+  isDismissing,
 }: DiscRecommendationCardProps) {
   const { disc, reason, gap_type, priority } = recommendation;
   const flightNumbers = disc.flight_numbers;
@@ -138,6 +142,25 @@ export default function DiscRecommendationCard({
         <Text style={styles.buyButtonText}>Buy on Infinite Discs</Text>
         <FontAwesome name="external-link" size={12} color="#fff" style={{ marginLeft: 8 }} />
       </Pressable>
+
+      {/* Dismiss Button */}
+      {onDismissPress && (
+        <Pressable
+          style={[styles.dismissButton, isDismissing && { opacity: 0.5 }]}
+          onPress={onDismissPress}
+          disabled={isDismissing}
+        >
+          <FontAwesome
+            name="ban"
+            size={14}
+            color={isDark ? '#888' : '#666'}
+            style={{ marginRight: 8 }}
+          />
+          <Text style={[styles.dismissButtonText, { color: isDark ? '#888' : '#666' }]}>
+            {isDismissing ? 'Dismissing...' : "Don't Show Again"}
+          </Text>
+        </Pressable>
+      )}
     </RNView>
   );
 }
@@ -248,5 +271,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  dismissButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    marginTop: 8,
+  },
+  dismissButtonText: {
+    fontSize: 13,
+    fontWeight: '500',
   },
 });
