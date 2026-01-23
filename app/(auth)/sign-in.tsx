@@ -17,8 +17,7 @@ import { validateSignInForm } from '@/lib/validation';
 import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
 
-const logoLight = require('@/assets/images/logo.png');
-const logoDark = require('@/assets/images/logo-white.png');
+const logo = require('@/assets/images/logo.png');
 
 export default function SignIn() {
   const colorScheme = useColorScheme();
@@ -84,7 +83,10 @@ export default function SignIn() {
       color: isDark ? '#fff' : '#000',
     },
     footerText: {
-      color: isDark ? '#999' : '#666',
+      color: isDark ? '#ccc' : '#666',
+    },
+    link: {
+      color: isDark ? Colors.violet[400] : Colors.violet.primary,
     },
   };
 
@@ -96,7 +98,7 @@ export default function SignIn() {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Image
-            source={isDark ? logoDark : logoLight}
+            source={logo}
             style={styles.logo}
             resizeMode="contain"
             testID="app-logo"
@@ -112,7 +114,7 @@ export default function SignIn() {
             <TextInput
               style={[styles.input, dynamicStyles.input, errors.email && styles.inputError]}
               placeholder="Enter your email"
-              placeholderTextColor={isDark ? '#666' : '#999'}
+              placeholderTextColor={isDark ? '#888' : '#999'}
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -134,7 +136,7 @@ export default function SignIn() {
             <TextInput
               style={[styles.input, dynamicStyles.input, errors.password && styles.inputError]}
               placeholder="Enter your password"
-              placeholderTextColor={isDark ? '#666' : '#999'}
+              placeholderTextColor={isDark ? '#888' : '#999'}
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
@@ -151,8 +153,8 @@ export default function SignIn() {
           </View>
 
           <Link href="/(auth)/forgot-password" asChild>
-            <TouchableOpacity disabled={loading} style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            <TouchableOpacity disabled={loading} style={styles.forgotPassword} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+              <Text style={[styles.forgotPasswordText, dynamicStyles.link]}>Forgot password?</Text>
             </TouchableOpacity>
           </Link>
 
@@ -171,8 +173,8 @@ export default function SignIn() {
           <View style={styles.footer}>
             <Text style={[styles.footerText, dynamicStyles.footerText]}>Don't have an account? </Text>
             <Link href="/(auth)/sign-up" asChild>
-              <TouchableOpacity disabled={loading}>
-                <Text style={styles.link}>Sign Up</Text>
+              <TouchableOpacity disabled={loading} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                <Text style={[styles.link, dynamicStyles.link]}>Sign Up</Text>
               </TouchableOpacity>
             </Link>
           </View>
@@ -252,7 +254,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   forgotPasswordText: {
-    color: Colors.violet.primary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -266,7 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   link: {
-    color: Colors.violet.primary,
     fontSize: 14,
     fontWeight: '600',
   },
