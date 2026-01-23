@@ -158,8 +158,8 @@ describe('DiscRecommendationsScreen', () => {
     const { getByText } = render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
-      expect(getByText('Analyzing your bag...')).toBeTruthy();
-      expect(getByText(/AI is identifying gaps/)).toBeTruthy();
+      // Loading state shows animated steps - first step is "Scanning your disc bag..."
+      expect(getByText('Scanning your disc bag...')).toBeTruthy();
     });
   });
 
