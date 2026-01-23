@@ -126,14 +126,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-bag"
         options={{
-          title: 'My Bag',
+          title: 'Bag',
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-bag" color={color} />,
         }}
       />
       <Tabs.Screen
         name="found-disc"
         options={{
-          title: 'Found Disc',
+          title: 'Found',
           tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
