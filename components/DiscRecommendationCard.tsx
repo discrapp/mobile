@@ -50,7 +50,10 @@ export default function DiscRecommendationCard({
       color: isDark ? '#999' : '#666',
     },
     priorityBadge: {
-      backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : Colors.violet[100],
+      backgroundColor: isDark ? 'rgba(139, 92, 246, 0.4)' : Colors.violet[100],
+    },
+    priorityText: {
+      color: isDark ? '#c4b5fd' : Colors.violet.primary,
     },
   };
 
@@ -61,7 +64,7 @@ export default function DiscRecommendationCard({
       {/* Header with priority and gap type */}
       <RNView style={styles.cardHeader}>
         <RNView style={[styles.priorityBadge, dynamicStyles.priorityBadge]}>
-          <Text style={[styles.priorityText, { color: Colors.violet.primary }]}>
+          <Text style={[styles.priorityText, dynamicStyles.priorityText]}>
             {PRIORITY_LABELS[priority] || `#${priority}`}
           </Text>
         </RNView>
