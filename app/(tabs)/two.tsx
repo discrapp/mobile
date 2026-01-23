@@ -15,7 +15,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { compressImage } from '@/utils/imageCompression';
 import { RecoveryCardSkeleton, FormFieldSkeleton, Skeleton } from '@/components/Skeleton';
 import { handleError, showSuccess } from '@/lib/errorHandler';
-import DiscPreferencesSection, { ThrowingHand } from '@/components/DiscPreferencesSection';
+import DiscPreferencesSection, { ThrowingHand, PreferredThrowStyle } from '@/components/DiscPreferencesSection';
 
 type DisplayPreference = 'username' | 'full_name';
 
@@ -26,6 +26,7 @@ interface ProfileData {
   full_name: string | null;
   display_preference: DisplayPreference;
   throwing_hand: ThrowingHand;
+  preferred_throw_style: PreferredThrowStyle;
   avatar_url: string | null;
   venmo_username: string | null;
   stripe_connect_status: ConnectStatus;
@@ -68,6 +69,7 @@ export default function ProfileScreen() {
     full_name: null,
     display_preference: 'username',
     throwing_hand: 'right',
+    preferred_throw_style: 'backhand',
     avatar_url: null,
     venmo_username: null,
     stripe_connect_status: 'none',
@@ -114,6 +116,9 @@ export default function ProfileScreen() {
   // Pull-to-refresh state
   const [refreshing, setRefreshing] = useState(false);
 
+  // Delete account state
+  const [deletingAccount, setDeletingAccount] = useState(false);
+
   // istanbul ignore next -- Pull-to-refresh tested via integration tests
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -146,13 +151,74 @@ export default function ProfileScreen() {
     );
   };
 
+  // istanbul ignore next -- Account deletion requires confirmation dialogs
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone and will permanently delete:\n\n• Your profile and settings\n• All your registered discs\n• Your recovery history\n• Any pending recoveries',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete Account',
+          style: 'destructive',
+          onPress: confirmDeleteAccount,
+        },
+      ]
+    );
+  };
+
+  // istanbul ignore next -- Account deletion API call
+  const confirmDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        Alert.alert('Error', 'You must be signed in to delete your account');
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/delete-account`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete account');
+      }
+
+      Alert.alert(
+        'Account Deleted',
+        'Your account has been permanently deleted.',
+        [
+          {
+            text: 'OK',
+            onPress: () => signOut(),
+          },
+        ]
+      );
+    } catch (error) {
+      handleError(error, { operation: 'delete-account' });
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
   const fetchProfile = async () => {
     if (!user?.id) return;
 
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name, display_preference, throwing_hand, avatar_url, venmo_username, stripe_connect_status, phone_number, phone_discoverable')
+        .select('username, full_name, display_preference, throwing_hand, preferred_throw_style, avatar_url, venmo_username, stripe_connect_status, phone_number, phone_discoverable')
         .eq('id', user.id)
         .single();
 
@@ -164,6 +230,7 @@ export default function ProfileScreen() {
           full_name: data.full_name,
           display_preference: data.display_preference || 'username',
           throwing_hand: (data.throwing_hand as ThrowingHand) || 'right',
+          preferred_throw_style: (data.preferred_throw_style as PreferredThrowStyle) || 'backhand',
           avatar_url: data.avatar_url,
           venmo_username: data.venmo_username,
           stripe_connect_status: (data.stripe_connect_status as ConnectStatus) || 'none',
@@ -472,6 +539,11 @@ export default function ProfileScreen() {
   // istanbul ignore next -- Throwing hand preference save
   const handleThrowingHandChange = (hand: ThrowingHand) => {
     saveProfile({ throwing_hand: hand });
+  };
+
+  // istanbul ignore next -- Preferred throw style preference save
+  const handlePreferredThrowStyleChange = (style: PreferredThrowStyle) => {
+    saveProfile({ preferred_throw_style: style });
   };
 
   useEffect(() => {
@@ -1009,9 +1081,9 @@ export default function ProfileScreen() {
                   </View>
                 )}
                 {discsFound > 0 && (
-                  <View style={styles.statsBadge}>
-                    <FontAwesome name="search" size={14} color={Colors.violet.primary} />
-                    <Text style={styles.statsText}>
+                  <View style={[styles.statsBadge, styles.foundBadge]}>
+                    <FontAwesome name="search" size={14} color="#3b82f6" />
+                    <Text style={[styles.statsText, { color: '#3b82f6' }]}>
                       {discsFound} found
                     </Text>
                   </View>
@@ -1257,6 +1329,8 @@ export default function ProfileScreen() {
         <DiscPreferencesSection
           throwingHand={profile.throwing_hand}
           onThrowingHandChange={handleThrowingHandChange}
+          preferredThrowStyle={profile.preferred_throw_style}
+          onPreferredThrowStyleChange={handlePreferredThrowStyleChange}
           saving={saving}
         />
 
@@ -1595,6 +1669,24 @@ export default function ProfileScreen() {
             <Text style={styles.signOutText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Delete Account Button */}
+        <View style={styles.deleteAccountContainer}>
+          <TouchableOpacity
+            style={[styles.deleteAccountButton, deletingAccount && styles.deleteAccountButtonDisabled]}
+            onPress={handleDeleteAccount}
+            disabled={deletingAccount}
+          >
+            {deletingAccount ? (
+              <ActivityIndicator color="#E74C3C" />
+            ) : (
+              <>
+                <FontAwesome name="trash" size={14} color="#E74C3C" style={styles.buttonIcon} />
+                <Text style={styles.deleteAccountText}>Delete Account</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -1673,6 +1765,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
   },
+  foundBadge: {
+    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+  },
   statsText: {
     fontSize: 14,
     fontWeight: '600',
@@ -1734,6 +1829,32 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  deleteAccountContainer: {
+    width: '100%',
+    marginTop: 30,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(150, 150, 150, 0.2)',
+  },
+  deleteAccountButton: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E74C3C',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteAccountButtonDisabled: {
+    opacity: 0.5,
+  },
+  deleteAccountText: {
+    color: '#E74C3C',
+    fontSize: 14,
+    fontWeight: '500',
   },
   editableRow: {
     flexDirection: 'row',

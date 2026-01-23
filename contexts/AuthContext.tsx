@@ -20,12 +20,20 @@ Notifications.setNotificationHandler({
   }),
 });
 
+interface SignUpMetadata {
+  username?: string;
+  full_name?: string;
+  phone_number?: string;
+  throwing_hand?: 'right' | 'left';
+  preferred_throw_style?: 'backhand' | 'forehand' | 'both';
+}
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, metadata?: SignUpMetadata) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   registerPushToken: () => Promise<void>;
@@ -246,10 +254,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, metadata?: SignUpMetadata) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: metadata ? { data: metadata } : undefined,
     });
     if (error) {
       captureError(error, { operation: 'signUp', email });
