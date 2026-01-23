@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { setUserContext, clearUserContext, captureError } from '@/lib/sentry';
 import { logger } from '@/lib/logger';
+import { clearUserCache } from '@/utils/clearUserCache';
 
 // Configure notification handler
 Notifications.setNotificationHandler({
@@ -280,6 +281,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
     setUser(null);
     clearUserContext();
+    // Clear cached user data to prevent next user from seeing previous user's data
+    await clearUserCache();
   };
 
   return (
