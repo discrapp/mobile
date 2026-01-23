@@ -5,6 +5,7 @@ import { Text, View } from '@/components/Themed';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { supabase } from '@/lib/supabase';
 import { getCachedDiscs, CachedDisc } from '@/utils/discCache';
 import { calculateBagStats } from '@/utils/bagStats';
@@ -13,6 +14,7 @@ import { logger } from '@/lib/logger';
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -176,12 +178,14 @@ export default function HomeScreen() {
           <Text style={styles.quickActionText}>Link Sticker</Text>
         </Pressable>
 
-        <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/shot-recommendation')}>
-          <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : Colors.violet[100] }]}>
-            <FontAwesome name="magic" size={20} color={isDark ? '#a78bfa' : Colors.violet.primary} />
-          </RNView>
-          <Text style={styles.quickActionText}>Shot Advisor</Text>
-        </Pressable>
+        {isAdmin && (
+          <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/shot-recommendation')}>
+            <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(139, 92, 246, 0.2)' : Colors.violet[100] }]}>
+              <FontAwesome name="magic" size={20} color={isDark ? '#a78bfa' : Colors.violet.primary} />
+            </RNView>
+            <Text style={styles.quickActionText}>Shot Advisor</Text>
+          </Pressable>
+        )}
 
         <Pressable style={[styles.quickAction, dynamicStyles.quickAction]} onPress={() => router.push('/disc-recommendations')}>
           <RNView style={[styles.quickActionIcon, { backgroundColor: isDark ? 'rgba(243, 156, 18, 0.2)' : '#FFF3E0' }]}>

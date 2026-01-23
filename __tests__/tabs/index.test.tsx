@@ -4,8 +4,14 @@ import HomeScreen from '../../app/(tabs)/index';
 
 // Mock useAuth
 const mockUser = { email: 'test@example.com', id: 'user-123' };
+const mockAdminUser = { email: 'admin@example.com', id: 'admin-123', app_metadata: { role: 'admin' } };
 jest.mock('../../contexts/AuthContext', () => ({
   useAuth: jest.fn(() => ({ user: null })),
+}));
+
+// Mock useIsAdmin
+jest.mock('../../hooks/useIsAdmin', () => ({
+  useIsAdmin: jest.fn(() => false),
 }));
 
 // Mock expo-router
@@ -42,6 +48,7 @@ jest.mock('../../lib/logger', () => ({
 }));
 
 const { useAuth } = require('../../contexts/AuthContext');
+const { useIsAdmin } = require('../../hooks/useIsAdmin');
 const { getCachedDiscs } = require('../../utils/discCache');
 
 describe('HomeScreen', () => {
@@ -188,6 +195,42 @@ describe('HomeScreen', () => {
     fireEvent.press(getByText('Link Sticker'));
 
     expect(mockPush).toHaveBeenCalledWith('/link-sticker');
+  });
+
+  describe('Shot Advisor feature flag', () => {
+    it('hides Shot Advisor for non-admin users', async () => {
+      useAuth.mockReturnValue({ user: mockUser });
+      useIsAdmin.mockReturnValue(false);
+      const { queryByText } = render(<HomeScreen />);
+
+      await waitFor(() => {
+        expect(queryByText('Shot Advisor')).toBeNull();
+      });
+    });
+
+    it('shows Shot Advisor for admin users', async () => {
+      useAuth.mockReturnValue({ user: mockAdminUser });
+      useIsAdmin.mockReturnValue(true);
+      const { getByText } = render(<HomeScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Shot Advisor')).toBeTruthy();
+      });
+    });
+
+    it('navigates to shot-recommendation when Shot Advisor is pressed by admin', async () => {
+      useAuth.mockReturnValue({ user: mockAdminUser });
+      useIsAdmin.mockReturnValue(true);
+      const { getByText } = render(<HomeScreen />);
+
+      await waitFor(() => {
+        expect(getByText('Shot Advisor')).toBeTruthy();
+      });
+
+      fireEvent.press(getByText('Shot Advisor'));
+
+      expect(mockPush).toHaveBeenCalledWith('/shot-recommendation');
+    });
   });
 
   describe('with disc data', () => {
