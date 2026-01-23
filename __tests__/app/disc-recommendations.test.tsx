@@ -39,14 +39,47 @@ jest.mock('@/hooks/useDiscRecommendations', () => ({
   useDiscRecommendations: () => mockHookState,
 }));
 
+// Mock dismiss hook
+const mockDismissDisc = jest.fn();
+const mockDismissHookState = {
+  dismissDisc: mockDismissDisc,
+  isLoading: false,
+  error: null,
+};
+
+jest.mock('@/hooks/useDismissRecommendation', () => ({
+  useDismissRecommendation: () => mockDismissHookState,
+}));
+
+// Mock error handler
+jest.mock('@/lib/errorHandler', () => ({
+  showSuccess: jest.fn(),
+  handleError: jest.fn(),
+}));
+
 // Mock components
 jest.mock('@/components/DiscRecommendationCard', () => {
-  const { View, Text } = require('react-native');
-  return function MockDiscRecommendationCard({ recommendation, onBuyPress }: { recommendation: { disc: { mold: string } }; onBuyPress: () => void }) {
+  const { View, Text, Pressable } = require('react-native');
+  return function MockDiscRecommendationCard({
+    recommendation,
+    onBuyPress,
+    onDismissPress,
+    isDismissing,
+  }: {
+    recommendation: { disc: { id: string; mold: string } };
+    onBuyPress: () => void;
+    onDismissPress?: () => void;
+    isDismissing?: boolean;
+  }) {
     return (
       <View testID="disc-recommendation-card">
-        <Text>{recommendation.disc.mold}</Text>
+        <Text testID={`disc-${recommendation.disc.id}`}>{recommendation.disc.mold}</Text>
         <Text onPress={onBuyPress}>Buy</Text>
+        {onDismissPress && (
+          <Pressable onPress={onDismissPress} disabled={isDismissing} testID="dismiss-button">
+            <Text>{isDismissing ? 'Dismissing...' : "Don't Show Again"}</Text>
+          </Pressable>
+        )}
       </View>
     );
   };
@@ -123,6 +156,9 @@ describe('DiscRecommendationsScreen', () => {
     mockHookState.isLoading = false;
     mockHookState.error = null;
     mockHookState.result = null;
+    mockDismissHookState.isLoading = false;
+    mockDismissHookState.error = null;
+    mockDismissDisc.mockResolvedValue(true);
   });
 
   it('renders initial state with count selector', async () => {
@@ -266,6 +302,92 @@ describe('DiscRecommendationsScreen', () => {
     await waitFor(() => {
       expect(Linking.canOpenURL).toHaveBeenCalledWith('https://example.com/destroyer');
       expect(Linking.openURL).toHaveBeenCalledWith('https://example.com/destroyer');
+    });
+  });
+
+  it('renders dismiss button on recommendation cards', async () => {
+    mockHookState.result = mockResult;
+
+    const { getByText } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByText("Don't Show Again")).toBeTruthy();
+    });
+  });
+
+  it('calls dismissDisc when dismiss button is pressed', async () => {
+    mockHookState.result = mockResult;
+    mockDismissDisc.mockResolvedValue(true);
+
+    const { getByText, getByTestId } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByTestId('dismiss-button')).toBeTruthy();
+    });
+
+    fireEvent.press(getByTestId('dismiss-button'));
+
+    await waitFor(() => {
+      expect(mockDismissDisc).toHaveBeenCalledWith('disc-1');
+    });
+  });
+
+  it('removes card and shows success toast on successful dismiss', async () => {
+    const { showSuccess } = require('@/lib/errorHandler');
+    mockHookState.result = mockResult;
+    mockDismissDisc.mockResolvedValue(true);
+
+    const { getByTestId, queryByTestId } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByTestId('disc-disc-1')).toBeTruthy();
+    });
+
+    fireEvent.press(getByTestId('dismiss-button'));
+
+    await waitFor(() => {
+      expect(showSuccess).toHaveBeenCalledWith("Innova Destroyer won't be recommended again");
+    });
+
+    await waitFor(() => {
+      expect(queryByTestId('disc-disc-1')).toBeNull();
+    });
+  });
+
+  it('shows error toast on failed dismiss', async () => {
+    const { handleError } = require('@/lib/errorHandler');
+    mockHookState.result = mockResult;
+    mockDismissDisc.mockResolvedValue(false);
+
+    const { getByTestId } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByTestId('dismiss-button')).toBeTruthy();
+    });
+
+    fireEvent.press(getByTestId('dismiss-button'));
+
+    await waitFor(() => {
+      expect(handleError).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          operation: 'dismiss-disc-recommendation',
+          context: { discCatalogId: 'disc-1', discName: 'Innova Destroyer' },
+        })
+      );
+    });
+  });
+
+  it('shows no recommendations message when all are dismissed', async () => {
+    mockHookState.result = {
+      ...mockResult,
+      recommendations: [],
+    };
+
+    const { getByText } = render(<DiscRecommendationsScreen />);
+
+    await waitFor(() => {
+      expect(getByText('All recommendations have been dismissed. Try a new analysis for fresh suggestions.')).toBeTruthy();
     });
   });
 });
