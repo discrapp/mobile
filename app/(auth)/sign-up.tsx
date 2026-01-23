@@ -19,8 +19,7 @@ import { validateSignUpForm } from '@/lib/validation';
 import { handleError } from '@/lib/errorHandler';
 import Colors from '@/constants/Colors';
 
-const logoLight = require('@/assets/images/logo.png');
-const logoDark = require('@/assets/images/logo-white.png');
+const logo = require('@/assets/images/logo.png');
 
 export default function SignUp() {
   const colorScheme = useColorScheme();
@@ -92,7 +91,10 @@ export default function SignUp() {
       color: isDark ? '#fff' : '#000',
     },
     footerText: {
-      color: isDark ? '#999' : '#666',
+      color: isDark ? '#ccc' : '#666',
+    },
+    link: {
+      color: isDark ? Colors.violet[400] : Colors.violet.primary,
     },
   };
 
@@ -108,7 +110,7 @@ export default function SignUp() {
         <View style={styles.content}>
           <View style={styles.logoContainer}>
             <Image
-              source={isDark ? logoDark : logoLight}
+              source={logo}
               style={styles.logo}
               resizeMode="contain"
               testID="app-logo"
@@ -124,7 +126,7 @@ export default function SignUp() {
               <TextInput
                 style={[styles.input, dynamicStyles.input, errors.email && styles.inputError]}
                 placeholder="Enter your email"
-                placeholderTextColor={isDark ? '#666' : '#999'}
+                placeholderTextColor={isDark ? '#888' : '#999'}
                 value={email}
                 onChangeText={(text) => {
                   setEmail(text);
@@ -146,7 +148,7 @@ export default function SignUp() {
               <TextInput
                 style={[styles.input, dynamicStyles.input, errors.password && styles.inputError]}
                 placeholder="Create a password (min 8 characters)"
-                placeholderTextColor={isDark ? '#666' : '#999'}
+                placeholderTextColor={isDark ? '#888' : '#999'}
                 value={password}
                 onChangeText={(text) => {
                   setPassword(text);
@@ -155,6 +157,8 @@ export default function SignUp() {
                   }
                 }}
                 secureTextEntry
+                autoCorrect={false}
+                textContentType="newPassword"
                 editable={!loading}
               />
               {errors.password && (
@@ -171,7 +175,7 @@ export default function SignUp() {
                   errors.confirmPassword && styles.inputError,
                 ]}
                 placeholder="Confirm your password"
-                placeholderTextColor={isDark ? '#666' : '#999'}
+                placeholderTextColor={isDark ? '#888' : '#999'}
                 value={confirmPassword}
                 onChangeText={(text) => {
                   setConfirmPassword(text);
@@ -180,6 +184,8 @@ export default function SignUp() {
                   }
                 }}
                 secureTextEntry
+                autoCorrect={false}
+                textContentType="newPassword"
                 editable={!loading}
               />
               {errors.confirmPassword && (
@@ -202,8 +208,8 @@ export default function SignUp() {
             <View style={styles.footer}>
               <Text style={[styles.footerText, dynamicStyles.footerText]}>Already have an account? </Text>
               <Link href="/(auth)/sign-in" asChild>
-                <TouchableOpacity disabled={loading}>
-                  <Text style={styles.link}>Sign In</Text>
+                <TouchableOpacity disabled={loading} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+                  <Text style={[styles.link, dynamicStyles.link]}>Sign In</Text>
                 </TouchableOpacity>
               </Link>
             </View>
@@ -291,7 +297,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   link: {
-    color: Colors.violet.primary,
     fontSize: 14,
     fontWeight: '600',
   },
