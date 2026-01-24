@@ -927,9 +927,9 @@ export default function FoundDiscScreen() {
             <View style={styles.dividerLine} />
           </View>
 
-          <Pressable style={styles.photoRecoveryButton} onPress={startPhotoCapture}>
-            <FontAwesome name="phone" size={18} color={Colors.violet.primary} />
-            <Text style={styles.photoRecoveryButtonText}>Use Phone Number on Disc</Text>
+          <Pressable style={[styles.photoRecoveryButton, { borderColor: isDark ? Colors.violet.light : Colors.violet.primary }]} onPress={startPhotoCapture}>
+            <FontAwesome name="phone" size={18} color={isDark ? Colors.violet.light : Colors.violet.primary} />
+            <Text style={[styles.photoRecoveryButtonText, { color: isDark ? Colors.violet.light : Colors.violet.primary }]}>Use Phone Number on Disc</Text>
           </Pressable>
           <Text style={styles.photoRecoveryHint}>
             Take a photo of the disc to extract the owner's phone number
@@ -1299,13 +1299,10 @@ export default function FoundDiscScreen() {
               Capture the phone number written on the disc
             </Text>
           </RNView>
-          <RNView style={styles.scannerFrame}>
-            <RNView style={[styles.cornerBorder, styles.topLeft]} />
-            <RNView style={[styles.cornerBorder, styles.topRight]} />
-            <RNView style={[styles.cornerBorder, styles.bottomLeft]} />
-            <RNView style={[styles.cornerBorder, styles.bottomRight]} />
+          <RNView style={styles.circleGuide}>
+            <RNView style={styles.circleGuideBorder} />
           </RNView>
-          <RNView style={{ gap: 16 }}>
+          <RNView style={{ gap: 16, alignItems: 'center' }}>
             <Pressable style={styles.captureButton} onPress={takePhoto}>
               <RNView style={styles.captureButtonInner} />
             </Pressable>
@@ -1336,13 +1333,10 @@ export default function FoundDiscScreen() {
               Now capture the front of the disc (design/stamp)
             </Text>
           </RNView>
-          <RNView style={styles.scannerFrame}>
-            <RNView style={[styles.cornerBorder, styles.topLeft]} />
-            <RNView style={[styles.cornerBorder, styles.topRight]} />
-            <RNView style={[styles.cornerBorder, styles.bottomLeft]} />
-            <RNView style={[styles.cornerBorder, styles.bottomRight]} />
+          <RNView style={styles.circleGuide}>
+            <RNView style={styles.circleGuideBorder} />
           </RNView>
-          <RNView style={{ gap: 16 }}>
+          <RNView style={{ gap: 16, alignItems: 'center' }}>
             <Pressable style={styles.captureButton} onPress={takePhoto}>
               <RNView style={styles.captureButtonInner} />
             </Pressable>
@@ -1598,11 +1592,12 @@ export default function FoundDiscScreen() {
       <View style={[styles.centerContainer, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
         <RNView style={[styles.smsInviteCard, { backgroundColor: isDark ? '#1e1e1e' : '#f0f0f0' }]}>
           <FontAwesome name="user-times" size={48} color="#F39C12" />
+          <Text style={styles.smsInviteTitle}>No Discr Account Found</Text>
           <Text style={styles.smsInviteText}>
-            This phone number isn't registered on Discr yet.
+            We couldn't find a Discr user with this phone number. They may use a different number or haven't joined yet.
           </Text>
           <Text style={[styles.smsInviteText, { marginTop: 8 }]}>
-            Would you like to send them a text inviting them to download the app?
+            Send them a text so they can download the app and connect with you to get their disc back.
           </Text>
         </RNView>
 
@@ -1951,6 +1946,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 4,
     borderRightWidth: 4,
     borderBottomRightRadius: 8,
+  },
+  circleGuide: {
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_WIDTH * 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleGuideBorder: {
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_WIDTH * 0.7,
+    borderRadius: (SCREEN_WIDTH * 0.7) / 2,
+    borderWidth: 4,
+    borderColor: '#fff',
+    backgroundColor: 'transparent',
   },
   cancelScanButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -2309,10 +2318,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
   },
-  smsInviteText: {
-    fontSize: 16,
-    color: '#666',
+  smsInviteTitle: {
+    fontSize: 20,
+    fontWeight: '600',
     textAlign: 'center',
     marginTop: 12,
+  },
+  smsInviteText: {
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 8,
+    lineHeight: 22,
+    opacity: 0.7,
   },
 });
