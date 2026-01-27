@@ -17,7 +17,7 @@
   "commitMessageExtra": "to {{newValue}}",
   "commitMessageTopic": "{{depName}}",
   "automerge": false,
-  "platformAutomerge": false,
+  "platformAutomerge": true,
   "rebaseWhen": "behind-base-branch",
   "labels": [
     "dependencies",
