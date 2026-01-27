@@ -180,7 +180,7 @@ export type ShippingAddressFormData = z.infer<typeof shippingAddressSchema>;
  * Returns an object with field names as keys and error messages as values
  */
 export function extractZodErrors<T>(
-  result: z.SafeParseReturnType<T, T>
+  result: z.ZodSafeParseResult<T>
 ): Record<string, string> {
   if (result.success) return {};
 
