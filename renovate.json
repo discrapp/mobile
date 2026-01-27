@@ -19,6 +19,8 @@
   "automerge": false,
   "platformAutomerge": true,
   "rebaseWhen": "behind-base-branch",
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
   "labels": [
     "dependencies",
     "renovate"
@@ -41,6 +43,12 @@
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance"],
       "groupName": "npm non-major updates"
+    },
+    {
+      "description": "Group all major npm updates together",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "npm major updates"
     },
     {
       "description": "Automerge minor/patch updates",
@@ -83,24 +91,18 @@
       }
     },
     {
-      "description": "Group testing packages",
-      "groupName": "testing packages",
-      "matchPackageNames": [
-        "/jest/",
-        "/testing-library/"
-      ]
-    },
-    {
-      "description": "GitHub Actions - automerge patch/minor",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "description": "GitHub Actions - group and automerge non-major",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "github-actions non-major",
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "description": "GitHub Actions - group major updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "github-actions major"
     },
     {
       "description": "Pre-commit hooks - group updates",
@@ -108,14 +110,6 @@
         "pre-commit"
       ],
       "groupName": "pre-commit hooks"
-    },
-    {
-      "description": "TypeScript and types - group together",
-      "groupName": "typescript and types",
-      "matchPackageNames": [
-        "/^typescript/",
-        "/^@types//"
-      ]
     }
   ]
 }
