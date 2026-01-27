@@ -18,7 +18,7 @@
   "commitMessageTopic": "{{depName}}",
   "automerge": false,
   "platformAutomerge": true,
-  "rebaseWhen": "behind-base-branch",
+  "rebaseWhen": "conflicted",
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "pruneStaleBranches": true,
