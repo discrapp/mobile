@@ -37,6 +37,18 @@
   },
   "packageRules": [
     {
+      "description": "Group all non-major npm updates together",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "lockFileMaintenance"],
+      "groupName": "npm non-major updates"
+    },
+    {
+      "description": "Automerge minor/patch updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
       "description": "Disable Expo ecosystem packages - managed by `npx expo install --fix`",
       "enabled": false,
       "matchPackageNames": [
