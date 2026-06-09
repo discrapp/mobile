@@ -6,12 +6,12 @@ jest.mock('@/contexts/AuthContext');
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
-describe('useIsAdmin', () => {
+describe('useIsAdmin', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('returns false when user is null', () => {
+  it('returns false when user is null', async () => {
     mockUseAuth.mockReturnValue({
       user: null,
       session: null,
@@ -27,7 +27,7 @@ describe('useIsAdmin', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns false when user has no app_metadata', () => {
+  it('returns false when user has no app_metadata', async () => {
     mockUseAuth.mockReturnValue({
       user: {
         id: 'user-1',
@@ -47,7 +47,7 @@ describe('useIsAdmin', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns false when user has a non-admin role', () => {
+  it('returns false when user has a non-admin role', async () => {
     mockUseAuth.mockReturnValue({
       user: {
         id: 'user-1',
@@ -67,7 +67,7 @@ describe('useIsAdmin', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns true when user has admin role', () => {
+  it('returns true when user has admin role', async () => {
     mockUseAuth.mockReturnValue({
       user: {
         id: 'user-1',
@@ -87,7 +87,7 @@ describe('useIsAdmin', () => {
     expect(result.current).toBe(true);
   });
 
-  it('returns false when app_metadata.role is undefined', () => {
+  it('returns false when app_metadata.role is undefined', async () => {
     mockUseAuth.mockReturnValue({
       user: {
         id: 'user-1',

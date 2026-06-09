@@ -23,7 +23,7 @@ const mockRecommendation: DiscRecommendation = {
   purchase_url: 'https://example.com/destroyer',
 };
 
-describe('DiscRecommendationCard', () => {
+describe('DiscRecommendationCard', async () => {
   const mockOnBuyPress = jest.fn();
   const mockOnDismissPress = jest.fn();
 
@@ -31,8 +31,8 @@ describe('DiscRecommendationCard', () => {
     jest.clearAllMocks();
   });
 
-  it('renders disc information correctly', () => {
-    const { getByText } = render(
+  it('renders disc information correctly', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -45,8 +45,8 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('Distance Driver')).toBeTruthy();
   });
 
-  it('renders flight numbers', () => {
-    const { getByText } = render(
+  it('renders flight numbers', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -64,8 +64,8 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('Fade')).toBeTruthy();
   });
 
-  it('renders priority badge', () => {
-    const { getByText } = render(
+  it('renders priority badge', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -76,7 +76,7 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('Top Pick')).toBeTruthy();
   });
 
-  it('renders correct priority labels for different priorities', () => {
+  it('renders correct priority labels for different priorities', async () => {
     const priorities = [
       { priority: 1, label: 'Top Pick' },
       { priority: 2, label: '2nd Pick' },
@@ -87,7 +87,7 @@ describe('DiscRecommendationCard', () => {
 
     priorities.forEach(({ priority, label }) => {
       const rec = { ...mockRecommendation, priority };
-      const { getByText } = render(
+      const { getByText } = await render(
         <DiscRecommendationCard
           recommendation={rec}
           isDark={false}
@@ -98,9 +98,9 @@ describe('DiscRecommendationCard', () => {
     });
   });
 
-  it('renders fallback priority label for unknown priority', () => {
+  it('renders fallback priority label for unknown priority', async () => {
     const rec = { ...mockRecommendation, priority: 10 };
-    const { getByText } = render(
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={rec}
         isDark={false}
@@ -110,8 +110,8 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('#10')).toBeTruthy();
   });
 
-  it('renders gap type badge', () => {
-    const { getByText } = render(
+  it('renders gap type badge', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -122,7 +122,7 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('Speed Gap')).toBeTruthy();
   });
 
-  it('renders correct gap type labels', () => {
+  it('renders correct gap type labels', async () => {
     const gapTypes = [
       { gap_type: 'speed_range', label: 'Speed Gap' },
       { gap_type: 'stability', label: 'Stability Gap' },
@@ -131,7 +131,7 @@ describe('DiscRecommendationCard', () => {
 
     gapTypes.forEach(({ gap_type, label }) => {
       const rec = { ...mockRecommendation, gap_type: gap_type as 'speed_range' | 'stability' | 'category' };
-      const { getByText } = render(
+      const { getByText } = await render(
         <DiscRecommendationCard
           recommendation={rec}
           isDark={false}
@@ -142,8 +142,8 @@ describe('DiscRecommendationCard', () => {
     });
   });
 
-  it('renders stability badge', () => {
-    const { getByText } = render(
+  it('renders stability badge', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -154,7 +154,7 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('Overstable')).toBeTruthy();
   });
 
-  it('renders different stability badges', () => {
+  it('renders different stability badges', async () => {
     const stabilities = ['Understable', 'Stable', 'Overstable'];
 
     stabilities.forEach((stability) => {
@@ -162,7 +162,7 @@ describe('DiscRecommendationCard', () => {
         ...mockRecommendation,
         disc: { ...mockRecommendation.disc, stability },
       };
-      const { getByText } = render(
+      const { getByText } = await render(
         <DiscRecommendationCard
           recommendation={rec}
           isDark={false}
@@ -173,8 +173,8 @@ describe('DiscRecommendationCard', () => {
     });
   });
 
-  it('renders AI reason', () => {
-    const { getByText } = render(
+  it('renders AI reason', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -185,8 +185,8 @@ describe('DiscRecommendationCard', () => {
     expect(getByText('This disc fills the high-speed overstable slot in your bag')).toBeTruthy();
   });
 
-  it('renders buy button and handles press', () => {
-    const { getByText } = render(
+  it('renders buy button and handles press', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -201,8 +201,8 @@ describe('DiscRecommendationCard', () => {
     expect(mockOnBuyPress).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render dismiss button when onDismissPress is not provided', () => {
-    const { queryByText } = render(
+  it('does not render dismiss button when onDismissPress is not provided', async () => {
+    const { queryByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -213,8 +213,8 @@ describe('DiscRecommendationCard', () => {
     expect(queryByText("Don't Show Again")).toBeNull();
   });
 
-  it('renders dismiss button when onDismissPress is provided', () => {
-    const { getByText } = render(
+  it('renders dismiss button when onDismissPress is provided', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -226,8 +226,8 @@ describe('DiscRecommendationCard', () => {
     expect(getByText("Don't Show Again")).toBeTruthy();
   });
 
-  it('handles dismiss button press', () => {
-    const { getByText } = render(
+  it('handles dismiss button press', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -240,8 +240,8 @@ describe('DiscRecommendationCard', () => {
     expect(mockOnDismissPress).toHaveBeenCalledTimes(1);
   });
 
-  it('shows dismissing state when isDismissing is true', () => {
-    const { getByText, queryByText } = render(
+  it('shows dismissing state when isDismissing is true', async () => {
+    const { getByText, queryByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={false}
@@ -255,8 +255,8 @@ describe('DiscRecommendationCard', () => {
     expect(queryByText("Don't Show Again")).toBeNull();
   });
 
-  it('applies dark mode styles', () => {
-    const { getByText } = render(
+  it('applies dark mode styles', async () => {
+    const { getByText } = await render(
       <DiscRecommendationCard
         recommendation={mockRecommendation}
         isDark={true}
@@ -270,7 +270,7 @@ describe('DiscRecommendationCard', () => {
     expect(getByText("Don't Show Again")).toBeTruthy();
   });
 
-  it('handles disc without category', () => {
+  it('handles disc without category', async () => {
     const recWithoutCategory = {
       ...mockRecommendation,
       disc: {
@@ -279,7 +279,7 @@ describe('DiscRecommendationCard', () => {
       },
     };
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await render(
       <DiscRecommendationCard
         recommendation={recWithoutCategory}
         isDark={false}
@@ -291,7 +291,7 @@ describe('DiscRecommendationCard', () => {
     expect(queryByText('Distance Driver')).toBeNull();
   });
 
-  it('handles disc without stability', () => {
+  it('handles disc without stability', async () => {
     const recWithoutStability = {
       ...mockRecommendation,
       disc: {
@@ -300,7 +300,7 @@ describe('DiscRecommendationCard', () => {
       },
     };
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await render(
       <DiscRecommendationCard
         recommendation={recWithoutStability}
         isDark={false}
@@ -314,7 +314,7 @@ describe('DiscRecommendationCard', () => {
     expect(queryByText('Stable')).toBeNull();
   });
 
-  it('handles disc without flight numbers', () => {
+  it('handles disc without flight numbers', async () => {
     const recWithoutFlightNumbers = {
       ...mockRecommendation,
       disc: {
@@ -323,7 +323,7 @@ describe('DiscRecommendationCard', () => {
       },
     };
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await render(
       <DiscRecommendationCard
         recommendation={recWithoutFlightNumbers}
         isDark={false}

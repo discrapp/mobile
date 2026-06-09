@@ -92,7 +92,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('RecoveryDetailScreen', () => {
+describe('RecoveryDetailScreen', async () => {
   const mockRecoveryData = {
     id: 'recovery-123',
     status: 'found',
@@ -130,8 +130,8 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  it('shows skeleton loaders initially', () => {
-    const { UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+  it('shows skeleton loaders initially', async () => {
+    const { UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
 
     // Should show skeleton components (which use Animated.View)
     const Animated = require('react-native').Animated;
@@ -140,7 +140,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('renders recovery details', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -148,7 +148,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc found status badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
@@ -156,7 +156,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc manufacturer', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Innova')).toBeTruthy();
@@ -164,7 +164,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc plastic', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Star')).toBeTruthy();
@@ -172,7 +172,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc color badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Blue')).toBeTruthy();
@@ -180,7 +180,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows reward badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('$10 Reward')).toBeTruthy();
@@ -188,7 +188,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows people section', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('People')).toBeTruthy();
@@ -198,7 +198,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows finder message', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText("Finder's Message")).toBeTruthy();
@@ -207,7 +207,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows propose meetup button for found status', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -215,7 +215,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows surrender button for owner', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -223,7 +223,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('navigates to propose meetup on button press', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -240,7 +240,7 @@ describe('RecoveryDetailScreen', () => {
       json: () => Promise.resolve({ error: 'Not found' }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Error')).toBeTruthy();
@@ -254,7 +254,7 @@ describe('RecoveryDetailScreen', () => {
       json: () => Promise.resolve({ error: 'Not found' }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Go Back')).toBeTruthy();
@@ -274,7 +274,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -291,7 +291,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Surrendered')).toBeTruthy();
@@ -317,7 +317,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Maple Hill DGC')).toBeTruthy();
@@ -342,7 +342,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Central Park')).toBeTruthy();
@@ -368,7 +368,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -385,7 +385,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -402,7 +402,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Confirmed')).toBeTruthy();
@@ -428,7 +428,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Counter')).toBeTruthy();
@@ -449,7 +449,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancelled')).toBeTruthy();
@@ -466,7 +466,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Abandoned')).toBeTruthy();
@@ -492,7 +492,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -500,7 +500,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc info section', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
@@ -509,14 +509,14 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('renders the screen successfully', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
     });
   });
 
-  describe('finder view', () => {
+  describe('finder view', async () => {
     it('shows view from finder perspective', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -526,7 +526,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -543,7 +543,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Finder should see the propose meetup option
@@ -552,7 +552,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('meetup proposal actions', () => {
+  describe('meetup proposal actions', async () => {
     it('shows accept button for owner with pending proposal', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -572,7 +572,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -597,7 +597,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -605,7 +605,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('drop-off view', () => {
+  describe('drop-off view', async () => {
     it('shows drop off section for dropped off disc', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -625,7 +625,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -650,7 +650,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Under the big oak tree')).toBeTruthy();
@@ -658,7 +658,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('recovered disc view', () => {
+  describe('recovered disc view', async () => {
     it('shows recovered status badge', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -677,7 +677,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -685,7 +685,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('surrendered disc view', () => {
+  describe('surrendered disc view', async () => {
     it('shows disc received message for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -697,7 +697,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Received!')).toBeTruthy();
@@ -705,9 +705,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('navigation', () => {
+  describe('navigation', async () => {
     it('navigates back correctly', async () => {
-      const { getByTestId, getByText } = render(<RecoveryDetailScreen />);
+      const { getByTestId, getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -719,7 +719,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText: getByTextError } = render(<RecoveryDetailScreen />);
+      const { getByText: getByTextError } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByTextError('Go Back')).toBeTruthy();
@@ -730,9 +730,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('reward section', () => {
+  describe('reward section', async () => {
     it('shows reward badge when reward is set', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward')).toBeTruthy();
@@ -748,7 +748,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { queryByText, getByText } = render(<RecoveryDetailScreen />);
+      const { queryByText, getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -758,7 +758,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('disc details', () => {
+  describe('disc details', async () => {
     it('shows disc without manufacturer', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -768,7 +768,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -784,7 +784,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -801,7 +801,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -811,9 +811,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('loading states', () => {
+  describe('loading states', async () => {
     it('shows refreshing state', async () => {
-      const { getByText, UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -825,7 +825,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('no finder message', () => {
+  describe('no finder message', async () => {
     it('does not show finder message section when empty', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -835,7 +835,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -845,9 +845,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('owner and finder display', () => {
+  describe('owner and finder display', async () => {
     it('shows people section', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('People')).toBeTruthy();
@@ -855,7 +855,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows owner label', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Owner')).toBeTruthy();
@@ -863,7 +863,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows finder label', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Finder')).toBeTruthy();
@@ -871,9 +871,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('action buttons', () => {
+  describe('action buttons', async () => {
     it('shows surrender button press triggers alert', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -905,7 +905,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -921,7 +921,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('meetup proposal message', () => {
+  describe('meetup proposal message', async () => {
     it('shows proposal message when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -940,7 +940,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Meet at the parking lot')).toBeTruthy();
@@ -948,7 +948,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('drop off details', () => {
+  describe('drop off details', async () => {
     it('shows drop off photo when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -967,7 +967,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -992,7 +992,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -1017,7 +1017,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Under the oak tree near hole 5')).toBeTruthy();
@@ -1025,7 +1025,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('realtime subscription', () => {
+  describe('realtime subscription', async () => {
     it('sets up subscription on mount', async () => {
       const { supabase } = require('../../lib/supabase');
 
@@ -1037,7 +1037,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('different user roles', () => {
+  describe('different user roles', async () => {
     it('shows different actions for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1047,7 +1047,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1058,7 +1058,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('status transitions', () => {
+  describe('status transitions', async () => {
     it('shows recovered status correctly', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1070,7 +1070,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Check for the recovered section header
@@ -1089,7 +1089,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When owner views surrendered status, shows "Disc Surrendered"
@@ -1100,7 +1100,7 @@ describe('RecoveryDetailScreen', () => {
     it('shows meetup proposal status correctly', async () => {
       // This test uses the default mock which has status 'found'
       // and verifies the component can render meetup-related UI
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Verify the finder's message section shows for 'found' status
@@ -1110,7 +1110,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('meetup proposal actions', () => {
+  describe('meetup proposal actions', async () => {
     it('shows pending proposals for owner', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1131,7 +1131,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Downtown Disc Golf')).toBeTruthy();
@@ -1157,7 +1157,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -1183,7 +1183,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Counter')).toBeTruthy();
@@ -1191,7 +1191,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('reward section', () => {
+  describe('reward section', async () => {
     it('shows reward amount when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1204,7 +1204,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward')).toBeTruthy();
@@ -1212,7 +1212,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('disc information', () => {
+  describe('disc information', async () => {
     it('shows disc color when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1225,7 +1225,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Red')).toBeTruthy();
@@ -1244,7 +1244,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Champion')).toBeTruthy();
@@ -1252,11 +1252,11 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('API error handling', () => {
+  describe('API error handling', async () => {
     it('handles fetch error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Should still render loading or error state without crashing
       await waitFor(() => {
@@ -1270,7 +1270,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Should handle error without crashing
       await waitFor(() => {
@@ -1279,7 +1279,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('owner view', () => {
+  describe('owner view', async () => {
     it('shows owner-specific actions', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1289,7 +1289,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -1315,7 +1315,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1323,7 +1323,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('finder view', () => {
+  describe('finder view', async () => {
     it('shows finder-specific actions', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1333,7 +1333,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1349,7 +1349,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Disc')).toBeTruthy();
@@ -1357,9 +1357,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('contact information', () => {
+  describe('contact information', async () => {
     it('shows people section with owner and finder', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('People')).toBeTruthy();
@@ -1369,7 +1369,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows current user as You', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When user_role is 'owner', the owner name shows as "You"
@@ -1378,7 +1378,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows finder display name when owner is viewing', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When user_role is 'owner', the finder's name is displayed with @ prefix
@@ -1387,9 +1387,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('timeline', () => {
+  describe('timeline', async () => {
     it('shows finder message section when message exists', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText("Finder's Message")).toBeTruthy();
@@ -1398,7 +1398,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('action handlers', () => {
+  describe('action handlers', async () => {
     it('navigates to propose meetup when button pressed', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1408,7 +1408,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1428,7 +1428,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Disc')).toBeTruthy();
@@ -1446,7 +1446,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -1481,7 +1481,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -1517,7 +1517,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Counter')).toBeTruthy();
@@ -1528,7 +1528,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('complete recovery flow', () => {
+  describe('complete recovery flow', async () => {
     it('shows mark as recovered button for owner with accepted meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1549,7 +1549,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1576,7 +1576,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1592,7 +1592,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('drop off display', () => {
+  describe('drop off display', async () => {
     it('shows dropped off status', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1612,7 +1612,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -1638,7 +1638,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -1646,11 +1646,11 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('loading and error states', () => {
+  describe('loading and error states', async () => {
     it('shows loading state initially', async () => {
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
-      const { UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const Animated = require('react-native').Animated;
 
       // Should show loading skeleton
@@ -1665,7 +1665,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Recovery not found' }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Component should still render without crashing
       await waitFor(() => {
@@ -1674,9 +1674,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('disc details section', () => {
+  describe('disc details section', async () => {
     it('shows disc mold name in card', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Disc mold is shown in the disc card
@@ -1685,7 +1685,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows status badge', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found')).toBeTruthy();
@@ -1693,7 +1693,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('real-time subscription', () => {
+  describe('real-time subscription', async () => {
     it('sets up channel subscription on mount', async () => {
       const { supabase } = require('../../lib/supabase');
 
@@ -1705,7 +1705,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('navigation header', () => {
+  describe('navigation header', async () => {
     it('sets navigation options', async () => {
       render(<RecoveryDetailScreen />);
 
@@ -1715,7 +1715,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('owner drop off actions', () => {
+  describe('owner drop off actions', async () => {
     it('shows I Picked Up My Disc button for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1736,7 +1736,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -1763,7 +1763,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText("Don't want to pick it up?")).toBeTruthy();
@@ -1791,7 +1791,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -1825,7 +1825,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -1859,7 +1859,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -1875,7 +1875,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('reward payment', () => {
+  describe('reward payment', async () => {
     it('shows venmo button for recovered disc with finder venmo', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1896,7 +1896,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -1923,7 +1923,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -1951,7 +1951,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Contact .* directly to send the/)).toBeTruthy();
@@ -1974,7 +1974,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -1998,7 +1998,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward Received')).toBeTruthy();
@@ -2006,7 +2006,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('surrendered disc view details', () => {
+  describe('surrendered disc view details', async () => {
     it('shows view in collection button for finder when disc surrendered', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2019,7 +2019,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('View in My Collection')).toBeTruthy();
@@ -2038,7 +2038,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('View in My Collection')).toBeTruthy();
@@ -2049,7 +2049,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('waiting for response state', () => {
+  describe('waiting for response state', async () => {
     it('shows waiting message when user proposed the meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2070,7 +2070,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // The title includes an icon, so check for the text part
@@ -2080,7 +2080,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('unknown status handling', () => {
+  describe('unknown status handling', async () => {
     it('handles unknown status gracefully', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2091,7 +2091,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Should display the unknown status as is
@@ -2100,14 +2100,14 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('no session handling', () => {
+  describe('no session handling', async () => {
     it('shows error when no session', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
         data: { session: null },
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You must be signed in to view this')).toBeTruthy();
@@ -2115,7 +2115,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('disc without photo', () => {
+  describe('disc without photo', async () => {
     it('shows placeholder when no disc photo', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2129,7 +2129,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -2137,7 +2137,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('confirmed meetup actions', () => {
+  describe('confirmed meetup actions', async () => {
     it('shows get directions button for confirmed meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2159,7 +2159,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2185,7 +2185,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Status badge shows meetup confirmed
@@ -2194,7 +2194,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('finder perspective for drop off', () => {
+  describe('finder perspective for drop off', async () => {
     it('shows different message for finder in drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2214,7 +2214,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You Dropped Off the Disc')).toBeTruthy();
@@ -2222,7 +2222,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('complete recovery API call', () => {
+  describe('complete recovery API call', async () => {
     it('calls complete recovery API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2250,7 +2250,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -2280,7 +2280,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('surrender disc API call', () => {
+  describe('surrender disc API call', async () => {
     it('calls surrender disc API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2300,7 +2300,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -2330,7 +2330,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('mark retrieved API call', () => {
+  describe('mark retrieved API call', async () => {
     it('calls mark retrieved API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2358,7 +2358,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -2388,7 +2388,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('relinquish disc action', () => {
+  describe('relinquish disc action', async () => {
     it('shows give to finder option for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2408,7 +2408,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -2442,7 +2442,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -2472,7 +2472,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('abandon disc action', () => {
+  describe('abandon disc action', async () => {
     it('shows abandon disc option for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2492,7 +2492,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -2526,7 +2526,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -2556,14 +2556,14 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('no session error handling', () => {
+  describe('no session error handling', async () => {
     it('shows error when no session for fetch', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
         data: { session: null },
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You must be signed in to view this')).toBeTruthy();
@@ -2571,11 +2571,11 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('back button behavior', () => {
+  describe('back button behavior', async () => {
     it('uses router.back when canGoBack returns true', async () => {
       mockCanGoBack.mockReturnValue(true);
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -2596,9 +2596,9 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('pull to refresh', () => {
+  describe('pull to refresh', async () => {
     it('refreshes data on pull', async () => {
-      const { getByText, UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -2613,7 +2613,7 @@ describe('RecoveryDetailScreen', () => {
   // Skip Linking.openURL tests - React Native's Linking module uses lazy loading
   // which makes it very difficult to mock in Jest. The actual functionality works
   // correctly in the app; these tests are for third-party API integration.
-  describe.skip('Linking.openURL functionality', () => {
+  describe.skip('Linking.openURL functionality', async () => {
     it('opens Google Maps for get directions on meetup proposal', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2635,7 +2635,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2667,7 +2667,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2699,7 +2699,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -2713,7 +2713,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Venmo payment functionality', () => {
+  describe('Venmo payment functionality', async () => {
     it('calls openVenmoPayment when send via venmo is pressed', async () => {
       jest.clearAllMocks();
       getMockOpenVenmoPayment().mockResolvedValue(true);
@@ -2735,7 +2735,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -2771,7 +2771,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -2808,7 +2808,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -2819,7 +2819,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Card payment functionality', () => {
+  describe('Card payment functionality', async () => {
     it('calls stripe checkout when pay with card is pressed', async () => {
       jest.clearAllMocks();
       getMockOpenBrowserAsync().mockResolvedValue({});
@@ -2849,7 +2849,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -2894,7 +2894,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -2930,7 +2930,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -2941,7 +2941,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Mark reward received functionality', () => {
+  describe('Mark reward received functionality', async () => {
     it('calls mark reward received API when button pressed', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2966,7 +2966,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -3007,7 +3007,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -3024,7 +3024,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Accept meetup API error handling', () => {
+  describe('Accept meetup API error handling', async () => {
     it('handles accept meetup API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3052,7 +3052,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -3069,7 +3069,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Complete recovery API error handling', () => {
+  describe('Complete recovery API error handling', async () => {
     it('handles complete recovery API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3097,7 +3097,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -3120,7 +3120,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Surrender disc API error handling', () => {
+  describe('Surrender disc API error handling', async () => {
     it('handles surrender disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3140,7 +3140,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -3163,7 +3163,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Mark retrieved API error handling', () => {
+  describe('Mark retrieved API error handling', async () => {
     it('handles mark retrieved API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3191,7 +3191,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -3214,7 +3214,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Relinquish disc API error handling', () => {
+  describe('Relinquish disc API error handling', async () => {
     it('handles relinquish disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3242,7 +3242,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -3265,7 +3265,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Abandon disc API error handling', () => {
+  describe('Abandon disc API error handling', async () => {
     it('handles abandon disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3293,7 +3293,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -3316,7 +3316,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Navigation after successful actions', () => {
+  describe('Navigation after successful actions', async () => {
     it('stays on page and refreshes after complete recovery to show payment options', async () => {
       jest.clearAllMocks();
       let fetchCallCount = 0;
@@ -3358,7 +3358,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -3400,7 +3400,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -3466,7 +3466,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -3490,7 +3490,7 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  describe('Alert cancel actions', () => {
+  describe('Alert cancel actions', async () => {
     it('does not call API when mark as recovered is cancelled', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -3510,7 +3510,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();

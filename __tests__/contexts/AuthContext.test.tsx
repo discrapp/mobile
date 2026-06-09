@@ -90,7 +90,7 @@ function TestComponent({ onAuth }: { onAuth?: (auth: ReturnType<typeof useAuth>)
   );
 }
 
-describe('AuthContext', () => {
+describe('AuthContext', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsDevice = false; // Reset device mock
@@ -100,9 +100,9 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('AuthProvider', () => {
+  describe('AuthProvider', async () => {
     it('provides auth context to children', async () => {
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -114,7 +114,7 @@ describe('AuthContext', () => {
     }, 15000);
 
     it('initializes with loading state', async () => {
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -151,7 +151,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('signIn', () => {
+  describe('signIn', async () => {
     it('calls supabase signInWithPassword', async () => {
       mockSignInWithPassword.mockResolvedValue({ error: null });
 
@@ -202,7 +202,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('signUp', () => {
+  describe('signUp', async () => {
     it('calls supabase signUp', async () => {
       mockSignUp.mockResolvedValue({ error: null });
 
@@ -253,7 +253,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('signInWithGoogle', () => {
+  describe('signInWithGoogle', async () => {
     it('calls supabase signInWithOAuth', async () => {
       mockSignInWithOAuth.mockResolvedValue({ error: null });
 
@@ -280,7 +280,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('signOut', () => {
+  describe('signOut', async () => {
     it('calls supabase signOut', async () => {
       mockSignOut.mockResolvedValue({});
 
@@ -327,7 +327,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('useAuth hook', () => {
+  describe('useAuth hook', async () => {
     it('returns auth context values', async () => {
       let authContext: ReturnType<typeof useAuth> | null = null;
 
@@ -347,11 +347,11 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('session state', () => {
+  describe('session state', async () => {
     it('shows no user when no session', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -371,7 +371,7 @@ describe('AuthContext', () => {
         },
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -392,7 +392,7 @@ describe('AuthContext', () => {
         return { data: { subscription: { unsubscribe: jest.fn() } } };
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -419,7 +419,7 @@ describe('AuthContext', () => {
         return { data: { subscription: { unsubscribe: jest.fn() } } };
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -439,7 +439,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('Sentry user context', () => {
+  describe('Sentry user context', async () => {
     it('sets Sentry user context when user signs in', async () => {
       const { setUserContext } = require('../../lib/sentry');
       const mockUser = { id: '123', email: 'test@example.com' };
@@ -522,7 +522,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('push notifications', () => {
+  describe('push notifications', async () => {
     it('does not register push token when no session', async () => {
       const Notifications = require('expo-notifications');
       mockGetSession.mockResolvedValue({ data: { session: null } });
@@ -683,7 +683,7 @@ describe('AuthContext', () => {
 
       let authContext: ReturnType<typeof useAuth> | null = null;
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent onAuth={(auth) => { authContext = auth; }} />
         </AuthProvider>
@@ -731,7 +731,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('deep linking', () => {
+  describe('deep linking', async () => {
     it('sets up deep link listener on mount', async () => {
       const Linking = require('expo-linking');
 
@@ -963,14 +963,14 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('cleanup', () => {
+  describe('cleanup', async () => {
     it('unsubscribes from auth state changes on unmount', async () => {
       const unsubscribe = jest.fn();
       mockOnAuthStateChange.mockReturnValue({
         data: { subscription: { unsubscribe } },
       });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -990,7 +990,7 @@ describe('AuthContext', () => {
       const remove = jest.fn();
       Linking.addEventListener.mockReturnValue({ remove });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1013,7 +1013,7 @@ describe('AuthContext', () => {
       Notifications.addNotificationReceivedListener.mockReturnValue({ remove: removeReceived });
       Notifications.addNotificationResponseReceivedListener.mockReturnValue({ remove: removeResponse });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1030,13 +1030,13 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('error handling', () => {
+  describe('error handling', async () => {
     it('handles getSession error gracefully', async () => {
       mockGetSession.mockRejectedValue(new Error('Session fetch failed'));
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1117,7 +1117,7 @@ describe('AuthContext', () => {
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1137,7 +1137,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('Android notification channel', () => {
+  describe('Android notification channel', async () => {
     it('sets up Android notification channel on Android', async () => {
       const Device = require('expo-device');
       const Notifications = require('expo-notifications');
@@ -1171,7 +1171,7 @@ describe('AuthContext', () => {
     });
   });
 
-  describe('Sentry error capture for OAuth flow', () => {
+  describe('Sentry error capture for OAuth flow', async () => {
     it('captures error to Sentry on signIn failure', async () => {
       const { captureError } = require('../../lib/sentry');
       const testError = new Error('Invalid credentials');
@@ -1344,7 +1344,7 @@ describe('AuthContext', () => {
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>

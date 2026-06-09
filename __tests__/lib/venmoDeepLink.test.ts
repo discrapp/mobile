@@ -20,30 +20,30 @@ jest.mock('react-native', () => ({
   },
 }));
 
-describe('venmoDeepLink', () => {
+describe('venmoDeepLink', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('generatePaymentNote', () => {
-    it('generates note with disc name', () => {
+  describe('generatePaymentNote', async () => {
+    it('generates note with disc name', async () => {
       const note = generatePaymentNote('Destroyer');
       expect(note).toBe('🎁 Thank you for returning my Destroyer! 🥏');
     });
 
-    it('generates generic note without disc name', () => {
+    it('generates generic note without disc name', async () => {
       const note = generatePaymentNote();
       expect(note).toBe('🎁 Thank you for returning my disc! 🥏');
     });
 
-    it('generates generic note with undefined disc name', () => {
+    it('generates generic note with undefined disc name', async () => {
       const note = generatePaymentNote(undefined);
       expect(note).toBe('🎁 Thank you for returning my disc! 🥏');
     });
   });
 
-  describe('getVenmoAppUrl', () => {
-    it('generates correct app URL with all params', () => {
+  describe('getVenmoAppUrl', async () => {
+    it('generates correct app URL with all params', async () => {
       const url = getVenmoAppUrl({
         recipientUsername: 'John-Doe-5',
         amount: 10,
@@ -54,7 +54,7 @@ describe('venmoDeepLink', () => {
       expect(url).toContain('Thank you for returning my Destroyer');
     });
 
-    it('strips @ from username', () => {
+    it('strips @ from username', async () => {
       const url = getVenmoAppUrl({
         recipientUsername: '@John-Doe-5',
         amount: 15.5,
@@ -63,7 +63,7 @@ describe('venmoDeepLink', () => {
       expect(url).not.toContain('recipients=@');
     });
 
-    it('uses custom note when provided', () => {
+    it('uses custom note when provided', async () => {
       const url = getVenmoAppUrl({
         recipientUsername: 'test-user',
         amount: 5,
@@ -73,7 +73,7 @@ describe('venmoDeepLink', () => {
       expect(url).toBe('venmo://paycharge?txn=pay&recipients=test-user&amount=5&note=Custom payment note');
     });
 
-    it('handles decimal amounts', () => {
+    it('handles decimal amounts', async () => {
       const url = getVenmoAppUrl({
         recipientUsername: 'test-user',
         amount: 12.50,
@@ -82,8 +82,8 @@ describe('venmoDeepLink', () => {
     });
   });
 
-  describe('getVenmoWebUrl', () => {
-    it('generates correct web URL', () => {
+  describe('getVenmoWebUrl', async () => {
+    it('generates correct web URL', async () => {
       const url = getVenmoWebUrl({
         recipientUsername: 'John-Doe-5',
         amount: 10,
@@ -94,7 +94,7 @@ describe('venmoDeepLink', () => {
       expect(url).toContain('Thank%20you%20for%20returning%20my%20Valkyrie');
     });
 
-    it('strips @ from username', () => {
+    it('strips @ from username', async () => {
       const url = getVenmoWebUrl({
         recipientUsername: '@test-user',
         amount: 20,
@@ -104,51 +104,51 @@ describe('venmoDeepLink', () => {
     });
   });
 
-  describe('isValidVenmoUsername', () => {
-    it('accepts valid usernames', () => {
+  describe('isValidVenmoUsername', async () => {
+    it('accepts valid usernames', async () => {
       expect(isValidVenmoUsername('John-Doe-5')).toBe(true);
       expect(isValidVenmoUsername('johndoe')).toBe(true);
       expect(isValidVenmoUsername('john123')).toBe(true);
       expect(isValidVenmoUsername('Test-User-123')).toBe(true);
     });
 
-    it('accepts username with @ prefix', () => {
+    it('accepts username with @ prefix', async () => {
       expect(isValidVenmoUsername('@John-Doe-5')).toBe(true);
     });
 
-    it('rejects empty username', () => {
+    it('rejects empty username', async () => {
       expect(isValidVenmoUsername('')).toBe(false);
     });
 
-    it('rejects username with consecutive dashes', () => {
+    it('rejects username with consecutive dashes', async () => {
       expect(isValidVenmoUsername('john--doe')).toBe(false);
     });
 
-    it('rejects too short usernames', () => {
+    it('rejects too short usernames', async () => {
       expect(isValidVenmoUsername('abc')).toBe(false);
     });
 
-    it('rejects usernames starting or ending with dash', () => {
+    it('rejects usernames starting or ending with dash', async () => {
       expect(isValidVenmoUsername('-johndoe')).toBe(false);
       expect(isValidVenmoUsername('johndoe-')).toBe(false);
     });
   });
 
-  describe('formatVenmoUsername', () => {
-    it('adds @ prefix', () => {
+  describe('formatVenmoUsername', async () => {
+    it('adds @ prefix', async () => {
       expect(formatVenmoUsername('johndoe')).toBe('@johndoe');
     });
 
-    it('does not double @ prefix', () => {
+    it('does not double @ prefix', async () => {
       expect(formatVenmoUsername('@johndoe')).toBe('@johndoe');
     });
 
-    it('handles empty string', () => {
+    it('handles empty string', async () => {
       expect(formatVenmoUsername('')).toBe('');
     });
   });
 
-  describe('isVenmoInstalled', () => {
+  describe('isVenmoInstalled', async () => {
     it('returns true when Venmo app is available', async () => {
       (Linking.canOpenURL as jest.Mock).mockResolvedValue(true);
       const result = await isVenmoInstalled();
@@ -169,7 +169,7 @@ describe('venmoDeepLink', () => {
     });
   });
 
-  describe('openVenmoPayment', () => {
+  describe('openVenmoPayment', async () => {
     const params = {
       recipientUsername: 'test-user',
       amount: 10,

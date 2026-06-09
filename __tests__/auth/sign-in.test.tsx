@@ -37,13 +37,13 @@ jest.mock('../../contexts/AuthContext', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('SignIn', () => {
+describe('SignIn', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const { getByText, getByPlaceholderText, getByTestId } = render(<SignIn />);
+  it('renders correctly', async () => {
+    const { getByText, getByPlaceholderText, getByTestId } = await render(<SignIn />);
 
     expect(getByTestId('app-logo')).toBeTruthy();
     expect(getByText('Welcome Back')).toBeTruthy();
@@ -54,7 +54,7 @@ describe('SignIn', () => {
   });
 
   it('shows validation error for empty email', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
     fireEvent.press(getByText('Sign In'));
@@ -65,7 +65,7 @@ describe('SignIn', () => {
   });
 
   it('shows validation error for invalid email format', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'invalid-email');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -77,7 +77,7 @@ describe('SignIn', () => {
   });
 
   it('shows validation error for empty password', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.press(getByText('Sign In'));
@@ -90,7 +90,7 @@ describe('SignIn', () => {
   it('calls signIn with correct credentials', async () => {
     mockSignIn.mockResolvedValue({ error: null });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -107,7 +107,7 @@ describe('SignIn', () => {
     const { router } = require('expo-router');
     mockSignIn.mockResolvedValue({ error: null });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -123,7 +123,7 @@ describe('SignIn', () => {
   it('shows error on sign in failure', async () => {
     mockSignIn.mockResolvedValue({ error: { message: 'Invalid credentials' } });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'wrongpassword');
@@ -142,7 +142,7 @@ describe('SignIn', () => {
   it('shows error on unexpected error', async () => {
     mockSignIn.mockRejectedValue(new Error('Network error'));
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -159,7 +159,7 @@ describe('SignIn', () => {
   });
 
   it('clears email error when typing', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<SignIn />);
 
     // Trigger validation error
     fireEvent.press(getByText('Sign In'));
@@ -177,7 +177,7 @@ describe('SignIn', () => {
   });
 
   it('clears password error when typing', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<SignIn />);
 
     // Fill email first
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
@@ -195,13 +195,13 @@ describe('SignIn', () => {
     });
   });
 
-  it('has forgot password link', () => {
-    const { getByText } = render(<SignIn />);
+  it('has forgot password link', async () => {
+    const { getByText } = await render(<SignIn />);
     expect(getByText('Forgot password?')).toBeTruthy();
   });
 
-  it('has sign up link', () => {
-    const { getByText } = render(<SignIn />);
+  it('has sign up link', async () => {
+    const { getByText } = await render(<SignIn />);
     expect(getByText("Don't have an account?")).toBeTruthy();
     expect(getByText('Sign Up')).toBeTruthy();
   });
@@ -210,7 +210,7 @@ describe('SignIn', () => {
   it.skip('shows loading indicator when signing in', async () => {
     mockSignIn.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100)));
 
-    const { getByText, getByPlaceholderText, queryByText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -226,7 +226,7 @@ describe('SignIn', () => {
   it('trims email before signing in', async () => {
     mockSignIn.mockResolvedValue({ error: null });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), '  test@example.com  ');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -243,7 +243,7 @@ describe('SignIn', () => {
   it.skip('disables inputs and buttons while loading', async () => {
     mockSignIn.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100)));
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -258,7 +258,7 @@ describe('SignIn', () => {
   });
 
   it('applies error styling to email input with error', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.press(getByText('Sign In'));
 
@@ -273,7 +273,7 @@ describe('SignIn', () => {
   });
 
   it('applies error styling to password input with error', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.press(getByText('Sign In'));
@@ -289,7 +289,7 @@ describe('SignIn', () => {
   });
 
   it('does not call signIn with invalid form', async () => {
-    const { getByText } = render(<SignIn />);
+    const { getByText } = await render(<SignIn />);
 
     await act(async () => {
       fireEvent.press(getByText('Sign In'));
@@ -302,7 +302,7 @@ describe('SignIn', () => {
     const { router } = require('expo-router');
     mockSignIn.mockResolvedValue({ error: { message: 'Invalid credentials' } });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'wrongpassword');
@@ -317,7 +317,7 @@ describe('SignIn', () => {
     expect(router.replace).not.toHaveBeenCalled();
   });
 
-  describe('Google OAuth Sign In', () => {
+  describe('Google OAuth Sign In', async () => {
     it('initiates Google OAuth flow successfully', async () => {
       const mockSignInWithOAuth = supabase.auth.signInWithOAuth as jest.Mock;
       const mockOpenAuthSessionAsync = WebBrowser.openAuthSessionAsync as jest.Mock;
@@ -330,7 +330,7 @@ describe('SignIn', () => {
       });
       mockOpenAuthSessionAsync.mockResolvedValue({ type: 'success' });
 
-      const { getByText } = render(<SignIn />);
+      const { getByText } = await render(<SignIn />);
 
       // Note: Google button is not visible in current implementation
       // This test would need the component to include a Google sign-in button
@@ -363,7 +363,7 @@ describe('SignIn', () => {
   });
 
   it('shows validation errors for both fields when both are empty', async () => {
-    const { getByText } = render(<SignIn />);
+    const { getByText } = await render(<SignIn />);
 
     fireEvent.press(getByText('Sign In'));
 
@@ -374,7 +374,7 @@ describe('SignIn', () => {
   });
 
   it('clears both errors when both fields have validation errors', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<SignIn />);
 
     // Trigger validation errors for both fields
     fireEvent.press(getByText('Sign In'));
@@ -403,7 +403,7 @@ describe('SignIn', () => {
   });
 
   it('validates email format in addition to presence', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<SignIn />);
 
     // Test with various invalid email formats
     const invalidEmails = [
@@ -435,7 +435,7 @@ describe('SignIn', () => {
   it('accepts valid email formats', async () => {
     mockSignIn.mockResolvedValue({ error: null });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     const validEmails = [
       'test@example.com',
@@ -461,7 +461,7 @@ describe('SignIn', () => {
   });
 
   it('preserves password field value when email validation fails', async () => {
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     const password = 'mypassword123';
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'invalid-email');
@@ -476,22 +476,22 @@ describe('SignIn', () => {
     expect(getByPlaceholderText('Enter your password').props.value).toBe(password);
   });
 
-  it('sets email input keyboard type to email-address', () => {
-    const { getByPlaceholderText } = render(<SignIn />);
+  it('sets email input keyboard type to email-address', async () => {
+    const { getByPlaceholderText } = await render(<SignIn />);
 
     const emailInput = getByPlaceholderText('Enter your email');
     expect(emailInput.props.keyboardType).toBe('email-address');
   });
 
-  it('sets email input autocapitalize to none', () => {
-    const { getByPlaceholderText } = render(<SignIn />);
+  it('sets email input autocapitalize to none', async () => {
+    const { getByPlaceholderText } = await render(<SignIn />);
 
     const emailInput = getByPlaceholderText('Enter your email');
     expect(emailInput.props.autoCapitalize).toBe('none');
   });
 
-  it('sets password input as secure text entry', () => {
-    const { getByPlaceholderText } = render(<SignIn />);
+  it('sets password input as secure text entry', async () => {
+    const { getByPlaceholderText } = await render(<SignIn />);
 
     const passwordInput = getByPlaceholderText('Enter your password');
     expect(passwordInput.props.secureTextEntry).toBe(true);
@@ -500,7 +500,7 @@ describe('SignIn', () => {
   it('handles multiple rapid sign-in attempts', async () => {
     mockSignIn.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 50)));
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -521,7 +521,7 @@ describe('SignIn', () => {
   it('re-enables form after sign-in error', async () => {
     mockSignIn.mockResolvedValue({ error: { message: 'Network error' } });
 
-    const { getByText, getByPlaceholderText } = render(<SignIn />);
+    const { getByText, getByPlaceholderText } = await render(<SignIn />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Enter your password'), 'password123');
@@ -539,8 +539,8 @@ describe('SignIn', () => {
     expect(getByPlaceholderText('Enter your password').props.editable).toBe(true);
   });
 
-  it('displays correct text labels', () => {
-    const { getByText, getByTestId } = render(<SignIn />);
+  it('displays correct text labels', async () => {
+    const { getByText, getByTestId } = await render(<SignIn />);
 
     expect(getByTestId('app-logo')).toBeTruthy();
     expect(getByText('Welcome Back')).toBeTruthy();

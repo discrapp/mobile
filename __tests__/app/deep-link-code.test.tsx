@@ -34,7 +34,7 @@ const { supabase } = require('../../lib/supabase');
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('DeepLinkHandler QR Code Validation', () => {
+describe('DeepLinkHandler QR Code Validation', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAuth.mockReturnValue({ user: null, loading: false });
@@ -43,7 +43,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     });
   });
 
-  describe('Valid QR codes', () => {
+  describe('Valid QR codes', async () => {
     it('accepts 6-character alphanumeric code', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC123' });
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -113,11 +113,11 @@ describe('DeepLinkHandler QR Code Validation', () => {
     });
   });
 
-  describe('Invalid QR codes - should not call API', () => {
+  describe('Invalid QR codes - should not call API', async () => {
     it('rejects code shorter than 6 characters', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC12' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -129,7 +129,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code longer than 10 characters', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABCD12345678' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -141,7 +141,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code with special characters', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC-123' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -153,7 +153,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code with spaces', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC 123' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -165,7 +165,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code with SQL injection attempt', async () => {
       useLocalSearchParams.mockReturnValue({ code: "ABC'; DROP TABLE--" });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -177,7 +177,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code with URL encoding', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC%20123' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();
@@ -189,7 +189,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects empty string', async () => {
       useLocalSearchParams.mockReturnValue({ code: '' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code')).toBeTruthy();
@@ -201,7 +201,7 @@ describe('DeepLinkHandler QR Code Validation', () => {
     it('rejects code with unicode characters', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC123\u0000' });
 
-      const { getByText } = render(<DeepLinkHandler />);
+      const { getByText } = await render(<DeepLinkHandler />);
 
       await waitFor(() => {
         expect(getByText('Invalid QR code format')).toBeTruthy();

@@ -29,7 +29,7 @@ afterAll(() => {
 
 import { usePlasticTypes, PlasticType } from '@/hooks/usePlasticTypes';
 
-describe('usePlasticTypes', () => {
+describe('usePlasticTypes', async () => {
   const mockPlastics: PlasticType[] = [
     { id: 'pt-1', manufacturer: 'Innova', plastic_name: 'Star', display_order: 1, status: 'official' },
     { id: 'pt-2', manufacturer: 'Innova', plastic_name: 'Champion', display_order: 2, status: 'official' },
@@ -48,7 +48,7 @@ describe('usePlasticTypes', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('returns empty plastics when no manufacturer provided', () => {
+  it('returns empty plastics when no manufacturer provided', async () => {
     const { result } = renderHook(() => usePlasticTypes(undefined));
 
     expect(result.current.plastics).toEqual([]);

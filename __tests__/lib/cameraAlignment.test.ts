@@ -5,14 +5,14 @@ import {
   InitialTransforms,
 } from '../../lib/cameraAlignment';
 
-describe('cameraAlignment', () => {
-  describe('calculateInitialCropperTransforms', () => {
+describe('cameraAlignment', async () => {
+  describe('calculateInitialCropperTransforms', async () => {
     const defaultCropperConfig: CropperConfig = {
       containerSize: 400, // Square container in cropper
       circleSize: 280, // Circle overlay size
     };
 
-    it('should return default transforms when camera and photo have same aspect ratio as cropper', () => {
+    it('should return default transforms when camera and photo have same aspect ratio as cropper', async () => {
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 4032,
         photoHeight: 4032, // Square photo
@@ -31,7 +31,7 @@ describe('cameraAlignment', () => {
       expect(result.translateY).toBeCloseTo(0, 1);
     });
 
-    it('should calculate scale adjustment for landscape photo displayed in square cropper', () => {
+    it('should calculate scale adjustment for landscape photo displayed in square cropper', async () => {
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 4032,
         photoHeight: 3024, // 4:3 landscape
@@ -52,7 +52,7 @@ describe('cameraAlignment', () => {
       expect(result.scale).toBeGreaterThan(0);
     });
 
-    it('should calculate translateY for portrait camera preview with landscape photo', () => {
+    it('should calculate translateY for portrait camera preview with landscape photo', async () => {
       // Camera preview is taller than wide (portrait phone)
       // But captured photo is wider than tall (landscape sensor)
       const captureMeta: CameraCaptureMeta = {
@@ -72,7 +72,7 @@ describe('cameraAlignment', () => {
       expect(result.translateY).toBeDefined();
     });
 
-    it('should handle circle not centered in preview', () => {
+    it('should handle circle not centered in preview', async () => {
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 4032,
         photoHeight: 3024,
@@ -89,7 +89,7 @@ describe('cameraAlignment', () => {
       expect(result).toHaveProperty('translateY');
     });
 
-    it('should clamp scale to reasonable bounds', () => {
+    it('should clamp scale to reasonable bounds', async () => {
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 100,
         photoHeight: 100,
@@ -107,7 +107,7 @@ describe('cameraAlignment', () => {
       expect(result.scale).toBeLessThanOrEqual(3);
     });
 
-    it('should return valid transforms for typical iPhone camera scenario', () => {
+    it('should return valid transforms for typical iPhone camera scenario', async () => {
       // Realistic iPhone 14 Pro scenario
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 4032,
@@ -136,7 +136,7 @@ describe('cameraAlignment', () => {
       expect(result.scale).toBeLessThanOrEqual(3);
     });
 
-    it('should account for different circle sizes between camera and cropper', () => {
+    it('should account for different circle sizes between camera and cropper', async () => {
       const captureMeta: CameraCaptureMeta = {
         photoWidth: 4032,
         photoHeight: 3024,

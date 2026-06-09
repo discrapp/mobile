@@ -13,7 +13,7 @@ import {
 
 // AsyncStorage is already mocked in jest.setup.js
 
-describe('CacheService', () => {
+describe('CacheService', async () => {
   let cacheService: CacheService;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('CacheService', () => {
     cacheService = new CacheService();
   });
 
-  describe('get', () => {
+  describe('get', async () => {
     it('returns null when key does not exist', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -76,7 +76,7 @@ describe('CacheService', () => {
     });
   });
 
-  describe('set', () => {
+  describe('set', async () => {
     it('stores data with default TTL', async () => {
       const mockData = { id: '123', name: 'Test Disc' };
       const mockNow = 1700000000000;
@@ -122,7 +122,7 @@ describe('CacheService', () => {
     });
   });
 
-  describe('remove', () => {
+  describe('remove', async () => {
     it('removes item from cache', async () => {
       await cacheService.remove('test-key');
 
@@ -137,7 +137,7 @@ describe('CacheService', () => {
     });
   });
 
-  describe('clear', () => {
+  describe('clear', async () => {
     it('clears all cache entries', async () => {
       const allKeys = [
         '@discr/cache/key1',
@@ -172,7 +172,7 @@ describe('CacheService', () => {
     });
   });
 
-  describe('isStale', () => {
+  describe('isStale', async () => {
     it('returns true when key does not exist', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -216,7 +216,7 @@ describe('CacheService', () => {
     });
   });
 
-  describe('getWithMetadata', () => {
+  describe('getWithMetadata', async () => {
     it('returns null when key does not exist', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -255,16 +255,16 @@ describe('CacheService', () => {
   });
 });
 
-describe('CACHE_KEYS', () => {
-  it('exports disc collection cache key', () => {
+describe('CACHE_KEYS', async () => {
+  it('exports disc collection cache key', async () => {
     expect(CACHE_KEYS.DISC_COLLECTION).toBe('disc-collection');
   });
 
-  it('exports user profile cache key', () => {
+  it('exports user profile cache key', async () => {
     expect(CACHE_KEYS.USER_PROFILE).toBe('user-profile');
   });
 
-  it('exports notifications cache key', () => {
+  it('exports notifications cache key', async () => {
     expect(CACHE_KEYS.NOTIFICATIONS).toBe('notifications');
   });
 });

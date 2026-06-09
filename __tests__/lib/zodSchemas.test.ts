@@ -20,9 +20,9 @@ import {
   validateShippingAddressWithZod,
 } from '@/lib/zodSchemas';
 
-describe('Zod Validation Schemas', () => {
-  describe('signInSchema', () => {
-    it('validates a correct sign-in form', () => {
+describe('Zod Validation Schemas', async () => {
+  describe('signInSchema', async () => {
+    it('validates a correct sign-in form', async () => {
       const validData: SignInFormData = {
         email: 'test@example.com',
         password: 'password123',
@@ -31,7 +31,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('trims email whitespace', () => {
+    it('trims email whitespace', async () => {
       const data = {
         email: '  test@example.com  ',
         password: 'password123',
@@ -43,7 +43,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty email', () => {
+    it('rejects empty email', async () => {
       const data = {
         email: '',
         password: 'password123',
@@ -55,7 +55,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects invalid email format', () => {
+    it('rejects invalid email format', async () => {
       const data = {
         email: 'notanemail',
         password: 'password123',
@@ -67,7 +67,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty password', () => {
+    it('rejects empty password', async () => {
       const data = {
         email: 'test@example.com',
         password: '',
@@ -79,7 +79,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects whitespace-only password', () => {
+    it('rejects whitespace-only password', async () => {
       const data = {
         email: 'test@example.com',
         password: '   ',
@@ -92,8 +92,8 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('signUpSchema', () => {
-    it('validates a correct sign-up form', () => {
+  describe('signUpSchema', async () => {
+    it('validates a correct sign-up form', async () => {
       const validData: SignUpFormData = {
         email: 'test@example.com',
         password: 'password123',
@@ -103,7 +103,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects password shorter than 8 characters', () => {
+    it('rejects password shorter than 8 characters', async () => {
       const data = {
         email: 'test@example.com',
         password: 'short',
@@ -119,7 +119,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects mismatched passwords', () => {
+    it('rejects mismatched passwords', async () => {
       const data = {
         email: 'test@example.com',
         password: 'password123',
@@ -135,7 +135,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty confirm password', () => {
+    it('rejects empty confirm password', async () => {
       const data = {
         email: 'test@example.com',
         password: 'password123',
@@ -151,7 +151,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates email format', () => {
+    it('validates email format', async () => {
       const data = {
         email: 'invalidemail',
         password: 'password123',
@@ -168,8 +168,8 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('forgotPasswordSchema', () => {
-    it('validates a correct email', () => {
+  describe('forgotPasswordSchema', async () => {
+    it('validates a correct email', async () => {
       const validData: ForgotPasswordFormData = {
         email: 'test@example.com',
       };
@@ -177,7 +177,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('trims email whitespace', () => {
+    it('trims email whitespace', async () => {
       const data = {
         email: '  test@example.com  ',
       };
@@ -188,7 +188,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty email', () => {
+    it('rejects empty email', async () => {
       const data = {
         email: '',
       };
@@ -199,7 +199,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects invalid email format', () => {
+    it('rejects invalid email format', async () => {
       const data = {
         email: 'notanemail',
       };
@@ -211,8 +211,8 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('resetPasswordSchema', () => {
-    it('validates a correct reset password form', () => {
+  describe('resetPasswordSchema', async () => {
+    it('validates a correct reset password form', async () => {
       const validData: ResetPasswordFormData = {
         password: 'newpassword123',
         confirmPassword: 'newpassword123',
@@ -221,7 +221,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects password shorter than 6 characters', () => {
+    it('rejects password shorter than 6 characters', async () => {
       const data = {
         password: '12345',
         confirmPassword: '12345',
@@ -236,7 +236,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty password', () => {
+    it('rejects empty password', async () => {
       const data = {
         password: '',
         confirmPassword: '',
@@ -251,7 +251,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects mismatched passwords', () => {
+    it('rejects mismatched passwords', async () => {
       const data = {
         password: 'newpassword123',
         confirmPassword: 'different123',
@@ -267,8 +267,8 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('discFormSchema', () => {
-    it('validates a minimal disc form with just mold', () => {
+  describe('discFormSchema', async () => {
+    it('validates a minimal disc form with just mold', async () => {
       const validData = {
         mold: 'Destroyer',
       };
@@ -276,7 +276,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('validates a complete disc form', () => {
+    it('validates a complete disc form', async () => {
       const validData: DiscFormData = {
         mold: 'Destroyer',
         manufacturer: 'Innova',
@@ -295,7 +295,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects empty mold', () => {
+    it('rejects empty mold', async () => {
       const data = {
         mold: '',
       };
@@ -306,7 +306,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects whitespace-only mold', () => {
+    it('rejects whitespace-only mold', async () => {
       const data = {
         mold: '   ',
       };
@@ -317,7 +317,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates weight within range', () => {
+    it('validates weight within range', async () => {
       const validData = {
         mold: 'Destroyer',
         weight: 175,
@@ -326,7 +326,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects weight below minimum', () => {
+    it('rejects weight below minimum', async () => {
       const data = {
         mold: 'Destroyer',
         weight: 50,
@@ -341,7 +341,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects weight above maximum', () => {
+    it('rejects weight above maximum', async () => {
       const data = {
         mold: 'Destroyer',
         weight: 250,
@@ -356,7 +356,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates speed within range', () => {
+    it('validates speed within range', async () => {
       const validData = {
         mold: 'Destroyer',
         speed: 12,
@@ -365,7 +365,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects speed out of range', () => {
+    it('rejects speed out of range', async () => {
       const data = {
         mold: 'Destroyer',
         speed: 20,
@@ -380,7 +380,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates negative turn values', () => {
+    it('validates negative turn values', async () => {
       const validData = {
         mold: 'Destroyer',
         turn: -3,
@@ -389,7 +389,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects turn out of range', () => {
+    it('rejects turn out of range', async () => {
       const data = {
         mold: 'Destroyer',
         turn: -6,
@@ -404,7 +404,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates positive reward amount', () => {
+    it('validates positive reward amount', async () => {
       const validData = {
         mold: 'Destroyer',
         rewardAmount: 25.5,
@@ -413,7 +413,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects negative reward amount', () => {
+    it('rejects negative reward amount', async () => {
       const data = {
         mold: 'Destroyer',
         rewardAmount: -5,
@@ -428,7 +428,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('allows undefined optional fields', () => {
+    it('allows undefined optional fields', async () => {
       const data = {
         mold: 'Destroyer',
         manufacturer: undefined,
@@ -439,7 +439,7 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('shippingAddressSchema', () => {
+  describe('shippingAddressSchema', async () => {
     const validAddress: ShippingAddressFormData = {
       name: 'John Doe',
       street_address: '123 Main St',
@@ -448,12 +448,12 @@ describe('Zod Validation Schemas', () => {
       postal_code: '90210',
     };
 
-    it('validates a correct shipping address', () => {
+    it('validates a correct shipping address', async () => {
       const result = shippingAddressSchema.safeParse(validAddress);
       expect(result.success).toBe(true);
     });
 
-    it('validates address with optional street_address_2', () => {
+    it('validates address with optional street_address_2', async () => {
       const data = {
         ...validAddress,
         street_address_2: 'Apt 4B',
@@ -462,7 +462,7 @@ describe('Zod Validation Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects empty name', () => {
+    it('rejects empty name', async () => {
       const data = { ...validAddress, name: '' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -474,7 +474,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects name exceeding max length', () => {
+    it('rejects name exceeding max length', async () => {
       const data = { ...validAddress, name: 'A'.repeat(101) };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -486,7 +486,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty street address', () => {
+    it('rejects empty street address', async () => {
       const data = { ...validAddress, street_address: '' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -498,7 +498,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('rejects empty city', () => {
+    it('rejects empty city', async () => {
       const data = { ...validAddress, city: '' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -510,12 +510,12 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates 2-letter state codes', () => {
+    it('validates 2-letter state codes', async () => {
       const result = shippingAddressSchema.safeParse(validAddress);
       expect(result.success).toBe(true);
     });
 
-    it('rejects invalid state code length', () => {
+    it('rejects invalid state code length', async () => {
       const data = { ...validAddress, state: 'CAL' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -527,18 +527,18 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('validates 5-digit ZIP code', () => {
+    it('validates 5-digit ZIP code', async () => {
       const result = shippingAddressSchema.safeParse(validAddress);
       expect(result.success).toBe(true);
     });
 
-    it('validates ZIP+4 format', () => {
+    it('validates ZIP+4 format', async () => {
       const data = { ...validAddress, postal_code: '90210-1234' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(true);
     });
 
-    it('rejects invalid ZIP code format', () => {
+    it('rejects invalid ZIP code format', async () => {
       const data = { ...validAddress, postal_code: '1234' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(false);
@@ -552,7 +552,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('uppercases state code', () => {
+    it('uppercases state code', async () => {
       const data = { ...validAddress, state: 'ca' };
       const result = shippingAddressSchema.safeParse(data);
       expect(result.success).toBe(true);
@@ -561,7 +561,7 @@ describe('Zod Validation Schemas', () => {
       }
     });
 
-    it('trims whitespace from all fields', () => {
+    it('trims whitespace from all fields', async () => {
       const data = {
         name: '  John Doe  ',
         street_address: '  123 Main St  ',
@@ -581,9 +581,9 @@ describe('Zod Validation Schemas', () => {
     });
   });
 
-  describe('Helper Functions', () => {
-    describe('extractZodErrors', () => {
-      it('returns empty object for successful validation', () => {
+  describe('Helper Functions', async () => {
+    describe('extractZodErrors', async () => {
+      it('returns empty object for successful validation', async () => {
         const result = signInSchema.safeParse({
           email: 'test@example.com',
           password: 'password123',
@@ -591,7 +591,7 @@ describe('Zod Validation Schemas', () => {
         expect(extractZodErrors(result)).toEqual({});
       });
 
-      it('returns first error for each field', () => {
+      it('returns first error for each field', async () => {
         const result = signInSchema.safeParse({
           email: '',
           password: '',
@@ -602,21 +602,21 @@ describe('Zod Validation Schemas', () => {
       });
     });
 
-    describe('validateSignInWithZod', () => {
-      it('returns empty object for valid data', () => {
+    describe('validateSignInWithZod', async () => {
+      it('returns empty object for valid data', async () => {
         const errors = validateSignInWithZod('test@example.com', 'password123');
         expect(errors).toEqual({});
       });
 
-      it('returns errors for invalid data', () => {
+      it('returns errors for invalid data', async () => {
         const errors = validateSignInWithZod('', '');
         expect(errors.email).toBe('Email is required');
         expect(errors.password).toBe('Password is required');
       });
     });
 
-    describe('validateSignUpWithZod', () => {
-      it('returns empty object for valid data', () => {
+    describe('validateSignUpWithZod', async () => {
+      it('returns empty object for valid data', async () => {
         const errors = validateSignUpWithZod(
           'test@example.com',
           'password123',
@@ -625,7 +625,7 @@ describe('Zod Validation Schemas', () => {
         expect(errors).toEqual({});
       });
 
-      it('returns errors for mismatched passwords', () => {
+      it('returns errors for mismatched passwords', async () => {
         const errors = validateSignUpWithZod(
           'test@example.com',
           'password123',
@@ -635,44 +635,44 @@ describe('Zod Validation Schemas', () => {
       });
     });
 
-    describe('validateForgotPasswordWithZod', () => {
-      it('returns empty object for valid email', () => {
+    describe('validateForgotPasswordWithZod', async () => {
+      it('returns empty object for valid email', async () => {
         const errors = validateForgotPasswordWithZod('test@example.com');
         expect(errors).toEqual({});
       });
 
-      it('returns error for invalid email', () => {
+      it('returns error for invalid email', async () => {
         const errors = validateForgotPasswordWithZod('notanemail');
         expect(errors.email).toBe('Please enter a valid email address');
       });
     });
 
-    describe('validateResetPasswordWithZod', () => {
-      it('returns empty object for valid passwords', () => {
+    describe('validateResetPasswordWithZod', async () => {
+      it('returns empty object for valid passwords', async () => {
         const errors = validateResetPasswordWithZod('newpassword', 'newpassword');
         expect(errors).toEqual({});
       });
 
-      it('returns error for short password', () => {
+      it('returns error for short password', async () => {
         const errors = validateResetPasswordWithZod('12345', '12345');
         expect(errors.password).toBe('Password must be at least 6 characters');
       });
     });
 
-    describe('validateDiscFormWithZod', () => {
-      it('returns empty object for valid disc data', () => {
+    describe('validateDiscFormWithZod', async () => {
+      it('returns empty object for valid disc data', async () => {
         const errors = validateDiscFormWithZod({ mold: 'Destroyer' });
         expect(errors).toEqual({});
       });
 
-      it('returns error for missing mold', () => {
+      it('returns error for missing mold', async () => {
         const errors = validateDiscFormWithZod({ mold: '' });
         expect(errors.mold).toBe('Mold name is required');
       });
     });
 
-    describe('validateShippingAddressWithZod', () => {
-      it('returns empty object for valid address', () => {
+    describe('validateShippingAddressWithZod', async () => {
+      it('returns empty object for valid address', async () => {
         const errors = validateShippingAddressWithZod({
           name: 'John Doe',
           street_address: '123 Main St',
@@ -683,7 +683,7 @@ describe('Zod Validation Schemas', () => {
         expect(errors).toEqual({});
       });
 
-      it('returns errors for invalid address', () => {
+      it('returns errors for invalid address', async () => {
         const errors = validateShippingAddressWithZod({
           name: '',
           street_address: '',

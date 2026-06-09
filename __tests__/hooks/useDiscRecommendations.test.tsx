@@ -21,7 +21,7 @@ global.fetch = jest.fn();
 import { useDiscRecommendations } from '@/hooks/useDiscRecommendations';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useDiscRecommendations', () => {
+describe('useDiscRecommendations', async () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -82,7 +82,7 @@ describe('useDiscRecommendations', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
+  it('initializes with default state', async () => {
     const { result } = renderHook(() => useDiscRecommendations());
 
     expect(result.current.isLoading).toBe(false);

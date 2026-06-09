@@ -32,7 +32,7 @@ global.fetch = jest.fn();
 import { useShotRecommendation } from '@/hooks/useShotRecommendation';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useShotRecommendation', () => {
+describe('useShotRecommendation', async () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -85,7 +85,7 @@ describe('useShotRecommendation', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
+  it('initializes with default state', async () => {
     const { result } = renderHook(() => useShotRecommendation());
 
     expect(result.current.isLoading).toBe(false);

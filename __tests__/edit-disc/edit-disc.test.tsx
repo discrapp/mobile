@@ -139,7 +139,7 @@ jest.mock('../../components/DiscAutocomplete', () => ({
   },
 }));
 
-describe('EditDiscScreen', () => {
+describe('EditDiscScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -166,14 +166,14 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  it('shows loading state initially', () => {
-    const { getByTestId } = render(<EditDiscScreen />);
+  it('shows loading state initially', async () => {
+    const { getByTestId } = await render(<EditDiscScreen />);
     // Component shows ActivityIndicator while loading
     expect(getByTestId || true).toBeTruthy();
   });
 
   it('renders edit disc form after loading', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Edit Disc')).toBeTruthy();
@@ -181,7 +181,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows mold field', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Destroyer')).toBeTruthy();
@@ -189,7 +189,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows manufacturer field', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Manufacturer')).toBeTruthy();
@@ -198,7 +198,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows cancel button', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -206,7 +206,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows save changes button', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Save Changes')).toBeTruthy();
@@ -214,7 +214,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows flight numbers section', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Flight Numbers')).toBeTruthy();
@@ -226,7 +226,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('validates mold is required', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Edit Disc')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('handles cancel button press', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -287,7 +287,7 @@ describe('EditDiscScreen', () => {
   }, 15000);
 
   it('shows plastic field', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Plastic')).toBeTruthy();
@@ -296,7 +296,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows weight field', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Weight (grams)')).toBeTruthy();
@@ -305,7 +305,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows color picker section', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Color')).toBeTruthy();
@@ -313,7 +313,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows reward amount field', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Reward Amount')).toBeTruthy();
@@ -322,7 +322,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows notes field', async () => {
-    const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Notes')).toBeTruthy();
@@ -331,7 +331,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows photos section', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Photos')).toBeTruthy();
@@ -340,7 +340,7 @@ describe('EditDiscScreen', () => {
 
   // Skip - form values are set async and timing varies
   it.skip('pre-fills form with disc data', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       const moldInput = getByPlaceholderText('e.g., Destroyer');
@@ -349,7 +349,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows mold label', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText(/Mold/)).toBeTruthy();
@@ -357,7 +357,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('allows updating mold', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Destroyer')).toBeTruthy();
@@ -369,7 +369,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('allows updating manufacturer', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Innova')).toBeTruthy();
@@ -395,7 +395,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows add photo button', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Add Photo')).toBeTruthy();
@@ -403,7 +403,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows color selection section', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Color')).toBeTruthy();
@@ -411,7 +411,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('displays all color options', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Red')).toBeTruthy();
@@ -421,7 +421,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('displays disc category picker', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('Select disc type')).toBeTruthy();
@@ -429,7 +429,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows the page title', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Edit Disc')).toBeTruthy();
@@ -438,7 +438,7 @@ describe('EditDiscScreen', () => {
 
   // Skip - form values are set async and timing varies
   it.skip('allows updating weight', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       const weightInput = getByPlaceholderText('e.g., 175');
@@ -452,7 +452,7 @@ describe('EditDiscScreen', () => {
 
   // Skip - form values are set async and timing varies
   it.skip('allows updating notes', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       const notesInput = getByPlaceholderText('Any additional notes about this disc...');
@@ -469,7 +469,7 @@ describe('EditDiscScreen', () => {
 
   // Skip - form values are set async and timing varies
   it.skip('allows updating reward amount', async () => {
-    const { getByPlaceholderText } = render(<EditDiscScreen />);
+    const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       const rewardInput = getByPlaceholderText('0.00');
@@ -482,7 +482,7 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows photos section header', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Photos')).toBeTruthy();
@@ -490,14 +490,14 @@ describe('EditDiscScreen', () => {
   });
 
   it('shows flight numbers section', async () => {
-    const { getByText } = render(<EditDiscScreen />);
+    const { getByText } = await render(<EditDiscScreen />);
 
     await waitFor(() => {
       expect(getByText('Flight Numbers')).toBeTruthy();
     });
   });
 
-  describe('session handling', () => {
+  describe('session handling', async () => {
     it('handles no session gracefully', async () => {
       getMockGetSession().mockResolvedValueOnce({
         data: { session: null },
@@ -512,7 +512,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('API error handling', () => {
+  describe('API error handling', async () => {
     // Skip - async timing issues with error handling
     it.skip('handles API returning error response', async () => {
       jest.clearAllMocks();
@@ -529,7 +529,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('form submission', () => {
+  describe('form submission', async () => {
     // Skip - async timing issues with form submission
     it.skip('submits form with updated values', async () => {
       jest.clearAllMocks();
@@ -555,7 +555,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText, getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByText, getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Edit Disc')).toBeTruthy();
@@ -589,7 +589,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ error: 'Save failed' }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Edit Disc')).toBeTruthy();
@@ -603,7 +603,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('photo management', () => {
+  describe('photo management', async () => {
     it('shows existing photos when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -616,7 +616,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Photos')).toBeTruthy();
@@ -624,7 +624,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('handles pressing add photo button', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -641,9 +641,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('color selection', () => {
+  describe('color selection', async () => {
     it('allows selecting a different color', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Color')).toBeTruthy();
@@ -656,9 +656,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('flight number inputs', () => {
+  describe('flight number inputs', async () => {
     it('shows speed input', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Speed')).toBeTruthy();
@@ -666,7 +666,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('shows glide input', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Glide')).toBeTruthy();
@@ -674,7 +674,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('shows turn input', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Turn')).toBeTruthy();
@@ -682,7 +682,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('shows fade input', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Fade')).toBeTruthy();
@@ -690,9 +690,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('manufacturer validation', () => {
+  describe('manufacturer validation', async () => {
     it('clears mold error when disc selected', async () => {
-      const { getByText, getByPlaceholderText, queryByText } = render(<EditDiscScreen />);
+      const { getByText, getByPlaceholderText, queryByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Edit Disc')).toBeTruthy();
@@ -714,9 +714,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('category picker', () => {
+  describe('category picker', async () => {
     it('shows category field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Select disc type')).toBeTruthy();
@@ -724,9 +724,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('form field updates', () => {
+  describe('form field updates', async () => {
     it('updates manufacturer field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Innova')).toBeTruthy();
@@ -737,7 +737,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates weight field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., 175')).toBeTruthy();
@@ -748,7 +748,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates reward amount field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0.00')).toBeTruthy();
@@ -759,7 +759,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates notes field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Any additional notes about this disc...')).toBeTruthy();
@@ -770,9 +770,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('cancel button', () => {
+  describe('cancel button', async () => {
     it('shows cancel button', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();
@@ -780,7 +780,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('navigates back when cancel pressed', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();
@@ -791,7 +791,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('disc not found', () => {
+  describe('disc not found', async () => {
     it('handles empty disc array from API', async () => {
       // Setup mocks - must have session for fetch to be called
       const mockGetSession = getMockGetSession();
@@ -820,7 +820,7 @@ describe('EditDiscScreen', () => {
     }, 15000);
   });
 
-  describe('successful save', () => {
+  describe('successful save', async () => {
     // Skip - async timing issues with API calls
     it.skip('calls update API when save pressed', async () => {
       jest.clearAllMocks();
@@ -840,7 +840,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -857,9 +857,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('form sections', () => {
+  describe('form sections', async () => {
     it('shows edit disc title', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Edit Disc')).toBeTruthy();
@@ -867,7 +867,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('shows color label', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Color')).toBeTruthy();
@@ -875,9 +875,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('photo selection and upload', () => {
+  describe('photo selection and upload', async () => {
     it('shows photo options when add photo button pressed', async () => {
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -903,7 +903,7 @@ describe('EditDiscScreen', () => {
         assets: [{ uri: 'file://test-image.jpg', width: 100, height: 100 }],
       } as unknown as ImagePickerResult);
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -935,7 +935,7 @@ describe('EditDiscScreen', () => {
         expires: 'never',
       } as ImagePicker.MediaLibraryPermissionResponse);
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -978,7 +978,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { queryByText } = render(<EditDiscScreen />);
+      const { queryByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(queryByText('Add Photo')).toBeNull();
@@ -1013,7 +1013,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -1073,7 +1073,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ error: 'Upload failed' }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Photo')).toBeTruthy();
@@ -1101,7 +1101,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('delete photo', () => {
+  describe('delete photo', async () => {
     // Skip - complex async issue with photo deletion timing
     it.skip('shows confirmation dialog when deleting existing photo', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1213,9 +1213,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('reward amount validation', () => {
+  describe('reward amount validation', async () => {
     it('shows fee hint when reward amount is entered', async () => {
-      const { getByPlaceholderText, getByText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0.00')).toBeTruthy();
@@ -1229,7 +1229,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('filters non-numeric characters from reward amount', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0.00')).toBeTruthy();
@@ -1241,7 +1241,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('limits reward amount to 2 decimal places', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0.00')).toBeTruthy();
@@ -1258,7 +1258,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('prevents multiple decimal points in reward amount', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0.00')).toBeTruthy();
@@ -1271,9 +1271,9 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('flight number updates', () => {
+  describe('flight number updates', async () => {
     it('updates speed field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('1-15')).toBeTruthy();
@@ -1285,7 +1285,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates glide field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('1-7')).toBeTruthy();
@@ -1297,7 +1297,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates turn field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('-5 to 5')).toBeTruthy();
@@ -1309,7 +1309,7 @@ describe('EditDiscScreen', () => {
     });
 
     it('updates fade field', async () => {
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('0-5')).toBeTruthy();
@@ -1321,7 +1321,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('session validation', () => {
+  describe('session validation', async () => {
     // Skip - complex async issue with Alert.alert not being called for session validation
     it.skip('shows error when saving without session', async () => {
       getMockGetSession()
@@ -1332,7 +1332,7 @@ describe('EditDiscScreen', () => {
           data: { session: null },
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1365,7 +1365,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('API error handling', () => {
+  describe('API error handling', async () => {
     // Skip - complex async issue with Alert.alert not being called as expected
     it.skip('handles update-disc API error with details', async () => {
       (global.fetch as jest.Mock)
@@ -1385,7 +1385,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ error: 'Invalid data', details: 'Mold is required' }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1431,7 +1431,7 @@ describe('EditDiscScreen', () => {
         })
         .mockRejectedValueOnce(new Error('Network request failed'));
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1448,7 +1448,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('data loading and population', () => {
+  describe('data loading and population', async () => {
     // Skip - complex async issue with flight number values not being populated in time
     it.skip('populates all flight numbers correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1462,7 +1462,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('1-15').props.value).toBe('12');
@@ -1485,7 +1485,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('1-15').props.value).toBe('');
@@ -1532,7 +1532,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Destroyer').props.value).toBe('Destroyer');
@@ -1544,7 +1544,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('navigation', () => {
+  describe('navigation', async () => {
     // Skip - test passes in isolation but has timing issues with test suite
     it.skip('navigates back on successful save', async () => {
       // Setup session mock for both initial load and save
@@ -1568,7 +1568,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1635,7 +1635,7 @@ describe('EditDiscScreen', () => {
           json: () => Promise.resolve({ error: 'Server error' }),
         });
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1651,7 +1651,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('manufacturer changes', () => {
+  describe('manufacturer changes', async () => {
     // Skip - complex async issue with plastic value not being populated in time
     it.skip('clears plastic when manufacturer changes', async () => {
       // Set up mock with plastic value
@@ -1667,7 +1667,7 @@ describe('EditDiscScreen', () => {
         }]),
       });
 
-      const { getByPlaceholderText } = render(<EditDiscScreen />);
+      const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Star').props.value).toBe('Star');
@@ -1679,7 +1679,7 @@ describe('EditDiscScreen', () => {
     });
   });
 
-  describe('button states', () => {
+  describe('button states', async () => {
     // Skip - button text changes to ActivityIndicator when saving, causing getByText to fail
     it.skip('disables save button while saving', async () => {
       (global.fetch as jest.Mock)
@@ -1695,7 +1695,7 @@ describe('EditDiscScreen', () => {
         })
         .mockImplementationOnce(() => new Promise(() => {}));
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Save Changes')).toBeTruthy();
@@ -1727,7 +1727,7 @@ describe('EditDiscScreen', () => {
         })
         .mockImplementationOnce(() => new Promise(() => {}));
 
-      const { getByText } = render(<EditDiscScreen />);
+      const { getByText } = await render(<EditDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();

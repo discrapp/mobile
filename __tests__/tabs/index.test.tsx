@@ -51,7 +51,7 @@ const { useAuth } = require('../../contexts/AuthContext');
 const { useIsAdmin } = require('../../hooks/useIsAdmin');
 const { getCachedDiscs } = require('../../utils/discCache');
 
-describe('HomeScreen', () => {
+describe('HomeScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getCachedDiscs.mockResolvedValue(null);
@@ -59,7 +59,7 @@ describe('HomeScreen', () => {
 
   it('renders welcome message', async () => {
     useAuth.mockReturnValue({ user: null });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Welcome to Discr!')).toBeTruthy();
@@ -69,7 +69,7 @@ describe('HomeScreen', () => {
 
   it('displays user email when logged in', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Welcome to Discr!')).toBeTruthy();
@@ -79,7 +79,7 @@ describe('HomeScreen', () => {
 
   it('does not display email when not logged in', async () => {
     useAuth.mockReturnValue({ user: null });
-    const { queryByText } = render(<HomeScreen />);
+    const { queryByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(queryByText('test@example.com')).toBeNull();
@@ -88,7 +88,7 @@ describe('HomeScreen', () => {
 
   it('shows order stickers card', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Protect Your Discs')).toBeTruthy();
@@ -98,7 +98,7 @@ describe('HomeScreen', () => {
 
   it('navigates to order stickers when card is pressed', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Protect Your Discs')).toBeTruthy();
@@ -111,7 +111,7 @@ describe('HomeScreen', () => {
 
   it('shows Add Disc quick action', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Add Disc')).toBeTruthy();
@@ -120,7 +120,7 @@ describe('HomeScreen', () => {
 
   it('navigates to add-disc when pressed', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Add Disc')).toBeTruthy();
@@ -133,7 +133,7 @@ describe('HomeScreen', () => {
 
   it('shows My Orders quick action', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('My Orders')).toBeTruthy();
@@ -142,7 +142,7 @@ describe('HomeScreen', () => {
 
   it('navigates to my-orders when pressed', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('My Orders')).toBeTruthy();
@@ -155,7 +155,7 @@ describe('HomeScreen', () => {
 
   it('shows Found Disc quick action', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Found Disc')).toBeTruthy();
@@ -164,7 +164,7 @@ describe('HomeScreen', () => {
 
   it('navigates to found-disc when pressed', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Found Disc')).toBeTruthy();
@@ -177,7 +177,7 @@ describe('HomeScreen', () => {
 
   it('shows Link Sticker quick action', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Link Sticker')).toBeTruthy();
@@ -186,7 +186,7 @@ describe('HomeScreen', () => {
 
   it('navigates to link-sticker when pressed', async () => {
     useAuth.mockReturnValue({ user: mockUser });
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
 
     await waitFor(() => {
       expect(getByText('Link Sticker')).toBeTruthy();
@@ -197,11 +197,11 @@ describe('HomeScreen', () => {
     expect(mockPush).toHaveBeenCalledWith('/link-sticker');
   });
 
-  describe('Shot Advisor feature flag', () => {
+  describe('Shot Advisor feature flag', async () => {
     it('hides Shot Advisor for non-admin users', async () => {
       useAuth.mockReturnValue({ user: mockUser });
       useIsAdmin.mockReturnValue(false);
-      const { queryByText } = render(<HomeScreen />);
+      const { queryByText } = await render(<HomeScreen />);
 
       await waitFor(() => {
         expect(queryByText('Shot Advisor')).toBeNull();
@@ -211,7 +211,7 @@ describe('HomeScreen', () => {
     it('shows Shot Advisor for admin users', async () => {
       useAuth.mockReturnValue({ user: mockAdminUser });
       useIsAdmin.mockReturnValue(true);
-      const { getByText } = render(<HomeScreen />);
+      const { getByText } = await render(<HomeScreen />);
 
       await waitFor(() => {
         expect(getByText('Shot Advisor')).toBeTruthy();
@@ -221,7 +221,7 @@ describe('HomeScreen', () => {
     it('navigates to shot-recommendation when Shot Advisor is pressed by admin', async () => {
       useAuth.mockReturnValue({ user: mockAdminUser });
       useIsAdmin.mockReturnValue(true);
-      const { getByText } = render(<HomeScreen />);
+      const { getByText } = await render(<HomeScreen />);
 
       await waitFor(() => {
         expect(getByText('Shot Advisor')).toBeTruthy();
@@ -233,7 +233,7 @@ describe('HomeScreen', () => {
     });
   });
 
-  describe('with disc data', () => {
+  describe('with disc data', async () => {
     const mockDiscs = [
       {
         id: '1',
@@ -257,7 +257,7 @@ describe('HomeScreen', () => {
       useAuth.mockReturnValue({ user: mockUser });
       getCachedDiscs.mockResolvedValue(mockDiscs);
 
-      const { getByText } = render(<HomeScreen />);
+      const { getByText } = await render(<HomeScreen />);
 
       await waitFor(() => {
         expect(getByText('2')).toBeTruthy(); // Total discs
@@ -269,7 +269,7 @@ describe('HomeScreen', () => {
       useAuth.mockReturnValue({ user: mockUser });
       getCachedDiscs.mockResolvedValue([]);
 
-      const { getByText } = render(<HomeScreen />);
+      const { getByText } = await render(<HomeScreen />);
 
       await waitFor(() => {
         expect(getByText('No Bag Insights Yet')).toBeTruthy();

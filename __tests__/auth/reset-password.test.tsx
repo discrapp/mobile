@@ -23,13 +23,13 @@ jest.mock('../../lib/supabase', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ResetPassword', () => {
+describe('ResetPassword', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+  it('renders correctly', async () => {
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     expect(getByText('Create New Password')).toBeTruthy();
     expect(getByText('Enter your new password below.')).toBeTruthy();
@@ -39,7 +39,7 @@ describe('ResetPassword', () => {
   });
 
   it('shows validation error for empty password', async () => {
-    const { getByText } = render(<ResetPassword />);
+    const { getByText } = await render(<ResetPassword />);
 
     fireEvent.press(getByText('Reset Password'));
 
@@ -49,7 +49,7 @@ describe('ResetPassword', () => {
   });
 
   it('shows validation error for short password', async () => {
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), '12345');
     fireEvent.press(getByText('Reset Password'));
@@ -60,7 +60,7 @@ describe('ResetPassword', () => {
   });
 
   it('shows validation error for mismatched passwords', async () => {
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm new password'), 'different123');
@@ -77,7 +77,7 @@ describe('ResetPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(
@@ -102,7 +102,7 @@ describe('ResetPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(
@@ -128,7 +128,7 @@ describe('ResetPassword', () => {
       error: { message: 'Invalid session' },
     });
 
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(
@@ -151,7 +151,7 @@ describe('ResetPassword', () => {
     });
     (supabase.auth.updateUser as jest.Mock).mockReturnValue(promise);
 
-    const { getByText, getByPlaceholderText, getByTestId } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText, getByTestId } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(
@@ -172,7 +172,7 @@ describe('ResetPassword', () => {
   });
 
   it('clears password error when typing in password field', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<ResetPassword />);
 
     // Submit empty form to trigger validation error
     fireEvent.press(getByText('Reset Password'));
@@ -190,7 +190,7 @@ describe('ResetPassword', () => {
   });
 
   it('clears confirm password error when typing in confirm field', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<ResetPassword />);
 
     // Set password but mismatched confirm
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'password123');
@@ -212,7 +212,7 @@ describe('ResetPassword', () => {
   it('handles unexpected error during password reset', async () => {
     (supabase.auth.updateUser as jest.Mock).mockRejectedValue(new Error('Network failure'));
 
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(
@@ -238,7 +238,7 @@ describe('ResetPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ResetPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ResetPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter new password'), 'newpassword123');
     fireEvent.changeText(

@@ -7,25 +7,25 @@
 
 import { STRINGS } from '@/constants/strings';
 
-describe('STRINGS constants', () => {
-  describe('structure', () => {
-    it('should export STRINGS object', () => {
+describe('STRINGS constants', async () => {
+  describe('structure', async () => {
+    it('should export STRINGS object', async () => {
       expect(STRINGS).toBeDefined();
       expect(typeof STRINGS).toBe('object');
     });
 
-    it('should be immutable (as const)', () => {
+    it('should be immutable (as const)', async () => {
       // TypeScript enforces this at compile time, but we can verify the structure exists
       expect(Object.isFrozen(STRINGS)).toBe(true);
     });
   });
 
-  describe('AUTH section', () => {
-    it('should have AUTH section', () => {
+  describe('AUTH section', async () => {
+    it('should have AUTH section', async () => {
       expect(STRINGS.AUTH).toBeDefined();
     });
 
-    it('should have sign in strings', () => {
+    it('should have sign in strings', async () => {
       expect(STRINGS.AUTH.APP_NAME).toBe('Discr');
       expect(STRINGS.AUTH.WELCOME_BACK).toBe('Welcome Back');
       expect(STRINGS.AUTH.SIGN_IN_SUBTITLE).toBe('Sign in to continue');
@@ -39,7 +39,7 @@ describe('STRINGS constants', () => {
       expect(STRINGS.AUTH.SIGN_UP_LINK).toBe('Sign Up');
     });
 
-    it('should have sign up strings', () => {
+    it('should have sign up strings', async () => {
       expect(STRINGS.AUTH.CREATE_ACCOUNT).toBe('Create Account');
       expect(STRINGS.AUTH.SIGN_UP_SUBTITLE).toBe('Sign up to get started');
       expect(STRINGS.AUTH.CONFIRM_PASSWORD_LABEL).toBe('Confirm Password');
@@ -50,41 +50,41 @@ describe('STRINGS constants', () => {
     });
   });
 
-  describe('ERRORS section', () => {
-    it('should have ERRORS section', () => {
+  describe('ERRORS section', async () => {
+    it('should have ERRORS section', async () => {
       expect(STRINGS.ERRORS).toBeDefined();
     });
 
-    it('should have generic error messages', () => {
+    it('should have generic error messages', async () => {
       expect(STRINGS.ERRORS.GENERIC).toBe('Something went wrong. Please try again.');
       expect(STRINGS.ERRORS.NETWORK).toBe('Please check your connection');
       expect(STRINGS.ERRORS.TITLE).toBe('Error');
       expect(STRINGS.ERRORS.OOPS).toBe('Oops!');
     });
 
-    it('should have retry messages', () => {
+    it('should have retry messages', async () => {
       expect(STRINGS.ERRORS.TRY_AGAIN).toBe('Try Again');
     });
   });
 
-  describe('VALIDATION section', () => {
-    it('should have VALIDATION section', () => {
+  describe('VALIDATION section', async () => {
+    it('should have VALIDATION section', async () => {
       expect(STRINGS.VALIDATION).toBeDefined();
     });
 
-    it('should have email validation messages', () => {
+    it('should have email validation messages', async () => {
       expect(STRINGS.VALIDATION.EMAIL_REQUIRED).toBe('Email is required');
       expect(STRINGS.VALIDATION.EMAIL_INVALID).toBe('Please enter a valid email');
     });
 
-    it('should have password validation messages', () => {
+    it('should have password validation messages', async () => {
       expect(STRINGS.VALIDATION.PASSWORD_REQUIRED).toBe('Password is required');
       expect(STRINGS.VALIDATION.PASSWORD_MIN_LENGTH).toBe('Password must be at least 8 characters');
       expect(STRINGS.VALIDATION.CONFIRM_PASSWORD_REQUIRED).toBe('Please confirm your password');
       expect(STRINGS.VALIDATION.PASSWORDS_NO_MATCH).toBe('Passwords do not match');
     });
 
-    it('should have address validation messages', () => {
+    it('should have address validation messages', async () => {
       expect(STRINGS.VALIDATION.NAME_REQUIRED).toBe('Name is required');
       expect(STRINGS.VALIDATION.NAME_TOO_LONG).toBe('Name is too long (max 100 characters)');
       expect(STRINGS.VALIDATION.STREET_REQUIRED).toBe('Street address is required');
@@ -100,45 +100,45 @@ describe('STRINGS constants', () => {
     });
   });
 
-  describe('DISCS section', () => {
-    it('should have DISCS section', () => {
+  describe('DISCS section', async () => {
+    it('should have DISCS section', async () => {
       expect(STRINGS.DISCS).toBeDefined();
     });
 
-    it('should have empty state strings', () => {
+    it('should have empty state strings', async () => {
       expect(STRINGS.DISCS.EMPTY_TITLE).toBe('No Discs in Your Bag');
       expect(STRINGS.DISCS.EMPTY_DESCRIPTION).toBe('Start building your disc collection by adding your first disc!');
       expect(STRINGS.DISCS.ADD_FIRST_DISC).toBe('Add Your First Disc');
     });
 
-    it('should have disc badge labels', () => {
+    it('should have disc badge labels', async () => {
       expect(STRINGS.DISCS.BADGE_SURRENDERED).toBe('Surrendered');
       expect(STRINGS.DISCS.BADGE_AI_IDENTIFIED).toBe('AI Identified');
     });
 
-    it('should have protect banner strings', () => {
+    it('should have protect banner strings', async () => {
       expect(STRINGS.DISCS.PROTECT_TITLE).toBe('Protect Your Collection');
       expect(STRINGS.DISCS.PROTECT_SUBTITLE).toBe('Add QR stickers to help finders contact you');
     });
 
-    it('should have recovery status labels', () => {
+    it('should have recovery status labels', async () => {
       expect(STRINGS.DISCS.RECOVERY_STATUS_FOUND).toBe('Found');
       expect(STRINGS.DISCS.RECOVERY_STATUS_MEETUP_PROPOSED).toBe('Meetup Proposed');
       expect(STRINGS.DISCS.RECOVERY_STATUS_MEETUP_CONFIRMED).toBe('Meetup Confirmed');
     });
   });
 
-  describe('ADD_DISC section', () => {
-    it('should have ADD_DISC section', () => {
+  describe('ADD_DISC section', async () => {
+    it('should have ADD_DISC section', async () => {
       expect(STRINGS.ADD_DISC).toBeDefined();
     });
 
-    it('should have form title and field labels', () => {
+    it('should have form title and field labels', async () => {
       expect(STRINGS.ADD_DISC.TITLE).toBe('Add Disc');
       expect(STRINGS.ADD_DISC.MOLD_REQUIRED).toBe('Mold name is required');
     });
 
-    it('should have entry mode strings', () => {
+    it('should have entry mode strings', async () => {
       expect(STRINGS.ADD_DISC.HOW_TO_ADD).toBe('How would you like to add your disc?');
       expect(STRINGS.ADD_DISC.SCAN_QR_TITLE).toBe('Scan QR Sticker');
       expect(STRINGS.ADD_DISC.SCAN_QR_DESC).toBe('Link a Discr sticker to this disc');
@@ -148,7 +148,7 @@ describe('STRINGS constants', () => {
       expect(STRINGS.ADD_DISC.MANUAL_DESC).toBe('Enter disc details yourself');
     });
 
-    it('should have photo section strings', () => {
+    it('should have photo section strings', async () => {
       expect(STRINGS.ADD_DISC.PHOTOS_OPTIONAL).toBe('Photos (Optional)');
       expect(STRINGS.ADD_DISC.ADD_PHOTO).toBe('Add Photo');
       expect(STRINGS.ADD_DISC.PHOTO_LIMIT_HINT).toBe('You can add up to 4 photos per disc');
@@ -156,22 +156,22 @@ describe('STRINGS constants', () => {
       expect(STRINGS.ADD_DISC.MAX_PHOTOS_MESSAGE).toBe('You can only add up to 4 photos per disc');
     });
 
-    it('should have QR code strings', () => {
+    it('should have QR code strings', async () => {
       expect(STRINGS.ADD_DISC.QR_LINKED).toBe('QR Code Linked');
       expect(STRINGS.ADD_DISC.QR_SCAN_SUBTITLE).toBe('Link an Discr sticker to this disc');
     });
 
-    it('should have button labels', () => {
+    it('should have button labels', async () => {
       expect(STRINGS.ADD_DISC.SAVE).toBe('Save Disc');
       expect(STRINGS.ADD_DISC.CANCEL).toBe('Cancel');
     });
 
-    it('should have success messages', () => {
+    it('should have success messages', async () => {
       expect(STRINGS.ADD_DISC.SUCCESS_TITLE).toBe('Success');
       expect(STRINGS.ADD_DISC.SUCCESS_MESSAGE).toBe('Disc added to your bag!');
     });
 
-    it('should have AI identification strings', () => {
+    it('should have AI identification strings', async () => {
       expect(STRINGS.ADD_DISC.AI_ANALYZING).toBe('Analyzing disc...');
       expect(STRINGS.ADD_DISC.AI_IDENTIFYING).toBe('AI is identifying your disc');
       expect(STRINGS.ADD_DISC.AI_DISC_IDENTIFIED).toBe('Disc Identified!');
@@ -182,17 +182,17 @@ describe('STRINGS constants', () => {
     });
   });
 
-  describe('FOUND_DISC section', () => {
-    it('should have FOUND_DISC section', () => {
+  describe('FOUND_DISC section', async () => {
+    it('should have FOUND_DISC section', async () => {
       expect(STRINGS.FOUND_DISC).toBeDefined();
     });
 
-    it('should have header strings', () => {
+    it('should have header strings', async () => {
       expect(STRINGS.FOUND_DISC.TITLE).toBe('Found a Disc?');
       expect(STRINGS.FOUND_DISC.SUBTITLE).toBe('Scan the QR code or enter it manually to help reunite the disc with its owner.');
     });
 
-    it('should have input strings', () => {
+    it('should have input strings', async () => {
       expect(STRINGS.FOUND_DISC.SCAN_BUTTON).toBe('Scan QR Code');
       expect(STRINGS.FOUND_DISC.OR_MANUAL).toBe('or enter manually');
       expect(STRINGS.FOUND_DISC.QR_LABEL).toBe('QR Code');
@@ -200,30 +200,30 @@ describe('STRINGS constants', () => {
       expect(STRINGS.FOUND_DISC.LOOKUP_BUTTON).toBe('Look Up Disc');
     });
 
-    it('should have pending returns strings', () => {
+    it('should have pending returns strings', async () => {
       expect(STRINGS.FOUND_DISC.PENDING_RETURNS_TITLE).toBe('Your Pending Returns');
       expect(STRINGS.FOUND_DISC.PENDING_RETURNS_SUBTITLE).toBe('Discs you found that are waiting to be returned');
       expect(STRINGS.FOUND_DISC.LOADING_PENDING).toBe('Loading your found discs...');
     });
 
-    it('should have owner recovery strings', () => {
+    it('should have owner recovery strings', async () => {
       expect(STRINGS.FOUND_DISC.YOUR_DISCS_FOUND).toBe('Your Discs Were Found!');
       expect(STRINGS.FOUND_DISC.SOMEONE_FOUND_DISC).toBe('Someone found your disc and is trying to return it');
       expect(STRINGS.FOUND_DISC.CHECKING_RECOVERIES).toBe('Checking for active recoveries...');
     });
 
-    it('should have scanner strings', () => {
+    it('should have scanner strings', async () => {
       expect(STRINGS.FOUND_DISC.SCAN_QR_TITLE).toBe('Scan QR Code');
       expect(STRINGS.FOUND_DISC.SCAN_QR_SUBTITLE).toBe('Point your camera at the QR code on the disc');
     });
 
-    it('should have loading state strings', () => {
+    it('should have loading state strings', async () => {
       expect(STRINGS.FOUND_DISC.LOOKING_UP).toBe('Looking up disc...');
       expect(STRINGS.FOUND_DISC.CLAIMING_QR).toBe('Claiming QR code...');
       expect(STRINGS.FOUND_DISC.REPORTING_FOUND).toBe('Reporting found disc...');
     });
 
-    it('should have QR claim strings', () => {
+    it('should have QR claim strings', async () => {
       expect(STRINGS.FOUND_DISC.NEW_QR_CODE).toBe('New QR Code!');
       expect(STRINGS.FOUND_DISC.QR_NOT_CLAIMED).toBe("This QR code hasn't been claimed yet. Claim it to link it to one of your discs.");
       expect(STRINGS.FOUND_DISC.CLAIM_QR_BUTTON).toBe('Claim This QR Code');
@@ -232,21 +232,21 @@ describe('STRINGS constants', () => {
       expect(STRINGS.FOUND_DISC.GO_TO_BAG).toBe('Go to My Bag');
     });
 
-    it('should have success strings', () => {
+    it('should have success strings', async () => {
       expect(STRINGS.FOUND_DISC.QR_CLAIMED_TITLE).toBe('QR Code Claimed!');
       expect(STRINGS.FOUND_DISC.QR_CLAIMED_MESSAGE).toBe('The QR code is now yours. Link it to one of your discs so finders can return it to you.');
       expect(STRINGS.FOUND_DISC.CREATE_NEW_DISC).toBe('Create New Disc');
       expect(STRINGS.FOUND_DISC.SCAN_ANOTHER).toBe('Scan Another QR Code');
     });
 
-    it('should have disc found strings', () => {
+    it('should have disc found strings', async () => {
       expect(STRINGS.FOUND_DISC.DISC_FOUND).toBe('Disc Found!');
       expect(STRINGS.FOUND_DISC.MESSAGE_OPTIONAL).toBe('Message for Owner (Optional)');
       expect(STRINGS.FOUND_DISC.MESSAGE_PLACEHOLDER).toBe('Where did you find it? Any details...');
       expect(STRINGS.FOUND_DISC.REPORT_FOUND_BUTTON).toBe('Report Found');
     });
 
-    it('should have thank you strings', () => {
+    it('should have thank you strings', async () => {
       expect(STRINGS.FOUND_DISC.THANK_YOU).toBe('Thank You!');
       expect(STRINGS.FOUND_DISC.WHAT_NEXT).toBe('What would you like to do next?');
       expect(STRINGS.FOUND_DISC.PROPOSE_MEETUP).toBe('Propose a Meetup');
@@ -254,7 +254,7 @@ describe('STRINGS constants', () => {
       expect(STRINGS.FOUND_DISC.REPORT_ANOTHER).toBe('Report Another Disc');
     });
 
-    it('should have error strings', () => {
+    it('should have error strings', async () => {
       expect(STRINGS.FOUND_DISC.ERROR_NO_DISC).toBe('No disc found with this QR code. Please check and try again.');
       expect(STRINGS.FOUND_DISC.ERROR_ALREADY_CLAIMED).toBe('This QR code is already claimed by another user.');
       expect(STRINGS.FOUND_DISC.ERROR_DEACTIVATED).toBe('This QR code has been deactivated and can no longer be used.');
@@ -263,7 +263,7 @@ describe('STRINGS constants', () => {
       expect(STRINGS.FOUND_DISC.ERROR_PLEASE_ENTER_QR).toBe('Please enter a QR code');
     });
 
-    it('should have recovery status strings', () => {
+    it('should have recovery status strings', async () => {
       expect(STRINGS.FOUND_DISC.STATUS_WAITING_FOR_OWNER).toBe('Waiting for owner');
       expect(STRINGS.FOUND_DISC.STATUS_ACTION_NEEDED).toBe('Action needed');
       expect(STRINGS.FOUND_DISC.STATUS_REVIEW_MEETUP).toBe('Review meetup');
@@ -275,28 +275,28 @@ describe('STRINGS constants', () => {
     });
   });
 
-  describe('CAMERA section', () => {
-    it('should have CAMERA section', () => {
+  describe('CAMERA section', async () => {
+    it('should have CAMERA section', async () => {
       expect(STRINGS.CAMERA).toBeDefined();
     });
 
-    it('should have permission strings', () => {
+    it('should have permission strings', async () => {
       expect(STRINGS.CAMERA.PERMISSION_REQUIRED).toBe('Camera Permission Required');
       expect(STRINGS.CAMERA.PERMISSION_MESSAGE).toBe('Please grant camera permission to scan QR codes.');
       expect(STRINGS.CAMERA.GRANT_PERMISSION).toBe('Grant Permission');
     });
 
-    it('should have button labels', () => {
+    it('should have button labels', async () => {
       expect(STRINGS.CAMERA.CANCEL).toBe('Cancel');
     });
   });
 
-  describe('COMMON section', () => {
-    it('should have COMMON section', () => {
+  describe('COMMON section', async () => {
+    it('should have COMMON section', async () => {
       expect(STRINGS.COMMON).toBeDefined();
     });
 
-    it('should have common button labels', () => {
+    it('should have common button labels', async () => {
       expect(STRINGS.COMMON.OK).toBe('OK');
       expect(STRINGS.COMMON.CANCEL).toBe('Cancel');
       expect(STRINGS.COMMON.SAVE).toBe('Save');
@@ -306,29 +306,29 @@ describe('STRINGS constants', () => {
       expect(STRINGS.COMMON.LOADING).toBe('Loading...');
     });
 
-    it('should have common labels', () => {
+    it('should have common labels', async () => {
       expect(STRINGS.COMMON.UNKNOWN_DISC).toBe('Unknown Disc');
       expect(STRINGS.COMMON.REWARD_LABEL).toBe('Reward');
     });
   });
 
-  describe('ALERTS section', () => {
-    it('should have ALERTS section', () => {
+  describe('ALERTS section', async () => {
+    it('should have ALERTS section', async () => {
       expect(STRINGS.ALERTS).toBeDefined();
     });
 
-    it('should have alert titles', () => {
+    it('should have alert titles', async () => {
       expect(STRINGS.ALERTS.ERROR_TITLE).toBe('Error');
       expect(STRINGS.ALERTS.SUCCESS_TITLE).toBe('Success');
       expect(STRINGS.ALERTS.PERMISSION_DENIED_TITLE).toBe('Permission denied');
     });
 
-    it('should have alert messages', () => {
+    it('should have alert messages', async () => {
       expect(STRINGS.ALERTS.MUST_BE_SIGNED_IN).toBe('You must be signed in to add a disc');
       expect(STRINGS.ALERTS.PHOTO_PERMISSION_NEEDED).toBe('We need camera roll permissions to add photos');
     });
 
-    it('should have photo alert strings', () => {
+    it('should have photo alert strings', async () => {
       expect(STRINGS.ALERTS.ADD_PHOTO_TITLE).toBe('Add Photo');
       expect(STRINGS.ALERTS.TAKE_PHOTO).toBe('Take Photo');
       expect(STRINGS.ALERTS.CHOOSE_FROM_LIBRARY).toBe('Choose from Library');

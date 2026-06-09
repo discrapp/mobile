@@ -4,9 +4,9 @@
 
 import { ApiError, ApiErrorCode, isApiError } from '@/services/ApiError';
 
-describe('ApiError', () => {
-  describe('constructor', () => {
-    it('creates an error with message and default values', () => {
+describe('ApiError', async () => {
+  describe('constructor', async () => {
+    it('creates an error with message and default values', async () => {
       const error = new ApiError('Test error message');
 
       expect(error).toBeInstanceOf(Error);
@@ -17,7 +17,7 @@ describe('ApiError', () => {
       expect(error.operation).toBeUndefined();
     });
 
-    it('creates an error with custom code', () => {
+    it('creates an error with custom code', async () => {
       const error = new ApiError('Network failed', {
         code: ApiErrorCode.NETWORK,
       });
@@ -26,7 +26,7 @@ describe('ApiError', () => {
       expect(error.code).toBe(ApiErrorCode.NETWORK);
     });
 
-    it('creates an error with status code', () => {
+    it('creates an error with status code', async () => {
       const error = new ApiError('Not found', {
         code: ApiErrorCode.NOT_FOUND,
         statusCode: 404,
@@ -35,7 +35,7 @@ describe('ApiError', () => {
       expect(error.statusCode).toBe(404);
     });
 
-    it('creates an error with operation context', () => {
+    it('creates an error with operation context', async () => {
       const error = new ApiError('Failed to fetch discs', {
         code: ApiErrorCode.API,
         operation: 'fetch-discs',
@@ -44,7 +44,7 @@ describe('ApiError', () => {
       expect(error.operation).toBe('fetch-discs');
     });
 
-    it('creates an error with original error', () => {
+    it('creates an error with original error', async () => {
       const originalError = new Error('Original error');
       const error = new ApiError('Wrapped error', {
         originalError,
@@ -53,14 +53,14 @@ describe('ApiError', () => {
       expect(error.originalError).toBe(originalError);
     });
 
-    it('preserves the error name', () => {
+    it('preserves the error name', async () => {
       const error = new ApiError('Test');
       expect(error.name).toBe('ApiError');
     });
   });
 
-  describe('error codes', () => {
-    it('defines all expected error codes', () => {
+  describe('error codes', async () => {
+    it('defines all expected error codes', async () => {
       expect(ApiErrorCode.NETWORK).toBe('NETWORK');
       expect(ApiErrorCode.AUTH).toBe('AUTH');
       expect(ApiErrorCode.SESSION_EXPIRED).toBe('SESSION_EXPIRED');
@@ -72,55 +72,55 @@ describe('ApiError', () => {
     });
   });
 
-  describe('isNetworkError', () => {
-    it('returns true for network errors', () => {
+  describe('isNetworkError', async () => {
+    it('returns true for network errors', async () => {
       const error = new ApiError('Network failed', {
         code: ApiErrorCode.NETWORK,
       });
       expect(error.isNetworkError()).toBe(true);
     });
 
-    it('returns false for non-network errors', () => {
+    it('returns false for non-network errors', async () => {
       const error = new ApiError('Auth failed', { code: ApiErrorCode.AUTH });
       expect(error.isNetworkError()).toBe(false);
     });
   });
 
-  describe('isAuthError', () => {
-    it('returns true for auth errors', () => {
+  describe('isAuthError', async () => {
+    it('returns true for auth errors', async () => {
       const error = new ApiError('Auth failed', { code: ApiErrorCode.AUTH });
       expect(error.isAuthError()).toBe(true);
     });
 
-    it('returns true for session expired errors', () => {
+    it('returns true for session expired errors', async () => {
       const error = new ApiError('Session expired', {
         code: ApiErrorCode.SESSION_EXPIRED,
       });
       expect(error.isAuthError()).toBe(true);
     });
 
-    it('returns false for non-auth errors', () => {
+    it('returns false for non-auth errors', async () => {
       const error = new ApiError('Not found', { code: ApiErrorCode.NOT_FOUND });
       expect(error.isAuthError()).toBe(false);
     });
   });
 
-  describe('requiresReauth', () => {
-    it('returns true for session expired errors', () => {
+  describe('requiresReauth', async () => {
+    it('returns true for session expired errors', async () => {
       const error = new ApiError('Session expired', {
         code: ApiErrorCode.SESSION_EXPIRED,
       });
       expect(error.requiresReauth()).toBe(true);
     });
 
-    it('returns false for regular auth errors', () => {
+    it('returns false for regular auth errors', async () => {
       const error = new ApiError('Auth failed', { code: ApiErrorCode.AUTH });
       expect(error.requiresReauth()).toBe(false);
     });
   });
 
-  describe('toJSON', () => {
-    it('serializes the error to JSON', () => {
+  describe('toJSON', async () => {
+    it('serializes the error to JSON', async () => {
       const error = new ApiError('Test error', {
         code: ApiErrorCode.API,
         statusCode: 500,
@@ -140,18 +140,18 @@ describe('ApiError', () => {
   });
 });
 
-describe('isApiError', () => {
-  it('returns true for ApiError instances', () => {
+describe('isApiError', async () => {
+  it('returns true for ApiError instances', async () => {
     const error = new ApiError('Test');
     expect(isApiError(error)).toBe(true);
   });
 
-  it('returns false for regular Error instances', () => {
+  it('returns false for regular Error instances', async () => {
     const error = new Error('Test');
     expect(isApiError(error)).toBe(false);
   });
 
-  it('returns false for non-error values', () => {
+  it('returns false for non-error values', async () => {
     expect(isApiError(null)).toBe(false);
     expect(isApiError(undefined)).toBe(false);
     expect(isApiError('string')).toBe(false);
