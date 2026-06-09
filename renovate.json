@@ -1,43 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "timezone": "America/Denver",
-  "schedule": [
-    "after 10pm every weekday",
-    "before 5am every weekday",
-    "every weekend"
-  ],
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dependency Dashboard",
-  "semanticCommits": "enabled",
-  "commitMessagePrefix": "chore(deps):",
-  "commitMessageAction": "update",
-  "commitMessageExtra": "to {{newValue}}",
-  "commitMessageTopic": "{{depName}}",
-  "automerge": false,
-  "platformAutomerge": true,
+  "extends": ["github>discrapp/.github"],
   "rebaseWhen": "conflicted",
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "pruneStaleBranches": true,
-  "labels": [
-    "dependencies",
-    "renovate"
-  ],
-  "assignees": [
-    "@benniemosher"
-  ],
-  "vulnerabilityAlerts": {
-    "labels": [
-      "security",
-      "dependencies"
-    ],
-    "assignees": [
-      "@benniemosher"
-    ]
-  },
   "packageRules": [
     {
       "description": "Group all non-major npm updates together",
@@ -50,12 +17,6 @@
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["major"],
       "groupName": "npm major updates"
-    },
-    {
-      "description": "Automerge minor/patch updates",
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true,
-      "automergeType": "pr"
     },
     {
       "description": "Disable Expo ecosystem packages - managed by `npx expo install --fix`",
@@ -76,39 +37,19 @@
     {
       "description": "Expo core SDK updates - auto-fix all related packages",
       "enabled": true,
-      "matchPackageNames": [
-        "expo"
-      ],
+      "matchPackageNames": ["expo"],
+      "automerge": false,
       "postUpgradeTasks": {
-        "commands": [
-          "npm install",
-          "npx expo install --fix"
-        ],
-        "fileFilters": [
-          "package.json",
-          "package-lock.json"
-        ],
+        "commands": ["npm install", "npx expo install --fix"],
+        "fileFilters": ["package.json", "package-lock.json"],
         "executionMode": "branch"
       }
-    },
-    {
-      "description": "GitHub Actions - group and automerge non-major",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "github-actions non-major",
-      "automerge": true,
-      "automergeType": "pr"
     },
     {
       "description": "GitHub Actions - group major updates",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["major"],
       "groupName": "github-actions major"
-    },
-    {
-      "description": "Pre-commit hooks - group updates",
-      "matchManagers": ["pre-commit"],
-      "groupName": "pre-commit hooks"
     }
   ]
 }
