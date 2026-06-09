@@ -41,7 +41,7 @@ const getMockInvoke = () => {
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('NotificationsScreen', () => {
+describe('NotificationsScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getMockInvoke().mockResolvedValue({ data: {}, error: null });
@@ -51,9 +51,9 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('empty state', () => {
+  describe('empty state', async () => {
     it('renders empty state', async () => {
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('No notifications yet')).toBeTruthy();
@@ -61,7 +61,7 @@ describe('NotificationsScreen', () => {
     }, 15000);
 
     it('shows empty state description', async () => {
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText("You'll be notified when someone finds your disc or proposes a meetup")).toBeTruthy();
@@ -69,7 +69,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification display', () => {
+  describe('notification display', async () => {
     it('displays notification when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -87,7 +87,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -104,7 +104,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('1 unread')).toBeTruthy();
@@ -123,7 +123,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 unread')).toBeTruthy();
@@ -131,7 +131,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification types', () => {
+  describe('notification types', async () => {
     it('displays disc_found notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -149,7 +149,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -173,7 +173,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -197,7 +197,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Accepted')).toBeTruthy();
@@ -221,7 +221,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Surrendered')).toBeTruthy();
@@ -253,7 +253,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('fetch handling', () => {
+  describe('fetch handling', async () => {
     it('fetches notifications on mount', async () => {
       render(<NotificationsScreen />);
 
@@ -272,7 +272,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ error: 'Server error' }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should still render empty state without crashing
       await waitFor(() => {
@@ -281,7 +281,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification interactions', () => {
+  describe('notification interactions', async () => {
     it('renders notification items as pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -299,7 +299,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -324,7 +324,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -349,7 +349,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -373,7 +373,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -381,7 +381,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('time formatting', () => {
+  describe('time formatting', async () => {
     it('shows relative time for notifications', async () => {
       // Create a notification from 2 hours ago
       const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
@@ -402,7 +402,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2h ago')).toBeTruthy();
@@ -428,7 +428,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Just now')).toBeTruthy();
@@ -454,7 +454,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('3d ago')).toBeTruthy();
@@ -480,7 +480,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('10m ago')).toBeTruthy();
@@ -488,7 +488,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification rendering', () => {
+  describe('notification rendering', async () => {
     it('renders notification title correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -506,7 +506,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Your Destroyer was found!')).toBeTruthy();
@@ -542,7 +542,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -563,7 +563,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('First Notification')).toBeTruthy();
@@ -573,7 +573,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('mark all as read', () => {
+  describe('mark all as read', async () => {
     it('shows mark all read button when there are unread notifications', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -583,7 +583,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -599,7 +599,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { queryByText, getByText } = render(<NotificationsScreen />);
+      const { queryByText, getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -609,7 +609,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('dismiss all', () => {
+  describe('dismiss all', async () => {
     it('shows dismiss all button when notifications exist', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -619,7 +619,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -635,7 +635,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -646,7 +646,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification navigation', () => {
+  describe('notification navigation', async () => {
     it('renders disc_found notification with navigation data', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -664,7 +664,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -689,7 +689,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -714,7 +714,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -723,7 +723,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('mark all as read action', () => {
+  describe('mark all as read action', async () => {
     it('allows pressing mark all read button', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -733,7 +733,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -743,7 +743,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('dismiss all action', () => {
+  describe('dismiss all action', async () => {
     it('allows pressing dismiss all button', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -753,7 +753,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -763,7 +763,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('single notification actions', () => {
+  describe('single notification actions', async () => {
     it('renders unread notification correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -781,7 +781,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -790,7 +790,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('drop off notification', () => {
+  describe('drop off notification', async () => {
     it('displays disc_dropped_off notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -808,7 +808,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off')).toBeTruthy();
@@ -816,11 +816,11 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('network error handling', () => {
+  describe('network error handling', async () => {
     it('handles network error on fetch', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should still render empty state without crashing
       await waitFor(() => {
@@ -839,7 +839,7 @@ describe('NotificationsScreen', () => {
         })
         .mockRejectedValueOnce(new Error('Network error'));
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -850,9 +850,9 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('pull to refresh', () => {
+  describe('pull to refresh', async () => {
     it('has refresh control', async () => {
-      const { UNSAFE_getAllByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getAllByType } = await render(<NotificationsScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -862,7 +862,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification press action', () => {
+  describe('notification press action', async () => {
     it('notification is pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -880,7 +880,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -907,7 +907,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Press Me')).toBeTruthy();
@@ -934,7 +934,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -969,7 +969,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Navigate Me')).toBeTruthy();
@@ -999,7 +999,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -1029,7 +1029,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('No Navigation')).toBeTruthy();
@@ -1045,7 +1045,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('date formatting for old notifications', () => {
+  describe('date formatting for old notifications', async () => {
     it('shows date for notifications older than a week', async () => {
       const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
 
@@ -1065,7 +1065,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Old Notification')).toBeTruthy();
@@ -1073,7 +1073,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('dismiss all clears notifications', () => {
+  describe('dismiss all clears notifications', async () => {
     it('dismiss all button works', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1083,7 +1083,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1094,7 +1094,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('mark all read updates state', () => {
+  describe('mark all read updates state', async () => {
     it('marks all read button works', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1107,7 +1107,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1119,7 +1119,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification with disc_id navigation', () => {
+  describe('notification with disc_id navigation', async () => {
     it('notification with disc_id is pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1137,7 +1137,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -1148,7 +1148,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('non-ok response handling', () => {
+  describe('non-ok response handling', async () => {
     it('handles non-ok response from fetch', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
@@ -1156,7 +1156,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ error: 'Server error' }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should render empty state
       await waitFor(() => {
@@ -1165,9 +1165,9 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('loading state', () => {
+  describe('loading state', async () => {
     it('shows loading indicator while fetching', async () => {
-      const { UNSAFE_getByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getByType } = await render(<NotificationsScreen />);
       const { ActivityIndicator } = require('react-native');
 
       // Initially loading
@@ -1180,7 +1180,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ notifications: [], unread_count: 0 }),
       });
 
-      const { queryByTestId } = render(<NotificationsScreen />);
+      const { queryByTestId } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(queryByTestId('loading-indicator')).toBeNull();
@@ -1188,7 +1188,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('pull to refresh functionality', () => {
+  describe('pull to refresh functionality', async () => {
     it('refetches notifications on pull to refresh', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1198,7 +1198,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { UNSAFE_getAllByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getAllByType } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -1217,7 +1217,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('mark all as read functionality', () => {
+  describe('mark all as read functionality', async () => {
     it('calls API and updates state when marking all as read', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1230,7 +1230,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1259,7 +1259,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1270,7 +1270,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('dismiss all functionality', () => {
+  describe('dismiss all functionality', async () => {
     it('calls API and clears notifications when dismissing all', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1283,7 +1283,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<NotificationsScreen />);
+      const { getByText, queryByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1312,7 +1312,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1343,7 +1343,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('single notification dismiss', () => {
+  describe('single notification dismiss', async () => {
     it('removes notification from list when dismissed', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1361,7 +1361,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss Me')).toBeTruthy();
@@ -1400,7 +1400,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss')).toBeTruthy();
@@ -1416,7 +1416,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('notification type meetup_declined', () => {
+  describe('notification type meetup_declined', async () => {
     it('displays meetup_declined notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1434,7 +1434,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Declined')).toBeTruthy();
@@ -1445,7 +1445,7 @@ describe('NotificationsScreen', () => {
 
   // Skip session handling tests - jest.resetModules() causes complex issues
   // with React component re-registration and unmounting
-  describe.skip('session handling', () => {
+  describe.skip('session handling', async () => {
     it('does not fetch notifications without session', async () => {
       // Mock useAuth to return no session
       jest.resetModules();
@@ -1477,7 +1477,7 @@ describe('NotificationsScreen', () => {
 
   // Skip unread count display tests - causes component unmounting issues
   // due to complex async state updates that aren't properly cleaned up
-  describe.skip('unread count display', () => {
+  describe.skip('unread count display', async () => {
     it('shows notification count when all are read', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1490,7 +1490,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 notifications')).toBeTruthy();
@@ -1509,7 +1509,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 unread')).toBeTruthy();
@@ -1529,7 +1529,7 @@ describe('NotificationsScreen', () => {
   });
 
   // Skip - causes component unmounting issues due to unhandled promise rejections
-  describe.skip('notification with both recovery_event_id and disc_id', () => {
+  describe.skip('notification with both recovery_event_id and disc_id', async () => {
     it('prioritizes recovery_event_id for navigation', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1547,7 +1547,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Both IDs')).toBeTruthy();
@@ -1562,7 +1562,7 @@ describe('NotificationsScreen', () => {
   });
 
   // Skip - causes component unmounting issues due to unhandled promise rejections
-  describe.skip('error handling for mark as read', () => {
+  describe.skip('error handling for mark as read', async () => {
     it('handles error when marking notification as read', async () => {
       getMockInvoke().mockRejectedValueOnce(new Error('Mark as read failed'));
 
@@ -1582,7 +1582,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Test')).toBeTruthy();
@@ -1593,7 +1593,7 @@ describe('NotificationsScreen', () => {
     });
   });
 
-  describe('contribution_approved notifications', () => {
+  describe('contribution_approved notifications', async () => {
     it('displays contribution_approved notifications correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1611,7 +1611,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Plastic Type Approved!')).toBeTruthy();
@@ -1636,7 +1636,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Plastic Type Approved!')).toBeTruthy();

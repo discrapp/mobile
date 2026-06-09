@@ -59,7 +59,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('FoundDiscScreen', () => {
+describe('FoundDiscScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset search params
@@ -73,9 +73,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('initial rendering', () => {
+  describe('initial rendering', async () => {
     it('renders found disc screen', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Found a Disc?')).toBeTruthy();
@@ -83,7 +83,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows QR code input', async () => {
-      const { getByPlaceholderText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -91,7 +91,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows scan button', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -99,7 +99,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows description text', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan the QR code or enter it manually to help reunite the disc with its owner.')).toBeTruthy();
@@ -107,7 +107,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows look up disc button', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Look Up Disc')).toBeTruthy();
@@ -116,7 +116,7 @@ describe('FoundDiscScreen', () => {
 
     it('shows QR code icon', async () => {
       // The screen has a QR code icon at the top
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Found a Disc?')).toBeTruthy();
@@ -124,9 +124,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('form validation', () => {
+  describe('form validation', async () => {
     it('validates empty QR code', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Look Up Disc')).toBeTruthy();
@@ -141,7 +141,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('accepts QR code input', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -162,9 +162,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('QR code lookup flow', () => {
+  describe('QR code lookup flow', async () => {
     it('shows error when disc not found', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -189,7 +189,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('triggers lookup when Look Up button pressed with code', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -208,9 +208,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('pending recoveries', () => {
+  describe('pending recoveries', async () => {
     it('shows no recoveries initially', async () => {
-      const { queryByText } = render(<FoundDiscScreen />);
+      const { queryByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(queryByText('Discs I Found')).toBeFalsy();
@@ -245,7 +245,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -269,7 +269,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Innova')).toBeTruthy();
@@ -292,7 +292,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Waiting for owner')).toBeTruthy();
@@ -300,10 +300,10 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('owner recoveries', () => {
+  describe('owner recoveries', async () => {
     it('renders owner recoveries section text correctly', async () => {
       // Simply verify the component renders - owner recoveries depend on complex Supabase mocks
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Found a Disc?')).toBeTruthy();
@@ -311,11 +311,11 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('error handling', () => {
+  describe('error handling', async () => {
     it('handles fetch error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       // Should still render the screen without crashing
       await waitFor(() => {
@@ -324,9 +324,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('try again functionality', () => {
+  describe('try again functionality', async () => {
     it('shows try again button on error state', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -350,9 +350,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('found disc flow', () => {
+  describe('found disc flow', async () => {
     it('allows typing in the QR code input', async () => {
-      const { getByPlaceholderText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -364,7 +364,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('calls lookup API when Look Up Disc is pressed', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -382,9 +382,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('UI elements', () => {
+  describe('UI elements', async () => {
     it('shows scan instructions in QR scanner button', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -392,7 +392,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows manual entry section', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('or enter manually')).toBeTruthy();
@@ -400,7 +400,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows description text about helping return disc', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText(/Scan the QR code or enter it manually/)).toBeTruthy();
@@ -408,7 +408,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows the main title', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Found a Disc?')).toBeTruthy();
@@ -416,7 +416,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('session handling', () => {
+  describe('session handling', async () => {
     it('fetches pending recoveries with auth token', async () => {
       render(<FoundDiscScreen />);
 
@@ -433,7 +433,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('includes authorization header when looking up disc', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -452,7 +452,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('status displays', () => {
+  describe('status displays', async () => {
     it('shows meetup proposed status for pending recovery', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -468,7 +468,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup proposed')).toBeTruthy();
@@ -490,7 +490,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup confirmed')).toBeTruthy();
@@ -498,9 +498,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('successful disc lookup', () => {
+  describe('successful disc lookup', async () => {
     it('shows disc found result with disc details', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -564,7 +564,7 @@ describe('FoundDiscScreen', () => {
         });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -604,7 +604,7 @@ describe('FoundDiscScreen', () => {
         });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -621,7 +621,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows loading state during lookup', async () => {
-      const { getByPlaceholderText, getByText, queryByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText, queryByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -646,7 +646,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('report found flow', () => {
+  describe('report found flow', async () => {
     it('shows Report Found button when disc is found', async () => {
       // Use URL-based mock to handle multiple concurrent fetches
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -673,7 +673,7 @@ describe('FoundDiscScreen', () => {
         });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -712,7 +712,7 @@ describe('FoundDiscScreen', () => {
         });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -727,9 +727,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('try again flow', () => {
+  describe('try again flow', async () => {
     it('pressing try again resets to input state', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -761,7 +761,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('scannedCode param from deep link navigation', () => {
+  describe('scannedCode param from deep link navigation', async () => {
     it('auto-triggers lookup when scannedCode param is provided', async () => {
       mockSearchParams.scannedCode = 'DEEPLINK123';
 
@@ -821,7 +821,7 @@ describe('FoundDiscScreen', () => {
           }),
         });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -841,7 +841,7 @@ describe('FoundDiscScreen', () => {
           json: () => Promise.resolve({ found: false }),
         });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('No disc found with this QR code. Please check and try again.')).toBeTruthy();
@@ -851,7 +851,7 @@ describe('FoundDiscScreen', () => {
     it('does not auto-trigger lookup when no scannedCode param', async () => {
       mockSearchParams.scannedCode = undefined;
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Found a Disc?')).toBeTruthy();
@@ -865,7 +865,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('claim QR code flow', () => {
+  describe('claim QR code flow', async () => {
     it('shows claim option for unassigned QR codes', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -882,7 +882,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -918,7 +918,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -942,7 +942,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('report found disc API', () => {
+  describe('report found disc API', async () => {
     it('calls report-found-disc API when reporting', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -970,7 +970,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1014,7 +1014,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1049,7 +1049,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1064,7 +1064,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('recovery navigation', () => {
+  describe('recovery navigation', async () => {
     it('navigates to recovery when pressing pending recovery', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1080,7 +1080,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -1092,7 +1092,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('no session handling', () => {
+  describe('no session handling', async () => {
     it('shows error when not signed in for report', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -1119,7 +1119,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1143,7 +1143,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('API error responses', () => {
+  describe('API error responses', async () => {
     it('shows claim button for unassigned QR code', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1160,7 +1160,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1196,7 +1196,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1211,7 +1211,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('claim flow', () => {
+  describe('claim flow', async () => {
     it('shows claim button with QR code display', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1228,7 +1228,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1244,7 +1244,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('report success flow', () => {
+  describe('report success flow', async () => {
     it('shows Report Found button after disc lookup', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1266,7 +1266,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1282,9 +1282,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('lookup error handling', () => {
+  describe('lookup error handling', async () => {
     it('shows error message for network failure', async () => {
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1307,7 +1307,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('message input for owner', () => {
+  describe('message input for owner', async () => {
     it('allows entering optional message', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1329,7 +1329,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1349,13 +1349,13 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('camera permissions', () => {
+  describe('camera permissions', async () => {
     it('requests camera permission when not granted', async () => {
       // Set permission to not granted
       mockCameraPermission.granted = false;
       mockRequestPermission.mockResolvedValueOnce({ granted: true });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -1373,7 +1373,7 @@ describe('FoundDiscScreen', () => {
       mockCameraPermission.granted = false;
       mockRequestPermission.mockResolvedValueOnce({ granted: false });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -1391,9 +1391,9 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('QR code scanning', () => {
+  describe('QR code scanning', async () => {
     it('extracts code from URL format', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -1407,7 +1407,7 @@ describe('FoundDiscScreen', () => {
     });
 
     it('shows cancel button in scanner', async () => {
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -1427,7 +1427,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('QR code link state', () => {
+  describe('QR code link state', async () => {
     it('shows link option for already claimed QR codes', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1445,7 +1445,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1477,7 +1477,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1496,7 +1496,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('QR code error states', () => {
+  describe('QR code error states', async () => {
     it('shows error for QR code claimed by another user', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1513,7 +1513,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1542,7 +1542,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1558,7 +1558,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('claim success navigation', () => {
+  describe.skip('claim success navigation', async () => {
     it('shows claim success screen', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1581,7 +1581,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1624,7 +1624,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1650,7 +1650,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('report found disc error handling', () => {
+  describe.skip('report found disc error handling', async () => {
     it('shows error when reporting own disc', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1680,7 +1680,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1729,7 +1729,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1773,7 +1773,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1794,7 +1794,7 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('claim QR code error handling', () => {
+  describe('claim QR code error handling', async () => {
     it('shows error when not signed in for claim', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -1816,7 +1816,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1864,7 +1864,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1904,7 +1904,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -1926,7 +1926,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('success state navigation', () => {
+  describe.skip('success state navigation', async () => {
     it('shows success screen after reporting', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1961,7 +1961,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2017,7 +2017,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2075,7 +2075,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2101,7 +2101,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip - has complex async timing issues
-  describe.skip('pull to refresh', () => {
+  describe.skip('pull to refresh', async () => {
     it('fetches pending recoveries on mount', async () => {
       render(<FoundDiscScreen />);
 
@@ -2116,7 +2116,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('status formatting', () => {
+  describe.skip('status formatting', async () => {
     it('shows dropped off status for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -2132,7 +2132,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Dropped off')).toBeTruthy();
@@ -2154,7 +2154,7 @@ describe('FoundDiscScreen', () => {
         }]),
       });
 
-      const { getByText } = render(<FoundDiscScreen />);
+      const { getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByText('Owner gave up - Yours to claim!')).toBeTruthy();
@@ -2163,7 +2163,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('disc display details', () => {
+  describe.skip('disc display details', async () => {
     it('shows disc photo when available', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -2186,7 +2186,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2222,7 +2222,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2258,7 +2258,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2294,7 +2294,7 @@ describe('FoundDiscScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
       });
 
-      const { getByPlaceholderText, getByText } = render(<FoundDiscScreen />);
+      const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Enter code (e.g., TEST001)')).toBeTruthy();
@@ -2309,10 +2309,10 @@ describe('FoundDiscScreen', () => {
     });
   });
 
-  describe('visual recovery flow', () => {
-    describe('photo recovery button', () => {
+  describe('visual recovery flow', async () => {
+    describe('photo recovery button', async () => {
       it('shows Use Phone Number on Disc button on input screen', async () => {
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2320,7 +2320,7 @@ describe('FoundDiscScreen', () => {
       });
 
       it('transitions to photo_back state when photo button pressed', async () => {
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2337,7 +2337,7 @@ describe('FoundDiscScreen', () => {
         mockCameraPermission.granted = false;
         mockRequestPermission.mockResolvedValueOnce({ granted: true });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2354,7 +2354,7 @@ describe('FoundDiscScreen', () => {
         mockCameraPermission.granted = false;
         mockRequestPermission.mockResolvedValueOnce({ granted: false });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2372,9 +2372,9 @@ describe('FoundDiscScreen', () => {
       });
     });
 
-    describe('photo capture flow', () => {
+    describe('photo capture flow', async () => {
       it('shows back photo camera view with instructions', async () => {
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2389,7 +2389,7 @@ describe('FoundDiscScreen', () => {
       });
 
       it('shows cancel button in photo capture mode', async () => {
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2403,7 +2403,7 @@ describe('FoundDiscScreen', () => {
       });
 
       it('returns to input state when cancel pressed in photo mode', async () => {
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Use Phone Number on Disc')).toBeTruthy();
@@ -2423,7 +2423,7 @@ describe('FoundDiscScreen', () => {
       });
     });
 
-    describe('phone extraction', () => {
+    describe('phone extraction', async () => {
       it('shows extracting state with loading indicator', async () => {
         // Mock the extraction API to be slow
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2440,7 +2440,7 @@ describe('FoundDiscScreen', () => {
         });
 
         // This test verifies the extracting state exists in the component
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2458,7 +2458,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2466,7 +2466,7 @@ describe('FoundDiscScreen', () => {
       });
     });
 
-    describe('owner lookup', () => {
+    describe('owner lookup', async () => {
       it('handles owner found response', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('lookup-user-by-phone')) {
@@ -2489,7 +2489,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2510,7 +2510,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2530,7 +2530,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2538,7 +2538,7 @@ describe('FoundDiscScreen', () => {
       });
     });
 
-    describe('SMS invite flow', () => {
+    describe('SMS invite flow', async () => {
       it('handles SMS invite API call', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('send-disc-found-sms')) {
@@ -2550,7 +2550,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2568,7 +2568,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();
@@ -2576,7 +2576,7 @@ describe('FoundDiscScreen', () => {
       });
     });
 
-    describe('report by phone flow', () => {
+    describe('report by phone flow', async () => {
       it('handles report found disc by phone API call', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('report-found-disc-by-phone')) {
@@ -2594,7 +2594,7 @@ describe('FoundDiscScreen', () => {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
         });
 
-        const { getByText } = render(<FoundDiscScreen />);
+        const { getByText } = await render(<FoundDiscScreen />);
 
         await waitFor(() => {
           expect(getByText('Found a Disc?')).toBeTruthy();

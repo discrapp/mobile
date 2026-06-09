@@ -21,7 +21,7 @@ global.fetch = jest.fn();
 import { useDismissRecommendation } from '@/hooks/useDismissRecommendation';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useDismissRecommendation', () => {
+describe('useDismissRecommendation', async () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -42,7 +42,7 @@ describe('useDismissRecommendation', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
+  it('initializes with default state', async () => {
     const { result } = renderHook(() => useDismissRecommendation());
 
     expect(result.current.isLoading).toBe(false);

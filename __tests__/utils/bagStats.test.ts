@@ -4,9 +4,9 @@ import {
   BagStatsDisc,
 } from '../../utils/bagStats';
 
-describe('calculateBagStats', () => {
-  describe('with empty disc array', () => {
-    it('returns sensible defaults', () => {
+describe('calculateBagStats', async () => {
+  describe('with empty disc array', async () => {
+    it('returns sensible defaults', async () => {
       const result = calculateBagStats([]);
 
       expect(result.totalDiscs).toBe(0);
@@ -25,8 +25,8 @@ describe('calculateBagStats', () => {
     });
   });
 
-  describe('with a single disc', () => {
-    it('calculates stats correctly', () => {
+  describe('with a single disc', async () => {
+    it('calculates stats correctly', async () => {
       const discs: BagStatsDisc[] = [
         {
           id: '1',
@@ -55,7 +55,7 @@ describe('calculateBagStats', () => {
     });
   });
 
-  describe('with multiple discs', () => {
+  describe('with multiple discs', async () => {
     const discs: BagStatsDisc[] = [
       {
         id: '1',
@@ -99,27 +99,27 @@ describe('calculateBagStats', () => {
       },
     ];
 
-    it('calculates total discs', () => {
+    it('calculates total discs', async () => {
       const result = calculateBagStats(discs);
       expect(result.totalDiscs).toBe(5);
     });
 
-    it('calculates speed range', () => {
+    it('calculates speed range', async () => {
       const result = calculateBagStats(discs);
       expect(result.speedRange).toEqual({ min: 3, max: 13 });
     });
 
-    it('finds top brand by count', () => {
+    it('finds top brand by count', async () => {
       const result = calculateBagStats(discs);
       expect(result.topBrand).toEqual({ name: 'Innova', count: 3 });
     });
 
-    it('counts unique categories', () => {
+    it('counts unique categories', async () => {
       const result = calculateBagStats(discs);
       expect(result.categoriesCount).toBe(4); // Distance, Fairway, Midrange, Putter
     });
 
-    it('calculates stability breakdown', () => {
+    it('calculates stability breakdown', async () => {
       const result = calculateBagStats(discs);
       // turn <= -2: understable (1 disc with turn -3)
       // turn > -2 AND turn <= 0: stable (3 discs with turn -1, 0, 0)
@@ -129,25 +129,25 @@ describe('calculateBagStats', () => {
       expect(result.stability.overstable).toBe(1);
     });
 
-    it('lists top plastics sorted by count', () => {
+    it('lists top plastics sorted by count', async () => {
       const result = calculateBagStats(discs);
       expect(result.topPlastics[0]).toEqual({ name: 'Star', count: 2 });
       expect(result.topPlastics.length).toBeLessThanOrEqual(3);
     });
 
-    it('calculates color distribution sorted by count', () => {
+    it('calculates color distribution sorted by count', async () => {
       const result = calculateBagStats(discs);
       expect(result.colorDistribution[0]).toEqual({ color: 'Blue', count: 2 });
       expect(result.colorDistribution.length).toBe(4); // Blue, Red, Yellow, Green
     });
 
-    it('calculates category distribution sorted by count', () => {
+    it('calculates category distribution sorted by count', async () => {
       const result = calculateBagStats(discs);
       expect(result.categoryDistribution[0]).toEqual({ category: 'Distance Driver', count: 2 });
       expect(result.categoryDistribution.length).toBe(4);
     });
 
-    it('calculates speed distribution sorted by speed', () => {
+    it('calculates speed distribution sorted by speed', async () => {
       const result = calculateBagStats(discs);
       // Speeds: 3, 5, 7, 12, 13
       expect(result.speedDistribution).toEqual([
@@ -159,7 +159,7 @@ describe('calculateBagStats', () => {
       ]);
     });
 
-    it('calculates stability by category', () => {
+    it('calculates stability by category', async () => {
       const result = calculateBagStats(discs);
       // Distance Driver: 1 understable (-3), 1 overstable (1)
       // Fairway: 1 stable (0)
@@ -177,8 +177,8 @@ describe('calculateBagStats', () => {
     });
   });
 
-  describe('with missing data', () => {
-    it('handles missing flight numbers', () => {
+  describe('with missing data', async () => {
+    it('handles missing flight numbers', async () => {
       const discs: BagStatsDisc[] = [
         {
           id: '1',
@@ -201,7 +201,7 @@ describe('calculateBagStats', () => {
       expect(result.stability.overstable).toBe(0);
     });
 
-    it('handles missing manufacturer', () => {
+    it('handles missing manufacturer', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1' },
         { id: '2', manufacturer: 'Innova' },
@@ -212,7 +212,7 @@ describe('calculateBagStats', () => {
       expect(result.topBrand).toEqual({ name: 'Innova', count: 1 });
     });
 
-    it('handles missing plastic', () => {
+    it('handles missing plastic', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1' },
         { id: '2', plastic: 'Star' },
@@ -223,7 +223,7 @@ describe('calculateBagStats', () => {
       expect(result.topPlastics).toEqual([{ name: 'Star', count: 1 }]);
     });
 
-    it('handles missing color', () => {
+    it('handles missing color', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1' },
         { id: '2', color: 'Blue' },
@@ -234,7 +234,7 @@ describe('calculateBagStats', () => {
       expect(result.colorDistribution).toEqual([{ color: 'Blue', count: 1 }]);
     });
 
-    it('handles missing category', () => {
+    it('handles missing category', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1' },
         { id: '2', category: 'Putter' },
@@ -246,8 +246,8 @@ describe('calculateBagStats', () => {
     });
   });
 
-  describe('stability classification', () => {
-    it('classifies turn <= -2 as understable', () => {
+  describe('stability classification', async () => {
+    it('classifies turn <= -2 as understable', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1', flight_numbers: { speed: 12, glide: 5, turn: -2, fade: 2 } },
         { id: '2', flight_numbers: { speed: 12, glide: 5, turn: -3, fade: 1 } },
@@ -259,7 +259,7 @@ describe('calculateBagStats', () => {
       expect(result.stability.understable).toBe(3);
     });
 
-    it('classifies turn > -2 AND turn <= 0 as stable', () => {
+    it('classifies turn > -2 AND turn <= 0 as stable', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1', flight_numbers: { speed: 12, glide: 5, turn: -1, fade: 2 } },
         { id: '2', flight_numbers: { speed: 5, glide: 4, turn: 0, fade: 1 } },
@@ -270,7 +270,7 @@ describe('calculateBagStats', () => {
       expect(result.stability.stable).toBe(2);
     });
 
-    it('classifies turn > 0 as overstable', () => {
+    it('classifies turn > 0 as overstable', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1', flight_numbers: { speed: 12, glide: 5, turn: 1, fade: 3 } },
         { id: '2', flight_numbers: { speed: 5, glide: 4, turn: 2, fade: 4 } },

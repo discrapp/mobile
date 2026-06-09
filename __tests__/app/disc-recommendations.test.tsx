@@ -58,7 +58,7 @@ jest.mock('@/lib/errorHandler', () => ({
 }));
 
 // Mock components
-jest.mock('@/components/DiscRecommendationCard', () => {
+jest.mock('@/components/DiscRecommendationCard', async () => {
   const { View, Text, Pressable } = require('react-native');
   return function MockDiscRecommendationCard({
     recommendation,
@@ -85,7 +85,7 @@ jest.mock('@/components/DiscRecommendationCard', () => {
   };
 });
 
-jest.mock('@/components/BagAnalysisCard', () => {
+jest.mock('@/components/BagAnalysisCard', async () => {
   const { View, Text } = require('react-native');
   return function MockBagAnalysisCard() {
     return (
@@ -96,7 +96,7 @@ jest.mock('@/components/BagAnalysisCard', () => {
   };
 });
 
-jest.mock('@/components/TradeInCandidateCard', () => {
+jest.mock('@/components/TradeInCandidateCard', async () => {
   const { View, Text } = require('react-native');
   return function MockTradeInCandidateCard({ candidate }: { candidate: { disc: { name: string | null; mold: string | null } } }) {
     return (
@@ -150,7 +150,7 @@ const mockResult = {
   processing_time_ms: 150,
 };
 
-describe('DiscRecommendationsScreen', () => {
+describe('DiscRecommendationsScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockHookState.isLoading = false;
@@ -162,7 +162,7 @@ describe('DiscRecommendationsScreen', () => {
   });
 
   it('renders initial state with count selector', async () => {
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Fill My Bag')).toBeTruthy();
@@ -176,7 +176,7 @@ describe('DiscRecommendationsScreen', () => {
   });
 
   it('navigates back when back button is pressed', async () => {
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Back')).toBeTruthy();
@@ -188,7 +188,7 @@ describe('DiscRecommendationsScreen', () => {
   });
 
   it('calls getRecommendations when Analyze button is pressed', async () => {
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Analyze My Bag')).toBeTruthy();
@@ -200,7 +200,7 @@ describe('DiscRecommendationsScreen', () => {
   });
 
   it('allows selecting different recommendation counts', async () => {
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('1')).toBeTruthy();
@@ -215,7 +215,7 @@ describe('DiscRecommendationsScreen', () => {
   it('shows loading state when isLoading is true', async () => {
     mockHookState.isLoading = true;
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       // Loading state shows animated steps - first step is "Scanning your disc bag..."
@@ -226,7 +226,7 @@ describe('DiscRecommendationsScreen', () => {
   it('shows error state when error is present', async () => {
     mockHookState.error = 'Failed to analyze bag';
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Something went wrong')).toBeTruthy();
@@ -238,7 +238,7 @@ describe('DiscRecommendationsScreen', () => {
   it('calls reset when Try Again is pressed in error state', async () => {
     mockHookState.error = 'Failed to analyze bag';
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Try Again')).toBeTruthy();
@@ -252,7 +252,7 @@ describe('DiscRecommendationsScreen', () => {
   it('shows results when result is present', async () => {
     mockHookState.result = mockResult;
 
-    const { getByText, getByTestId } = render(<DiscRecommendationsScreen />);
+    const { getByText, getByTestId } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByTestId('bag-analysis-card')).toBeTruthy();
@@ -265,7 +265,7 @@ describe('DiscRecommendationsScreen', () => {
   it('shows trade-in candidates when present', async () => {
     mockHookState.result = mockResult;
 
-    const { getByText, getByTestId } = render(<DiscRecommendationsScreen />);
+    const { getByText, getByTestId } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Consider Trading')).toBeTruthy();
@@ -277,7 +277,7 @@ describe('DiscRecommendationsScreen', () => {
   it('calls reset when New Analysis is pressed', async () => {
     mockHookState.result = mockResult;
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('New Analysis')).toBeTruthy();
@@ -291,7 +291,7 @@ describe('DiscRecommendationsScreen', () => {
   it('opens purchase URL when buy button is pressed', async () => {
     mockHookState.result = mockResult;
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('Buy')).toBeTruthy();
@@ -308,7 +308,7 @@ describe('DiscRecommendationsScreen', () => {
   it('renders dismiss button on recommendation cards', async () => {
     mockHookState.result = mockResult;
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText("Don't Show Again")).toBeTruthy();
@@ -319,7 +319,7 @@ describe('DiscRecommendationsScreen', () => {
     mockHookState.result = mockResult;
     mockDismissDisc.mockResolvedValue(true);
 
-    const { getByText, getByTestId } = render(<DiscRecommendationsScreen />);
+    const { getByText, getByTestId } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByTestId('dismiss-button')).toBeTruthy();
@@ -337,7 +337,7 @@ describe('DiscRecommendationsScreen', () => {
     mockHookState.result = mockResult;
     mockDismissDisc.mockResolvedValue(true);
 
-    const { getByTestId, queryByTestId } = render(<DiscRecommendationsScreen />);
+    const { getByTestId, queryByTestId } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByTestId('disc-disc-1')).toBeTruthy();
@@ -359,7 +359,7 @@ describe('DiscRecommendationsScreen', () => {
     mockHookState.result = mockResult;
     mockDismissDisc.mockResolvedValue(false);
 
-    const { getByTestId } = render(<DiscRecommendationsScreen />);
+    const { getByTestId } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByTestId('dismiss-button')).toBeTruthy();
@@ -384,7 +384,7 @@ describe('DiscRecommendationsScreen', () => {
       recommendations: [],
     };
 
-    const { getByText } = render(<DiscRecommendationsScreen />);
+    const { getByText } = await render(<DiscRecommendationsScreen />);
 
     await waitFor(() => {
       expect(getByText('All recommendations have been dismissed. Try a new analysis for fresh suggestions.')).toBeTruthy();

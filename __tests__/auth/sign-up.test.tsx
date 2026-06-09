@@ -73,13 +73,13 @@ const fillRequiredFields = (getByPlaceholderText: (text: string) => any) => {
   fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
 };
 
-describe('SignUp', () => {
+describe('SignUp', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const { getAllByText, getByText, getByPlaceholderText, getByTestId } = render(<SignUp />);
+  it('renders correctly', async () => {
+    const { getAllByText, getByText, getByPlaceholderText, getByTestId } = await render(<SignUp />);
 
     expect(getByTestId('app-logo')).toBeTruthy();
     expect(getAllByText('Create Account').length).toBeGreaterThanOrEqual(1);
@@ -90,7 +90,7 @@ describe('SignUp', () => {
   });
 
   it('shows validation error for empty email', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
     fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
@@ -102,7 +102,7 @@ describe('SignUp', () => {
   });
 
   it('shows validation error for invalid email format', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'invalid-email');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -115,7 +115,7 @@ describe('SignUp', () => {
   });
 
   it('shows validation error for empty password', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.press(getButton(getAllByText, 'Create Account'));
@@ -126,7 +126,7 @@ describe('SignUp', () => {
   });
 
   it('shows validation error for short password', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'short');
@@ -139,7 +139,7 @@ describe('SignUp', () => {
   });
 
   it('shows validation error for password mismatch', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -154,7 +154,7 @@ describe('SignUp', () => {
   it('calls signUp with correct credentials', async () => {
     mockSignUp.mockResolvedValue({ error: null });
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fillRequiredFields(getByPlaceholderText);
     await act(async () => {
@@ -178,7 +178,7 @@ describe('SignUp', () => {
   it('shows success message on successful sign up', async () => {
     mockSignUp.mockResolvedValue({ error: null });
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fillRequiredFields(getByPlaceholderText);
     await act(async () => {
@@ -197,7 +197,7 @@ describe('SignUp', () => {
   it('shows error on sign up failure', async () => {
     mockSignUp.mockResolvedValue({ error: { message: 'Email already exists' } });
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'existing@example.com');
     fireEvent.changeText(getByPlaceholderText('Choose a username'), 'testuser');
@@ -219,7 +219,7 @@ describe('SignUp', () => {
   it('shows error on unexpected error', async () => {
     mockSignUp.mockRejectedValue(new Error('Network error'));
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fillRequiredFields(getByPlaceholderText);
     await act(async () => {
@@ -235,7 +235,7 @@ describe('SignUp', () => {
   });
 
   it('clears email error when typing', async () => {
-    const { getAllByText, getByText, getByPlaceholderText, queryByText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText, queryByText } = await render(<SignUp />);
 
     fireEvent.press(getButton(getAllByText, 'Create Account'));
 
@@ -251,7 +251,7 @@ describe('SignUp', () => {
   });
 
   it('clears password error when typing', async () => {
-    const { getAllByText, getByText, getByPlaceholderText, queryByText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText, queryByText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.press(getButton(getAllByText, 'Create Account'));
@@ -268,7 +268,7 @@ describe('SignUp', () => {
   });
 
   it('clears confirm password error when typing', async () => {
-    const { getAllByText, getByText, getByPlaceholderText, queryByText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText, queryByText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -286,14 +286,14 @@ describe('SignUp', () => {
     });
   });
 
-  it('has sign in link', () => {
-    const { getByText } = render(<SignUp />);
+  it('has sign in link', async () => {
+    const { getByText } = await render(<SignUp />);
     expect(getByText('Already have an account?')).toBeTruthy();
     expect(getByText('Sign In')).toBeTruthy();
   });
 
   it('shows validation error for empty confirm password', async () => {
-    const { getAllByText, getByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -307,7 +307,7 @@ describe('SignUp', () => {
   it('trims email before sending to signUp', async () => {
     mockSignUp.mockResolvedValue({ error: null });
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), '  test@example.com  ');
     fireEvent.changeText(getByPlaceholderText('Choose a username'), 'testuser');
@@ -331,7 +331,7 @@ describe('SignUp', () => {
   it.skip('shows loading state during sign up', async () => {
     mockSignUp.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100)));
 
-    const { getAllByText, getByPlaceholderText, queryByText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText, queryByText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -354,7 +354,7 @@ describe('SignUp', () => {
   it.skip('disables inputs during loading', async () => {
     mockSignUp.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100)));
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');
@@ -382,7 +382,7 @@ describe('SignUp', () => {
     const mockReplace = getMockReplace();
     mockSignUp.mockResolvedValue({ error: null });
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fillRequiredFields(getByPlaceholderText);
     await act(async () => {
@@ -402,7 +402,7 @@ describe('SignUp', () => {
   });
 
   it('does not call signUp if validation fails', async () => {
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'invalid-email');
     fireEvent.press(getButton(getAllByText, 'Create Account'));
@@ -416,7 +416,7 @@ describe('SignUp', () => {
   it.skip('disables sign in link during loading', async () => {
     mockSignUp.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ error: null }), 100)));
 
-    const { getAllByText, getByPlaceholderText } = render(<SignUp />);
+    const { getAllByText, getByPlaceholderText } = await render(<SignUp />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     fireEvent.changeText(getByPlaceholderText('Create a password (min 8 characters)'), 'password123');

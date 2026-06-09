@@ -34,7 +34,7 @@ const { supabase } = require('../../lib/supabase');
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('DeepLinkHandler', () => {
+describe('DeepLinkHandler', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useLocalSearchParams.mockReturnValue({ code: 'ABC123' });
@@ -44,10 +44,10 @@ describe('DeepLinkHandler', () => {
     });
   });
 
-  it('shows loading state initially', () => {
+  it('shows loading state initially', async () => {
     (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
-    const { getByText } = render(<DeepLinkHandler />);
+    const { getByText } = await render(<DeepLinkHandler />);
 
     expect(getByText('Looking up disc...')).toBeTruthy();
   });
@@ -55,7 +55,7 @@ describe('DeepLinkHandler', () => {
   it('shows error when no code provided', async () => {
     useLocalSearchParams.mockReturnValue({ code: undefined });
 
-    const { getByText } = render(<DeepLinkHandler />);
+    const { getByText } = await render(<DeepLinkHandler />);
 
     await waitFor(() => {
       expect(getByText('Invalid QR code')).toBeTruthy();
@@ -102,7 +102,7 @@ describe('DeepLinkHandler', () => {
       json: () => Promise.resolve({ found: false }),
     });
 
-    const { getByText } = render(<DeepLinkHandler />);
+    const { getByText } = await render(<DeepLinkHandler />);
 
     await waitFor(() => {
       expect(getByText('No disc found with this QR code')).toBeTruthy();
@@ -112,14 +112,14 @@ describe('DeepLinkHandler', () => {
   it('shows error on API failure', async () => {
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-    const { getByText } = render(<DeepLinkHandler />);
+    const { getByText } = await render(<DeepLinkHandler />);
 
     await waitFor(() => {
       expect(getByText('Failed to look up QR code')).toBeTruthy();
     });
   });
 
-  it('waits for auth loading to complete', () => {
+  it('waits for auth loading to complete', async () => {
     useAuth.mockReturnValue({ user: null, loading: true });
 
     render(<DeepLinkHandler />);
@@ -171,7 +171,7 @@ describe('DeepLinkHandler', () => {
       json: () => Promise.resolve({ found: false }),
     });
 
-    const { getByText } = render(<DeepLinkHandler />);
+    const { getByText } = await render(<DeepLinkHandler />);
 
     await waitFor(() => {
       expect(getByText('Go to Found Disc')).toBeTruthy();

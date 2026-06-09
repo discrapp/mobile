@@ -67,7 +67,7 @@ jest.mock('../../lib/errorHandler', () => ({
   showSuccess: jest.fn(),
 }));
 
-describe('DropOffScreen', () => {
+describe('DropOffScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (global.fetch as jest.Mock).mockResolvedValue({
@@ -77,7 +77,7 @@ describe('DropOffScreen', () => {
   });
 
   it('renders drop off screen', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Drop Off Location')).toBeTruthy();
@@ -85,7 +85,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows take photo button', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -93,7 +93,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows location captured after getting location', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Location captured')).toBeTruthy();
@@ -101,7 +101,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows location notes field', async () => {
-    const { getByPlaceholderText } = render(<DropOffScreen />);
+    const { getByPlaceholderText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -109,7 +109,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows confirm drop-off button', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -117,7 +117,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows cancel button', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -125,7 +125,7 @@ describe('DropOffScreen', () => {
   });
 
   it('validates missing photo', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -137,7 +137,7 @@ describe('DropOffScreen', () => {
   });
 
   it('handles cancel button press', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -149,7 +149,7 @@ describe('DropOffScreen', () => {
   });
 
   it('allows entering location notes', async () => {
-    const { getByPlaceholderText } = render(<DropOffScreen />);
+    const { getByPlaceholderText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -165,7 +165,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows loading state during location fetch', async () => {
-    const { getByText, queryByText } = render(<DropOffScreen />);
+    const { getByText, queryByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Drop Off Location')).toBeTruthy();
@@ -206,7 +206,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows help text for location notes', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Add any helpful details to help the owner find the exact spot.')).toBeTruthy();
@@ -214,7 +214,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows location coordinates when captured', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Location captured')).toBeTruthy();
@@ -225,7 +225,7 @@ describe('DropOffScreen', () => {
   it('handles fetch error gracefully', async () => {
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     // Should still render the screen
     await waitFor(() => {
@@ -234,7 +234,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows photo requirements section', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('DropOffScreen', () => {
     const Location = require('expo-location');
     Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -260,7 +260,7 @@ describe('DropOffScreen', () => {
   });
 
   it('shows the drop off title', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Drop Off Location')).toBeTruthy();
@@ -268,7 +268,7 @@ describe('DropOffScreen', () => {
   });
 
   it('displays helpful notes placeholder', async () => {
-    const { getByPlaceholderText } = render(<DropOffScreen />);
+    const { getByPlaceholderText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -276,7 +276,7 @@ describe('DropOffScreen', () => {
   });
 
   it('displays both action buttons', async () => {
-    const { getByText } = render(<DropOffScreen />);
+    const { getByText } = await render(<DropOffScreen />);
 
     await waitFor(() => {
       expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -284,7 +284,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location permission', () => {
+  describe('location permission', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -294,7 +294,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows location coordinates after successful location fetch', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('42.123000, -71.456000')).toBeTruthy();
@@ -302,7 +302,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows location captured badge', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -310,9 +310,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location notes', () => {
+  describe('location notes', async () => {
     it('allows multiline notes input', async () => {
-      const { getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         const notesInput = getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock');
@@ -321,7 +321,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('recovery details', () => {
+  describe('recovery details', async () => {
     it('handles API response', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -341,7 +341,7 @@ describe('DropOffScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -350,9 +350,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('form sections', () => {
+  describe('form sections', async () => {
     it('shows photo section label', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -360,7 +360,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows notes input field', async () => {
-      const { getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -368,9 +368,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('submit flow', () => {
+  describe('submit flow', async () => {
     it('validates photo before submit', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -385,9 +385,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location section', () => {
+  describe('location section', async () => {
     it('shows current location section', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -395,9 +395,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('form elements', () => {
+  describe('form elements', async () => {
     it('shows photo section', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -405,7 +405,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows notes input', async () => {
-      const { getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -413,9 +413,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('action buttons', () => {
+  describe('action buttons', async () => {
     it('shows confirm button', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -423,7 +423,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows cancel button', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();
@@ -431,9 +431,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location display', () => {
+  describe('location display', async () => {
     it('formats location coordinates correctly', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('42.123000, -71.456000')).toBeTruthy();
@@ -441,9 +441,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('notes input', () => {
+  describe('notes input', async () => {
     it('allows entering location notes', async () => {
-      const { getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         const notesInput = getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock');
@@ -453,12 +453,12 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location permission denied', () => {
+  describe('location permission denied', async () => {
     it('shows alert when location permission denied', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -471,9 +471,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('submit with photo and location', () => {
+  describe('submit with photo and location', async () => {
     it('shows photo button before taking photo', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -481,12 +481,12 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('missing location validation', () => {
+  describe('missing location validation', async () => {
     it('shows alert when submitting without location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -500,7 +500,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('disc name display', () => {
+  describe('disc name display', async () => {
     it('fetches disc name from recovery details', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -518,13 +518,13 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location error handling', () => {
+  describe('location error handling', async () => {
     it('handles location fetch error gracefully', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
       Location.getCurrentPositionAsync.mockRejectedValue(new Error('Location error'));
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -533,9 +533,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('screen header', () => {
+  describe('screen header', async () => {
     it('shows drop off screen header', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -544,9 +544,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('photo section label', () => {
+  describe('photo section label', async () => {
     it('shows photo required label', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText(/Photo of Location/)).toBeTruthy();
@@ -554,9 +554,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('photo hint text', () => {
+  describe('photo hint text', async () => {
     it('shows photo hint', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText(/Take a clear photo showing where you left the disc/)).toBeTruthy();
@@ -564,9 +564,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('camera component', () => {
+  describe('camera component', async () => {
     it('shows camera overlay component', async () => {
-      const { UNSAFE_getByType } = render(<DropOffScreen />);
+      const { UNSAFE_getByType } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         // CameraWithOverlay is mocked
@@ -575,7 +575,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('submit flow', () => {
+  describe('submit flow', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -585,7 +585,7 @@ describe('DropOffScreen', () => {
     });
 
     it('validates photo before submit', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -600,9 +600,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('form rendering', () => {
+  describe('form rendering', async () => {
     it('shows all form elements', async () => {
-      const { getByText, getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByText, getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -613,9 +613,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('dark mode', () => {
+  describe('dark mode', async () => {
     it('renders in light mode', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -623,7 +623,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('API integration', () => {
+  describe('API integration', async () => {
     it('fetches recovery details from API', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -646,7 +646,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location state', () => {
+  describe('location state', async () => {
     it('updates location state when location captured', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -654,7 +654,7 @@ describe('DropOffScreen', () => {
         coords: { latitude: 40.7128, longitude: -74.0060 },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -663,9 +663,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('notes field', () => {
+  describe('notes field', async () => {
     it('can enter and change location notes', async () => {
-      const { getByPlaceholderText } = render(<DropOffScreen />);
+      const { getByPlaceholderText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock');
@@ -679,9 +679,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('buttons', () => {
+  describe('buttons', async () => {
     it('cancel button navigates back', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();
@@ -693,7 +693,7 @@ describe('DropOffScreen', () => {
     });
 
     it('confirm button is present', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -701,7 +701,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location permission alert', () => {
+  describe('location permission alert', async () => {
     it('shows permission required alert with settings option', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -721,12 +721,12 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('missing location validation', () => {
+  describe('missing location validation', async () => {
     it('shows missing location alert on submit without location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -742,14 +742,14 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('no session handling', () => {
+  describe('no session handling', async () => {
     it('shows sign in error when no session on submit', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
         data: { session: null },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm Drop-off')).toBeTruthy();
@@ -763,14 +763,14 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('fetch recovery details', () => {
+  describe('fetch recovery details', async () => {
     it('handles no session gracefully', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
         data: { session: null },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -783,7 +783,7 @@ describe('DropOffScreen', () => {
         json: () => Promise.resolve({ disc: {} }),
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -791,12 +791,12 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('tap to get location', () => {
+  describe('tap to get location', async () => {
     it('shows tap to get location when no location yet', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Tap to get current location')).toBeTruthy();
@@ -804,9 +804,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('GPS location section', () => {
+  describe('GPS location section', async () => {
     it('shows GPS location label', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText(/GPS Location/)).toBeTruthy();
@@ -814,7 +814,7 @@ describe('DropOffScreen', () => {
     });
 
     it('shows GPS hint text', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText(/Your GPS coordinates will help the owner navigate/)).toBeTruthy();
@@ -822,9 +822,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location notes optional', () => {
+  describe('location notes optional', async () => {
     it('shows location notes as optional', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText(/Location Notes \(Optional\)/)).toBeTruthy();
@@ -832,7 +832,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('successful submit flow', () => {
+  describe('successful submit flow', async () => {
     beforeEach(() => {
       jest.clearAllMocks();
       const Location = require('expo-location');
@@ -871,7 +871,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -904,7 +904,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -928,7 +928,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -958,7 +958,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -966,7 +966,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('open maps preview', () => {
+  describe('open maps preview', async () => {
     it('renders location pressable area', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -974,7 +974,7 @@ describe('DropOffScreen', () => {
         coords: { latitude: 42.123, longitude: -71.456 },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -986,9 +986,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('retake photo button', () => {
+  describe('retake photo button', async () => {
     it('renders photo section', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -999,14 +999,14 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('loading location state', () => {
+  describe('loading location state', async () => {
     it('shows loading state while fetching location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockImplementation(
         () => new Promise(() => {}) // Never resolves to keep loading
       );
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Getting your location...')).toBeTruthy();
@@ -1014,14 +1014,14 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('platform specific maps URL', () => {
+  describe('platform specific maps URL', async () => {
     it('renders on iOS', async () => {
       jest.doMock('react-native', () => ({
         ...jest.requireActual('react-native'),
         Platform: { OS: 'ios', select: jest.fn((opts) => opts.ios) },
       }));
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -1029,7 +1029,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('upload photo no session', () => {
+  describe('upload photo no session', async () => {
     it('handles no session during photo upload', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession
@@ -1040,7 +1040,7 @@ describe('DropOffScreen', () => {
           data: { session: null },
         });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -1048,9 +1048,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('submit button disabled state', () => {
+  describe('submit button disabled state', async () => {
     it('shows confirm button not disabled initially', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         const button = getByText('Confirm Drop-off');
@@ -1059,9 +1059,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('photo section visibility', () => {
+  describe('photo section visibility', async () => {
     it('shows take photo button when no photo', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -1069,14 +1069,14 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('location box states', () => {
+  describe('location box states', async () => {
     it('shows loading state', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockImplementation(
         () => new Promise(() => {})
       );
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Getting your location...')).toBeTruthy();
@@ -1090,7 +1090,7 @@ describe('DropOffScreen', () => {
         coords: { latitude: 35.0, longitude: -80.0 },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('35.000000, -80.000000')).toBeTruthy();
@@ -1101,7 +1101,7 @@ describe('DropOffScreen', () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Tap to get current location')).toBeTruthy();
@@ -1109,11 +1109,11 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('image compression', () => {
+  describe('image compression', async () => {
     it('compresses image before upload', async () => {
       const { compressImage } = require('../../utils/imageCompression');
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Location')).toBeTruthy();
@@ -1124,9 +1124,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('form data submission', () => {
+  describe('form data submission', async () => {
     it('includes location notes in submission', async () => {
-      const { getByPlaceholderText, getByText } = render(<DropOffScreen />);
+      const { getByPlaceholderText, getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Behind the big oak tree near hole 7, under a rock')).toBeTruthy();
@@ -1141,7 +1141,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('handleSubmit complete flow', () => {
+  describe('handleSubmit complete flow', async () => {
     beforeEach(() => {
       jest.clearAllMocks();
       const Location = require('expo-location');
@@ -1177,7 +1177,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, getByPlaceholderText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1250,7 +1250,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, getByPlaceholderText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1303,7 +1303,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1343,7 +1343,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1387,7 +1387,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1425,7 +1425,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1457,7 +1457,7 @@ describe('DropOffScreen', () => {
           data: { session: null },
         });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1502,7 +1502,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1522,7 +1522,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('openMapsPreview', () => {
+  describe('openMapsPreview', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1532,7 +1532,7 @@ describe('DropOffScreen', () => {
     });
 
     it('opens maps when location is pressed', async () => {
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1549,7 +1549,7 @@ describe('DropOffScreen', () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Tap to get current location')).toBeTruthy();
@@ -1562,9 +1562,9 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('camera interaction', () => {
+  describe('camera interaction', async () => {
     it('opens camera when photo button is pressed', async () => {
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -1577,7 +1577,7 @@ describe('DropOffScreen', () => {
     });
 
     it('closes camera and sets photo when photo is taken', async () => {
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -1594,7 +1594,7 @@ describe('DropOffScreen', () => {
     });
 
     it('closes camera when close button is pressed', async () => {
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -1610,7 +1610,7 @@ describe('DropOffScreen', () => {
     });
 
     it('can retake photo', async () => {
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Take a photo of the drop-off spot')).toBeTruthy();
@@ -1641,7 +1641,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('requestLocation manual trigger', () => {
+  describe('requestLocation manual trigger', async () => {
     it('manually requests location when tapped', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync
@@ -1651,7 +1651,7 @@ describe('DropOffScreen', () => {
         coords: { latitude: 40.0, longitude: -70.0 },
       });
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Tap to get current location')).toBeTruthy();
@@ -1672,7 +1672,7 @@ describe('DropOffScreen', () => {
         .mockResolvedValueOnce({ status: 'granted' });
       Location.getCurrentPositionAsync.mockRejectedValue(new Error('GPS error'));
 
-      const { getByText } = render(<DropOffScreen />);
+      const { getByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Tap to get current location')).toBeTruthy();
@@ -1691,7 +1691,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('disc name in success message', () => {
+  describe('disc name in success message', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1722,7 +1722,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1766,7 +1766,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1786,7 +1786,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('submitting state', () => {
+  describe('submitting state', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1809,7 +1809,7 @@ describe('DropOffScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, UNSAFE_root, queryByText } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root, queryByText } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();
@@ -1830,7 +1830,7 @@ describe('DropOffScreen', () => {
     });
   });
 
-  describe('session handling in submit', () => {
+  describe('session handling in submit', async () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1849,7 +1849,7 @@ describe('DropOffScreen', () => {
           data: { session: null },
         });
 
-      const { getByText, UNSAFE_root } = render(<DropOffScreen />);
+      const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
       await waitFor(() => {
         expect(getByText('Location captured')).toBeTruthy();

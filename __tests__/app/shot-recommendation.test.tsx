@@ -73,7 +73,7 @@ jest.mock('expo-image-picker', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ShotRecommendationScreen', () => {
+describe('ShotRecommendationScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsLoading = false;
@@ -98,22 +98,22 @@ describe('ShotRecommendationScreen', () => {
     });
   });
 
-  it('renders initial screen with camera prompt', () => {
-    const { getByText } = render(<ShotRecommendationScreen />);
+  it('renders initial screen with camera prompt', async () => {
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText('Shot Advisor')).toBeTruthy();
     expect(getByText(/Take a photo/i)).toBeTruthy();
   });
 
-  it('shows loading state while processing', () => {
+  it('shows loading state while processing', async () => {
     mockIsLoading = true;
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/Analyzing/i)).toBeTruthy();
   });
 
-  it('displays recommendation results', () => {
+  it('displays recommendation results', async () => {
     mockResult = {
       recommendation: {
         disc: {
@@ -138,7 +138,7 @@ describe('ShotRecommendationScreen', () => {
       log_id: 'log-123',
     };
 
-    const { getByText, getAllByText } = render(<ShotRecommendationScreen />);
+    const { getByText, getAllByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText('Destroyer')).toBeTruthy();
     expect(getByText(/285/)).toBeTruthy();
@@ -146,7 +146,7 @@ describe('ShotRecommendationScreen', () => {
     expect(getAllByText(/85%/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('displays throw type in recommendation', () => {
+  it('displays throw type in recommendation', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -164,12 +164,12 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.85,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/HYZER/i)).toBeTruthy();
   });
 
-  it('displays line description', () => {
+  it('displays line description', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -187,12 +187,12 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.9,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/Throw straight at the basket/)).toBeTruthy();
   });
 
-  it('displays alternatives when available', () => {
+  it('displays alternatives when available', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -216,13 +216,13 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.85,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText('Wraith')).toBeTruthy();
     expect(getByText(/More glide/)).toBeTruthy();
   });
 
-  it('displays terrain analysis', () => {
+  it('displays terrain analysis', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -240,54 +240,54 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.75,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/350/)).toBeTruthy();
     expect(getByText(/uphill/i)).toBeTruthy();
   });
 
-  it('shows error message when recommendation fails', () => {
+  it('shows error message when recommendation fails', async () => {
     mockError = 'No discs in bag. Add discs to get shot recommendations.';
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/No discs in bag/)).toBeTruthy();
   });
 
-  it('shows try again button after error', () => {
+  it('shows try again button after error', async () => {
     mockError = 'Something went wrong';
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText('Try Again')).toBeTruthy();
   });
 
-  it('calls reset when try again is pressed', () => {
+  it('calls reset when try again is pressed', async () => {
     mockError = 'Something went wrong';
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     fireEvent.press(getByText('Try Again'));
 
     expect(mockReset).toHaveBeenCalled();
   });
 
-  it('shows back button', () => {
-    const { getByText } = render(<ShotRecommendationScreen />);
+  it('shows back button', async () => {
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     const backButton = getByText('Back');
     expect(backButton).toBeTruthy();
   });
 
-  it('navigates back when back button is pressed', () => {
-    const { getByText } = render(<ShotRecommendationScreen />);
+  it('navigates back when back button is pressed', async () => {
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     fireEvent.press(getByText('Back'));
 
     expect(mockRouterBack).toHaveBeenCalled();
   });
 
-  it('shows try another shot button after recommendation', () => {
+  it('shows try another shot button after recommendation', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -305,12 +305,12 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.85,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText('Try Another Shot')).toBeTruthy();
   });
 
-  it('calls reset when try another shot is pressed', () => {
+  it('calls reset when try another shot is pressed', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -328,14 +328,14 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.85,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     fireEvent.press(getByText('Try Another Shot'));
 
     expect(mockReset).toHaveBeenCalled();
   });
 
-  it('displays confidence level', () => {
+  it('displays confidence level', async () => {
     mockResult = {
       recommendation: {
         disc: { id: 'disc-1', name: 'Destroyer', manufacturer: 'Innova' },
@@ -353,12 +353,12 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.92,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/92%/)).toBeTruthy();
   });
 
-  it('displays flight numbers when available', () => {
+  it('displays flight numbers when available', async () => {
     mockResult = {
       recommendation: {
         disc: {
@@ -381,12 +381,12 @@ describe('ShotRecommendationScreen', () => {
       confidence: 0.85,
     };
 
-    const { getByText } = render(<ShotRecommendationScreen />);
+    const { getByText } = await render(<ShotRecommendationScreen />);
 
     expect(getByText(/12/)).toBeTruthy(); // speed
   });
 
-  describe('useEffect cleanup', () => {
+  describe('useEffect cleanup', async () => {
     it('does not update state after unmount', async () => {
       const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
       const consoleError = jest.spyOn(console, 'error').mockImplementation();
@@ -405,7 +405,7 @@ describe('ShotRecommendationScreen', () => {
         }),
       });
 
-      const { unmount, getByText } = render(<ShotRecommendationScreen />);
+      const { unmount, getByText } = await render(<ShotRecommendationScreen />);
 
       // Verify component rendered
       expect(getByText('Shot Advisor')).toBeTruthy();

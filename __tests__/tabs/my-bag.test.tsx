@@ -6,7 +6,7 @@ import { handleError } from '../../lib/errorHandler';
 
 // Mock expo-router
 const mockRouterPush = jest.fn();
-jest.mock('expo-router', () => {
+jest.mock('expo-router', async () => {
   const React = require('react');
   return {
     useRouter: () => ({
@@ -97,7 +97,7 @@ const mockSurrenderedDisc = {
   surrendered_at: '2024-01-03',
 };
 
-describe('MyBagScreen', () => {
+describe('MyBagScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetCachedDiscs.mockResolvedValue(null);
@@ -112,7 +112,7 @@ describe('MyBagScreen', () => {
       new Promise(() => {}) // Never resolves to keep loading
     );
 
-    const { UNSAFE_getAllByType } = render(<MyBagScreen />);
+    const { UNSAFE_getAllByType } = await render(<MyBagScreen />);
 
     // Should show DiscCardSkeleton components (which use Animated.View)
     const Animated = require('react-native').Animated;
@@ -127,7 +127,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('No Discs in Your Bag')).toBeTruthy();
@@ -142,7 +142,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy(); // mold
@@ -159,7 +159,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -185,7 +185,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -202,7 +202,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText, UNSAFE_root } = render(<MyBagScreen />);
+    const { getByText, UNSAFE_root } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -220,7 +220,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Add Your First Disc')).toBeTruthy();
@@ -237,7 +237,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDiscWithRecovery]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Found')).toBeTruthy();
@@ -250,7 +250,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockSurrenderedDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Surrendered')).toBeTruthy();
@@ -274,7 +274,7 @@ describe('MyBagScreen', () => {
     mockGetCachedDiscs.mockResolvedValue([mockDisc]);
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       // Cached data should still be displayed even when fetch fails
@@ -317,7 +317,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDiscWithPhoto]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('1')).toBeTruthy(); // photo count
@@ -331,7 +331,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([discWithoutMold]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Test Disc')).toBeTruthy(); // falls back to name
@@ -345,7 +345,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc, disc2]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -359,7 +359,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Star')).toBeTruthy();
@@ -372,7 +372,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Blue')).toBeTruthy();
@@ -385,7 +385,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { UNSAFE_getAllByType } = render(<MyBagScreen />);
+    const { UNSAFE_getAllByType } = await render(<MyBagScreen />);
     const { RefreshControl } = require('react-native');
 
     await waitFor(() => {
@@ -410,7 +410,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([discWithMeetup]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -433,7 +433,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([discWithConfirmedMeetup]),
     });
 
-    const { getByText } = render(<MyBagScreen />);
+    const { getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Confirmed')).toBeTruthy();
@@ -447,7 +447,7 @@ describe('MyBagScreen', () => {
       json: () => Promise.resolve([discNoPhotos]),
     });
 
-    const { queryByText, getByText } = render(<MyBagScreen />);
+    const { queryByText, getByText } = await render(<MyBagScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();

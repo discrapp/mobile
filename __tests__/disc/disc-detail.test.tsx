@@ -8,7 +8,7 @@ import { handleError } from '../../lib/errorHandler';
 const mockRouterPush = jest.fn();
 const mockRouterBack = jest.fn();
 const mockSetOptions = jest.fn();
-jest.mock('expo-router', () => {
+jest.mock('expo-router', async () => {
   const React = require('react');
   return {
     useRouter: () => ({
@@ -110,7 +110,7 @@ const mockSurrenderedDisc = {
   surrendered_at: '2024-01-03',
 };
 
-describe('DiscDetailScreen', () => {
+describe('DiscDetailScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -126,7 +126,7 @@ describe('DiscDetailScreen', () => {
       new Promise(() => {}) // Never resolves to keep loading
     );
 
-    const { UNSAFE_getAllByType } = render(<DiscDetailScreen />);
+    const { UNSAFE_getAllByType } = await render(<DiscDetailScreen />);
 
     // Should show skeleton components (which use Animated.View)
     const Animated = require('react-native').Animated;
@@ -140,7 +140,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -157,7 +157,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Flight Numbers')).toBeTruthy();
@@ -174,7 +174,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Reward Amount')).toBeTruthy();
@@ -188,7 +188,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Notes')).toBeTruthy();
@@ -202,7 +202,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('QR Code')).toBeTruthy();
@@ -217,7 +217,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('No photos')).toBeTruthy();
@@ -230,7 +230,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDiscWithRecovery]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Found - Tap for details')).toBeTruthy();
@@ -243,7 +243,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDiscWithRecovery]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Found - Tap for details')).toBeTruthy();
@@ -260,7 +260,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockSurrenderedDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('This disc was surrendered to you')).toBeTruthy();
@@ -273,7 +273,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Delete Disc')).toBeTruthy();
@@ -286,7 +286,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Delete Disc')).toBeTruthy();
@@ -336,7 +336,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithoutQR]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Link QR Code')).toBeTruthy();
@@ -363,7 +363,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithoutMold]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Test Disc')).toBeTruthy();
@@ -389,7 +389,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Remove QR Code')).toBeTruthy();
@@ -402,7 +402,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Remove QR Code')).toBeTruthy();
@@ -424,7 +424,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithoutQR]),
     });
 
-    const { queryByText } = render(<DiscDetailScreen />);
+    const { queryByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(queryByText('Remove QR Code')).toBeNull();
@@ -438,7 +438,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithCategory]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Distance Driver')).toBeTruthy();
@@ -451,7 +451,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDiscWithPhoto]),
     });
 
-    const { UNSAFE_getAllByType } = render(<DiscDetailScreen />);
+    const { UNSAFE_getAllByType } = await render(<DiscDetailScreen />);
     const { Image } = require('react-native');
 
     await waitFor(() => {
@@ -476,7 +476,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([minimalDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Basic Disc')).toBeTruthy();
@@ -498,7 +498,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithMeetup]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Proposed - Tap for details')).toBeTruthy();
@@ -520,7 +520,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discWithConfirmedMeetup]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Confirmed - Tap for details')).toBeTruthy();
@@ -534,7 +534,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([discNoReward]),
     });
 
-    const { queryByText } = render(<DiscDetailScreen />);
+    const { queryByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(queryByText('$20')).toBeNull();
@@ -547,7 +547,7 @@ describe('DiscDetailScreen', () => {
       json: () => Promise.resolve([mockDisc]),
     });
 
-    const { getByText } = render(<DiscDetailScreen />);
+    const { getByText } = await render(<DiscDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Innova')).toBeTruthy();
@@ -555,7 +555,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('recovery banner', () => {
+  describe('recovery banner', async () => {
     it('shows recovery banner for dropped off disc', async () => {
       const discDroppedOff = {
         ...mockDisc,
@@ -571,7 +571,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discDroppedOff]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         // Verify disc loads and has recovery
@@ -580,7 +580,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('photo gallery', () => {
+  describe('photo gallery', async () => {
     it('displays multiple photos when available', async () => {
       const discWithMultiplePhotos = {
         ...mockDisc,
@@ -594,7 +594,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithMultiplePhotos]),
       });
 
-      const { UNSAFE_getAllByType } = render(<DiscDetailScreen />);
+      const { UNSAFE_getAllByType } = await render(<DiscDetailScreen />);
       const { Image } = require('react-native');
 
       await waitFor(() => {
@@ -604,7 +604,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('no notes', () => {
+  describe('no notes', async () => {
     it('does not show notes section when no notes', async () => {
       const discNoNotes = { ...mockDisc, notes: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -612,7 +612,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discNoNotes]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -623,7 +623,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('API error handling', () => {
+  describe('API error handling', async () => {
     it('shows error when API returns non-ok response', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -638,7 +638,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('delete disc flow', () => {
+  describe('delete disc flow', async () => {
     it('successfully deletes disc when confirmed', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -650,7 +650,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Delete Disc')).toBeTruthy();
@@ -682,7 +682,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve({ error: 'Cannot delete disc' }),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Delete Disc')).toBeTruthy();
@@ -705,7 +705,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([mockDisc]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Delete Disc')).toBeTruthy();
@@ -726,7 +726,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('unlink QR code flow', () => {
+  describe('unlink QR code flow', async () => {
     it('successfully unlinks QR code when confirmed', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -742,7 +742,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve([{ ...mockDisc, qr_code: null }]),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Remove QR Code')).toBeTruthy();
@@ -773,7 +773,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve({ error: 'Cannot unlink QR code' }),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Remove QR Code')).toBeTruthy();
@@ -796,7 +796,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([mockDisc]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Remove QR Code')).toBeTruthy();
@@ -816,7 +816,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('photo gallery', () => {
+  describe('photo gallery', async () => {
     it('shows swipe indicator for multiple photos', async () => {
       const discWithMultiplePhotos = {
         ...mockDisc,
@@ -830,7 +830,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithMultiplePhotos]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Swipe to see photos')).toBeTruthy();
@@ -843,7 +843,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([mockDiscWithPhoto]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -865,7 +865,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithInvalidPhoto]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -876,7 +876,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('color display', () => {
+  describe('color display', async () => {
     it('displays white color with border', async () => {
       const discWithWhiteColor = { ...mockDisc, color: 'White' };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -884,7 +884,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithWhiteColor]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('White')).toBeTruthy();
@@ -898,7 +898,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithMultiColor]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Multi')).toBeTruthy();
@@ -906,7 +906,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('disc not found state', () => {
+  describe('disc not found state', async () => {
     it('shows disc not found message', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -921,14 +921,14 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('fee hint display', () => {
+  describe('fee hint display', async () => {
     it('shows fee hint for reward amount', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([mockDisc]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         // Check for Venmo fee note
@@ -937,7 +937,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('flight numbers edge cases', () => {
+  describe('flight numbers edge cases', async () => {
     it('hides flight numbers section when all are null', async () => {
       const discNoFlightNumbers = {
         ...mockDisc,
@@ -948,7 +948,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discNoFlightNumbers]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -967,7 +967,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discPartialFlightNumbers]),
       });
 
-      const { getByText, queryByText } = render(<DiscDetailScreen />);
+      const { getByText, queryByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Flight Numbers')).toBeTruthy();
@@ -977,7 +977,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('QR code scanning', () => {
+  describe('QR code scanning', async () => {
     it('shows camera permission alert when permission denied', async () => {
       const discWithoutQR = { ...mockDisc, qr_code: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -985,7 +985,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithoutQR]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Link QR Code')).toBeTruthy();
@@ -1013,7 +1013,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithoutQR]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Link QR Code')).toBeTruthy();
@@ -1038,7 +1038,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithoutQR]),
       });
 
-      const { getByText, queryByText } = render(<DiscDetailScreen />);
+      const { getByText, queryByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Link QR Code')).toBeTruthy();
@@ -1059,7 +1059,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('QR code linking', () => {
+  describe('QR code linking', async () => {
     it('verifies QR code section exists when disc has no QR code', async () => {
       const discWithoutQR = { ...mockDisc, qr_code: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1067,7 +1067,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithoutQR]),
       });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Link QR Code')).toBeTruthy();
@@ -1076,7 +1076,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('unlink exception handling', () => {
+  describe('unlink exception handling', async () => {
     it('handles exception during unlink', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -1085,7 +1085,7 @@ describe('DiscDetailScreen', () => {
         })
         .mockRejectedValueOnce(new Error('Network error'));
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Remove QR Code')).toBeTruthy();
@@ -1109,7 +1109,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('navigation header', () => {
+  describe('navigation header', async () => {
     it('sets header with edit button when disc loaded', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1180,7 +1180,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('loading states', () => {
+  describe('loading states', async () => {
     it('calls unlink API when unlinking QR code', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -1196,7 +1196,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve([{ ...mockDisc, qr_code: null }]),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Remove QR Code')).toBeTruthy();
@@ -1231,7 +1231,7 @@ describe('DiscDetailScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<DiscDetailScreen />);
+      const { getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Delete Disc')).toBeTruthy();
@@ -1256,7 +1256,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('reward amount edge cases', () => {
+  describe('reward amount edge cases', async () => {
     it('hides reward section when amount is 0', async () => {
       const discWithZeroReward = { ...mockDisc, reward_amount: '0' };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1264,7 +1264,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithZeroReward]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -1281,7 +1281,7 @@ describe('DiscDetailScreen', () => {
         json: () => Promise.resolve([discWithNegativeReward]),
       });
 
-      const { queryByText, getByText } = render(<DiscDetailScreen />);
+      const { queryByText, getByText } = await render(<DiscDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -1292,7 +1292,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('API response edge cases', () => {
+  describe('API response edge cases', async () => {
     it('shows alert and navigates back when disc not in API response', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1324,7 +1324,7 @@ describe('DiscDetailScreen', () => {
     });
   });
 
-  describe('focus effect', () => {
+  describe('focus effect', async () => {
     it('refetches disc data on screen focus', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,

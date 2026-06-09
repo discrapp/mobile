@@ -9,7 +9,7 @@ jest.spyOn(Alert, 'alert');
 // Mock expo-router
 const mockRouterPush = jest.fn();
 const mockRouterBack = jest.fn();
-jest.mock('expo-router', () => {
+jest.mock('expo-router', async () => {
   const React = require('react');
   return {
     useRouter: () => ({
@@ -93,7 +93,7 @@ const mockShippedNoTrackingOrder = {
   shipped_at: '2024-01-17T10:00:00Z',
 };
 
-describe('OrderDetailScreen', () => {
+describe('OrderDetailScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -104,7 +104,7 @@ describe('OrderDetailScreen', () => {
   it('shows loading indicator initially', async () => {
     (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
-    const { UNSAFE_getAllByType } = render(<OrderDetailScreen />);
+    const { UNSAFE_getAllByType } = await render(<OrderDetailScreen />);
 
     const ActivityIndicator = require('react-native').ActivityIndicator;
     const indicators = UNSAFE_getAllByType(ActivityIndicator);
@@ -117,7 +117,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText, getAllByText } = render(<OrderDetailScreen />);
+    const { getByText, getAllByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       // "Paid" appears in both status badge and timeline
@@ -135,7 +135,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('John Doe')).toBeTruthy();
@@ -151,7 +151,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockShippedOrder }),
     });
 
-    const { getByText, getAllByText } = render(<OrderDetailScreen />);
+    const { getByText, getAllByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       // "Shipped" appears in both status badge and timeline
@@ -167,7 +167,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockShippedOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('1Z999AA10123456784')).toBeTruthy();
@@ -189,7 +189,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ error: 'Order not found' }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Order not found')).toBeTruthy();
@@ -202,7 +202,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText, getAllByText } = render(<OrderDetailScreen />);
+    const { getByText, getAllByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Order Progress')).toBeTruthy();
@@ -220,7 +220,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('support@discrapp.com')).toBeTruthy();
@@ -233,7 +233,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('support@discrapp.com')).toBeTruthy();
@@ -262,7 +262,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: mockOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('FREE')).toBeTruthy();
@@ -282,7 +282,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: uspsOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('92001901755477000044975869')).toBeTruthy();
@@ -310,7 +310,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: fedexOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('123456789012')).toBeTruthy();
@@ -338,7 +338,7 @@ describe('OrderDetailScreen', () => {
       json: () => Promise.resolve({ order: unknownOrder }),
     });
 
-    const { getByText } = render(<OrderDetailScreen />);
+    const { getByText } = await render(<OrderDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('ABCD1234')).toBeTruthy();
@@ -353,14 +353,14 @@ describe('OrderDetailScreen', () => {
     });
   });
 
-  describe('Resume Payment', () => {
+  describe('Resume Payment', async () => {
     it('shows resume payment button for pending_payment orders', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Complete Payment')).toBeTruthy();
@@ -378,7 +378,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ checkout_url: 'https://checkout.stripe.com/test' }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Complete Payment')).toBeTruthy();
@@ -412,7 +412,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ error: 'Checkout expired' }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Complete Payment')).toBeTruthy();
@@ -434,7 +434,7 @@ describe('OrderDetailScreen', () => {
         json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Complete Payment')).toBeTruthy();
@@ -453,14 +453,14 @@ describe('OrderDetailScreen', () => {
     });
   });
 
-  describe('Cancel Order', () => {
+  describe('Cancel Order', async () => {
     it('shows cancel order button for pending_payment orders', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel Order')).toBeTruthy();
@@ -473,7 +473,7 @@ describe('OrderDetailScreen', () => {
         json: () => Promise.resolve({ order: mockPendingPaymentOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel Order')).toBeTruthy();
@@ -502,7 +502,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel Order')).toBeTruthy();
@@ -537,7 +537,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ error: 'Cannot cancel' }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel Order')).toBeTruthy();
@@ -558,14 +558,14 @@ describe('OrderDetailScreen', () => {
     });
   });
 
-  describe('Mark Delivered', () => {
+  describe('Mark Delivered', async () => {
     it('shows mark delivered button for shipped orders without tracking', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Delivered')).toBeTruthy();
@@ -578,7 +578,7 @@ describe('OrderDetailScreen', () => {
         json: () => Promise.resolve({ order: mockShippedNoTrackingOrder }),
       });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Delivered')).toBeTruthy();
@@ -611,7 +611,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ order: { ...mockShippedNoTrackingOrder, status: 'delivered' } }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Delivered')).toBeTruthy();
@@ -645,7 +645,7 @@ describe('OrderDetailScreen', () => {
           json: () => Promise.resolve({ error: 'Failed to update' }),
         });
 
-      const { getByText } = render(<OrderDetailScreen />);
+      const { getByText } = await render(<OrderDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Delivered')).toBeTruthy();

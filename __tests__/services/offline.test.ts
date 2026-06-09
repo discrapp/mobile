@@ -16,7 +16,7 @@ jest.mock('@react-native-community/netinfo', () => ({
   addEventListener: jest.fn(),
 }));
 
-describe('OfflineService', () => {
+describe('OfflineService', async () => {
   let offlineService: OfflineService;
   const mockNetInfo = NetInfo as jest.Mocked<typeof NetInfo>;
 
@@ -29,7 +29,7 @@ describe('OfflineService', () => {
     offlineService.cleanup();
   });
 
-  describe('isOnline', () => {
+  describe('isOnline', async () => {
     it('returns true when connected to internet', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,
@@ -90,7 +90,7 @@ describe('OfflineService', () => {
     });
   });
 
-  describe('getNetworkState', () => {
+  describe('getNetworkState', async () => {
     it('returns full network state', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,
@@ -151,8 +151,8 @@ describe('OfflineService', () => {
     });
   });
 
-  describe('subscribe', () => {
-    it('adds listener and returns unsubscribe function', () => {
+  describe('subscribe', async () => {
+    it('adds listener and returns unsubscribe function', async () => {
       const mockUnsubscribe = jest.fn();
       mockNetInfo.addEventListener.mockReturnValue(mockUnsubscribe);
 
@@ -163,7 +163,7 @@ describe('OfflineService', () => {
       expect(typeof unsubscribe).toBe('function');
     });
 
-    it('calls listener when network state changes', () => {
+    it('calls listener when network state changes', async () => {
       let capturedHandler: (state: NetInfoState) => void = () => {};
       mockNetInfo.addEventListener.mockImplementation((handler) => {
         capturedHandler = handler;
@@ -187,7 +187,7 @@ describe('OfflineService', () => {
       });
     });
 
-    it('unsubscribe removes the listener', () => {
+    it('unsubscribe removes the listener', async () => {
       const mockUnsubscribe = jest.fn();
       mockNetInfo.addEventListener.mockReturnValue(mockUnsubscribe);
 
@@ -199,7 +199,7 @@ describe('OfflineService', () => {
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
-    it('supports multiple listeners', () => {
+    it('supports multiple listeners', async () => {
       const mockUnsubscribe1 = jest.fn();
       const mockUnsubscribe2 = jest.fn();
       mockNetInfo.addEventListener
@@ -216,8 +216,8 @@ describe('OfflineService', () => {
     });
   });
 
-  describe('cleanup', () => {
-    it('unsubscribes all listeners', () => {
+  describe('cleanup', async () => {
+    it('unsubscribes all listeners', async () => {
       const mockUnsubscribe1 = jest.fn();
       const mockUnsubscribe2 = jest.fn();
       mockNetInfo.addEventListener
@@ -233,13 +233,13 @@ describe('OfflineService', () => {
       expect(mockUnsubscribe2).toHaveBeenCalled();
     });
 
-    it('handles cleanup when no listeners exist', () => {
+    it('handles cleanup when no listeners exist', async () => {
       // Should not throw
       expect(() => offlineService.cleanup()).not.toThrow();
     });
   });
 
-  describe('waitForOnline', () => {
+  describe('waitForOnline', async () => {
     it('resolves immediately when already online', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,

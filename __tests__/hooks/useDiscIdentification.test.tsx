@@ -26,7 +26,7 @@ import {
 } from '@/hooks/useDiscIdentification';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useDiscIdentification', () => {
+describe('useDiscIdentification', async () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -90,8 +90,8 @@ describe('useDiscIdentification', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  describe('initialization', () => {
-    it('initializes with default state', () => {
+  describe('initialization', async () => {
+    it('initializes with default state', async () => {
       const { result } = renderHook(() => useDiscIdentification());
 
       expect(result.current.isLoading).toBe(false);
@@ -102,7 +102,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('authentication', () => {
+  describe('authentication', async () => {
     it('returns error when not authenticated', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
@@ -143,7 +143,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('loading state', () => {
+  describe('loading state', async () => {
     it('sets loading to true during identification', async () => {
       // Create a controlled promise
       let resolveImageFetch: (value: Response) => void;
@@ -230,7 +230,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('successful identification', () => {
+  describe('successful identification', async () => {
     it('returns identification result on success', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -400,7 +400,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('error handling', () => {
+  describe('error handling', async () => {
     it('handles API error response', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -535,7 +535,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('reset', () => {
+  describe('reset', async () => {
     it('clears all state', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -588,7 +588,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('state clearing on new request', () => {
+  describe('state clearing on new request', async () => {
     it('clears previous result when starting new identification', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -669,7 +669,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('edge cases', () => {
+  describe('edge cases', async () => {
     it('handles identification with partial flight numbers', async () => {
       const partialFlightNumbers = {
         ...mockIdentificationResponse,
@@ -784,7 +784,7 @@ describe('useDiscIdentification', () => {
       expect(result.current.error).toBe('An error occurred');
     });
 
-    it('maintains function reference stability', () => {
+    it('maintains function reference stability', async () => {
       const { result, rerender } = renderHook(() => useDiscIdentification());
 
       const initialIdentify = result.current.identify;
@@ -797,7 +797,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('abort and cleanup', () => {
+  describe('abort and cleanup', async () => {
     it('handles AbortError gracefully without setting error state', async () => {
       const abortError = new Error('The operation was aborted');
       abortError.name = 'AbortError';

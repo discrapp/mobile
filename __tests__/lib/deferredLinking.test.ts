@@ -11,56 +11,56 @@ jest.mock('expo-clipboard', () => ({
   getStringAsync: jest.fn(),
 }));
 
-describe('deferredLinking', () => {
+describe('deferredLinking', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('isValidDiscrCode', () => {
-    it('returns true for valid 6-character uppercase code', () => {
+  describe('isValidDiscrCode', async () => {
+    it('returns true for valid 6-character uppercase code', async () => {
       expect(isValidDiscrCode('ABC123')).toBe(true);
     });
 
-    it('returns true for valid 8-character uppercase code', () => {
+    it('returns true for valid 8-character uppercase code', async () => {
       expect(isValidDiscrCode('ABCD1234')).toBe(true);
     });
 
-    it('returns true for valid 7-character code', () => {
+    it('returns true for valid 7-character code', async () => {
       expect(isValidDiscrCode('ABC1234')).toBe(true);
     });
 
-    it('converts lowercase to uppercase and validates', () => {
+    it('converts lowercase to uppercase and validates', async () => {
       expect(isValidDiscrCode('abc123')).toBe(true);
     });
 
-    it('returns false for code shorter than 6 characters', () => {
+    it('returns false for code shorter than 6 characters', async () => {
       expect(isValidDiscrCode('ABC12')).toBe(false);
     });
 
-    it('returns false for code longer than 8 characters', () => {
+    it('returns false for code longer than 8 characters', async () => {
       expect(isValidDiscrCode('ABCDE12345')).toBe(false);
     });
 
-    it('returns false for empty string', () => {
+    it('returns false for empty string', async () => {
       expect(isValidDiscrCode('')).toBe(false);
     });
 
-    it('returns false for null/undefined', () => {
+    it('returns false for null/undefined', async () => {
       expect(isValidDiscrCode(null as unknown as string)).toBe(false);
       expect(isValidDiscrCode(undefined as unknown as string)).toBe(false);
     });
 
-    it('returns false for code with special characters', () => {
+    it('returns false for code with special characters', async () => {
       expect(isValidDiscrCode('ABC-12')).toBe(false);
       expect(isValidDiscrCode('ABC_12')).toBe(false);
     });
 
-    it('trims whitespace before validating', () => {
+    it('trims whitespace before validating', async () => {
       expect(isValidDiscrCode('  ABC123  ')).toBe(true);
     });
   });
 
-  describe('checkClipboardForCode', () => {
+  describe('checkClipboardForCode', async () => {
     it('returns null when clipboard is empty', async () => {
       (Clipboard.hasStringAsync as jest.Mock).mockResolvedValue(false);
 

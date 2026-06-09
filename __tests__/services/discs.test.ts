@@ -44,12 +44,12 @@ function createMockDisc(overrides: Partial<{
   };
 }
 
-describe('discService', () => {
+describe('discService', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getAll', () => {
+  describe('getAll', async () => {
     it('fetches all discs for the current user', async () => {
       const mockDiscs = [
         createMockDisc({ id: 'disc-1', name: 'Destroyer', brand: 'Innova' }),
@@ -76,7 +76,7 @@ describe('discService', () => {
     });
   });
 
-  describe('getById', () => {
+  describe('getById', async () => {
     it('fetches a single disc by ID', async () => {
       const mockDisc = createMockDisc({
         id: 'disc-1',
@@ -117,7 +117,7 @@ describe('discService', () => {
     });
   });
 
-  describe('create', () => {
+  describe('create', async () => {
     it('creates a new disc', async () => {
       const discData = { name: 'Destroyer', brand: 'Innova', weight: 175 };
       const createdDisc = createMockDisc({
@@ -139,7 +139,7 @@ describe('discService', () => {
     });
   });
 
-  describe('update', () => {
+  describe('update', async () => {
     it('updates an existing disc', async () => {
       const updates = { name: 'Updated Name' };
       const updatedDisc = createMockDisc({
@@ -160,7 +160,7 @@ describe('discService', () => {
     });
   });
 
-  describe('delete', () => {
+  describe('delete', async () => {
     it('deletes a disc', async () => {
       mockApiRequest.mockResolvedValueOnce({ success: true });
 
@@ -173,7 +173,7 @@ describe('discService', () => {
     });
   });
 
-  describe('linkQrCode', () => {
+  describe('linkQrCode', async () => {
     it('links a QR code to a disc', async () => {
       const linkedDisc = createMockDisc({
         id: 'disc-1',
@@ -193,7 +193,7 @@ describe('discService', () => {
     });
   });
 
-  describe('unlinkQrCode', () => {
+  describe('unlinkQrCode', async () => {
     it('unlinks a QR code from a disc', async () => {
       const unlinkedDisc = createMockDisc({
         id: 'disc-1',
@@ -212,7 +212,7 @@ describe('discService', () => {
     });
   });
 
-  describe('uploadPhoto', () => {
+  describe('uploadPhoto', async () => {
     it('uploads a photo for a disc', async () => {
       const photoData = { uri: 'file://photo.jpg', type: 'image/jpeg' };
       const updatedDisc = createMockDisc({
