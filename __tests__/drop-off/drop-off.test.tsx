@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent, act } from '@testing-library/react-native';
+import { render, waitFor, fireEvent, act } from '../test-utils';
 import { Alert, Linking } from 'react-native';
 import DropOffScreen from '../../app/drop-off/[id]';
 

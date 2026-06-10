@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import { Alert, Linking } from 'react-native';
 import OrderDetailScreen from '../../app/orders/[id]';
 

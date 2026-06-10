@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from './test-utils';
 import { Alert } from 'react-native';
 import ClaimDiscScreen from '../app/claim-disc';
 

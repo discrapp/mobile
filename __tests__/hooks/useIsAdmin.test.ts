@@ -23,7 +23,7 @@ describe('useIsAdmin', async () => {
       registerPushToken: jest.fn(),
     });
 
-    const { result } = renderHook(() => useIsAdmin());
+    const { result } = await renderHook(() => useIsAdmin());
     expect(result.current).toBe(false);
   });
 
@@ -43,7 +43,7 @@ describe('useIsAdmin', async () => {
       registerPushToken: jest.fn(),
     });
 
-    const { result } = renderHook(() => useIsAdmin());
+    const { result } = await renderHook(() => useIsAdmin());
     expect(result.current).toBe(false);
   });
 
@@ -63,7 +63,7 @@ describe('useIsAdmin', async () => {
       registerPushToken: jest.fn(),
     });
 
-    const { result } = renderHook(() => useIsAdmin());
+    const { result } = await renderHook(() => useIsAdmin());
     expect(result.current).toBe(false);
   });
 
@@ -83,7 +83,7 @@ describe('useIsAdmin', async () => {
       registerPushToken: jest.fn(),
     });
 
-    const { result } = renderHook(() => useIsAdmin());
+    const { result } = await renderHook(() => useIsAdmin());
     expect(result.current).toBe(true);
   });
 
@@ -103,7 +103,7 @@ describe('useIsAdmin', async () => {
       registerPushToken: jest.fn(),
     });
 
-    const { result } = renderHook(() => useIsAdmin());
+    const { result } = await renderHook(() => useIsAdmin());
     expect(result.current).toBe(false);
   });
 });

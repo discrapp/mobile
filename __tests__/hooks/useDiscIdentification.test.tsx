@@ -92,7 +92,7 @@ describe('useDiscIdentification', async () => {
 
   describe('initialization', async () => {
     it('initializes with default state', async () => {
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
@@ -106,7 +106,7 @@ describe('useDiscIdentification', async () => {
     it('returns error when not authenticated', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -131,7 +131,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -160,7 +160,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // Start the request
       act(() => {
@@ -196,7 +196,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -220,7 +220,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -245,7 +245,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       let returnedResult: IdentificationResult | null = null;
       await act(async () => {
@@ -279,7 +279,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -305,7 +305,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -334,7 +334,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -362,7 +362,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -390,7 +390,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -416,7 +416,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -446,7 +446,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -459,7 +459,7 @@ describe('useDiscIdentification', async () => {
     it('handles network errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -476,7 +476,7 @@ describe('useDiscIdentification', async () => {
     it('handles image fetch errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Failed to fetch image'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -501,7 +501,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -525,7 +525,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -550,7 +550,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // First get an identification result
       await act(async () => {
@@ -572,7 +572,7 @@ describe('useDiscIdentification', async () => {
     it('clears error state after failed identification', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -603,7 +603,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // First identification
       await act(async () => {
@@ -638,7 +638,7 @@ describe('useDiscIdentification', async () => {
     it('clears previous error when starting new identification', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -697,7 +697,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -729,7 +729,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -762,7 +762,7 @@ describe('useDiscIdentification', async () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -775,7 +775,7 @@ describe('useDiscIdentification', async () => {
     it('handles non-Error exceptions', async () => {
       (global.fetch as jest.Mock).mockRejectedValue('String error');
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -785,7 +785,7 @@ describe('useDiscIdentification', async () => {
     });
 
     it('maintains function reference stability', async () => {
-      const { result, rerender } = renderHook(() => useDiscIdentification());
+      const { result, rerender } = await renderHook(() => useDiscIdentification());
 
       const initialIdentify = result.current.identify;
       const initialReset = result.current.reset;
@@ -804,7 +804,7 @@ describe('useDiscIdentification', async () => {
 
       (global.fetch as jest.Mock).mockRejectedValue(abortError);
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -827,7 +827,7 @@ describe('useDiscIdentification', async () => {
 
       (global.fetch as jest.Mock).mockImplementation(() => imagePromise);
 
-      const { result, unmount } = renderHook(() => useDiscIdentification());
+      const { result, unmount } = await renderHook(() => useDiscIdentification());
 
       // Start the request
       act(() => {
