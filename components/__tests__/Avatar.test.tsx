@@ -1,11 +1,11 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent } from '../../__tests__/test-utils';
 import { Avatar } from '../Avatar';
 
 describe('Avatar', () => {
   describe('with avatar URL', () => {
-    it('should render an image when avatarUrl is provided', () => {
-      const { getByTestId, queryByText } = render(
+    it('should render an image when avatarUrl is provided', async () => {
+      const { getByTestId, queryByText } = await render(
         <Avatar avatarUrl="https://example.com/avatar.jpg" name="John Doe" />
       );
 
@@ -14,8 +14,8 @@ describe('Avatar', () => {
       expect(queryByText('JD')).toBeNull();
     });
 
-    it('should fall back to initials when image fails to load', () => {
-      const { getByText, UNSAFE_getByType } = render(
+    it('should fall back to initials when image fails to load', async () => {
+      const { getByText, UNSAFE_getByType } = await render(
         <Avatar avatarUrl="https://example.com/bad-url.jpg" name="John Doe" />
       );
 
@@ -30,35 +30,35 @@ describe('Avatar', () => {
   });
 
   describe('without avatar URL', () => {
-    it('should show initials from full name', () => {
-      const { getByText } = render(<Avatar name="John Doe" />);
+    it('should show initials from full name', async () => {
+      const { getByText } = await render(<Avatar name="John Doe" />);
       expect(getByText('JD')).toBeTruthy();
     });
 
-    it('should show initials from single name', () => {
-      const { getByText } = render(<Avatar name="John" />);
+    it('should show initials from single name', async () => {
+      const { getByText } = await render(<Avatar name="John" />);
       expect(getByText('J')).toBeTruthy();
     });
 
-    it('should show initials from @username format', () => {
-      const { getByText } = render(<Avatar name="@johndoe" />);
+    it('should show initials from @username format', async () => {
+      const { getByText } = await render(<Avatar name="@johndoe" />);
       expect(getByText('J')).toBeTruthy();
     });
 
-    it('should show ? when no name is provided', () => {
-      const { getByText } = render(<Avatar />);
+    it('should show ? when no name is provided', async () => {
+      const { getByText } = await render(<Avatar />);
       expect(getByText('?')).toBeTruthy();
     });
 
-    it('should show initials from multi-word name', () => {
-      const { getByText } = render(<Avatar name="John Michael Doe" />);
+    it('should show initials from multi-word name', async () => {
+      const { getByText } = await render(<Avatar name="John Michael Doe" />);
       expect(getByText('JD')).toBeTruthy();
     });
   });
 
   describe('sizing', () => {
-    it('should use default size of 40', () => {
-      const { UNSAFE_getByType } = render(<Avatar name="John" />);
+    it('should use default size of 40', async () => {
+      const { UNSAFE_getByType } = await render(<Avatar name="John" />);
       const View = require('react-native').View;
       const container = UNSAFE_getByType(View);
 
@@ -73,8 +73,8 @@ describe('Avatar', () => {
       );
     });
 
-    it('should use custom size when provided', () => {
-      const { UNSAFE_getByType } = render(<Avatar name="John" size={60} />);
+    it('should use custom size when provided', async () => {
+      const { UNSAFE_getByType } = await render(<Avatar name="John" size={60} />);
       const View = require('react-native').View;
       const container = UNSAFE_getByType(View);
 
@@ -91,8 +91,8 @@ describe('Avatar', () => {
   });
 
   describe('accessibility', () => {
-    it('should have accessibilityRole of image when showing avatar URL', () => {
-      const { UNSAFE_getByType } = render(
+    it('should have accessibilityRole of image when showing avatar URL', async () => {
+      const { UNSAFE_getByType } = await render(
         <Avatar avatarUrl="https://example.com/avatar.jpg" name="John Doe" />
       );
       const { Image } = require('expo-image');
@@ -100,8 +100,8 @@ describe('Avatar', () => {
       expect(image.props.accessibilityRole).toBe('image');
     });
 
-    it('should have accessibilityLabel with user name when showing avatar URL', () => {
-      const { UNSAFE_getByType } = render(
+    it('should have accessibilityLabel with user name when showing avatar URL', async () => {
+      const { UNSAFE_getByType } = await render(
         <Avatar avatarUrl="https://example.com/avatar.jpg" name="John Doe" />
       );
       const { Image } = require('expo-image');
@@ -109,8 +109,8 @@ describe('Avatar', () => {
       expect(image.props.accessibilityLabel).toBe("John Doe's avatar");
     });
 
-    it('should have accessibilityLabel fallback when no name provided for avatar URL', () => {
-      const { UNSAFE_getByType } = render(
+    it('should have accessibilityLabel fallback when no name provided for avatar URL', async () => {
+      const { UNSAFE_getByType } = await render(
         <Avatar avatarUrl="https://example.com/avatar.jpg" />
       );
       const { Image } = require('expo-image');
@@ -118,22 +118,22 @@ describe('Avatar', () => {
       expect(image.props.accessibilityLabel).toBe('User avatar');
     });
 
-    it('should have accessibilityRole of image when showing initials', () => {
-      const { UNSAFE_getByType } = render(<Avatar name="John Doe" />);
+    it('should have accessibilityRole of image when showing initials', async () => {
+      const { UNSAFE_getByType } = await render(<Avatar name="John Doe" />);
       const View = require('react-native').View;
       const container = UNSAFE_getByType(View);
       expect(container.props.accessibilityRole).toBe('image');
     });
 
-    it('should have accessibilityLabel with user name when showing initials', () => {
-      const { UNSAFE_getByType } = render(<Avatar name="John Doe" />);
+    it('should have accessibilityLabel with user name when showing initials', async () => {
+      const { UNSAFE_getByType } = await render(<Avatar name="John Doe" />);
       const View = require('react-native').View;
       const container = UNSAFE_getByType(View);
       expect(container.props.accessibilityLabel).toBe("John Doe's avatar");
     });
 
-    it('should have accessibilityLabel fallback when showing initials without name', () => {
-      const { UNSAFE_getByType } = render(<Avatar />);
+    it('should have accessibilityLabel fallback when showing initials without name', async () => {
+      const { UNSAFE_getByType } = await render(<Avatar />);
       const View = require('react-native').View;
       const container = UNSAFE_getByType(View);
       expect(container.props.accessibilityLabel).toBe('User avatar');

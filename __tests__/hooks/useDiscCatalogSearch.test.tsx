@@ -62,7 +62,7 @@ describe('useDiscCatalogSearch', async () => {
 
   describe('initialization', async () => {
     it('initializes with default state', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       expect(result.current.results).toEqual([]);
       expect(result.current.loading).toBe(false);
@@ -74,7 +74,7 @@ describe('useDiscCatalogSearch', async () => {
 
   describe('search query validation', async () => {
     it('clears results when query is empty', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('');
@@ -87,7 +87,7 @@ describe('useDiscCatalogSearch', async () => {
     });
 
     it('clears results when query is too short (less than 2 characters)', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('a');
@@ -99,7 +99,7 @@ describe('useDiscCatalogSearch', async () => {
     });
 
     it('does not search with exactly 1 character', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('d');
@@ -116,7 +116,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('de');
@@ -141,7 +141,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Type quickly
       act(() => {
@@ -182,7 +182,7 @@ describe('useDiscCatalogSearch', async () => {
     });
 
     it('clears pending debounce when query becomes too short', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('dest');
@@ -215,7 +215,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -239,7 +239,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -275,7 +275,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve({ results: [], count: 0, query: 'disc & disc', limit: 10 }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('disc & disc');
@@ -305,7 +305,7 @@ describe('useDiscCatalogSearch', async () => {
           }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('nonexistent');
@@ -326,7 +326,7 @@ describe('useDiscCatalogSearch', async () => {
 
   describe('loading state', async () => {
     it('sets loading to true when search starts', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -341,7 +341,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -364,7 +364,7 @@ describe('useDiscCatalogSearch', async () => {
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -387,7 +387,7 @@ describe('useDiscCatalogSearch', async () => {
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -408,7 +408,7 @@ describe('useDiscCatalogSearch', async () => {
     it('handles network errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -432,7 +432,7 @@ describe('useDiscCatalogSearch', async () => {
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -475,7 +475,7 @@ describe('useDiscCatalogSearch', async () => {
 
       (global.fetch as jest.Mock).mockRejectedValue(abortError);
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -514,7 +514,7 @@ describe('useDiscCatalogSearch', async () => {
         });
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Start first search
       act(() => {
@@ -542,7 +542,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // First get some results
       act(() => {
@@ -567,7 +567,7 @@ describe('useDiscCatalogSearch', async () => {
     });
 
     it('cancels pending debounce', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -596,7 +596,7 @@ describe('useDiscCatalogSearch', async () => {
         });
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -640,7 +640,7 @@ describe('useDiscCatalogSearch', async () => {
           }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('warden');
@@ -661,7 +661,7 @@ describe('useDiscCatalogSearch', async () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Rapid typing simulation
       for (let i = 1; i <= 10; i++) {
@@ -683,7 +683,7 @@ describe('useDiscCatalogSearch', async () => {
     });
 
     it('maintains function reference stability', async () => {
-      const { result, rerender } = renderHook(() => useDiscCatalogSearch());
+      const { result, rerender } = await renderHook(() => useDiscCatalogSearch());
 
       const initialSearch = result.current.search;
       const initialClearResults = result.current.clearResults;

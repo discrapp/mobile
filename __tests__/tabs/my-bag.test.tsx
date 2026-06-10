@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import { Alert } from 'react-native';
 import MyBagScreen from '../../app/(tabs)/my-bag';
 import { handleError } from '../../lib/errorHandler';

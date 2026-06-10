@@ -50,8 +50,8 @@ describe('ErrorBoundary', () => {
   });
 
   describe('rendering children', () => {
-    it('renders children when no error occurs', () => {
-      const { getByTestId } = render(
+    it('renders children when no error occurs', async () => {
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow={false} />
         </ErrorBoundary>
@@ -60,8 +60,8 @@ describe('ErrorBoundary', () => {
       expect(getByTestId('child-content')).toBeTruthy();
     });
 
-    it('renders multiple children when no error occurs', () => {
-      const { getByText } = render(
+    it('renders multiple children when no error occurs', async () => {
+      const { getByText } = await render(
         <ErrorBoundary>
           <Text>First Child</Text>
           <Text>Second Child</Text>
@@ -74,8 +74,8 @@ describe('ErrorBoundary', () => {
   });
 
   describe('error handling', () => {
-    it('catches errors and displays fallback UI', () => {
-      const { getByText, queryByTestId } = render(
+    it('catches errors and displays fallback UI', async () => {
+      const { getByText, queryByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -86,7 +86,7 @@ describe('ErrorBoundary', () => {
       expect(getByText('Something went wrong. Please try again.')).toBeTruthy();
     });
 
-    it('logs error to Sentry when error occurs', () => {
+    it('logs error to Sentry when error occurs', async () => {
       render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
@@ -101,8 +101,8 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('displays "Try Again" button in fallback UI', () => {
-      const { getByText } = render(
+    it('displays "Try Again" button in fallback UI', async () => {
+      const { getByText } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -113,7 +113,7 @@ describe('ErrorBoundary', () => {
   });
 
   describe('recovery', () => {
-    it('calls onError callback when error occurs', () => {
+    it('calls onError callback when error occurs', async () => {
       const onError = jest.fn();
 
       render(
@@ -130,9 +130,9 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('resets error state when "Try Again" is pressed', () => {
+    it('resets error state when "Try Again" is pressed', async () => {
       const onReset = jest.fn();
-      const { getByText } = render(
+      const { getByText } = await render(
         <ErrorBoundary onReset={onReset}>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -149,10 +149,10 @@ describe('ErrorBoundary', () => {
       expect(onReset).toHaveBeenCalled();
     });
 
-    it('calls onReset callback when "Try Again" is pressed', () => {
+    it('calls onReset callback when "Try Again" is pressed', async () => {
       const onReset = jest.fn();
 
-      const { getByText } = render(
+      const { getByText } = await render(
         <ErrorBoundary onReset={onReset}>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -165,7 +165,7 @@ describe('ErrorBoundary', () => {
   });
 
   describe('custom fallback', () => {
-    it('renders custom fallback component when provided', () => {
+    it('renders custom fallback component when provided', async () => {
       const CustomFallback = ({ resetError }: { resetError: () => void }) => (
         <View testID="custom-fallback">
           <Text>Custom Error Message</Text>
@@ -173,7 +173,7 @@ describe('ErrorBoundary', () => {
         </View>
       );
 
-      const { getByTestId, getByText, queryByText } = render(
+      const { getByTestId, getByText, queryByText } = await render(
         <ErrorBoundary fallback={CustomFallback}>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -184,7 +184,7 @@ describe('ErrorBoundary', () => {
       expect(queryByText('Oops!')).toBeNull();
     });
 
-    it('passes resetError function to custom fallback', () => {
+    it('passes resetError function to custom fallback', async () => {
       const CustomFallback = ({ resetError }: { resetError: () => void }) => (
         <View>
           <Text testID="custom-reset" onPress={resetError}>
@@ -195,7 +195,7 @@ describe('ErrorBoundary', () => {
 
       const onReset = jest.fn();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <ErrorBoundary fallback={CustomFallback} onReset={onReset}>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -206,7 +206,7 @@ describe('ErrorBoundary', () => {
       expect(onReset).toHaveBeenCalled();
     });
 
-    it('passes error information to custom fallback', () => {
+    it('passes error information to custom fallback', async () => {
       const CustomFallback = ({
         error,
         resetError,
@@ -220,7 +220,7 @@ describe('ErrorBoundary', () => {
         </View>
       );
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <ErrorBoundary fallback={CustomFallback}>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -231,10 +231,10 @@ describe('ErrorBoundary', () => {
   });
 
   describe('dark mode support', () => {
-    it('applies light mode styles by default', () => {
+    it('applies light mode styles by default', async () => {
       useColorScheme.mockReturnValue('light');
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -246,10 +246,10 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('applies dark mode styles when in dark mode', () => {
+    it('applies dark mode styles when in dark mode', async () => {
       useColorScheme.mockReturnValue('dark');
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -261,10 +261,10 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('adjusts icon container color in dark mode', () => {
+    it('adjusts icon container color in dark mode', async () => {
       useColorScheme.mockReturnValue('dark');
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -276,10 +276,10 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('adjusts message color in dark mode', () => {
+    it('adjusts message color in dark mode', async () => {
       useColorScheme.mockReturnValue('dark');
 
-      const { getByText } = render(
+      const { getByText } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -298,9 +298,9 @@ describe('ErrorBoundary', () => {
   });
 
   describe('edge cases', () => {
-    it('handles errors without componentStack gracefully', () => {
+    it('handles errors without componentStack gracefully', async () => {
       // Force an error that might not have componentStack
-      const { getByText } = render(
+      const { getByText } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -310,14 +310,14 @@ describe('ErrorBoundary', () => {
       expect(captureError).toHaveBeenCalled();
     });
 
-    it('does not crash when children are null', () => {
+    it('does not crash when children are null', async () => {
       // Should not throw when rendering
       expect(() => {
         render(<ErrorBoundary>{null}</ErrorBoundary>);
       }).not.toThrow();
     });
 
-    it('does not crash when children are undefined', () => {
+    it('does not crash when children are undefined', async () => {
       // Should not throw when rendering
       expect(() => {
         render(<ErrorBoundary>{undefined}</ErrorBoundary>);
@@ -326,8 +326,8 @@ describe('ErrorBoundary', () => {
   });
 
   describe('accessibility', () => {
-    it('should have accessibilityRole of alert for the error container', () => {
-      const { getByTestId } = render(
+    it('should have accessibilityRole of alert for the error container', async () => {
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -337,8 +337,8 @@ describe('ErrorBoundary', () => {
       expect(container.props.accessibilityRole).toBe('alert');
     });
 
-    it('should have accessibilityLabel describing the error state', () => {
-      const { getByTestId } = render(
+    it('should have accessibilityLabel describing the error state', async () => {
+      const { getByTestId } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -350,8 +350,8 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    it('should have accessibilityRole of button for Try Again', () => {
-      const { getByRole } = render(
+    it('should have accessibilityRole of button for Try Again', async () => {
+      const { getByRole } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -361,8 +361,8 @@ describe('ErrorBoundary', () => {
       expect(tryAgainButton).toBeTruthy();
     });
 
-    it('should have accessibilityLabel for Try Again button', () => {
-      const { getByLabelText } = render(
+    it('should have accessibilityLabel for Try Again button', async () => {
+      const { getByLabelText } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>
@@ -372,8 +372,8 @@ describe('ErrorBoundary', () => {
       expect(tryAgainButton).toBeTruthy();
     });
 
-    it('should have accessibilityHint for Try Again button', () => {
-      const { getByHintText } = render(
+    it('should have accessibilityHint for Try Again button', async () => {
+      const { getByHintText } = await render(
         <ErrorBoundary>
           <ErrorThrowingComponent shouldThrow />
         </ErrorBoundary>

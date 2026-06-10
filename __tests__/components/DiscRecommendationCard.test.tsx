@@ -85,7 +85,7 @@ describe('DiscRecommendationCard', async () => {
       { priority: 5, label: '5th Pick' },
     ];
 
-    priorities.forEach(({ priority, label }) => {
+    for (const { priority, label } of priorities) {
       const rec = { ...mockRecommendation, priority };
       const { getByText } = await render(
         <DiscRecommendationCard
@@ -95,7 +95,7 @@ describe('DiscRecommendationCard', async () => {
         />
       );
       expect(getByText(label)).toBeTruthy();
-    });
+    }
   });
 
   it('renders fallback priority label for unknown priority', async () => {
@@ -129,7 +129,7 @@ describe('DiscRecommendationCard', async () => {
       { gap_type: 'category', label: 'Category Gap' },
     ];
 
-    gapTypes.forEach(({ gap_type, label }) => {
+    for (const { gap_type, label } of gapTypes) {
       const rec = { ...mockRecommendation, gap_type: gap_type as 'speed_range' | 'stability' | 'category' };
       const { getByText } = await render(
         <DiscRecommendationCard
@@ -139,7 +139,7 @@ describe('DiscRecommendationCard', async () => {
         />
       );
       expect(getByText(label)).toBeTruthy();
-    });
+    }
   });
 
   it('renders stability badge', async () => {
@@ -157,7 +157,7 @@ describe('DiscRecommendationCard', async () => {
   it('renders different stability badges', async () => {
     const stabilities = ['Understable', 'Stable', 'Overstable'];
 
-    stabilities.forEach((stability) => {
+    for (const stability of stabilities) {
       const rec = {
         ...mockRecommendation,
         disc: { ...mockRecommendation.disc, stability },
@@ -170,7 +170,7 @@ describe('DiscRecommendationCard', async () => {
         />
       );
       expect(getByText(stability)).toBeTruthy();
-    });
+    }
   });
 
   it('renders AI reason', async () => {

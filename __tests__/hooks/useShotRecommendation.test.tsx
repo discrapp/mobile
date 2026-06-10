@@ -86,7 +86,7 @@ describe('useShotRecommendation', async () => {
   });
 
   it('initializes with default state', async () => {
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -96,7 +96,7 @@ describe('useShotRecommendation', async () => {
   it('returns error when not authenticated', async () => {
     mockGetSession.mockResolvedValue({ data: { session: null } });
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -123,7 +123,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // Start the request
     act(() => {
@@ -159,7 +159,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation(testImageUri);
@@ -190,7 +190,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -220,7 +220,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');
@@ -232,7 +232,7 @@ describe('useShotRecommendation', async () => {
   it('handles network errors', async () => {
     (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -260,7 +260,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');
@@ -287,7 +287,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // Get a recommendation first
     await act(async () => {
@@ -320,7 +320,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // First request
     await act(async () => {
@@ -367,7 +367,7 @@ describe('useShotRecommendation', async () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import NotificationsScreen from '../../app/(tabs)/notifications';
 
 // Mock expo-router

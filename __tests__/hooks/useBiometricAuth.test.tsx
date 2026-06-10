@@ -36,7 +36,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       expect(result.current.isLoading).toBe(true);
       expect(result.current.isAuthenticated).toBe(false);
@@ -51,7 +51,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -69,7 +69,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -83,7 +83,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -99,7 +99,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -115,7 +115,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -133,7 +133,7 @@ describe('useBiometricAuth', async () => {
         LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION,
       ]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -149,7 +149,7 @@ describe('useBiometricAuth', async () => {
         LocalAuthentication.AuthenticationType.FINGERPRINT,
       ]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -165,7 +165,7 @@ describe('useBiometricAuth', async () => {
         LocalAuthentication.AuthenticationType.IRIS,
       ]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -179,7 +179,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -201,7 +201,7 @@ describe('useBiometricAuth', async () => {
         success: true,
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -223,7 +223,7 @@ describe('useBiometricAuth', async () => {
         error: 'user_cancel',
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -243,7 +243,7 @@ describe('useBiometricAuth', async () => {
         success: true,
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -266,7 +266,7 @@ describe('useBiometricAuth', async () => {
         success: true,
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -288,7 +288,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -308,7 +308,7 @@ describe('useBiometricAuth', async () => {
         new Error('Biometric authentication failed')
       );
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -333,7 +333,7 @@ describe('useBiometricAuth', async () => {
         error: 'lockout',
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -352,7 +352,7 @@ describe('useBiometricAuth', async () => {
         error: 'user_cancel',
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -375,7 +375,7 @@ describe('useBiometricAuth', async () => {
     });
 
     it('saves preference to AsyncStorage when enabling', async () => {
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -392,7 +392,7 @@ describe('useBiometricAuth', async () => {
     it('saves preference to AsyncStorage when disabling', async () => {
       AsyncStorage.setItem(STORAGE_KEYS.BIOMETRIC_ENABLED, 'true');
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -411,7 +411,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -429,7 +429,7 @@ describe('useBiometricAuth', async () => {
       const storageError = new Error('Storage error');
       (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(storageError);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -452,7 +452,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -479,7 +479,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -511,7 +511,7 @@ describe('useBiometricAuth', async () => {
         success: true,
       });
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -538,7 +538,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useBiometricAuth());
+      const { result } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -554,7 +554,7 @@ describe('useBiometricAuth', async () => {
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.supportedAuthenticationTypesAsync as jest.Mock).mockResolvedValue([2]);
 
-      const { result, rerender } = renderHook(() => useBiometricAuth());
+      const { result, rerender } = await renderHook(() => useBiometricAuth());
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
