@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -62,7 +62,7 @@ jobs:
       - name: Restore main branch coverage from cache
         if: github.event_name == 'pull_request'
         id: cache-restore
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: base-coverage/coverage-summary.json
           key: coverage-main-latest
@@ -96,14 +96,14 @@ jobs:
 
       - name: Cache main branch coverage
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: base-coverage/coverage-summary.json
           key: coverage-main-${{ github.sha }}
 
       - name: Update latest main coverage cache
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: base-coverage/coverage-summary.json
           key: coverage-main-latest

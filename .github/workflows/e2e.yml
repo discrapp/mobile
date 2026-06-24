@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -81,7 +81,7 @@ jobs:
       - name: Restore Expo prebuild cache
         id: prebuild-cache
         if: ${{ github.event.inputs.skip_cache != 'true' }}
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ios
           key: expo-prebuild-${{ steps.prebuild-key.outputs.hash }}
@@ -92,7 +92,7 @@ jobs:
 
       - name: Save Expo prebuild cache
         if: steps.prebuild-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ios
           key: expo-prebuild-${{ steps.prebuild-key.outputs.hash }}
@@ -110,7 +110,7 @@ jobs:
       - name: Restore build cache
         id: build-cache
         if: ${{ github.event.inputs.skip_cache != 'true' }}
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           # Restore entire DerivedData for incremental builds
           path: ios/build
@@ -119,7 +119,7 @@ jobs:
       # Cache 3: CocoaPods
       - name: Cache CocoaPods
         if: steps.build-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ios/Pods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
@@ -158,7 +158,7 @@ jobs:
 
       - name: Save build cache
         if: steps.build-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           # Cache entire DerivedData for incremental builds
           path: ios/build
