@@ -26,7 +26,7 @@ import {
 } from '@/hooks/useDiscIdentification';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useDiscIdentification', () => {
+describe('useDiscIdentification', async () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -90,9 +90,9 @@ describe('useDiscIdentification', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  describe('initialization', () => {
-    it('initializes with default state', () => {
-      const { result } = renderHook(() => useDiscIdentification());
+  describe('initialization', async () => {
+    it('initializes with default state', async () => {
+      const { result } = await renderHook(() => useDiscIdentification());
 
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
@@ -102,11 +102,11 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('authentication', () => {
+  describe('authentication', async () => {
     it('returns error when not authenticated', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -131,7 +131,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -143,7 +143,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('loading state', () => {
+  describe('loading state', async () => {
     it('sets loading to true during identification', async () => {
       // Create a controlled promise
       let resolveImageFetch: (value: Response) => void;
@@ -160,7 +160,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // Start the request
       act(() => {
@@ -196,7 +196,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -220,7 +220,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -230,7 +230,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('successful identification', () => {
+  describe('successful identification', async () => {
     it('returns identification result on success', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -245,7 +245,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       let returnedResult: IdentificationResult | null = null;
       await act(async () => {
@@ -279,7 +279,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -305,7 +305,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -334,7 +334,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -362,7 +362,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -390,7 +390,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -400,7 +400,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('error handling', () => {
+  describe('error handling', async () => {
     it('handles API error response', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -416,7 +416,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -446,7 +446,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -459,7 +459,7 @@ describe('useDiscIdentification', () => {
     it('handles network errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -476,7 +476,7 @@ describe('useDiscIdentification', () => {
     it('handles image fetch errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Failed to fetch image'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         const identification = await result.current.identify(testImageUri);
@@ -501,7 +501,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -525,7 +525,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -535,7 +535,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('reset', () => {
+  describe('reset', async () => {
     it('clears all state', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -550,7 +550,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // First get an identification result
       await act(async () => {
@@ -572,7 +572,7 @@ describe('useDiscIdentification', () => {
     it('clears error state after failed identification', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -588,7 +588,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('state clearing on new request', () => {
+  describe('state clearing on new request', async () => {
     it('clears previous result when starting new identification', async () => {
       (global.fetch as jest.Mock)
         .mockImplementationOnce(() =>
@@ -603,7 +603,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       // First identification
       await act(async () => {
@@ -638,7 +638,7 @@ describe('useDiscIdentification', () => {
     it('clears previous error when starting new identification', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -669,7 +669,7 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('edge cases', () => {
+  describe('edge cases', async () => {
     it('handles identification with partial flight numbers', async () => {
       const partialFlightNumbers = {
         ...mockIdentificationResponse,
@@ -697,7 +697,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -729,7 +729,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -762,7 +762,7 @@ describe('useDiscIdentification', () => {
           })
         );
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -775,7 +775,7 @@ describe('useDiscIdentification', () => {
     it('handles non-Error exceptions', async () => {
       (global.fetch as jest.Mock).mockRejectedValue('String error');
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -784,8 +784,8 @@ describe('useDiscIdentification', () => {
       expect(result.current.error).toBe('An error occurred');
     });
 
-    it('maintains function reference stability', () => {
-      const { result, rerender } = renderHook(() => useDiscIdentification());
+    it('maintains function reference stability', async () => {
+      const { result, rerender } = await renderHook(() => useDiscIdentification());
 
       const initialIdentify = result.current.identify;
       const initialReset = result.current.reset;
@@ -797,14 +797,14 @@ describe('useDiscIdentification', () => {
     });
   });
 
-  describe('abort and cleanup', () => {
+  describe('abort and cleanup', async () => {
     it('handles AbortError gracefully without setting error state', async () => {
       const abortError = new Error('The operation was aborted');
       abortError.name = 'AbortError';
 
       (global.fetch as jest.Mock).mockRejectedValue(abortError);
 
-      const { result } = renderHook(() => useDiscIdentification());
+      const { result } = await renderHook(() => useDiscIdentification());
 
       await act(async () => {
         await result.current.identify(testImageUri);
@@ -827,7 +827,7 @@ describe('useDiscIdentification', () => {
 
       (global.fetch as jest.Mock).mockImplementation(() => imagePromise);
 
-      const { result, unmount } = renderHook(() => useDiscIdentification());
+      const { result, unmount } = await renderHook(() => useDiscIdentification());
 
       // Start the request
       act(() => {

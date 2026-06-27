@@ -29,7 +29,7 @@ afterAll(() => {
 
 import { usePlasticTypes, PlasticType } from '@/hooks/usePlasticTypes';
 
-describe('usePlasticTypes', () => {
+describe('usePlasticTypes', async () => {
   const mockPlastics: PlasticType[] = [
     { id: 'pt-1', manufacturer: 'Innova', plastic_name: 'Star', display_order: 1, status: 'official' },
     { id: 'pt-2', manufacturer: 'Innova', plastic_name: 'Champion', display_order: 2, status: 'official' },
@@ -48,8 +48,8 @@ describe('usePlasticTypes', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('returns empty plastics when no manufacturer provided', () => {
-    const { result } = renderHook(() => usePlasticTypes(undefined));
+  it('returns empty plastics when no manufacturer provided', async () => {
+    const { result } = await renderHook(() => usePlasticTypes(undefined));
 
     expect(result.current.plastics).toEqual([]);
     expect(result.current.loading).toBe(false);
@@ -62,7 +62,7 @@ describe('usePlasticTypes', () => {
       json: () => Promise.resolve(mockResponse),
     });
 
-    const { result } = renderHook(() => usePlasticTypes('Innova'));
+    const { result } = await renderHook(() => usePlasticTypes('Innova'));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -76,7 +76,7 @@ describe('usePlasticTypes', () => {
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
     // Use a different manufacturer to avoid cache from other tests
-    const { result } = renderHook(() => usePlasticTypes('ErrorTest'));
+    const { result } = await renderHook(() => usePlasticTypes('ErrorTest'));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -93,7 +93,7 @@ describe('usePlasticTypes', () => {
     });
 
     const userPlastics = ['Custom Swirl', 'My Plastic'];
-    const { result } = renderHook(() => usePlasticTypes('Innova', userPlastics));
+    const { result } = await renderHook(() => usePlasticTypes('Innova', userPlastics));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -111,7 +111,7 @@ describe('usePlasticTypes', () => {
 
     // User has 'star' (lowercase) which should match 'Star'
     const userPlastics = ['star', 'Custom Plastic'];
-    const { result } = renderHook(() => usePlasticTypes('Innova', userPlastics));
+    const { result } = await renderHook(() => usePlasticTypes('Innova', userPlastics));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -127,7 +127,7 @@ describe('usePlasticTypes', () => {
       json: () => Promise.resolve(mockResponse),
     });
 
-    const { result } = renderHook(() => usePlasticTypes('Innova'));
+    const { result } = await renderHook(() => usePlasticTypes('Innova'));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);

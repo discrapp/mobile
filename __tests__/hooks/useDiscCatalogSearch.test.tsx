@@ -17,7 +17,7 @@ afterAll(() => {
 
 import { useDiscCatalogSearch, CatalogDisc } from '@/hooks/useDiscCatalogSearch';
 
-describe('useDiscCatalogSearch', () => {
+describe('useDiscCatalogSearch', async () => {
   const mockSearchResults: CatalogDisc[] = [
     {
       id: 'disc-1',
@@ -60,9 +60,9 @@ describe('useDiscCatalogSearch', () => {
     jest.useRealTimers();
   });
 
-  describe('initialization', () => {
-    it('initializes with default state', () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+  describe('initialization', async () => {
+    it('initializes with default state', async () => {
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       expect(result.current.results).toEqual([]);
       expect(result.current.loading).toBe(false);
@@ -72,9 +72,9 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('search query validation', () => {
-    it('clears results when query is empty', () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+  describe('search query validation', async () => {
+    it('clears results when query is empty', async () => {
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('');
@@ -86,8 +86,8 @@ describe('useDiscCatalogSearch', () => {
       expect(global.fetch).not.toHaveBeenCalled();
     });
 
-    it('clears results when query is too short (less than 2 characters)', () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+    it('clears results when query is too short (less than 2 characters)', async () => {
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('a');
@@ -98,8 +98,8 @@ describe('useDiscCatalogSearch', () => {
       expect(global.fetch).not.toHaveBeenCalled();
     });
 
-    it('does not search with exactly 1 character', () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+    it('does not search with exactly 1 character', async () => {
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('d');
@@ -116,7 +116,7 @@ describe('useDiscCatalogSearch', () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('de');
@@ -134,14 +134,14 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('debouncing', () => {
+  describe('debouncing', async () => {
     it('debounces search calls', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Type quickly
       act(() => {
@@ -182,7 +182,7 @@ describe('useDiscCatalogSearch', () => {
     });
 
     it('clears pending debounce when query becomes too short', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('dest');
@@ -208,14 +208,14 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('successful search', () => {
+  describe('successful search', async () => {
     it('returns search results on success', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -239,7 +239,7 @@ describe('useDiscCatalogSearch', () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -275,7 +275,7 @@ describe('useDiscCatalogSearch', () => {
         json: () => Promise.resolve({ results: [], count: 0, query: 'disc & disc', limit: 10 }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('disc & disc');
@@ -305,7 +305,7 @@ describe('useDiscCatalogSearch', () => {
           }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('nonexistent');
@@ -324,9 +324,9 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('loading state', () => {
-    it('sets loading to true when search starts', () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+  describe('loading state', async () => {
+    it('sets loading to true when search starts', async () => {
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -341,7 +341,7 @@ describe('useDiscCatalogSearch', () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -364,7 +364,7 @@ describe('useDiscCatalogSearch', () => {
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -380,14 +380,14 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('error handling', () => {
+  describe('error handling', async () => {
     it('sets error on API failure', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -408,7 +408,7 @@ describe('useDiscCatalogSearch', () => {
     it('handles network errors', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -432,7 +432,7 @@ describe('useDiscCatalogSearch', () => {
         status: 500,
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -468,14 +468,14 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('request cancellation', () => {
+  describe('request cancellation', async () => {
     it('ignores aborted requests', async () => {
       const abortError = new Error('Aborted');
       abortError.name = 'AbortError';
 
       (global.fetch as jest.Mock).mockRejectedValue(abortError);
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -501,7 +501,7 @@ describe('useDiscCatalogSearch', () => {
         if (url.includes('first')) {
           firstFetchController = { signal: options.signal };
           return new Promise((_, reject) => {
-            options.signal.addEventListener('abort', () => {
+            options.signal.addEventListener('abort', async () => {
               const abortError = new Error('Aborted');
               abortError.name = 'AbortError';
               reject(abortError);
@@ -514,7 +514,7 @@ describe('useDiscCatalogSearch', () => {
         });
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Start first search
       act(() => {
@@ -535,14 +535,14 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('clearResults', () => {
+  describe('clearResults', async () => {
     it('clears results and error', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // First get some results
       act(() => {
@@ -567,7 +567,7 @@ describe('useDiscCatalogSearch', () => {
     });
 
     it('cancels pending debounce', async () => {
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -596,7 +596,7 @@ describe('useDiscCatalogSearch', () => {
         });
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('destroyer');
@@ -615,7 +615,7 @@ describe('useDiscCatalogSearch', () => {
     });
   });
 
-  describe('edge cases', () => {
+  describe('edge cases', async () => {
     it('handles discs with null flight numbers', async () => {
       const discWithNulls: CatalogDisc = {
         id: 'disc-3',
@@ -640,7 +640,7 @@ describe('useDiscCatalogSearch', () => {
           }),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       act(() => {
         result.current.search('warden');
@@ -661,7 +661,7 @@ describe('useDiscCatalogSearch', () => {
         json: () => Promise.resolve(mockSearchResponse),
       });
 
-      const { result } = renderHook(() => useDiscCatalogSearch());
+      const { result } = await renderHook(() => useDiscCatalogSearch());
 
       // Rapid typing simulation
       for (let i = 1; i <= 10; i++) {
@@ -682,8 +682,8 @@ describe('useDiscCatalogSearch', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
-    it('maintains function reference stability', () => {
-      const { result, rerender } = renderHook(() => useDiscCatalogSearch());
+    it('maintains function reference stability', async () => {
+      const { result, rerender } = await renderHook(() => useDiscCatalogSearch());
 
       const initialSearch = result.current.search;
       const initialClearResults = result.current.clearResults;

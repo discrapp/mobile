@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render } from '../test-utils';
 import ModalScreen from '../../app/modal';
 
 // Mock expo-status-bar
@@ -10,15 +10,15 @@ jest.mock('expo-status-bar', () => ({
 // Mock EditScreenInfo component
 jest.mock('../../components/EditScreenInfo', () => 'EditScreenInfo');
 
-describe('ModalScreen', () => {
-  it('renders modal title', () => {
-    const { getByText } = render(<ModalScreen />);
+describe('ModalScreen', async () => {
+  it('renders modal title', async () => {
+    const { getByText } = await render(<ModalScreen />);
 
     expect(getByText('Modal')).toBeTruthy();
   });
 
-  it('renders correctly', () => {
-    const { UNSAFE_root } = render(<ModalScreen />);
+  it('renders correctly', async () => {
+    const { UNSAFE_root } = await render(<ModalScreen />);
 
     expect(UNSAFE_root).toBeTruthy();
   });

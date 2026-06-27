@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from './test-utils';
 import { Alert } from 'react-native';
 import ClaimDiscScreen from '../app/claim-disc';
 
@@ -56,7 +56,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ClaimDiscScreen', () => {
+describe('ClaimDiscScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -64,8 +64,8 @@ describe('ClaimDiscScreen', () => {
     });
   });
 
-  it('renders disc information from params', () => {
-    const { getByText } = render(<ClaimDiscScreen />);
+  it('renders disc information from params', async () => {
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     expect(getByText('Claim Disc')).toBeTruthy();
     // Manufacturer and mold are displayed separately
@@ -75,27 +75,27 @@ describe('ClaimDiscScreen', () => {
     expect(getByText('Blue')).toBeTruthy();
   });
 
-  it('renders Available to Claim banner', () => {
-    const { getByText } = render(<ClaimDiscScreen />);
+  it('renders Available to Claim banner', async () => {
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     expect(getByText('Available to Claim!')).toBeTruthy();
     expect(getByText(/This disc has been abandoned/)).toBeTruthy();
   });
 
-  it('renders Claim This Disc button', () => {
-    const { getByText } = render(<ClaimDiscScreen />);
+  it('renders Claim This Disc button', async () => {
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     expect(getByText('Claim This Disc')).toBeTruthy();
   });
 
-  it('renders skip button', () => {
-    const { getByText } = render(<ClaimDiscScreen />);
+  it('renders skip button', async () => {
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     expect(getByText('No thanks, go to home')).toBeTruthy();
   });
 
-  it('navigates back when back button is pressed', () => {
-    const { getByTestId, queryByTestId, getByText } = render(<ClaimDiscScreen />);
+  it('navigates back when back button is pressed', async () => {
+    const { getByTestId, queryByTestId, getByText } = await render(<ClaimDiscScreen />);
 
     // The back button has an icon - find it by looking for the TouchableOpacity with chevron-left
     // Since we can't easily target it, we'll test that router.back exists
@@ -103,8 +103,8 @@ describe('ClaimDiscScreen', () => {
     expect(mockRouterBack).not.toHaveBeenCalled(); // Just verify mock is set up
   });
 
-  it('navigates to home when skip is pressed', () => {
-    const { getByText } = render(<ClaimDiscScreen />);
+  it('navigates to home when skip is pressed', async () => {
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     fireEvent.press(getByText('No thanks, go to home'));
     expect(mockRouterReplace).toHaveBeenCalledWith('/(tabs)');
@@ -116,7 +116,7 @@ describe('ClaimDiscScreen', () => {
       json: () => Promise.resolve({ success: true }),
     });
 
-    const { getByText } = render(<ClaimDiscScreen />);
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     fireEvent.press(getByText('Claim This Disc'));
 
@@ -141,7 +141,7 @@ describe('ClaimDiscScreen', () => {
       json: () => Promise.resolve({ error: 'Failed to claim disc' }),
     });
 
-    const { getByText } = render(<ClaimDiscScreen />);
+    const { getByText } = await render(<ClaimDiscScreen />);
 
     fireEvent.press(getByText('Claim This Disc'));
 
@@ -159,7 +159,7 @@ describe('ClaimDiscScreen', () => {
       }), 100))
     );
 
-    const { getByText, UNSAFE_getAllByType } = render(<ClaimDiscScreen />);
+    const { getByText, UNSAFE_getAllByType } = await render(<ClaimDiscScreen />);
 
     fireEvent.press(getByText('Claim This Disc'));
 
@@ -170,7 +170,7 @@ describe('ClaimDiscScreen', () => {
     });
   });
 
-  describe('dark mode', () => {
+  describe('dark mode', async () => {
     beforeEach(() => {
       mockColorScheme = 'dark';
     });
@@ -179,8 +179,8 @@ describe('ClaimDiscScreen', () => {
       mockColorScheme = 'light';
     });
 
-    it('renders with dark mode styles', () => {
-      const { getByText, UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('renders with dark mode styles', async () => {
+      const { getByText, UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       // Verify screen renders in dark mode
       expect(getByText('Claim Disc')).toBeTruthy();
@@ -198,8 +198,8 @@ describe('ClaimDiscScreen', () => {
       expect(flatStyle.backgroundColor).toBe('#121212');
     });
 
-    it('applies dark mode styles to header', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies dark mode styles to header', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       // Find all Views and look for header with dark background
       const views = UNSAFE_root.findAllByType(require('react-native').View);
@@ -220,8 +220,8 @@ describe('ClaimDiscScreen', () => {
       expect(headerView).toBeTruthy();
     });
 
-    it('applies dark mode styles to text elements', () => {
-      const { getByText } = render(<ClaimDiscScreen />);
+    it('applies dark mode styles to text elements', async () => {
+      const { getByText } = await render(<ClaimDiscScreen />);
 
       // Header title should have light text in dark mode
       const headerTitle = getByText('Claim Disc');
@@ -234,8 +234,8 @@ describe('ClaimDiscScreen', () => {
       expect(['#fff', '#ccc', '#e0e0e0']).toContain(flatStyle.color);
     });
 
-    it('applies dark mode styles to info card', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies dark mode styles to info card', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
@@ -250,8 +250,8 @@ describe('ClaimDiscScreen', () => {
       expect(infoCardView).toBeTruthy();
     });
 
-    it('applies dark mode styles to info row borders', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies dark mode styles to info row borders', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
@@ -266,8 +266,8 @@ describe('ClaimDiscScreen', () => {
       expect(infoRowView).toBeTruthy();
     });
 
-    it('applies dark mode styles to photo container', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies dark mode styles to photo container', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
@@ -289,13 +289,13 @@ describe('ClaimDiscScreen', () => {
     });
   });
 
-  describe('light mode', () => {
+  describe('light mode', async () => {
     beforeEach(() => {
       mockColorScheme = 'light';
     });
 
-    it('renders with light mode styles', () => {
-      const { getByText, UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('renders with light mode styles', async () => {
+      const { getByText, UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       // Verify screen renders in light mode
       expect(getByText('Claim Disc')).toBeTruthy();
@@ -313,8 +313,8 @@ describe('ClaimDiscScreen', () => {
       expect(flatStyle.backgroundColor).toBe('#f5f5f5');
     });
 
-    it('applies light mode styles to header', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies light mode styles to header', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
@@ -329,8 +329,8 @@ describe('ClaimDiscScreen', () => {
       expect(headerView).toBeTruthy();
     });
 
-    it('applies light mode styles to text elements', () => {
-      const { getByText } = render(<ClaimDiscScreen />);
+    it('applies light mode styles to text elements', async () => {
+      const { getByText } = await render(<ClaimDiscScreen />);
 
       // Header title should have dark text in light mode
       const headerTitle = getByText('Claim Disc');
@@ -343,8 +343,8 @@ describe('ClaimDiscScreen', () => {
       expect(flatStyle.color).toBe('#333');
     });
 
-    it('applies light mode styles to info card', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies light mode styles to info card', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 
@@ -359,8 +359,8 @@ describe('ClaimDiscScreen', () => {
       expect(infoCardView).toBeTruthy();
     });
 
-    it('applies light mode styles to info row borders', () => {
-      const { UNSAFE_root } = render(<ClaimDiscScreen />);
+    it('applies light mode styles to info row borders', async () => {
+      const { UNSAFE_root } = await render(<ClaimDiscScreen />);
 
       const views = UNSAFE_root.findAllByType(require('react-native').View);
 

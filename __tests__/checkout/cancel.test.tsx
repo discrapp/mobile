@@ -11,7 +11,7 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ order_id: 'order-123' }),
 }));
 
-describe('CheckoutCancelScreen', () => {
+describe('CheckoutCancelScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
@@ -21,22 +21,22 @@ describe('CheckoutCancelScreen', () => {
     jest.useRealTimers();
   });
 
-  it('renders payment cancelled message', () => {
-    const { getByText } = render(<CheckoutCancelScreen />);
+  it('renders payment cancelled message', async () => {
+    const { getByText } = await render(<CheckoutCancelScreen />);
 
     expect(getByText('❌')).toBeTruthy();
     expect(getByText('Payment Cancelled')).toBeTruthy();
     expect(getByText('Your payment was cancelled. No charges were made.')).toBeTruthy();
   });
 
-  it('displays order ID when provided', () => {
-    const { getByText } = render(<CheckoutCancelScreen />);
+  it('displays order ID when provided', async () => {
+    const { getByText } = await render(<CheckoutCancelScreen />);
 
     expect(getByText('Order ID: order-123')).toBeTruthy();
   });
 
-  it('shows redirect message', () => {
-    const { getByText } = render(<CheckoutCancelScreen />);
+  it('shows redirect message', async () => {
+    const { getByText } = await render(<CheckoutCancelScreen />);
 
     expect(getByText('Returning to the app...')).toBeTruthy();
   });
@@ -55,8 +55,8 @@ describe('CheckoutCancelScreen', () => {
     });
   });
 
-  it('cleans up timer on unmount', () => {
-    const { unmount } = render(<CheckoutCancelScreen />);
+  it('cleans up timer on unmount', async () => {
+    const { unmount } = await render(<CheckoutCancelScreen />);
 
     unmount();
 

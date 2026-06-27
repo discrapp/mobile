@@ -36,9 +36,9 @@ jest.mock('@/lib/supabase', () => ({
   },
 }));
 
-describe('API Response Schemas', () => {
-  describe('discSchema', () => {
-    it('validates a complete disc object', () => {
+describe('API Response Schemas', async () => {
+  describe('discSchema', async () => {
+    it('validates a complete disc object', async () => {
       const validDisc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'Destroyer',
@@ -56,7 +56,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('validates a minimal disc object with required fields only', () => {
+    it('validates a minimal disc object with required fields only', async () => {
       const minimalDisc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'Destroyer',
@@ -69,7 +69,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('allows null for qr_code_id', () => {
+    it('allows null for qr_code_id', async () => {
       const disc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'Destroyer',
@@ -83,7 +83,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects missing required id field', () => {
+    it('rejects missing required id field', async () => {
       const invalidDisc = {
         name: 'Destroyer',
         owner_id: 'user-456',
@@ -95,7 +95,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(false);
     });
 
-    it('rejects missing required name field', () => {
+    it('rejects missing required name field', async () => {
       const invalidDisc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         owner_id: 'user-456',
@@ -107,7 +107,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(false);
     });
 
-    it('rejects invalid weight type', () => {
+    it('rejects invalid weight type', async () => {
       const invalidDisc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'Destroyer',
@@ -122,8 +122,8 @@ describe('API Response Schemas', () => {
     });
   });
 
-  describe('discArraySchema', () => {
-    it('validates an array of discs', () => {
+  describe('discArraySchema', async () => {
+    it('validates an array of discs', async () => {
       const discs = [
         {
           id: '1',
@@ -145,12 +145,12 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('validates an empty array', () => {
+    it('validates an empty array', async () => {
       const result = discArraySchema.safeParse([]);
       expect(result.success).toBe(true);
     });
 
-    it('rejects array with invalid disc', () => {
+    it('rejects array with invalid disc', async () => {
       const discs = [
         {
           id: '1',
@@ -173,8 +173,8 @@ describe('API Response Schemas', () => {
     });
   });
 
-  describe('recoveryEventSchema', () => {
-    it('validates a complete recovery event', () => {
+  describe('recoveryEventSchema', async () => {
+    it('validates a complete recovery event', async () => {
       const event = {
         id: 'event-123',
         disc_id: 'disc-456',
@@ -195,7 +195,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('validates a minimal recovery event', () => {
+    it('validates a minimal recovery event', async () => {
       const event = {
         id: 'event-123',
         disc_id: 'disc-456',
@@ -209,7 +209,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects missing required status', () => {
+    it('rejects missing required status', async () => {
       const event = {
         id: 'event-123',
         disc_id: 'disc-456',
@@ -222,7 +222,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(false);
     });
 
-    it('validates location with latitude and longitude', () => {
+    it('validates location with latitude and longitude', async () => {
       const event = {
         id: 'event-123',
         disc_id: 'disc-456',
@@ -241,8 +241,8 @@ describe('API Response Schemas', () => {
     });
   });
 
-  describe('recoveryMessageSchema', () => {
-    it('validates a recovery message', () => {
+  describe('recoveryMessageSchema', async () => {
+    it('validates a recovery message', async () => {
       const message = {
         id: 'msg-123',
         content: 'Hello, I found your disc!',
@@ -254,7 +254,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects missing content', () => {
+    it('rejects missing content', async () => {
       const message = {
         id: 'msg-123',
         sender_id: 'user-456',
@@ -266,8 +266,8 @@ describe('API Response Schemas', () => {
     });
   });
 
-  describe('userProfileSchema', () => {
-    it('validates a complete user profile', () => {
+  describe('userProfileSchema', async () => {
+    it('validates a complete user profile', async () => {
       const profile = {
         id: 'user-123',
         email: 'test@example.com',
@@ -282,7 +282,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('validates a minimal user profile', () => {
+    it('validates a minimal user profile', async () => {
       const profile = {
         id: 'user-123',
         email: 'test@example.com',
@@ -294,7 +294,7 @@ describe('API Response Schemas', () => {
       expect(result.success).toBe(true);
     });
 
-    it('rejects invalid email format', () => {
+    it('rejects invalid email format', async () => {
       const profile = {
         id: 'user-123',
         email: 'not-an-email',
@@ -308,14 +308,14 @@ describe('API Response Schemas', () => {
   });
 });
 
-describe('validateApiResponse', () => {
+describe('validateApiResponse', async () => {
   const { captureError } = require('@/lib/sentry');
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('returns parsed data when validation succeeds', () => {
+  it('returns parsed data when validation succeeds', async () => {
     const data = {
       id: '123',
       name: 'Test Disc',
@@ -328,7 +328,7 @@ describe('validateApiResponse', () => {
     expect(result).toEqual(data);
   });
 
-  it('throws ValidationError when validation fails', () => {
+  it('throws ValidationError when validation fails', async () => {
     const invalidData = {
       id: '123',
       // missing name
@@ -342,7 +342,7 @@ describe('validateApiResponse', () => {
     }).toThrow(ValidationError);
   });
 
-  it('logs validation errors to Sentry', () => {
+  it('logs validation errors to Sentry', async () => {
     const invalidData = {
       id: '123',
       owner_id: 'user-1',
@@ -359,7 +359,7 @@ describe('validateApiResponse', () => {
     expect(captureError).toHaveBeenCalled();
   });
 
-  it('includes operation name in ValidationError', () => {
+  it('includes operation name in ValidationError', async () => {
     const invalidData = { invalid: 'data' };
 
     try {
@@ -370,7 +370,7 @@ describe('validateApiResponse', () => {
     }
   });
 
-  it('includes raw data in ValidationError for debugging', () => {
+  it('includes raw data in ValidationError for debugging', async () => {
     const invalidData = { id: '123', extra: 'field' };
 
     try {
@@ -381,7 +381,7 @@ describe('validateApiResponse', () => {
     }
   });
 
-  it('includes Zod issues in ValidationError', () => {
+  it('includes Zod issues in ValidationError', async () => {
     const invalidData = {
       id: '123',
       owner_id: 'user-1',
@@ -398,7 +398,7 @@ describe('validateApiResponse', () => {
     }
   });
 
-  it('works with array schemas', () => {
+  it('works with array schemas', async () => {
     const validArray = [
       {
         id: '1',
@@ -414,8 +414,8 @@ describe('validateApiResponse', () => {
   });
 });
 
-describe('ValidationError', () => {
-  it('creates error with all properties', () => {
+describe('ValidationError', async () => {
+  it('creates error with all properties', async () => {
     const issues = [{ path: ['name'], message: 'Required' }];
     const rawData = { id: '123' };
 
@@ -434,7 +434,7 @@ describe('ValidationError', () => {
     expect(error.rawData).toEqual(rawData);
   });
 
-  it('serializes to JSON correctly', () => {
+  it('serializes to JSON correctly', async () => {
     const issues = [{ path: ['name'], message: 'Required' }];
     const error = new ValidationError(
       'Validation failed',
@@ -451,18 +451,18 @@ describe('ValidationError', () => {
   });
 });
 
-describe('isValidationError', () => {
-  it('returns true for ValidationError instances', () => {
+describe('isValidationError', async () => {
+  it('returns true for ValidationError instances', async () => {
     const error = new ValidationError('test', 'op', [], {});
     expect(isValidationError(error)).toBe(true);
   });
 
-  it('returns false for regular Error instances', () => {
+  it('returns false for regular Error instances', async () => {
     const error = new Error('test');
     expect(isValidationError(error)).toBe(false);
   });
 
-  it('returns false for non-error values', () => {
+  it('returns false for non-error values', async () => {
     expect(isValidationError(null)).toBe(false);
     expect(isValidationError(undefined)).toBe(false);
     expect(isValidationError('string')).toBe(false);
@@ -470,7 +470,7 @@ describe('isValidationError', () => {
   });
 });
 
-describe('apiRequestValidated', () => {
+describe('apiRequestValidated', async () => {
   const { supabase } = require('@/lib/supabase');
 
   // Mock fetch globally

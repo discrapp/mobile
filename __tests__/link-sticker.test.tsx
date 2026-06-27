@@ -39,7 +39,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('LinkStickerScreen', () => {
+describe('LinkStickerScreen', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -53,7 +53,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Link Your Sticker')).toBeTruthy();
@@ -69,7 +69,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       const input = getByPlaceholderText('e.g., ABC123XY');
@@ -84,7 +84,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -100,7 +100,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Verify Code')).toBeTruthy();
@@ -125,7 +125,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       const input = getByPlaceholderText('e.g., ABC123XY');
@@ -150,7 +150,7 @@ describe('LinkStickerScreen', () => {
         json: () => Promise.resolve({ status: 'assigned' }),
       });
 
-    const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       const input = getByPlaceholderText('e.g., ABC123XY');
@@ -173,7 +173,7 @@ describe('LinkStickerScreen', () => {
       json: () => Promise.resolve([]),
     });
 
-    const { getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       const input = getByPlaceholderText('e.g., ABC123XY');
@@ -182,7 +182,7 @@ describe('LinkStickerScreen', () => {
     });
   });
 
-  describe('disc selection', () => {
+  describe('disc selection', async () => {
     it('calls verify API with code', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -194,7 +194,7 @@ describe('LinkStickerScreen', () => {
           json: () => Promise.resolve({ status: 'unassigned', qr_code_id: 'qr-1' }),
         });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -222,7 +222,7 @@ describe('LinkStickerScreen', () => {
           json: () => Promise.resolve({ status: 'assigned' }),
         });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -241,7 +241,7 @@ describe('LinkStickerScreen', () => {
     });
   });
 
-  describe('verify errors', () => {
+  describe('verify errors', async () => {
     it('handles API error response', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -253,7 +253,7 @@ describe('LinkStickerScreen', () => {
           json: () => Promise.resolve({ error: 'Invalid code' }),
         });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -279,7 +279,7 @@ describe('LinkStickerScreen', () => {
           json: () => Promise.resolve({ status: 'not_found' }),
         });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -295,14 +295,14 @@ describe('LinkStickerScreen', () => {
     });
   });
 
-  describe('input states', () => {
+  describe('input states', async () => {
     it('allows typing in the code input', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
       });
 
-      const { getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -317,7 +317,7 @@ describe('LinkStickerScreen', () => {
         json: () => Promise.resolve([]),
       });
 
-      const { getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         const input = getByPlaceholderText('e.g., ABC123XY');
@@ -326,14 +326,14 @@ describe('LinkStickerScreen', () => {
     });
   });
 
-  describe('QR scanning', () => {
+  describe('QR scanning', async () => {
     it('renders Scan QR Code button', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
       });
 
-      const { getByText } = render(<LinkStickerScreen />);
+      const { getByText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -346,7 +346,7 @@ describe('LinkStickerScreen', () => {
         json: () => Promise.resolve([]),
       });
 
-      const { getByText } = render(<LinkStickerScreen />);
+      const { getByText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByText('or enter manually')).toBeTruthy();
@@ -360,7 +360,7 @@ describe('LinkStickerScreen', () => {
         json: () => Promise.resolve([]),
       });
 
-      const { getByText } = render(<LinkStickerScreen />);
+      const { getByText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();
@@ -380,7 +380,7 @@ describe('LinkStickerScreen', () => {
         json: () => Promise.resolve([]),
       });
 
-      const { getByText } = render(<LinkStickerScreen />);
+      const { getByText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByText('Scan QR Code')).toBeTruthy();

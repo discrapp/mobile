@@ -60,7 +60,7 @@ function useDeferredLinking(user: MockUser | null, loading: boolean) {
   }, [user, loading, router]);
 }
 
-describe('useDeferredLinking', () => {
+describe('useDeferredLinking', async () => {
   const mockRouter = {
     push: jest.fn(),
     replace: jest.fn(),

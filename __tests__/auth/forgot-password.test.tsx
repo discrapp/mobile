@@ -24,13 +24,13 @@ jest.mock('../../lib/supabase', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ForgotPassword', () => {
+describe('ForgotPassword', async () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders correctly', () => {
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+  it('renders correctly', async () => {
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     expect(getByText('Reset Password')).toBeTruthy();
     expect(
@@ -41,7 +41,7 @@ describe('ForgotPassword', () => {
   });
 
   it('shows validation error for empty email', async () => {
-    const { getByText } = render(<ForgotPassword />);
+    const { getByText } = await render(<ForgotPassword />);
 
     fireEvent.press(getByText('Send Reset Link'));
 
@@ -51,7 +51,7 @@ describe('ForgotPassword', () => {
   });
 
   it('shows validation error for invalid email format', async () => {
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'invalid-email');
     fireEvent.press(getByText('Send Reset Link'));
@@ -67,7 +67,7 @@ describe('ForgotPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
@@ -90,7 +90,7 @@ describe('ForgotPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
@@ -112,7 +112,7 @@ describe('ForgotPassword', () => {
       error: { message: 'User not found' },
     });
 
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
@@ -131,7 +131,7 @@ describe('ForgotPassword', () => {
     });
     (supabase.auth.resetPasswordForEmail as jest.Mock).mockReturnValue(promise);
 
-    const { getByText, getByPlaceholderText, getByTestId } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText, getByTestId } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
@@ -149,8 +149,8 @@ describe('ForgotPassword', () => {
     });
   });
 
-  it('has a back to sign in link', () => {
-    const { getByText } = render(<ForgotPassword />);
+  it('has a back to sign in link', async () => {
+    const { getByText } = await render(<ForgotPassword />);
 
     expect(getByText('Back to Sign In')).toBeTruthy();
   });
@@ -160,7 +160,7 @@ describe('ForgotPassword', () => {
       new Error('Network failure')
     );
 
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
@@ -176,7 +176,7 @@ describe('ForgotPassword', () => {
   });
 
   it('clears error when typing in email field', async () => {
-    const { getByText, getByPlaceholderText, queryByText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText, queryByText } = await render(<ForgotPassword />);
 
     // First trigger an error
     fireEvent.press(getByText('Send Reset Link'));
@@ -200,7 +200,7 @@ describe('ForgotPassword', () => {
       error: null,
     });
 
-    const { getByText, getByPlaceholderText } = render(<ForgotPassword />);
+    const { getByText, getByPlaceholderText } = await render(<ForgotPassword />);
 
     fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
     await act(async () => {
