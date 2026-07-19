@@ -30,20 +30,26 @@
         "react",
         "react-dom",
         "react-test-renderer",
-        "@types/react",
-        "jest-expo"
+        "@types/react"
       ]
     },
     {
-      "description": "Expo core SDK updates - auto-fix all related packages",
+      "description": "Group expo SDK with its required companions and run install --fix",
       "enabled": true,
-      "matchPackageNames": ["expo"],
+      "matchPackageNames": ["expo", "jest-expo", "babel-preset-expo"],
+      "groupName": "expo sdk",
       "automerge": false,
       "postUpgradeTasks": {
         "commands": ["npm install", "npx expo install --fix"],
         "fileFilters": ["package.json", "package-lock.json"],
         "executionMode": "branch"
       }
+    },
+    {
+      "description": "Pin jest and @types/jest together - must be upgraded alongside react-native, not with expo",
+      "matchPackageNames": ["jest", "@types/jest"],
+      "groupName": "jest",
+      "matchUpdateTypes": ["major", "minor", "patch"]
     },
     {
       "description": "GitHub Actions - group major updates",
