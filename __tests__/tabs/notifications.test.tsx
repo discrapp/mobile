@@ -41,7 +41,7 @@ const getMockInvoke = () => {
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('NotificationsScreen', async () => {
+describe('NotificationsScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getMockInvoke().mockResolvedValue({ data: {}, error: null });
@@ -51,7 +51,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('empty state', async () => {
+  describe('empty state', () => {
     it('renders empty state', async () => {
       const { getByText } = await render(<NotificationsScreen />);
 
@@ -69,7 +69,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification display', async () => {
+  describe('notification display', () => {
     it('displays notification when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -131,7 +131,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification types', async () => {
+  describe('notification types', () => {
     it('displays disc_found notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -253,7 +253,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('fetch handling', async () => {
+  describe('fetch handling', () => {
     it('fetches notifications on mount', async () => {
       render(<NotificationsScreen />);
 
@@ -281,7 +281,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification interactions', async () => {
+  describe('notification interactions', () => {
     it('renders notification items as pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -381,7 +381,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('time formatting', async () => {
+  describe('time formatting', () => {
     it('shows relative time for notifications', async () => {
       // Create a notification from 2 hours ago
       const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
@@ -488,7 +488,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification rendering', async () => {
+  describe('notification rendering', () => {
     it('renders notification title correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -573,7 +573,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('mark all as read', async () => {
+  describe('mark all as read', () => {
     it('shows mark all read button when there are unread notifications', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -609,7 +609,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('dismiss all', async () => {
+  describe('dismiss all', () => {
     it('shows dismiss all button when notifications exist', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -646,7 +646,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification navigation', async () => {
+  describe('notification navigation', () => {
     it('renders disc_found notification with navigation data', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -723,7 +723,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('mark all as read action', async () => {
+  describe('mark all as read action', () => {
     it('allows pressing mark all read button', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -743,7 +743,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('dismiss all action', async () => {
+  describe('dismiss all action', () => {
     it('allows pressing dismiss all button', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -763,7 +763,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('single notification actions', async () => {
+  describe('single notification actions', () => {
     it('renders unread notification correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -790,7 +790,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('drop off notification', async () => {
+  describe('drop off notification', () => {
     it('displays disc_dropped_off notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -816,7 +816,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('network error handling', async () => {
+  describe('network error handling', () => {
     it('handles network error on fetch', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
@@ -850,7 +850,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('pull to refresh', async () => {
+  describe('pull to refresh', () => {
     it('has refresh control', async () => {
       const { UNSAFE_getAllByType } = await render(<NotificationsScreen />);
       const { RefreshControl } = require('react-native');
@@ -862,7 +862,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification press action', async () => {
+  describe('notification press action', () => {
     it('notification is pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1045,7 +1045,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('date formatting for old notifications', async () => {
+  describe('date formatting for old notifications', () => {
     it('shows date for notifications older than a week', async () => {
       const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
 
@@ -1073,7 +1073,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('dismiss all clears notifications', async () => {
+  describe('dismiss all clears notifications', () => {
     it('dismiss all button works', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1094,7 +1094,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('mark all read updates state', async () => {
+  describe('mark all read updates state', () => {
     it('marks all read button works', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1119,7 +1119,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification with disc_id navigation', async () => {
+  describe('notification with disc_id navigation', () => {
     it('notification with disc_id is pressable', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1148,7 +1148,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('non-ok response handling', async () => {
+  describe('non-ok response handling', () => {
     it('handles non-ok response from fetch', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
@@ -1165,7 +1165,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('loading state', async () => {
+  describe('loading state', () => {
     it('shows loading indicator while fetching', async () => {
       const { UNSAFE_getByType } = await render(<NotificationsScreen />);
       const { ActivityIndicator } = require('react-native');
@@ -1188,7 +1188,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('pull to refresh functionality', async () => {
+  describe('pull to refresh functionality', () => {
     it('refetches notifications on pull to refresh', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1217,7 +1217,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('mark all as read functionality', async () => {
+  describe('mark all as read functionality', () => {
     it('calls API and updates state when marking all as read', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1270,7 +1270,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('dismiss all functionality', async () => {
+  describe('dismiss all functionality', () => {
     it('calls API and clears notifications when dismissing all', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1343,7 +1343,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('single notification dismiss', async () => {
+  describe('single notification dismiss', () => {
     it('removes notification from list when dismissed', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1416,7 +1416,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('notification type meetup_declined', async () => {
+  describe('notification type meetup_declined', () => {
     it('displays meetup_declined notification', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1593,7 +1593,7 @@ describe('NotificationsScreen', async () => {
     });
   });
 
-  describe('contribution_approved notifications', async () => {
+  describe('contribution_approved notifications', () => {
     it('displays contribution_approved notifications correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,

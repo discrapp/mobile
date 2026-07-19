@@ -7,8 +7,8 @@
 
 import { STRINGS } from '@/constants/strings';
 
-describe('STRINGS constants', async () => {
-  describe('structure', async () => {
+describe('STRINGS constants', () => {
+  describe('structure', () => {
     it('should export STRINGS object', async () => {
       expect(STRINGS).toBeDefined();
       expect(typeof STRINGS).toBe('object');
@@ -20,7 +20,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('AUTH section', async () => {
+  describe('AUTH section', () => {
     it('should have AUTH section', async () => {
       expect(STRINGS.AUTH).toBeDefined();
     });
@@ -50,7 +50,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('ERRORS section', async () => {
+  describe('ERRORS section', () => {
     it('should have ERRORS section', async () => {
       expect(STRINGS.ERRORS).toBeDefined();
     });
@@ -67,7 +67,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('VALIDATION section', async () => {
+  describe('VALIDATION section', () => {
     it('should have VALIDATION section', async () => {
       expect(STRINGS.VALIDATION).toBeDefined();
     });
@@ -100,7 +100,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('DISCS section', async () => {
+  describe('DISCS section', () => {
     it('should have DISCS section', async () => {
       expect(STRINGS.DISCS).toBeDefined();
     });
@@ -128,7 +128,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('ADD_DISC section', async () => {
+  describe('ADD_DISC section', () => {
     it('should have ADD_DISC section', async () => {
       expect(STRINGS.ADD_DISC).toBeDefined();
     });
@@ -182,7 +182,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('FOUND_DISC section', async () => {
+  describe('FOUND_DISC section', () => {
     it('should have FOUND_DISC section', async () => {
       expect(STRINGS.FOUND_DISC).toBeDefined();
     });
@@ -275,7 +275,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('CAMERA section', async () => {
+  describe('CAMERA section', () => {
     it('should have CAMERA section', async () => {
       expect(STRINGS.CAMERA).toBeDefined();
     });
@@ -291,7 +291,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('COMMON section', async () => {
+  describe('COMMON section', () => {
     it('should have COMMON section', async () => {
       expect(STRINGS.COMMON).toBeDefined();
     });
@@ -312,7 +312,7 @@ describe('STRINGS constants', async () => {
     });
   });
 
-  describe('ALERTS section', async () => {
+  describe('ALERTS section', () => {
     it('should have ALERTS section', async () => {
       expect(STRINGS.ALERTS).toBeDefined();
     });

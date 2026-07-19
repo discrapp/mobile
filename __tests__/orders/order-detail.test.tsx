@@ -93,7 +93,7 @@ const mockShippedNoTrackingOrder = {
   shipped_at: '2024-01-17T10:00:00Z',
 };
 
-describe('OrderDetailScreen', async () => {
+describe('OrderDetailScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -353,7 +353,7 @@ describe('OrderDetailScreen', async () => {
     });
   });
 
-  describe('Resume Payment', async () => {
+  describe('Resume Payment', () => {
     it('shows resume payment button for pending_payment orders', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -453,7 +453,7 @@ describe('OrderDetailScreen', async () => {
     });
   });
 
-  describe('Cancel Order', async () => {
+  describe('Cancel Order', () => {
     it('shows cancel order button for pending_payment orders', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -558,7 +558,7 @@ describe('OrderDetailScreen', async () => {
     });
   });
 
-  describe('Mark Delivered', async () => {
+  describe('Mark Delivered', () => {
     it('shows mark delivered button for shipped orders without tracking', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,

@@ -34,7 +34,7 @@ const { supabase } = require('../../lib/supabase');
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('DeepLinkHandler QR Code Validation', async () => {
+describe('DeepLinkHandler QR Code Validation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAuth.mockReturnValue({ user: null, loading: false });
@@ -43,7 +43,7 @@ describe('DeepLinkHandler QR Code Validation', async () => {
     });
   });
 
-  describe('Valid QR codes', async () => {
+  describe('Valid QR codes', () => {
     it('accepts 6-character alphanumeric code', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC123' });
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -113,7 +113,7 @@ describe('DeepLinkHandler QR Code Validation', async () => {
     });
   });
 
-  describe('Invalid QR codes - should not call API', async () => {
+  describe('Invalid QR codes - should not call API', () => {
     it('rejects code shorter than 6 characters', async () => {
       useLocalSearchParams.mockReturnValue({ code: 'ABC12' });
 

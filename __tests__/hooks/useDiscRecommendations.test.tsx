@@ -21,7 +21,7 @@ global.fetch = jest.fn();
 import { useDiscRecommendations } from '@/hooks/useDiscRecommendations';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useDiscRecommendations', async () => {
+describe('useDiscRecommendations', () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },

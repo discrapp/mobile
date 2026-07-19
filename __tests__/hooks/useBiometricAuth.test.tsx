@@ -24,13 +24,13 @@ import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { handleError } from '@/lib/errorHandler';
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 
-describe('useBiometricAuth', async () => {
+describe('useBiometricAuth', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     AsyncStorage.clear();
   });
 
-  describe('initialization', async () => {
+  describe('initialization', () => {
     it('initializes with default state', async () => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
@@ -93,7 +93,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('biometric hardware detection', async () => {
+  describe('biometric hardware detection', () => {
     it('detects when device has no biometric hardware', async () => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
@@ -189,7 +189,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('authenticate', async () => {
+  describe('authenticate', () => {
     beforeEach(() => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
@@ -367,7 +367,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('setBiometricEnabled', async () => {
+  describe('setBiometricEnabled', () => {
     beforeEach(() => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
@@ -446,7 +446,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('checkBiometricAvailability', async () => {
+  describe('checkBiometricAvailability', () => {
     it('refreshes biometric availability status', async () => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(false);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
@@ -499,7 +499,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('resetAuthState', async () => {
+  describe('resetAuthState', () => {
     beforeEach(() => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);
@@ -532,7 +532,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('error handling', async () => {
+  describe('error handling', () => {
     it('handles non-Error exceptions gracefully', async () => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockRejectedValue('String error');
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(false);
@@ -548,7 +548,7 @@ describe('useBiometricAuth', async () => {
     });
   });
 
-  describe('function reference stability', async () => {
+  describe('function reference stability', () => {
     it('maintains function reference stability across re-renders', async () => {
       (LocalAuthentication.hasHardwareAsync as jest.Mock).mockResolvedValue(true);
       (LocalAuthentication.isEnrolledAsync as jest.Mock).mockResolvedValue(true);

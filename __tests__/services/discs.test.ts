@@ -44,12 +44,12 @@ function createMockDisc(overrides: Partial<{
   };
 }
 
-describe('discService', async () => {
+describe('discService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getAll', async () => {
+  describe('getAll', () => {
     it('fetches all discs for the current user', async () => {
       const mockDiscs = [
         createMockDisc({ id: 'disc-1', name: 'Destroyer', brand: 'Innova' }),
@@ -76,7 +76,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('getById', async () => {
+  describe('getById', () => {
     it('fetches a single disc by ID', async () => {
       const mockDisc = createMockDisc({
         id: 'disc-1',
@@ -117,7 +117,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('create', async () => {
+  describe('create', () => {
     it('creates a new disc', async () => {
       const discData = { name: 'Destroyer', brand: 'Innova', weight: 175 };
       const createdDisc = createMockDisc({
@@ -139,7 +139,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('update', async () => {
+  describe('update', () => {
     it('updates an existing disc', async () => {
       const updates = { name: 'Updated Name' };
       const updatedDisc = createMockDisc({
@@ -160,7 +160,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('delete', async () => {
+  describe('delete', () => {
     it('deletes a disc', async () => {
       mockApiRequest.mockResolvedValueOnce({ success: true });
 
@@ -173,7 +173,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('linkQrCode', async () => {
+  describe('linkQrCode', () => {
     it('links a QR code to a disc', async () => {
       const linkedDisc = createMockDisc({
         id: 'disc-1',
@@ -193,7 +193,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('unlinkQrCode', async () => {
+  describe('unlinkQrCode', () => {
     it('unlinks a QR code from a disc', async () => {
       const unlinkedDisc = createMockDisc({
         id: 'disc-1',
@@ -212,7 +212,7 @@ describe('discService', async () => {
     });
   });
 
-  describe('uploadPhoto', async () => {
+  describe('uploadPhoto', () => {
     it('uploads a photo for a disc', async () => {
       const photoData = { uri: 'file://photo.jpg', type: 'image/jpeg' };
       const updatedDisc = createMockDisc({

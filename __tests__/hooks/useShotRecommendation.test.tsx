@@ -32,7 +32,7 @@ global.fetch = jest.fn();
 import { useShotRecommendation } from '@/hooks/useShotRecommendation';
 import { handleError } from '@/lib/errorHandler';
 
-describe('useShotRecommendation', async () => {
+describe('useShotRecommendation', () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },

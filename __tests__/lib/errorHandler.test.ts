@@ -8,13 +8,13 @@ const { handleError, showSuccess, showInfo } = require('../../lib/errorHandler')
 
 jest.spyOn(Alert, 'alert');
 
-describe('errorHandler', async () => {
+describe('errorHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('handleError', async () => {
-    describe('alert dialogs', async () => {
+  describe('handleError', () => {
+    describe('alert dialogs', () => {
       it('shows alert for critical errors', async () => {
         const error = new Error('Out of memory');
         handleError(error, { operation: 'test' });
@@ -74,7 +74,7 @@ describe('errorHandler', async () => {
       });
     });
 
-    describe('toast notifications', async () => {
+    describe('toast notifications', () => {
       it('does not show alert for regular errors (uses toast)', async () => {
         const error = new Error('Something went wrong');
         handleError(error, { operation: 'test' });
@@ -99,13 +99,13 @@ describe('errorHandler', async () => {
     });
   });
 
-  describe('showSuccess', async () => {
+  describe('showSuccess', () => {
     it('does not throw when called', async () => {
       expect(() => showSuccess('Operation completed!')).not.toThrow();
     });
   });
 
-  describe('showInfo', async () => {
+  describe('showInfo', () => {
     it('does not throw when called', async () => {
       expect(() => showInfo('Just so you know...')).not.toThrow();
     });

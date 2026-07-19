@@ -73,7 +73,7 @@ jest.mock('expo-image-picker', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ShotRecommendationScreen', async () => {
+describe('ShotRecommendationScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsLoading = false;
@@ -386,7 +386,7 @@ describe('ShotRecommendationScreen', async () => {
     expect(getByText(/12/)).toBeTruthy(); // speed
   });
 
-  describe('useEffect cleanup', async () => {
+  describe('useEffect cleanup', () => {
     it('does not update state after unmount', async () => {
       const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
       const consoleError = jest.spyOn(console, 'error').mockImplementation();

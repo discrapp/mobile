@@ -158,7 +158,7 @@ const renderForm = () => {
   return render(<AddDiscScreen />);
 };
 
-describe('AddDiscScreen', async () => {
+describe('AddDiscScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -552,7 +552,7 @@ describe('AddDiscScreen', async () => {
     expect(getByText('You can add up to 4 photos per disc')).toBeTruthy();
   });
 
-  describe('reward amount', async () => {
+  describe('reward amount', () => {
     it('saves disc with reward amount', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -574,7 +574,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('network error handling', async () => {
+  describe('network error handling', () => {
     it('handles network error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
@@ -590,7 +590,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('color selection', async () => {
+  describe('color selection', () => {
     it('can select a color', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -654,7 +654,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form validation', async () => {
+  describe('form validation', () => {
     it('trims whitespace from mold name', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -685,7 +685,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('flight numbers validation', async () => {
+  describe('flight numbers validation', () => {
     it('handles empty flight numbers', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -726,7 +726,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('button states', async () => {
+  describe('button states', () => {
     it('disables save button while loading', async () => {
       // Make fetch never resolve to keep loading
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
@@ -743,7 +743,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('success callback', async () => {
+  describe('success callback', () => {
     it('navigates back after successful save', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -775,14 +775,14 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('dark mode', async () => {
+  describe('dark mode', () => {
     it('renders correctly', async () => {
       const { getByText } = await renderForm();
       expect(getByText('Manufacturer')).toBeTruthy();
     });
   });
 
-  describe('QR code section', async () => {
+  describe('QR code section', () => {
     it('shows QR code scanning section', async () => {
       const { getByText } = await renderForm();
 
@@ -796,7 +796,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo upload', async () => {
+  describe('photo upload', () => {
     it('shows add photo button', async () => {
       const { getByText } = await renderForm();
 
@@ -810,7 +810,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form fields', async () => {
+  describe('form fields', () => {
     it('shows all form section labels', async () => {
       const { getByText } = await renderForm();
 
@@ -838,7 +838,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form submission', async () => {
+  describe('form submission', () => {
     it('handles whitespace in manufacturer', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -893,7 +893,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('API response handling', async () => {
+  describe('API response handling', () => {
     it('handles error with message field', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -933,7 +933,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('multiple API calls', async () => {
+  describe('multiple API calls', () => {
     it('shows loading indicator while saving', async () => {
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
@@ -949,7 +949,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form input interactions', async () => {
+  describe('form input interactions', () => {
     it('allows entering all flight numbers', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -985,7 +985,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('color picker interactions', async () => {
+  describe('color picker interactions', () => {
     it('can change selected color', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1019,7 +1019,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('notes section', async () => {
+  describe('notes section', () => {
     it('allows multiline notes input', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -1050,7 +1050,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('weight input', async () => {
+  describe('weight input', () => {
     it('accepts numeric weight', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -1080,7 +1080,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('QR code scanning', async () => {
+  describe('QR code scanning', () => {
     it('shows QR scan button', async () => {
       const { getByText } = await renderForm();
       expect(getByText('Scan QR Sticker')).toBeTruthy();
@@ -1123,7 +1123,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo handling', async () => {
+  describe('photo handling', () => {
     it('shows add photo button', async () => {
       const { getByText } = await renderForm();
       expect(getByText('Add Photo')).toBeTruthy();
@@ -1251,7 +1251,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo upload on save', async () => {
+  describe('photo upload on save', () => {
     it('shows photos section', async () => {
       const { getByText } = await renderForm();
       expect(getByText('Photos (Optional)')).toBeTruthy();
@@ -1263,7 +1263,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('session handling', async () => {
+  describe('session handling', () => {
     it('shows error when no session for QR scan', async () => {
       mockGetSession.mockResolvedValue({
         data: { session: null },
@@ -1276,7 +1276,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form with QR code', async () => {
+  describe('form with QR code', () => {
     it('can save disc without QR code', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1296,7 +1296,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('loading states', async () => {
+  describe('loading states', () => {
     it('shows loading while saving', async () => {
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
@@ -1323,7 +1323,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('reward amount validation', async () => {
+  describe('reward amount validation', () => {
     it('rejects invalid characters in reward amount', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -1353,7 +1353,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('fee hint display', async () => {
+  describe('fee hint display', () => {
     it('shows fee hint when reward amount entered', async () => {
       const { getByPlaceholderText, getByText } = await renderForm();
 
@@ -1366,7 +1366,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('mold autocomplete hint', async () => {
+  describe('mold autocomplete hint', () => {
     it('shows search hint for mold', async () => {
       const { getByText } = await renderForm();
 
@@ -1374,7 +1374,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('disc type field', async () => {
+  describe('disc type field', () => {
     it('shows disc type label', async () => {
       const { getByText } = await renderForm();
 
@@ -1382,7 +1382,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo section', async () => {
+  describe('photo section', () => {
     it('shows photo section when photos are empty', async () => {
       const { getByText } = await renderForm();
 
@@ -1390,7 +1390,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form field interactions', async () => {
+  describe('form field interactions', () => {
     it('clears plastic when manufacturer changes', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -1421,7 +1421,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo limit handling', async () => {
+  describe('photo limit handling', () => {
     it('shows max photos hint', async () => {
       const { getByText } = await renderForm();
 
@@ -1429,7 +1429,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('QR button loading state', async () => {
+  describe('QR button loading state', () => {
     it('shows QR scan button text', async () => {
       const { getByText } = await renderForm();
 
@@ -1438,7 +1438,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('take photo flow', async () => {
+  describe('take photo flow', () => {
     it('opens camera for taking photo', async () => {
       const { getByText } = await renderForm();
 
@@ -1461,7 +1461,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form state after error', async () => {
+  describe('form state after error', () => {
     it('keeps form data after API error', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -1489,7 +1489,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('all form labels', async () => {
+  describe('all form labels', () => {
     it('shows all required labels', async () => {
       const { getByText } = await renderForm();
 
@@ -1508,7 +1508,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('cancel photo alert', async () => {
+  describe('cancel photo alert', () => {
     it('handles cancel in photo options', async () => {
       const { getByText } = await renderForm();
 
@@ -1721,7 +1721,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo upload after disc creation', async () => {
+  describe('photo upload after disc creation', () => {
     it('uploads photos after disc is created', async () => {
       const ImagePicker = require('expo-image-picker');
       const { compressImage } = require('../../utils/imageCompression');
@@ -1829,7 +1829,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('photo limit enforcement', async () => {
+  describe('photo limit enforcement', () => {
     it('shows alert when trying to add 5th photo via library', async () => {
       const ImagePicker = require('expo-image-picker');
       ImagePicker.requestMediaLibraryPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1855,7 +1855,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('reward amount edge cases', async () => {
+  describe('reward amount edge cases', () => {
     it('prevents multiple decimal points', async () => {
       const { getByPlaceholderText } = await renderForm();
 
@@ -1918,7 +1918,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('flight numbers - edge cases', async () => {
+  describe('flight numbers - edge cases', () => {
     it('handles decimal turn values', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1958,7 +1958,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('form trimming behavior', async () => {
+  describe('form trimming behavior', () => {
     it('trims whitespace from plastic', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -2037,7 +2037,7 @@ describe('AddDiscScreen', async () => {
     });
   });
 
-  describe('optional fields - undefined vs empty string', async () => {
+  describe('optional fields - undefined vs empty string', () => {
     it('sends undefined for empty manufacturer', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,

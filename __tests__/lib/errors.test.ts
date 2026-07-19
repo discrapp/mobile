@@ -6,8 +6,8 @@ import {
   requiresReauth,
 } from '../../lib/errors';
 
-describe('errors', async () => {
-  describe('getErrorMessage', async () => {
+describe('errors', () => {
+  describe('getErrorMessage', () => {
     it('extracts message from Error instance', async () => {
       const error = new Error('Test error message');
       expect(getErrorMessage(error)).toBe('Test error message');
@@ -39,8 +39,8 @@ describe('errors', async () => {
     });
   });
 
-  describe('categorizeError', async () => {
-    describe('NETWORK errors', async () => {
+  describe('categorizeError', () => {
+    describe('NETWORK errors', () => {
       it('categorizes "network request failed"', async () => {
         expect(categorizeError(new Error('Network request failed'))).toBe(ErrorCategory.NETWORK);
       });
@@ -58,7 +58,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('AUTH errors', async () => {
+    describe('AUTH errors', () => {
       it('categorizes JWT expired', async () => {
         expect(categorizeError(new Error('JWT expired'))).toBe(ErrorCategory.AUTH);
       });
@@ -96,7 +96,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('VALIDATION errors', async () => {
+    describe('VALIDATION errors', () => {
       it('categorizes invalid input', async () => {
         expect(categorizeError(new Error('Invalid input'))).toBe(ErrorCategory.VALIDATION);
       });
@@ -110,7 +110,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('CRITICAL errors', async () => {
+    describe('CRITICAL errors', () => {
       it('categorizes memory errors', async () => {
         expect(categorizeError(new Error('Out of memory'))).toBe(ErrorCategory.CRITICAL);
       });
@@ -124,7 +124,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('API errors', async () => {
+    describe('API errors', () => {
       it('categorizes row not found', async () => {
         expect(categorizeError(new Error('Row not found'))).toBe(ErrorCategory.API);
       });
@@ -142,7 +142,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('UNKNOWN errors', async () => {
+    describe('UNKNOWN errors', () => {
       it('categorizes unrecognized errors as UNKNOWN', async () => {
         expect(categorizeError(new Error('Something happened'))).toBe(ErrorCategory.UNKNOWN);
       });
@@ -153,8 +153,8 @@ describe('errors', async () => {
     });
   });
 
-  describe('getUserFriendlyMessage', async () => {
-    describe('specific error patterns', async () => {
+  describe('getUserFriendlyMessage', () => {
+    describe('specific error patterns', () => {
       it('returns friendly message for network request failed', async () => {
         expect(getUserFriendlyMessage(new Error('Network request failed'))).toBe(
           'Unable to connect. Please check your internet.'
@@ -204,7 +204,7 @@ describe('errors', async () => {
       });
     });
 
-    describe('fallback messages by category', async () => {
+    describe('fallback messages by category', () => {
       it('returns network fallback for unrecognized network error', async () => {
         expect(getUserFriendlyMessage(new Error('Connection lost suddenly'))).toBe(
           'Unable to connect. Please check your internet.'
@@ -243,7 +243,7 @@ describe('errors', async () => {
     });
   });
 
-  describe('requiresReauth', async () => {
+  describe('requiresReauth', () => {
     it('returns true for JWT expired', async () => {
       expect(requiresReauth(new Error('JWT expired'))).toBe(true);
     });

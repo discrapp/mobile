@@ -23,7 +23,7 @@ const mockRecommendation: DiscRecommendation = {
   purchase_url: 'https://example.com/destroyer',
 };
 
-describe('DiscRecommendationCard', async () => {
+describe('DiscRecommendationCard', () => {
   const mockOnBuyPress = jest.fn();
   const mockOnDismissPress = jest.fn();
 

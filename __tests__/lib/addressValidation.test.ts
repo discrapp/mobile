@@ -6,8 +6,8 @@ import {
   ShippingAddress,
 } from '@/lib/validation';
 
-describe('Address Validation', async () => {
-  describe('validatePostalCode', async () => {
+describe('Address Validation', () => {
+  describe('validatePostalCode', () => {
     it('returns null for valid 5-digit ZIP code', async () => {
       expect(validatePostalCode('12345')).toBeNull();
       expect(validatePostalCode('90210')).toBeNull();
@@ -48,7 +48,7 @@ describe('Address Validation', async () => {
     });
   });
 
-  describe('validateStateCode', async () => {
+  describe('validateStateCode', () => {
     it('returns null for valid state codes', async () => {
       expect(validateStateCode('CA')).toBeNull();
       expect(validateStateCode('NY')).toBeNull();
@@ -91,7 +91,7 @@ describe('Address Validation', async () => {
     });
   });
 
-  describe('validateShippingAddress', async () => {
+  describe('validateShippingAddress', () => {
     const validAddress: ShippingAddress = {
       name: 'John Doe',
       street_address: '123 Main St',
@@ -190,7 +190,7 @@ describe('Address Validation', async () => {
     });
   });
 
-  describe('isValidShippingAddress', async () => {
+  describe('isValidShippingAddress', () => {
     it('returns true for valid address', async () => {
       const address: ShippingAddress = {
         name: 'John Doe',

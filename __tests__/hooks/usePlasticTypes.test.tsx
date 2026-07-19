@@ -29,7 +29,7 @@ afterAll(() => {
 
 import { usePlasticTypes, PlasticType } from '@/hooks/usePlasticTypes';
 
-describe('usePlasticTypes', async () => {
+describe('usePlasticTypes', () => {
   const mockPlastics: PlasticType[] = [
     { id: 'pt-1', manufacturer: 'Innova', plastic_name: 'Star', display_order: 1, status: 'official' },
     { id: 'pt-2', manufacturer: 'Innova', plastic_name: 'Champion', display_order: 2, status: 'official' },

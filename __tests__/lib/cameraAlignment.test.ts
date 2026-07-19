@@ -5,8 +5,8 @@ import {
   InitialTransforms,
 } from '../../lib/cameraAlignment';
 
-describe('cameraAlignment', async () => {
-  describe('calculateInitialCropperTransforms', async () => {
+describe('cameraAlignment', () => {
+  describe('calculateInitialCropperTransforms', () => {
     const defaultCropperConfig: CropperConfig = {
       containerSize: 400, // Square container in cropper
       circleSize: 280, // Circle overlay size

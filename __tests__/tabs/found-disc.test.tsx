@@ -59,7 +59,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('FoundDiscScreen', async () => {
+describe('FoundDiscScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset search params
@@ -73,7 +73,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('initial rendering', async () => {
+  describe('initial rendering', () => {
     it('renders found disc screen', async () => {
       const { getByText } = await render(<FoundDiscScreen />);
 
@@ -124,7 +124,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('form validation', async () => {
+  describe('form validation', () => {
     it('validates empty QR code', async () => {
       const { getByText } = await render(<FoundDiscScreen />);
 
@@ -162,7 +162,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('QR code lookup flow', async () => {
+  describe('QR code lookup flow', () => {
     it('shows error when disc not found', async () => {
       const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
@@ -208,7 +208,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('pending recoveries', async () => {
+  describe('pending recoveries', () => {
     it('shows no recoveries initially', async () => {
       const { queryByText } = await render(<FoundDiscScreen />);
 
@@ -300,7 +300,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('owner recoveries', async () => {
+  describe('owner recoveries', () => {
     it('renders owner recoveries section text correctly', async () => {
       // Simply verify the component renders - owner recoveries depend on complex Supabase mocks
       const { getByText } = await render(<FoundDiscScreen />);
@@ -311,7 +311,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('error handling', async () => {
+  describe('error handling', () => {
     it('handles fetch error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
@@ -324,7 +324,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('try again functionality', async () => {
+  describe('try again functionality', () => {
     it('shows try again button on error state', async () => {
       const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
@@ -350,7 +350,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('found disc flow', async () => {
+  describe('found disc flow', () => {
     it('allows typing in the QR code input', async () => {
       const { getByPlaceholderText } = await render(<FoundDiscScreen />);
 
@@ -382,7 +382,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('UI elements', async () => {
+  describe('UI elements', () => {
     it('shows scan instructions in QR scanner button', async () => {
       const { getByText } = await render(<FoundDiscScreen />);
 
@@ -416,7 +416,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('session handling', async () => {
+  describe('session handling', () => {
     it('fetches pending recoveries with auth token', async () => {
       render(<FoundDiscScreen />);
 
@@ -452,7 +452,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('status displays', async () => {
+  describe('status displays', () => {
     it('shows meetup proposed status for pending recovery', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -498,7 +498,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('successful disc lookup', async () => {
+  describe('successful disc lookup', () => {
     it('shows disc found result with disc details', async () => {
       const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
@@ -646,7 +646,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('report found flow', async () => {
+  describe('report found flow', () => {
     it('shows Report Found button when disc is found', async () => {
       // Use URL-based mock to handle multiple concurrent fetches
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -727,7 +727,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('try again flow', async () => {
+  describe('try again flow', () => {
     it('pressing try again resets to input state', async () => {
       const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
@@ -761,7 +761,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('scannedCode param from deep link navigation', async () => {
+  describe('scannedCode param from deep link navigation', () => {
     it('auto-triggers lookup when scannedCode param is provided', async () => {
       mockSearchParams.scannedCode = 'DEEPLINK123';
 
@@ -865,7 +865,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('claim QR code flow', async () => {
+  describe('claim QR code flow', () => {
     it('shows claim option for unassigned QR codes', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -942,7 +942,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('report found disc API', async () => {
+  describe('report found disc API', () => {
     it('calls report-found-disc API when reporting', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1064,7 +1064,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('recovery navigation', async () => {
+  describe('recovery navigation', () => {
     it('navigates to recovery when pressing pending recovery', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1092,7 +1092,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('shows error when not signed in for report', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -1143,7 +1143,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('API error responses', async () => {
+  describe('API error responses', () => {
     it('shows claim button for unassigned QR code', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1211,7 +1211,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('claim flow', async () => {
+  describe('claim flow', () => {
     it('shows claim button with QR code display', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1244,7 +1244,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('report success flow', async () => {
+  describe('report success flow', () => {
     it('shows Report Found button after disc lookup', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1282,7 +1282,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('lookup error handling', async () => {
+  describe('lookup error handling', () => {
     it('shows error message for network failure', async () => {
       const { getByPlaceholderText, getByText } = await render(<FoundDiscScreen />);
 
@@ -1307,7 +1307,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('message input for owner', async () => {
+  describe('message input for owner', () => {
     it('allows entering optional message', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1349,7 +1349,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('camera permissions', async () => {
+  describe('camera permissions', () => {
     it('requests camera permission when not granted', async () => {
       // Set permission to not granted
       mockCameraPermission.granted = false;
@@ -1391,7 +1391,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('QR code scanning', async () => {
+  describe('QR code scanning', () => {
     it('extracts code from URL format', async () => {
       const { getByText } = await render(<FoundDiscScreen />);
 
@@ -1427,7 +1427,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('QR code link state', async () => {
+  describe('QR code link state', () => {
     it('shows link option for already claimed QR codes', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1496,7 +1496,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('QR code error states', async () => {
+  describe('QR code error states', () => {
     it('shows error for QR code claimed by another user', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1794,7 +1794,7 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('claim QR code error handling', async () => {
+  describe('claim QR code error handling', () => {
     it('shows error when not signed in for claim', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -2309,8 +2309,8 @@ describe('FoundDiscScreen', async () => {
     });
   });
 
-  describe('visual recovery flow', async () => {
-    describe('photo recovery button', async () => {
+  describe('visual recovery flow', () => {
+    describe('photo recovery button', () => {
       it('shows Use Phone Number on Disc button on input screen', async () => {
         const { getByText } = await render(<FoundDiscScreen />);
 
@@ -2372,7 +2372,7 @@ describe('FoundDiscScreen', async () => {
       });
     });
 
-    describe('photo capture flow', async () => {
+    describe('photo capture flow', () => {
       it('shows back photo camera view with instructions', async () => {
         const { getByText } = await render(<FoundDiscScreen />);
 
@@ -2423,7 +2423,7 @@ describe('FoundDiscScreen', async () => {
       });
     });
 
-    describe('phone extraction', async () => {
+    describe('phone extraction', () => {
       it('shows extracting state with loading indicator', async () => {
         // Mock the extraction API to be slow
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2466,7 +2466,7 @@ describe('FoundDiscScreen', async () => {
       });
     });
 
-    describe('owner lookup', async () => {
+    describe('owner lookup', () => {
       it('handles owner found response', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('lookup-user-by-phone')) {
@@ -2538,7 +2538,7 @@ describe('FoundDiscScreen', async () => {
       });
     });
 
-    describe('SMS invite flow', async () => {
+    describe('SMS invite flow', () => {
       it('handles SMS invite API call', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('send-disc-found-sms')) {
@@ -2576,7 +2576,7 @@ describe('FoundDiscScreen', async () => {
       });
     });
 
-    describe('report by phone flow', async () => {
+    describe('report by phone flow', () => {
       it('handles report found disc by phone API call', async () => {
         (global.fetch as jest.Mock).mockImplementation((url: string) => {
           if (url.includes('report-found-disc-by-phone')) {

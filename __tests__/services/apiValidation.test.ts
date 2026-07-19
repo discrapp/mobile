@@ -36,8 +36,8 @@ jest.mock('@/lib/supabase', () => ({
   },
 }));
 
-describe('API Response Schemas', async () => {
-  describe('discSchema', async () => {
+describe('API Response Schemas', () => {
+  describe('discSchema', () => {
     it('validates a complete disc object', async () => {
       const validDisc = {
         id: '123e4567-e89b-12d3-a456-426614174000',
@@ -122,7 +122,7 @@ describe('API Response Schemas', async () => {
     });
   });
 
-  describe('discArraySchema', async () => {
+  describe('discArraySchema', () => {
     it('validates an array of discs', async () => {
       const discs = [
         {
@@ -173,7 +173,7 @@ describe('API Response Schemas', async () => {
     });
   });
 
-  describe('recoveryEventSchema', async () => {
+  describe('recoveryEventSchema', () => {
     it('validates a complete recovery event', async () => {
       const event = {
         id: 'event-123',
@@ -241,7 +241,7 @@ describe('API Response Schemas', async () => {
     });
   });
 
-  describe('recoveryMessageSchema', async () => {
+  describe('recoveryMessageSchema', () => {
     it('validates a recovery message', async () => {
       const message = {
         id: 'msg-123',
@@ -266,7 +266,7 @@ describe('API Response Schemas', async () => {
     });
   });
 
-  describe('userProfileSchema', async () => {
+  describe('userProfileSchema', () => {
     it('validates a complete user profile', async () => {
       const profile = {
         id: 'user-123',
@@ -308,7 +308,7 @@ describe('API Response Schemas', async () => {
   });
 });
 
-describe('validateApiResponse', async () => {
+describe('validateApiResponse', () => {
   const { captureError } = require('@/lib/sentry');
 
   beforeEach(() => {
@@ -414,7 +414,7 @@ describe('validateApiResponse', async () => {
   });
 });
 
-describe('ValidationError', async () => {
+describe('ValidationError', () => {
   it('creates error with all properties', async () => {
     const issues = [{ path: ['name'], message: 'Required' }];
     const rawData = { id: '123' };
@@ -451,7 +451,7 @@ describe('ValidationError', async () => {
   });
 });
 
-describe('isValidationError', async () => {
+describe('isValidationError', () => {
   it('returns true for ValidationError instances', async () => {
     const error = new ValidationError('test', 'op', [], {});
     expect(isValidationError(error)).toBe(true);
@@ -470,7 +470,7 @@ describe('isValidationError', async () => {
   });
 });
 
-describe('apiRequestValidated', async () => {
+describe('apiRequestValidated', () => {
   const { supabase } = require('@/lib/supabase');
 
   // Mock fetch globally

@@ -4,12 +4,12 @@ jest.unmock('@/lib/sentry');
 import * as Sentry from '@sentry/react-native';
 import { initSentry, captureError, setUserContext, clearUserContext } from '@/lib/sentry';
 
-describe('Sentry utilities', async () => {
+describe('Sentry utilities', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('initSentry', async () => {
+  describe('initSentry', () => {
     it('should initialize Sentry with correct config when DSN is set', async () => {
       // Arrange
       const originalEnv = process.env.EXPO_PUBLIC_SENTRY_DSN;
@@ -46,7 +46,7 @@ describe('Sentry utilities', async () => {
     });
   });
 
-  describe('captureError', async () => {
+  describe('captureError', () => {
     it('should capture exception with Sentry', async () => {
       // Arrange
       const error = new Error('Test error');
@@ -72,7 +72,7 @@ describe('Sentry utilities', async () => {
     });
   });
 
-  describe('setUserContext', async () => {
+  describe('setUserContext', () => {
     it('should set user in Sentry', async () => {
       // Arrange
       const userId = 'user-123';
@@ -103,7 +103,7 @@ describe('Sentry utilities', async () => {
     });
   });
 
-  describe('clearUserContext', async () => {
+  describe('clearUserContext', () => {
     it('should clear user from Sentry', async () => {
       // Act
       clearUserContext();

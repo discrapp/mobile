@@ -5,8 +5,8 @@ import {
   formatFeeHint,
 } from '../../lib/stripeFees';
 
-describe('stripeFees', async () => {
-  describe('calculateStripeFee', async () => {
+describe('stripeFees', () => {
+  describe('calculateStripeFee', () => {
     it('returns 0 for zero reward', async () => {
       expect(calculateStripeFee(0)).toBe(0);
     });
@@ -42,7 +42,7 @@ describe('stripeFees', async () => {
     });
   });
 
-  describe('calculateTotalWithFee', async () => {
+  describe('calculateTotalWithFee', () => {
     it('returns 0 for zero reward', async () => {
       expect(calculateTotalWithFee(0)).toBe(0);
     });
@@ -69,7 +69,7 @@ describe('stripeFees', async () => {
     });
   });
 
-  describe('formatFeePreview', async () => {
+  describe('formatFeePreview', () => {
     it('returns empty string for zero reward', async () => {
       expect(formatFeePreview(0)).toBe('');
     });
@@ -98,7 +98,7 @@ describe('stripeFees', async () => {
     });
   });
 
-  describe('formatFeeHint', async () => {
+  describe('formatFeeHint', () => {
     it('returns empty string for zero reward', async () => {
       expect(formatFeeHint(0)).toBe('');
     });

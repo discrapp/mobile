@@ -67,7 +67,7 @@ jest.mock('../../lib/errorHandler', () => ({
   showSuccess: jest.fn(),
 }));
 
-describe('DropOffScreen', async () => {
+describe('DropOffScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (global.fetch as jest.Mock).mockResolvedValue({
@@ -284,7 +284,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location permission', async () => {
+  describe('location permission', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -310,7 +310,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location notes', async () => {
+  describe('location notes', () => {
     it('allows multiline notes input', async () => {
       const { getByPlaceholderText } = await render(<DropOffScreen />);
 
@@ -321,7 +321,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('recovery details', async () => {
+  describe('recovery details', () => {
     it('handles API response', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -350,7 +350,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('form sections', async () => {
+  describe('form sections', () => {
     it('shows photo section label', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -368,7 +368,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('submit flow', async () => {
+  describe('submit flow', () => {
     it('validates photo before submit', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -385,7 +385,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location section', async () => {
+  describe('location section', () => {
     it('shows current location section', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -395,7 +395,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('form elements', async () => {
+  describe('form elements', () => {
     it('shows photo section', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -413,7 +413,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('action buttons', async () => {
+  describe('action buttons', () => {
     it('shows confirm button', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -431,7 +431,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location display', async () => {
+  describe('location display', () => {
     it('formats location coordinates correctly', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -441,7 +441,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('notes input', async () => {
+  describe('notes input', () => {
     it('allows entering location notes', async () => {
       const { getByPlaceholderText } = await render(<DropOffScreen />);
 
@@ -453,7 +453,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location permission denied', async () => {
+  describe('location permission denied', () => {
     it('shows alert when location permission denied', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -471,7 +471,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('submit with photo and location', async () => {
+  describe('submit with photo and location', () => {
     it('shows photo button before taking photo', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -481,7 +481,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('missing location validation', async () => {
+  describe('missing location validation', () => {
     it('shows alert when submitting without location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -500,7 +500,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('disc name display', async () => {
+  describe('disc name display', () => {
     it('fetches disc name from recovery details', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -518,7 +518,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location error handling', async () => {
+  describe('location error handling', () => {
     it('handles location fetch error gracefully', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -533,7 +533,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('screen header', async () => {
+  describe('screen header', () => {
     it('shows drop off screen header', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -544,7 +544,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('photo section label', async () => {
+  describe('photo section label', () => {
     it('shows photo required label', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -554,7 +554,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('photo hint text', async () => {
+  describe('photo hint text', () => {
     it('shows photo hint', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -564,7 +564,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('camera component', async () => {
+  describe('camera component', () => {
     it('shows camera overlay component', async () => {
       const { UNSAFE_getByType } = await render(<DropOffScreen />);
 
@@ -575,7 +575,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('submit flow', async () => {
+  describe('submit flow', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -600,7 +600,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('form rendering', async () => {
+  describe('form rendering', () => {
     it('shows all form elements', async () => {
       const { getByText, getByPlaceholderText } = await render(<DropOffScreen />);
 
@@ -613,7 +613,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('dark mode', async () => {
+  describe('dark mode', () => {
     it('renders in light mode', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -623,7 +623,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('API integration', async () => {
+  describe('API integration', () => {
     it('fetches recovery details from API', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -646,7 +646,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location state', async () => {
+  describe('location state', () => {
     it('updates location state when location captured', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -663,7 +663,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('notes field', async () => {
+  describe('notes field', () => {
     it('can enter and change location notes', async () => {
       const { getByPlaceholderText } = await render(<DropOffScreen />);
 
@@ -679,7 +679,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('buttons', async () => {
+  describe('buttons', () => {
     it('cancel button navigates back', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -701,7 +701,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location permission alert', async () => {
+  describe('location permission alert', () => {
     it('shows permission required alert with settings option', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -721,7 +721,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('missing location validation', async () => {
+  describe('missing location validation', () => {
     it('shows missing location alert on submit without location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -742,7 +742,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('shows sign in error when no session on submit', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -763,7 +763,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('fetch recovery details', async () => {
+  describe('fetch recovery details', () => {
     it('handles no session gracefully', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
@@ -791,7 +791,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('tap to get location', async () => {
+  describe('tap to get location', () => {
     it('shows tap to get location when no location yet', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' });
@@ -804,7 +804,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('GPS location section', async () => {
+  describe('GPS location section', () => {
     it('shows GPS location label', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -822,7 +822,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location notes optional', async () => {
+  describe('location notes optional', () => {
     it('shows location notes as optional', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -832,7 +832,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('successful submit flow', async () => {
+  describe('successful submit flow', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       const Location = require('expo-location');
@@ -966,7 +966,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('open maps preview', async () => {
+  describe('open maps preview', () => {
     it('renders location pressable area', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -986,7 +986,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('retake photo button', async () => {
+  describe('retake photo button', () => {
     it('renders photo section', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -999,7 +999,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('loading location state', async () => {
+  describe('loading location state', () => {
     it('shows loading state while fetching location', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockImplementation(
@@ -1014,7 +1014,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('platform specific maps URL', async () => {
+  describe('platform specific maps URL', () => {
     it('renders on iOS', async () => {
       jest.doMock('react-native', () => ({
         ...jest.requireActual('react-native'),
@@ -1029,7 +1029,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('upload photo no session', async () => {
+  describe('upload photo no session', () => {
     it('handles no session during photo upload', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession
@@ -1048,7 +1048,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('submit button disabled state', async () => {
+  describe('submit button disabled state', () => {
     it('shows confirm button not disabled initially', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -1059,7 +1059,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('photo section visibility', async () => {
+  describe('photo section visibility', () => {
     it('shows take photo button when no photo', async () => {
       const { getByText } = await render(<DropOffScreen />);
 
@@ -1069,7 +1069,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('location box states', async () => {
+  describe('location box states', () => {
     it('shows loading state', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockImplementation(
@@ -1109,7 +1109,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('image compression', async () => {
+  describe('image compression', () => {
     it('compresses image before upload', async () => {
       const { compressImage } = require('../../utils/imageCompression');
 
@@ -1124,7 +1124,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('form data submission', async () => {
+  describe('form data submission', () => {
     it('includes location notes in submission', async () => {
       const { getByPlaceholderText, getByText } = await render(<DropOffScreen />);
 
@@ -1141,7 +1141,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('handleSubmit complete flow', async () => {
+  describe('handleSubmit complete flow', () => {
     beforeEach(() => {
       jest.clearAllMocks();
       const Location = require('expo-location');
@@ -1522,7 +1522,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('openMapsPreview', async () => {
+  describe('openMapsPreview', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1562,7 +1562,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('camera interaction', async () => {
+  describe('camera interaction', () => {
     it('opens camera when photo button is pressed', async () => {
       const { getByText, UNSAFE_root } = await render(<DropOffScreen />);
 
@@ -1641,7 +1641,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('requestLocation manual trigger', async () => {
+  describe('requestLocation manual trigger', () => {
     it('manually requests location when tapped', async () => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync
@@ -1691,7 +1691,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('disc name in success message', async () => {
+  describe('disc name in success message', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1786,7 +1786,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('submitting state', async () => {
+  describe('submitting state', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });
@@ -1830,7 +1830,7 @@ describe('DropOffScreen', async () => {
     });
   });
 
-  describe('session handling in submit', async () => {
+  describe('session handling in submit', () => {
     beforeEach(() => {
       const Location = require('expo-location');
       Location.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' });

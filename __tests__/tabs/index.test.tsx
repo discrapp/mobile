@@ -51,7 +51,7 @@ const { useAuth } = require('../../contexts/AuthContext');
 const { useIsAdmin } = require('../../hooks/useIsAdmin');
 const { getCachedDiscs } = require('../../utils/discCache');
 
-describe('HomeScreen', async () => {
+describe('HomeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getCachedDiscs.mockResolvedValue(null);
@@ -197,7 +197,7 @@ describe('HomeScreen', async () => {
     expect(mockPush).toHaveBeenCalledWith('/link-sticker');
   });
 
-  describe('Shot Advisor feature flag', async () => {
+  describe('Shot Advisor feature flag', () => {
     it('hides Shot Advisor for non-admin users', async () => {
       useAuth.mockReturnValue({ user: mockUser });
       useIsAdmin.mockReturnValue(false);
@@ -233,7 +233,7 @@ describe('HomeScreen', async () => {
     });
   });
 
-  describe('with disc data', async () => {
+  describe('with disc data', () => {
     const mockDiscs = [
       {
         id: '1',

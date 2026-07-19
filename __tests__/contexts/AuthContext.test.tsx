@@ -90,7 +90,7 @@ function TestComponent({ onAuth }: { onAuth?: (auth: ReturnType<typeof useAuth>)
   );
 }
 
-describe('AuthContext', async () => {
+describe('AuthContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsDevice = false; // Reset device mock
@@ -100,7 +100,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('AuthProvider', async () => {
+  describe('AuthProvider', () => {
     it('provides auth context to children', async () => {
       const { getByTestId } = await render(
         <AuthProvider>
@@ -151,7 +151,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('signIn', async () => {
+  describe('signIn', () => {
     it('calls supabase signInWithPassword', async () => {
       mockSignInWithPassword.mockResolvedValue({ error: null });
 
@@ -202,7 +202,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('signUp', async () => {
+  describe('signUp', () => {
     it('calls supabase signUp', async () => {
       mockSignUp.mockResolvedValue({ error: null });
 
@@ -253,7 +253,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('signInWithGoogle', async () => {
+  describe('signInWithGoogle', () => {
     it('calls supabase signInWithOAuth', async () => {
       mockSignInWithOAuth.mockResolvedValue({ error: null });
 
@@ -280,7 +280,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('signOut', async () => {
+  describe('signOut', () => {
     it('calls supabase signOut', async () => {
       mockSignOut.mockResolvedValue({});
 
@@ -327,7 +327,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('useAuth hook', async () => {
+  describe('useAuth hook', () => {
     it('returns auth context values', async () => {
       let authContext: ReturnType<typeof useAuth> | null = null;
 
@@ -347,7 +347,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('session state', async () => {
+  describe('session state', () => {
     it('shows no user when no session', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
@@ -439,7 +439,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('Sentry user context', async () => {
+  describe('Sentry user context', () => {
     it('sets Sentry user context when user signs in', async () => {
       const { setUserContext } = require('../../lib/sentry');
       const mockUser = { id: '123', email: 'test@example.com' };
@@ -522,7 +522,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('push notifications', async () => {
+  describe('push notifications', () => {
     it('does not register push token when no session', async () => {
       const Notifications = require('expo-notifications');
       mockGetSession.mockResolvedValue({ data: { session: null } });
@@ -731,7 +731,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('deep linking', async () => {
+  describe('deep linking', () => {
     it('sets up deep link listener on mount', async () => {
       const Linking = require('expo-linking');
 
@@ -963,7 +963,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('cleanup', async () => {
+  describe('cleanup', () => {
     it('unsubscribes from auth state changes on unmount', async () => {
       const unsubscribe = jest.fn();
       mockOnAuthStateChange.mockReturnValue({
@@ -1030,7 +1030,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('error handling', async () => {
+  describe('error handling', () => {
     it('handles getSession error gracefully', async () => {
       mockGetSession.mockRejectedValue(new Error('Session fetch failed'));
 
@@ -1137,7 +1137,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('Android notification channel', async () => {
+  describe('Android notification channel', () => {
     it('sets up Android notification channel on Android', async () => {
       const Device = require('expo-device');
       const Notifications = require('expo-notifications');
@@ -1171,7 +1171,7 @@ describe('AuthContext', async () => {
     });
   });
 
-  describe('Sentry error capture for OAuth flow', async () => {
+  describe('Sentry error capture for OAuth flow', () => {
     it('captures error to Sentry on signIn failure', async () => {
       const { captureError } = require('../../lib/sentry');
       const testError = new Error('Invalid credentials');

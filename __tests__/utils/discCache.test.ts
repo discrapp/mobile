@@ -9,12 +9,12 @@ import { STORAGE_KEYS } from '../../constants/storageKeys';
 
 // AsyncStorage is already mocked in jest.setup.js
 
-describe('discCache', async () => {
+describe('discCache', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getCachedDiscs', async () => {
+  describe('getCachedDiscs', () => {
     it('returns null when cache is empty', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -57,7 +57,7 @@ describe('discCache', async () => {
     });
   });
 
-  describe('setCachedDiscs', async () => {
+  describe('setCachedDiscs', () => {
     it('stores discs and timestamp', async () => {
       const mockDiscs = [
         { id: '1', mold: 'Destroyer' },
@@ -88,7 +88,7 @@ describe('discCache', async () => {
     });
   });
 
-  describe('clearDiscCache', async () => {
+  describe('clearDiscCache', () => {
     it('removes disc cache and timestamp from storage', async () => {
       await clearDiscCache();
 
@@ -108,7 +108,7 @@ describe('discCache', async () => {
     });
   });
 
-  describe('isCacheStale', async () => {
+  describe('isCacheStale', () => {
     it('returns true when no timestamp exists', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 

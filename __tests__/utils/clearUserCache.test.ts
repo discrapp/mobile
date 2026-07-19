@@ -17,7 +17,7 @@ const mockMultiRemove = AsyncStorage.multiRemove as jest.MockedFunction<
   typeof AsyncStorage.multiRemove
 >;
 
-describe('clearUserCache', async () => {
+describe('clearUserCache', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

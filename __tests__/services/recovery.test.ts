@@ -65,12 +65,12 @@ function createMockRecoveryMessage(
   };
 }
 
-describe('recoveryService', async () => {
+describe('recoveryService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getDetails', async () => {
+  describe('getDetails', () => {
     it('fetches recovery event details', async () => {
       const mockEvent = createMockRecoveryEvent({
         id: 'event-1',
@@ -115,7 +115,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('getActiveEvents', async () => {
+  describe('getActiveEvents', () => {
     it('fetches all active recovery events for user', async () => {
       const mockEvents = [
         createMockRecoveryEvent({ id: 'event-1', status: 'pending' }),
@@ -136,7 +136,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('reportFound', async () => {
+  describe('reportFound', () => {
     it('reports a disc as found via QR code scan', async () => {
       const mockEvent = createMockRecoveryEvent({
         location: { latitude: 40.7128, longitude: -74.006 },
@@ -179,7 +179,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('proposeMeetup', async () => {
+  describe('proposeMeetup', () => {
     it('proposes a meetup for disc recovery', async () => {
       const meetupData = {
         location: { latitude: 40.7128, longitude: -74.006 },
@@ -206,7 +206,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('acceptMeetup', async () => {
+  describe('acceptMeetup', () => {
     it('accepts a proposed meetup', async () => {
       const mockEvent = createMockRecoveryEvent({ status: 'meetup_scheduled' });
       mockApiRequest.mockResolvedValueOnce(mockEvent);
@@ -224,7 +224,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('declineMeetup', async () => {
+  describe('declineMeetup', () => {
     it('declines a proposed meetup with reason', async () => {
       const mockEvent = createMockRecoveryEvent({ status: 'meetup_declined' });
       mockApiRequest.mockResolvedValueOnce(mockEvent);
@@ -262,7 +262,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('completeRecovery', async () => {
+  describe('completeRecovery', () => {
     it('marks the recovery as complete', async () => {
       const mockEvent = createMockRecoveryEvent({ status: 'completed' });
       mockApiRequest.mockResolvedValueOnce(mockEvent);
@@ -280,7 +280,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('cancelRecovery', async () => {
+  describe('cancelRecovery', () => {
     it('cancels the recovery event with reason', async () => {
       const mockEvent = createMockRecoveryEvent({ status: 'cancelled' });
       mockApiRequest.mockResolvedValueOnce(mockEvent);
@@ -318,7 +318,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('sendMessage', async () => {
+  describe('sendMessage', () => {
     it('sends a message in the recovery chat', async () => {
       const mockMessage = createMockRecoveryMessage({ content: 'Hello!' });
       mockApiRequest.mockResolvedValueOnce(mockMessage);
@@ -337,7 +337,7 @@ describe('recoveryService', async () => {
     });
   });
 
-  describe('getMessages', async () => {
+  describe('getMessages', () => {
     it('fetches all messages for a recovery event', async () => {
       const mockMessages = [
         createMockRecoveryMessage({ id: 'msg-1', content: 'Hi' }),

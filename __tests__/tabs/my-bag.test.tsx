@@ -97,7 +97,7 @@ const mockSurrenderedDisc = {
   surrendered_at: '2024-01-03',
 };
 
-describe('MyBagScreen', async () => {
+describe('MyBagScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetCachedDiscs.mockResolvedValue(null);

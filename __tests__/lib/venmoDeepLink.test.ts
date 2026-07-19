@@ -20,12 +20,12 @@ jest.mock('react-native', () => ({
   },
 }));
 
-describe('venmoDeepLink', async () => {
+describe('venmoDeepLink', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('generatePaymentNote', async () => {
+  describe('generatePaymentNote', () => {
     it('generates note with disc name', async () => {
       const note = generatePaymentNote('Destroyer');
       expect(note).toBe('🎁 Thank you for returning my Destroyer! 🥏');
@@ -42,7 +42,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('getVenmoAppUrl', async () => {
+  describe('getVenmoAppUrl', () => {
     it('generates correct app URL with all params', async () => {
       const url = getVenmoAppUrl({
         recipientUsername: 'John-Doe-5',
@@ -82,7 +82,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('getVenmoWebUrl', async () => {
+  describe('getVenmoWebUrl', () => {
     it('generates correct web URL', async () => {
       const url = getVenmoWebUrl({
         recipientUsername: 'John-Doe-5',
@@ -104,7 +104,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('isValidVenmoUsername', async () => {
+  describe('isValidVenmoUsername', () => {
     it('accepts valid usernames', async () => {
       expect(isValidVenmoUsername('John-Doe-5')).toBe(true);
       expect(isValidVenmoUsername('johndoe')).toBe(true);
@@ -134,7 +134,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('formatVenmoUsername', async () => {
+  describe('formatVenmoUsername', () => {
     it('adds @ prefix', async () => {
       expect(formatVenmoUsername('johndoe')).toBe('@johndoe');
     });
@@ -148,7 +148,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('isVenmoInstalled', async () => {
+  describe('isVenmoInstalled', () => {
     it('returns true when Venmo app is available', async () => {
       (Linking.canOpenURL as jest.Mock).mockResolvedValue(true);
       const result = await isVenmoInstalled();
@@ -169,7 +169,7 @@ describe('venmoDeepLink', async () => {
     });
   });
 
-  describe('openVenmoPayment', async () => {
+  describe('openVenmoPayment', () => {
     const params = {
       recipientUsername: 'test-user',
       amount: 10,

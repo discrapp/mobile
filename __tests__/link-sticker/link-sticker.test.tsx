@@ -39,7 +39,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('LinkStickerScreen', async () => {
+describe('LinkStickerScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -117,7 +117,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('verify code API call', async () => {
+  describe('verify code API call', () => {
     it('calls verify API when code is entered and button pressed', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('verify-qr-code')) {
@@ -240,7 +240,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('disc selection', async () => {
+  describe('disc selection', () => {
     it('shows disc selection after code verified', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('verify-qr-code')) {
@@ -278,7 +278,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('link disc flow', async () => {
+  describe('link disc flow', () => {
     it('calls link API when disc selected and button pressed', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('verify-qr-code')) {
@@ -440,7 +440,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('shows error when no session for verify', async () => {
       mockGetSession.mockResolvedValue({
         data: { session: null },
@@ -461,7 +461,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('disc list rendering', async () => {
+  describe('disc list rendering', () => {
     it('shows disc name and manufacturer', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('verify-qr-code')) {

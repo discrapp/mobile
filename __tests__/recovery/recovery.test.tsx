@@ -92,7 +92,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('RecoveryDetailScreen', async () => {
+describe('RecoveryDetailScreen', () => {
   const mockRecoveryData = {
     id: 'recovery-123',
     status: 'found',
@@ -516,7 +516,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('finder view', async () => {
+  describe('finder view', () => {
     it('shows view from finder perspective', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -552,7 +552,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('meetup proposal actions', async () => {
+  describe('meetup proposal actions', () => {
     it('shows accept button for owner with pending proposal', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -605,7 +605,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('drop-off view', async () => {
+  describe('drop-off view', () => {
     it('shows drop off section for dropped off disc', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -658,7 +658,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('recovered disc view', async () => {
+  describe('recovered disc view', () => {
     it('shows recovered status badge', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -685,7 +685,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('surrendered disc view', async () => {
+  describe('surrendered disc view', () => {
     it('shows disc received message for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -705,7 +705,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('navigation', async () => {
+  describe('navigation', () => {
     it('navigates back correctly', async () => {
       const { getByTestId, getByText } = await render(<RecoveryDetailScreen />);
 
@@ -730,7 +730,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('reward section', async () => {
+  describe('reward section', () => {
     it('shows reward badge when reward is set', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -758,7 +758,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('disc details', async () => {
+  describe('disc details', () => {
     it('shows disc without manufacturer', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -811,7 +811,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('loading states', async () => {
+  describe('loading states', () => {
     it('shows refreshing state', async () => {
       const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
@@ -825,7 +825,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('no finder message', async () => {
+  describe('no finder message', () => {
     it('does not show finder message section when empty', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -845,7 +845,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('owner and finder display', async () => {
+  describe('owner and finder display', () => {
     it('shows people section', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -871,7 +871,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('action buttons', async () => {
+  describe('action buttons', () => {
     it('shows surrender button press triggers alert', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -921,7 +921,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('meetup proposal message', async () => {
+  describe('meetup proposal message', () => {
     it('shows proposal message when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -948,7 +948,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('drop off details', async () => {
+  describe('drop off details', () => {
     it('shows drop off photo when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1025,7 +1025,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('realtime subscription', async () => {
+  describe('realtime subscription', () => {
     it('sets up subscription on mount', async () => {
       const { supabase } = require('../../lib/supabase');
 
@@ -1037,7 +1037,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('different user roles', async () => {
+  describe('different user roles', () => {
     it('shows different actions for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1058,7 +1058,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('status transitions', async () => {
+  describe('status transitions', () => {
     it('shows recovered status correctly', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1110,7 +1110,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('meetup proposal actions', async () => {
+  describe('meetup proposal actions', () => {
     it('shows pending proposals for owner', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1191,7 +1191,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('reward section', async () => {
+  describe('reward section', () => {
     it('shows reward amount when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1212,7 +1212,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('disc information', async () => {
+  describe('disc information', () => {
     it('shows disc color when present', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1252,7 +1252,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('API error handling', async () => {
+  describe('API error handling', () => {
     it('handles fetch error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
@@ -1279,7 +1279,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('owner view', async () => {
+  describe('owner view', () => {
     it('shows owner-specific actions', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1323,7 +1323,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('finder view', async () => {
+  describe('finder view', () => {
     it('shows finder-specific actions', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1357,7 +1357,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('contact information', async () => {
+  describe('contact information', () => {
     it('shows people section with owner and finder', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -1387,7 +1387,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('timeline', async () => {
+  describe('timeline', () => {
     it('shows finder message section when message exists', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -1398,7 +1398,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('action handlers', async () => {
+  describe('action handlers', () => {
     it('navigates to propose meetup when button pressed', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1528,7 +1528,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('complete recovery flow', async () => {
+  describe('complete recovery flow', () => {
     it('shows mark as recovered button for owner with accepted meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1592,7 +1592,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('drop off display', async () => {
+  describe('drop off display', () => {
     it('shows dropped off status', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1646,7 +1646,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('loading and error states', async () => {
+  describe('loading and error states', () => {
     it('shows loading state initially', async () => {
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
@@ -1674,7 +1674,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('disc details section', async () => {
+  describe('disc details section', () => {
     it('shows disc mold name in card', async () => {
       const { getByText } = await render(<RecoveryDetailScreen />);
 
@@ -1693,7 +1693,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('real-time subscription', async () => {
+  describe('real-time subscription', () => {
     it('sets up channel subscription on mount', async () => {
       const { supabase } = require('../../lib/supabase');
 
@@ -1705,7 +1705,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('navigation header', async () => {
+  describe('navigation header', () => {
     it('sets navigation options', async () => {
       render(<RecoveryDetailScreen />);
 
@@ -1715,7 +1715,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('owner drop off actions', async () => {
+  describe('owner drop off actions', () => {
     it('shows I Picked Up My Disc button for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -1875,7 +1875,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('reward payment', async () => {
+  describe('reward payment', () => {
     it('shows venmo button for recovered disc with finder venmo', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2006,7 +2006,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('surrendered disc view details', async () => {
+  describe('surrendered disc view details', () => {
     it('shows view in collection button for finder when disc surrendered', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2049,7 +2049,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('waiting for response state', async () => {
+  describe('waiting for response state', () => {
     it('shows waiting message when user proposed the meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2080,7 +2080,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('unknown status handling', async () => {
+  describe('unknown status handling', () => {
     it('handles unknown status gracefully', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2100,7 +2100,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('shows error when no session', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
@@ -2115,7 +2115,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('disc without photo', async () => {
+  describe('disc without photo', () => {
     it('shows placeholder when no disc photo', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2137,7 +2137,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('confirmed meetup actions', async () => {
+  describe('confirmed meetup actions', () => {
     it('shows get directions button for confirmed meetup', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2194,7 +2194,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('finder perspective for drop off', async () => {
+  describe('finder perspective for drop off', () => {
     it('shows different message for finder in drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2222,7 +2222,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('complete recovery API call', async () => {
+  describe('complete recovery API call', () => {
     it('calls complete recovery API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2280,7 +2280,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('surrender disc API call', async () => {
+  describe('surrender disc API call', () => {
     it('calls surrender disc API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2330,7 +2330,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('mark retrieved API call', async () => {
+  describe('mark retrieved API call', () => {
     it('calls mark retrieved API on confirmation', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -2388,7 +2388,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('relinquish disc action', async () => {
+  describe('relinquish disc action', () => {
     it('shows give to finder option for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2472,7 +2472,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('abandon disc action', async () => {
+  describe('abandon disc action', () => {
     it('shows abandon disc option for owner with drop off', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2556,7 +2556,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('no session error handling', async () => {
+  describe('no session error handling', () => {
     it('shows error when no session for fetch', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
@@ -2571,7 +2571,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('back button behavior', async () => {
+  describe('back button behavior', () => {
     it('uses router.back when canGoBack returns true', async () => {
       mockCanGoBack.mockReturnValue(true);
 
@@ -2596,7 +2596,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('pull to refresh', async () => {
+  describe('pull to refresh', () => {
     it('refreshes data on pull', async () => {
       const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
@@ -2713,7 +2713,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Venmo payment functionality', async () => {
+  describe('Venmo payment functionality', () => {
     it('calls openVenmoPayment when send via venmo is pressed', async () => {
       jest.clearAllMocks();
       getMockOpenVenmoPayment().mockResolvedValue(true);
@@ -2819,7 +2819,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Card payment functionality', async () => {
+  describe('Card payment functionality', () => {
     it('calls stripe checkout when pay with card is pressed', async () => {
       jest.clearAllMocks();
       getMockOpenBrowserAsync().mockResolvedValue({});
@@ -2941,7 +2941,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Mark reward received functionality', async () => {
+  describe('Mark reward received functionality', () => {
     it('calls mark reward received API when button pressed', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3024,7 +3024,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Accept meetup API error handling', async () => {
+  describe('Accept meetup API error handling', () => {
     it('handles accept meetup API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3069,7 +3069,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Complete recovery API error handling', async () => {
+  describe('Complete recovery API error handling', () => {
     it('handles complete recovery API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3120,7 +3120,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Surrender disc API error handling', async () => {
+  describe('Surrender disc API error handling', () => {
     it('handles surrender disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3163,7 +3163,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Mark retrieved API error handling', async () => {
+  describe('Mark retrieved API error handling', () => {
     it('handles mark retrieved API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3214,7 +3214,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Relinquish disc API error handling', async () => {
+  describe('Relinquish disc API error handling', () => {
     it('handles relinquish disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3265,7 +3265,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Abandon disc API error handling', async () => {
+  describe('Abandon disc API error handling', () => {
     it('handles abandon disc API error', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
@@ -3316,7 +3316,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Navigation after successful actions', async () => {
+  describe('Navigation after successful actions', () => {
     it('stays on page and refreshes after complete recovery to show payment options', async () => {
       jest.clearAllMocks();
       let fetchCallCount = 0;
@@ -3490,7 +3490,7 @@ describe('RecoveryDetailScreen', async () => {
     });
   });
 
-  describe('Alert cancel actions', async () => {
+  describe('Alert cancel actions', () => {
     it('does not call API when mark as recovered is cancelled', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({

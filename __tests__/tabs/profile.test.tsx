@@ -80,7 +80,7 @@ jest.spyOn(Alert, 'alert');
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-describe('ProfileScreen', async () => {
+describe('ProfileScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -164,7 +164,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('user info display', async () => {
+  describe('user info display', () => {
     it('displays user email', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -190,7 +190,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile fields', async () => {
+  describe('profile fields', () => {
     it('shows username field', async () => {
       const { getAllByText } = await render(<ProfileScreen />);
 
@@ -209,7 +209,7 @@ describe('ProfileScreen', async () => {
 
   });
 
-  describe('sign out', async () => {
+  describe('sign out', () => {
     it('shows sign out button', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -235,7 +235,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile sections', async () => {
+  describe('profile sections', () => {
     it('shows display name preference section', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -270,7 +270,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile display', async () => {
+  describe('profile display', () => {
     it('shows the full name value', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -280,7 +280,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference', async () => {
+  describe('display preference', () => {
     it('shows display preference value', async () => {
       const { getAllByText } = await render(<ProfileScreen />);
 
@@ -299,7 +299,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stats display', async () => {
+  describe('stats display', () => {
     it('renders profile stats area', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -310,7 +310,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile editing', async () => {
+  describe('profile editing', () => {
     it('shows edit button for username', async () => {
       const { getByText, getAllByText } = await render(<ProfileScreen />);
 
@@ -332,7 +332,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('navigation', async () => {
+  describe('navigation', () => {
     it('shows active recoveries section when user has recoveries', async () => {
       // Profile always shows the base structure
       const { getByText } = await render(<ProfileScreen />);
@@ -343,7 +343,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('gravatar', async () => {
+  describe('gravatar', () => {
     it('loads gravatar for user email', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -354,7 +354,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('loading state', async () => {
+  describe('loading state', () => {
     it('shows profile content after loading', async () => {
       const { getByText, queryByTestId } = await render(<ProfileScreen />);
 
@@ -364,7 +364,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('error handling', async () => {
+  describe('error handling', () => {
     it('handles profile fetch error gracefully', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -398,7 +398,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('shipping address section', async () => {
+  describe('shipping address section', () => {
     it('shows shipping address section title', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -630,7 +630,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('user email display', async () => {
+  describe('user email display', () => {
     it('displays user email in profile', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -640,7 +640,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('pull to refresh', async () => {
+  describe('pull to refresh', () => {
     it('renders with refresh control', async () => {
       const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
@@ -652,7 +652,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('active recoveries section', async () => {
+  describe('active recoveries section', () => {
     it('shows my discs being recovered header when recoveries exist', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -711,7 +711,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('sign out', async () => {
+  describe('sign out', () => {
     it('shows sign out button', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -737,7 +737,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('venmo username', async () => {
+  describe('venmo username', () => {
     it('shows venmo username when set', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -769,7 +769,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stats display', async () => {
+  describe('stats display', () => {
     it('shows discs returned count when greater than zero', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -818,7 +818,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('refresh functionality', async () => {
+  describe('refresh functionality', () => {
     it('has pull to refresh', async () => {
       const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
@@ -830,7 +830,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('account details', async () => {
+  describe('account details', () => {
     it('shows email address', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -840,7 +840,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('photo handling', async () => {
+  describe('photo handling', () => {
     it('shows profile photo press handler', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -850,7 +850,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('field editing', async () => {
+  describe('field editing', () => {
     it('shows username in profile', async () => {
       const { getAllByText } = await render(<ProfileScreen />);
 
@@ -868,7 +868,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference toggle', async () => {
+  describe('display preference toggle', () => {
     it('shows display preference options', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -878,7 +878,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('my finds section', async () => {
+  describe('my finds section', () => {
     it('shows my finds when user has found discs', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -903,7 +903,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('address validation', async () => {
+  describe('address validation', () => {
     it('shows validation error for missing city', async () => {
       const { getByText, getByPlaceholderText, getByDisplayValue } = await render(<ProfileScreen />);
 
@@ -977,7 +977,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('address API errors', async () => {
+  describe('address API errors', () => {
     it('handles address fetch error', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1041,7 +1041,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('sign out execution', async () => {
+  describe('sign out execution', () => {
     it('calls sign out when confirmed', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1065,7 +1065,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile update', async () => {
+  describe('profile update', () => {
     it('calls supabase update when saving profile changes', async () => {
       const { getByText, getAllByText } = await render(<ProfileScreen />);
 
@@ -1078,7 +1078,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stripe connect section', async () => {
+  describe('stripe connect section', () => {
     it('shows profile settings when stripe status is none', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -1110,7 +1110,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('avatar photo', async () => {
+  describe('avatar photo', () => {
     it('shows profile avatar area', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1128,7 +1128,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile field editing', async () => {
+  describe('profile field editing', () => {
     it('shows edit button for username field', async () => {
       const { getAllByText } = await render(<ProfileScreen />);
 
@@ -1154,7 +1154,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference', async () => {
+  describe('display preference', () => {
     it('shows display name options', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1164,7 +1164,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('recovery navigation', async () => {
+  describe('recovery navigation', () => {
     it('renders recoveries section', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1174,7 +1174,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('finds section', async () => {
+  describe('finds section', () => {
     it('loads finds data on mount', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1187,7 +1187,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('member since display', async () => {
+  describe('member since display', () => {
     it('shows account created date', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1197,7 +1197,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('loading states', async () => {
+  describe('loading states', () => {
     it('shows loading state initially', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1207,7 +1207,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('address street_address_2', async () => {
+  describe('address street_address_2', () => {
     it('shows address form when adding new address', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
@@ -1225,7 +1225,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stripe dashboard', async () => {
+  describe('stripe dashboard', () => {
     it('shows profile with stripe active status', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -1257,7 +1257,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('order stickers', async () => {
+  describe('order stickers', () => {
     it('shows sticker orders section', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1267,7 +1267,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('my orders section', async () => {
+  describe('my orders section', () => {
     it('shows my orders button', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1289,7 +1289,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('sign out flow', async () => {
+  describe('sign out flow', () => {
     it('shows sign out confirmation when button pressed', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1307,7 +1307,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile photo handling', async () => {
+  describe('profile photo handling', () => {
     it('shows profile photo options when avatar pressed', async () => {
       const { getByText, UNSAFE_getAllByType } = await render(<ProfileScreen />);
 
@@ -1317,7 +1317,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference', async () => {
+  describe('display preference', () => {
     it('shows display preference section', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1327,7 +1327,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('venmo username', async () => {
+  describe('venmo username', () => {
     it('shows venmo section', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1337,7 +1337,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('full name editing', async () => {
+  describe('full name editing', () => {
     it('shows full name field', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1347,7 +1347,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('username editing', async () => {
+  describe('username editing', () => {
     it('shows username field', async () => {
       const { getAllByText } = await render(<ProfileScreen />);
 
@@ -1357,7 +1357,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('scroll view refresh', async () => {
+  describe('scroll view refresh', () => {
     it('has pull to refresh', async () => {
       const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
@@ -1369,7 +1369,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('shipping address section', async () => {
+  describe('shipping address section', () => {
     it('shows shipping address title', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1379,7 +1379,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile form sections', async () => {
+  describe('profile form sections', () => {
     it('shows profile settings header', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1399,7 +1399,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stripe status variations', async () => {
+  describe('stripe status variations', () => {
     it('shows pending stripe status', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -1461,7 +1461,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference changing', async () => {
+  describe('display preference changing', () => {
     it('shows display preference change alert', async () => {
       const { getByText, getAllByText } = await render(<ProfileScreen />);
 
@@ -1485,7 +1485,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('username editing flow', async () => {
+  describe('username editing flow', () => {
     it('allows editing username', async () => {
       const { getByText, getAllByText } = await render(<ProfileScreen />);
 
@@ -1503,7 +1503,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('full name editing flow', async () => {
+  describe('full name editing flow', () => {
     it('allows editing full name', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1521,7 +1521,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('venmo username editing flow', async () => {
+  describe('venmo username editing flow', () => {
     it('shows venmo input placeholder when no username set', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1546,7 +1546,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile photo options', async () => {
+  describe('profile photo options', () => {
     it('shows profile photo alert with options', async () => {
       const { UNSAFE_root } = await render(<ProfileScreen />);
 
@@ -1556,7 +1556,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('order stickers navigation', async () => {
+  describe('order stickers navigation', () => {
     it('navigates to order stickers when pressed', async () => {
       const { getByText } = await render(<ProfileScreen />);
 
@@ -1570,7 +1570,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('recovery card navigation', async () => {
+  describe('recovery card navigation', () => {
     it('navigates to recovery when pressing on recovery card', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1600,7 +1600,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile with avatar', async () => {
+  describe('profile with avatar', () => {
     it('displays profile with avatar URL', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -1637,7 +1637,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('my discs being recovered section', async () => {
+  describe('my discs being recovered section', () => {
     it('shows active recoveries for owned discs', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1704,7 +1704,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('handles no session for address fetch', async () => {
       mockGetSession.mockResolvedValueOnce({
         data: { session: null },
@@ -1719,7 +1719,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('recovery status variations', async () => {
+  describe('recovery status variations', () => {
     it('handles different recovery statuses', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1746,7 +1746,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('username editing save and cancel', async () => {
+  describe('username editing save and cancel', () => {
     it('saves username when check button is pressed', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
@@ -1792,7 +1792,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('full name editing save and cancel', async () => {
+  describe('full name editing save and cancel', () => {
     it('saves full name when check button is pressed', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
@@ -1835,7 +1835,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('venmo username editing save and cancel', async () => {
+  describe('venmo username editing save and cancel', () => {
     it('saves venmo username when check button is pressed', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
@@ -1897,7 +1897,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('display preference change', async () => {
+  describe('display preference change', () => {
     it('changes display preference to username', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -2005,7 +2005,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stripe connect setup', async () => {
+  describe('stripe connect setup', () => {
     it('opens stripe onboarding when setup button pressed', async () => {
       const mockWebBrowser = require('expo-web-browser');
       mockWebBrowser.openBrowserAsync = jest.fn();
@@ -2216,7 +2216,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('profile update errors', async () => {
+  describe('profile update errors', () => {
     it('handles profile update error', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {
@@ -2259,7 +2259,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('pull to refresh functionality', async () => {
+  describe('pull to refresh functionality', () => {
     it('refreshes all data when pull to refresh triggered', async () => {
       const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
@@ -2284,7 +2284,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('recovery events without disc data', async () => {
+  describe('recovery events without disc data', () => {
     it('handles recovery event with null disc', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -2334,7 +2334,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('my finds fetch error', async () => {
+  describe('my finds fetch error', () => {
     it('handles my finds fetch error gracefully', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-my-finds')) {
@@ -2357,7 +2357,7 @@ describe('ProfileScreen', async () => {
     });
   });
 
-  describe('stats with multiple values', async () => {
+  describe('stats with multiple values', () => {
     it('shows all three stats when all are greater than zero', async () => {
       mockSupabaseFrom.mockImplementation((table: string) => {
         if (table === 'profiles') {

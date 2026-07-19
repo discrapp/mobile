@@ -37,7 +37,7 @@ jest.mock('../../contexts/AuthContext', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('SignIn', async () => {
+describe('SignIn', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -317,7 +317,7 @@ describe('SignIn', async () => {
     expect(router.replace).not.toHaveBeenCalled();
   });
 
-  describe('Google OAuth Sign In', async () => {
+  describe('Google OAuth Sign In', () => {
     it('initiates Google OAuth flow successfully', async () => {
       const mockSignInWithOAuth = supabase.auth.signInWithOAuth as jest.Mock;
       const mockOpenAuthSessionAsync = WebBrowser.openAuthSessionAsync as jest.Mock;

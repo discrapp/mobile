@@ -37,7 +37,7 @@ jest.spyOn(Alert, 'alert');
 jest.spyOn(Linking, 'canOpenURL').mockResolvedValue(true);
 jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
 
-describe('OrderStickersScreen', async () => {
+describe('OrderStickersScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -94,7 +94,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('initial rendering', async () => {
+  describe('initial rendering', () => {
     it('renders the order stickers screen', async () => {
       const { getByText } = await render(<OrderStickersScreen />);
 
@@ -123,7 +123,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address auto-fill', async () => {
+  describe('address auto-fill', () => {
     it('auto-fills form with saved default address', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -169,7 +169,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('save as default checkbox', async () => {
+  describe('save as default checkbox', () => {
     it('shows save as default checkbox', async () => {
       const { getByText } = await render(<OrderStickersScreen />);
 
@@ -243,7 +243,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('form validation', async () => {
+  describe('form validation', () => {
     it('shows error when name is missing', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -341,7 +341,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('checkout with address save', async () => {
+  describe('checkout with address save', () => {
     it('saves address when checkbox is checked on checkout', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -520,7 +520,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('package selection', async () => {
+  describe('package selection', () => {
     it('defaults to Popular package', async () => {
       const { getAllByText } = await render(<OrderStickersScreen />);
 
@@ -585,7 +585,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('order summary', async () => {
+  describe('order summary', () => {
     it('shows order summary section', async () => {
       const { getByText } = await render(<OrderStickersScreen />);
 
@@ -612,7 +612,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('loading states', async () => {
+  describe('loading states', () => {
     it('shows loading while fetching address', async () => {
       mockFetch.mockImplementation(() => new Promise(() => {}));
 
@@ -625,7 +625,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('header section', async () => {
+  describe('header section', () => {
     it('shows sticker icon and title', async () => {
       const { getByText } = await render(<OrderStickersScreen />);
 
@@ -643,7 +643,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('checkout flow', async () => {
+  describe('checkout flow', () => {
     it('creates order and opens Stripe checkout', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -712,7 +712,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('no session handling', async () => {
+  describe('no session handling', () => {
     it('handles no session for checkout', async () => {
       getMockGetSession().mockResolvedValueOnce({
         data: { session: null },
@@ -740,7 +740,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address validation', async () => {
+  describe('address validation', () => {
     it('calls validate-address API', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -1115,7 +1115,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address fetch error handling', async () => {
+  describe('address fetch error handling', () => {
     it('handles get-default-address fetch error', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1133,7 +1133,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('sticker description', async () => {
+  describe('sticker description', () => {
     it('shows sticker description section', async () => {
       const { getByText } = await render(<OrderStickersScreen />);
 
@@ -1143,7 +1143,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('checkout button loading', async () => {
+  describe('checkout button loading', () => {
     it('shows loading when checkout initiated', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -1169,7 +1169,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address line 2', async () => {
+  describe('address line 2', () => {
     it('shows address line 2 field', async () => {
       const { getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -1192,7 +1192,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('order API body', async () => {
+  describe('order API body', () => {
     it('sends correct order body to API', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -1223,7 +1223,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('Linking.openURL error', async () => {
+  describe('Linking.openURL error', () => {
     it('handles Linking.openURL failure', async () => {
       (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error('Cannot open URL'));
 
@@ -1276,7 +1276,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('navigation and alerts', async () => {
+  describe('navigation and alerts', () => {
     it('navigates back after successful checkout', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
@@ -1322,7 +1322,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('session handling edge cases', async () => {
+  describe('session handling edge cases', () => {
     it('handles missing session during default address fetch', async () => {
       getMockGetSession().mockResolvedValueOnce({
         data: { session: null },
@@ -1379,7 +1379,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('order creation edge cases', async () => {
+  describe('order creation edge cases', () => {
     it('handles missing checkout_url in response', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1486,7 +1486,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address save error handling', async () => {
+  describe('address save error handling', () => {
     it('continues checkout when save address throws error', async () => {
       mockFetch.mockImplementation((url: string) => {
         if (url.includes('get-default-address')) {
@@ -1591,7 +1591,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('modal interactions', async () => {
+  describe('modal interactions', () => {
     // Skip: Complex async timing issues with never-resolving promises in test environment
     it.skip('prevents accepting suggestion while loading', async () => {
       mockFetch.mockImplementation((url: string) => {
@@ -1709,7 +1709,7 @@ describe('OrderStickersScreen', async () => {
     });
   });
 
-  describe('address input fields', async () => {
+  describe('address input fields', () => {
     it('displays all required address fields', async () => {
       const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 

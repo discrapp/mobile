@@ -11,12 +11,12 @@ jest.mock('expo-clipboard', () => ({
   getStringAsync: jest.fn(),
 }));
 
-describe('deferredLinking', async () => {
+describe('deferredLinking', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('isValidDiscrCode', async () => {
+  describe('isValidDiscrCode', () => {
     it('returns true for valid 6-character uppercase code', async () => {
       expect(isValidDiscrCode('ABC123')).toBe(true);
     });
@@ -60,7 +60,7 @@ describe('deferredLinking', async () => {
     });
   });
 
-  describe('checkClipboardForCode', async () => {
+  describe('checkClipboardForCode', () => {
     it('returns null when clipboard is empty', async () => {
       (Clipboard.hasStringAsync as jest.Mock).mockResolvedValue(false);
 

@@ -44,7 +44,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ProposeMeetupScreen', async () => {
+describe('ProposeMeetupScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset router mocks
@@ -266,7 +266,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('proposal submission', async () => {
+  describe('proposal submission', () => {
     it('shows validation error when location is empty', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -299,7 +299,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('form sections', async () => {
+  describe('form sections', () => {
     it('shows required indicator on location field', async () => {
       const { getAllByText } = await render(<ProposeMeetupScreen />);
 
@@ -318,7 +318,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('successful submission', async () => {
+  describe('successful submission', () => {
     it('calls propose-meetup API when form is valid', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
@@ -381,7 +381,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('error handling', async () => {
+  describe('error handling', () => {
     it('validates missing location', async () => {
       const { getByText, queryByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
@@ -433,7 +433,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('form fields', async () => {
+  describe('form fields', () => {
     it('displays location label', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -459,7 +459,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('button actions', async () => {
+  describe('button actions', () => {
     it('shows both action buttons', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -481,7 +481,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('user role handling', async () => {
+  describe('user role handling', () => {
     it('shows finder message when user is finder', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -505,7 +505,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('submission with message', async () => {
+  describe('submission with message', () => {
     it('submits proposal with optional message', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -549,7 +549,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('date and time display', async () => {
+  describe('date and time display', () => {
     it('shows date section', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -567,7 +567,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('date validation', async () => {
+  describe('date validation', () => {
     it('validates future date requirement', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
@@ -590,7 +590,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('date and time pickers', async () => {
+  describe('date and time pickers', () => {
     it('has date picker touchable', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -608,7 +608,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('submit flow', async () => {
+  describe('submit flow', () => {
     it('sends proposal to API', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -645,7 +645,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('header content', async () => {
+  describe('header content', () => {
     it('shows calendar icon and title', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -655,7 +655,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('location input', async () => {
+  describe('location input', () => {
     it('shows location required indicator', async () => {
       const { getAllByText } = await render(<ProposeMeetupScreen />);
 
@@ -665,7 +665,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('no session', async () => {
+  describe('no session', () => {
     it('handles no session gracefully', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValueOnce({
@@ -697,7 +697,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('message field', async () => {
+  describe('message field', () => {
     it('shows message placeholder', async () => {
       const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
@@ -722,7 +722,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('API error handling', async () => {
+  describe('API error handling', () => {
     it('handles API failure gracefully', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -757,7 +757,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('no session on submit', async () => {
+  describe('no session on submit', () => {
     it('shows error when no session for proposal', async () => {
       const { supabase } = require('../../lib/supabase');
 
@@ -790,7 +790,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('no session on fetch user role', async () => {
+  describe('no session on fetch user role', () => {
     it('handles no session gracefully when fetching role', async () => {
       const { supabase } = require('../../lib/supabase');
       supabase.auth.getSession.mockResolvedValue({
@@ -806,7 +806,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('past date validation', async () => {
+  describe('past date validation', () => {
     it('shows validation error for past date', async () => {
       // Create a component with a past date
       const { getByText, getByPlaceholderText, rerender } = await render(<ProposeMeetupScreen />);
@@ -831,7 +831,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('API response without user_role', async () => {
+  describe('API response without user_role', () => {
     it('handles response without user_role', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -846,7 +846,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('non-ok API response for user role', async () => {
+  describe('non-ok API response for user role', () => {
     it('handles non-ok response when fetching role', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
@@ -861,7 +861,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('formatted date and time display', async () => {
+  describe('formatted date and time display', () => {
     it('displays formatted date', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -881,7 +881,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('required indicators', async () => {
+  describe('required indicators', () => {
     it('shows date required indicator', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 
@@ -899,7 +899,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('submit with API error without message', async () => {
+  describe('submit with API error without message', () => {
     it('handles API error without error message', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -934,7 +934,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('owner role display', async () => {
+  describe('owner role display', () => {
     it('shows owner form variant', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -950,7 +950,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('submit with trimmed location', async () => {
+  describe('submit with trimmed location', () => {
     it('trims whitespace from location', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -985,7 +985,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('whitespace only location validation', async () => {
+  describe('whitespace only location validation', () => {
     it('validates location with only whitespace', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
@@ -1004,7 +1004,7 @@ describe('ProposeMeetupScreen', async () => {
     });
   });
 
-  describe('date picker platform handling', async () => {
+  describe('date picker platform handling', () => {
     it('renders date picker for iOS and Android', async () => {
       const { getByText } = await render(<ProposeMeetupScreen />);
 

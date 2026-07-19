@@ -16,7 +16,7 @@ jest.mock('@react-native-community/netinfo', () => ({
   addEventListener: jest.fn(),
 }));
 
-describe('OfflineService', async () => {
+describe('OfflineService', () => {
   let offlineService: OfflineService;
   const mockNetInfo = NetInfo as jest.Mocked<typeof NetInfo>;
 
@@ -29,7 +29,7 @@ describe('OfflineService', async () => {
     offlineService.cleanup();
   });
 
-  describe('isOnline', async () => {
+  describe('isOnline', () => {
     it('returns true when connected to internet', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,
@@ -90,7 +90,7 @@ describe('OfflineService', async () => {
     });
   });
 
-  describe('getNetworkState', async () => {
+  describe('getNetworkState', () => {
     it('returns full network state', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,
@@ -151,7 +151,7 @@ describe('OfflineService', async () => {
     });
   });
 
-  describe('subscribe', async () => {
+  describe('subscribe', () => {
     it('adds listener and returns unsubscribe function', async () => {
       const mockUnsubscribe = jest.fn();
       mockNetInfo.addEventListener.mockReturnValue(mockUnsubscribe);
@@ -216,7 +216,7 @@ describe('OfflineService', async () => {
     });
   });
 
-  describe('cleanup', async () => {
+  describe('cleanup', () => {
     it('unsubscribes all listeners', async () => {
       const mockUnsubscribe1 = jest.fn();
       const mockUnsubscribe2 = jest.fn();
@@ -239,7 +239,7 @@ describe('OfflineService', async () => {
     });
   });
 
-  describe('waitForOnline', async () => {
+  describe('waitForOnline', () => {
     it('resolves immediately when already online', async () => {
       mockNetInfo.fetch.mockResolvedValue({
         isConnected: true,

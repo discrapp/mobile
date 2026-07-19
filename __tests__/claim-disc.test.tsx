@@ -56,7 +56,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ClaimDiscScreen', async () => {
+describe('ClaimDiscScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -170,7 +170,7 @@ describe('ClaimDiscScreen', async () => {
     });
   });
 
-  describe('dark mode', async () => {
+  describe('dark mode', () => {
     beforeEach(() => {
       mockColorScheme = 'dark';
     });
@@ -289,7 +289,7 @@ describe('ClaimDiscScreen', async () => {
     });
   });
 
-  describe('light mode', async () => {
+  describe('light mode', () => {
     beforeEach(() => {
       mockColorScheme = 'light';
     });

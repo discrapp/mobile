@@ -139,7 +139,7 @@ jest.mock('../../components/DiscAutocomplete', () => ({
   },
 }));
 
-describe('EditDiscScreen', async () => {
+describe('EditDiscScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -497,7 +497,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('session handling', async () => {
+  describe('session handling', () => {
     it('handles no session gracefully', async () => {
       getMockGetSession().mockResolvedValueOnce({
         data: { session: null },
@@ -512,7 +512,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('API error handling', async () => {
+  describe('API error handling', () => {
     // Skip - async timing issues with error handling
     it.skip('handles API returning error response', async () => {
       jest.clearAllMocks();
@@ -529,7 +529,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('form submission', async () => {
+  describe('form submission', () => {
     // Skip - async timing issues with form submission
     it.skip('submits form with updated values', async () => {
       jest.clearAllMocks();
@@ -603,7 +603,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('photo management', async () => {
+  describe('photo management', () => {
     it('shows existing photos when available', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -641,7 +641,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('color selection', async () => {
+  describe('color selection', () => {
     it('allows selecting a different color', async () => {
       const { getByText } = await render(<EditDiscScreen />);
 
@@ -656,7 +656,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('flight number inputs', async () => {
+  describe('flight number inputs', () => {
     it('shows speed input', async () => {
       const { getByText } = await render(<EditDiscScreen />);
 
@@ -690,7 +690,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('manufacturer validation', async () => {
+  describe('manufacturer validation', () => {
     it('clears mold error when disc selected', async () => {
       const { getByText, getByPlaceholderText, queryByText } = await render(<EditDiscScreen />);
 
@@ -714,7 +714,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('category picker', async () => {
+  describe('category picker', () => {
     it('shows category field', async () => {
       const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
@@ -724,7 +724,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('form field updates', async () => {
+  describe('form field updates', () => {
     it('updates manufacturer field', async () => {
       const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
@@ -770,7 +770,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('cancel button', async () => {
+  describe('cancel button', () => {
     it('shows cancel button', async () => {
       const { getByText } = await render(<EditDiscScreen />);
 
@@ -791,7 +791,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('disc not found', async () => {
+  describe('disc not found', () => {
     it('handles empty disc array from API', async () => {
       // Setup mocks - must have session for fetch to be called
       const mockGetSession = getMockGetSession();
@@ -820,7 +820,7 @@ describe('EditDiscScreen', async () => {
     }, 15000);
   });
 
-  describe('successful save', async () => {
+  describe('successful save', () => {
     // Skip - async timing issues with API calls
     it.skip('calls update API when save pressed', async () => {
       jest.clearAllMocks();
@@ -857,7 +857,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('form sections', async () => {
+  describe('form sections', () => {
     it('shows edit disc title', async () => {
       const { getByText } = await render(<EditDiscScreen />);
 
@@ -875,7 +875,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('photo selection and upload', async () => {
+  describe('photo selection and upload', () => {
     it('shows photo options when add photo button pressed', async () => {
       const { getByText } = await render(<EditDiscScreen />);
 
@@ -1101,7 +1101,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('delete photo', async () => {
+  describe('delete photo', () => {
     // Skip - complex async issue with photo deletion timing
     it.skip('shows confirmation dialog when deleting existing photo', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1213,7 +1213,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('reward amount validation', async () => {
+  describe('reward amount validation', () => {
     it('shows fee hint when reward amount is entered', async () => {
       const { getByPlaceholderText, getByText } = await render(<EditDiscScreen />);
 
@@ -1271,7 +1271,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('flight number updates', async () => {
+  describe('flight number updates', () => {
     it('updates speed field', async () => {
       const { getByPlaceholderText } = await render(<EditDiscScreen />);
 
@@ -1321,7 +1321,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('session validation', async () => {
+  describe('session validation', () => {
     // Skip - complex async issue with Alert.alert not being called for session validation
     it.skip('shows error when saving without session', async () => {
       getMockGetSession()
@@ -1365,7 +1365,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('API error handling', async () => {
+  describe('API error handling', () => {
     // Skip - complex async issue with Alert.alert not being called as expected
     it.skip('handles update-disc API error with details', async () => {
       (global.fetch as jest.Mock)
@@ -1448,7 +1448,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('data loading and population', async () => {
+  describe('data loading and population', () => {
     // Skip - complex async issue with flight number values not being populated in time
     it.skip('populates all flight numbers correctly', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1544,7 +1544,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('navigation', async () => {
+  describe('navigation', () => {
     // Skip - test passes in isolation but has timing issues with test suite
     it.skip('navigates back on successful save', async () => {
       // Setup session mock for both initial load and save
@@ -1651,7 +1651,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('manufacturer changes', async () => {
+  describe('manufacturer changes', () => {
     // Skip - complex async issue with plastic value not being populated in time
     it.skip('clears plastic when manufacturer changes', async () => {
       // Set up mock with plastic value
@@ -1679,7 +1679,7 @@ describe('EditDiscScreen', async () => {
     });
   });
 
-  describe('button states', async () => {
+  describe('button states', () => {
     // Skip - button text changes to ActivityIndicator when saving, causing getByText to fail
     it.skip('disables save button while saving', async () => {
       (global.fetch as jest.Mock)

@@ -23,7 +23,7 @@ jest.mock('../../lib/supabase', () => ({
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('ResetPassword', async () => {
+describe('ResetPassword', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

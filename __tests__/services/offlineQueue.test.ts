@@ -13,7 +13,7 @@ import {
 
 // AsyncStorage is already mocked in jest.setup.js
 
-describe('OfflineQueueService', async () => {
+describe('OfflineQueueService', () => {
   let queueService: OfflineQueueService;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('OfflineQueueService', async () => {
     queueService = new OfflineQueueService();
   });
 
-  describe('enqueue', async () => {
+  describe('enqueue', () => {
     it('adds an action to the queue', async () => {
       const action: Omit<QueuedAction, 'id' | 'createdAt' | 'attempts'> = {
         type: 'UPDATE_DISC',
@@ -91,7 +91,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('dequeue', async () => {
+  describe('dequeue', () => {
     it('returns null when queue is empty', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -133,7 +133,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('peek', async () => {
+  describe('peek', () => {
     it('returns null when queue is empty', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -164,7 +164,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('getAll', async () => {
+  describe('getAll', () => {
     it('returns empty array when queue is empty', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -200,7 +200,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('remove', async () => {
+  describe('remove', () => {
     it('removes a specific action by id', async () => {
       const queue: QueuedAction[] = [
         {
@@ -260,7 +260,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('clear', async () => {
+  describe('clear', () => {
     it('removes all actions from the queue', async () => {
       await queueService.clear();
 
@@ -268,7 +268,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('size', async () => {
+  describe('size', () => {
     it('returns 0 when queue is empty', async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
@@ -293,7 +293,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('incrementAttempts', async () => {
+  describe('incrementAttempts', () => {
     it('increments attempt count for an action', async () => {
       const queue: QueuedAction[] = [
         {
@@ -325,7 +325,7 @@ describe('OfflineQueueService', async () => {
     });
   });
 
-  describe('getFailedActions', async () => {
+  describe('getFailedActions', () => {
     it('returns actions that have exceeded max attempts', async () => {
       const queue: QueuedAction[] = [
         { id: '1', type: 'UPDATE_DISC', payload: {}, createdAt: Date.now(), attempts: 0 },
@@ -358,7 +358,7 @@ describe('OfflineQueueService', async () => {
   });
 });
 
-describe('ActionType', async () => {
+describe('ActionType', () => {
   it('includes UPDATE_DISC', async () => {
     const action: ActionType = 'UPDATE_DISC';
     expect(action).toBe('UPDATE_DISC');

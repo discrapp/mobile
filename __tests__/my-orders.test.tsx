@@ -81,7 +81,7 @@ const mockShippedNoTrackingOrder = {
   shipped_at: '2024-01-16T10:00:00Z',
 };
 
-describe('MyOrdersScreen', async () => {
+describe('MyOrdersScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -244,7 +244,7 @@ describe('MyOrdersScreen', async () => {
     });
   });
 
-  describe('Action Buttons', async () => {
+  describe('Action Buttons', () => {
     it('shows Complete Payment and Cancel buttons for pending_payment orders', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,

@@ -150,7 +150,7 @@ const mockResult = {
   processing_time_ms: 150,
 };
 
-describe('DiscRecommendationsScreen', async () => {
+describe('DiscRecommendationsScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockHookState.isLoading = false;

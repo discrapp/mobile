@@ -39,7 +39,7 @@ global.fetch = jest.fn();
 // Mock Alert
 jest.spyOn(Alert, 'alert');
 
-describe('LinkStickerScreen', async () => {
+describe('LinkStickerScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -182,7 +182,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('disc selection', async () => {
+  describe('disc selection', () => {
     it('calls verify API with code', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -241,7 +241,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('verify errors', async () => {
+  describe('verify errors', () => {
     it('handles API error response', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -295,7 +295,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('input states', async () => {
+  describe('input states', () => {
     it('allows typing in the code input', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -326,7 +326,7 @@ describe('LinkStickerScreen', async () => {
     });
   });
 
-  describe('QR scanning', async () => {
+  describe('QR scanning', () => {
     it('renders Scan QR Code button', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,

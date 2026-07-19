@@ -110,7 +110,7 @@ const mockSurrenderedDisc = {
   surrendered_at: '2024-01-03',
 };
 
-describe('DiscDetailScreen', async () => {
+describe('DiscDetailScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetSession.mockResolvedValue({
@@ -555,7 +555,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('recovery banner', async () => {
+  describe('recovery banner', () => {
     it('shows recovery banner for dropped off disc', async () => {
       const discDroppedOff = {
         ...mockDisc,
@@ -580,7 +580,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('photo gallery', async () => {
+  describe('photo gallery', () => {
     it('displays multiple photos when available', async () => {
       const discWithMultiplePhotos = {
         ...mockDisc,
@@ -604,7 +604,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('no notes', async () => {
+  describe('no notes', () => {
     it('does not show notes section when no notes', async () => {
       const discNoNotes = { ...mockDisc, notes: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -623,7 +623,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('API error handling', async () => {
+  describe('API error handling', () => {
     it('shows error when API returns non-ok response', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -638,7 +638,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('delete disc flow', async () => {
+  describe('delete disc flow', () => {
     it('successfully deletes disc when confirmed', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -726,7 +726,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('unlink QR code flow', async () => {
+  describe('unlink QR code flow', () => {
     it('successfully unlinks QR code when confirmed', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -816,7 +816,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('photo gallery', async () => {
+  describe('photo gallery', () => {
     it('shows swipe indicator for multiple photos', async () => {
       const discWithMultiplePhotos = {
         ...mockDisc,
@@ -876,7 +876,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('color display', async () => {
+  describe('color display', () => {
     it('displays white color with border', async () => {
       const discWithWhiteColor = { ...mockDisc, color: 'White' };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -906,7 +906,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('disc not found state', async () => {
+  describe('disc not found state', () => {
     it('shows disc not found message', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -921,7 +921,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('fee hint display', async () => {
+  describe('fee hint display', () => {
     it('shows fee hint for reward amount', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -937,7 +937,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('flight numbers edge cases', async () => {
+  describe('flight numbers edge cases', () => {
     it('hides flight numbers section when all are null', async () => {
       const discNoFlightNumbers = {
         ...mockDisc,
@@ -977,7 +977,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('QR code scanning', async () => {
+  describe('QR code scanning', () => {
     it('shows camera permission alert when permission denied', async () => {
       const discWithoutQR = { ...mockDisc, qr_code: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1059,7 +1059,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('QR code linking', async () => {
+  describe('QR code linking', () => {
     it('verifies QR code section exists when disc has no QR code', async () => {
       const discWithoutQR = { ...mockDisc, qr_code: null };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1076,7 +1076,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('unlink exception handling', async () => {
+  describe('unlink exception handling', () => {
     it('handles exception during unlink', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -1109,7 +1109,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('navigation header', async () => {
+  describe('navigation header', () => {
     it('sets header with edit button when disc loaded', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1180,7 +1180,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('loading states', async () => {
+  describe('loading states', () => {
     it('calls unlink API when unlinking QR code', async () => {
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -1256,7 +1256,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('reward amount edge cases', async () => {
+  describe('reward amount edge cases', () => {
     it('hides reward section when amount is 0', async () => {
       const discWithZeroReward = { ...mockDisc, reward_amount: '0' };
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -1292,7 +1292,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('API response edge cases', async () => {
+  describe('API response edge cases', () => {
     it('shows alert and navigates back when disc not in API response', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1324,7 +1324,7 @@ describe('DiscDetailScreen', async () => {
     });
   });
 
-  describe('focus effect', async () => {
+  describe('focus effect', () => {
     it('refetches disc data on screen focus', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,

@@ -73,7 +73,7 @@ const fillRequiredFields = (getByPlaceholderText: (text: string) => any) => {
   fireEvent.changeText(getByPlaceholderText('Confirm your password'), 'password123');
 };
 
-describe('SignUp', async () => {
+describe('SignUp', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

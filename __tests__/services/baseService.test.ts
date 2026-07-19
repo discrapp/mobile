@@ -19,7 +19,7 @@ jest.mock('@/lib/supabase', () => ({
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-describe('getSession', async () => {
+describe('getSession', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -62,7 +62,7 @@ describe('getSession', async () => {
   });
 });
 
-describe('apiRequest', async () => {
+describe('apiRequest', () => {
   const mockSession = {
     access_token: 'test-token',
     user: { id: 'user-123' },
@@ -289,7 +289,7 @@ describe('apiRequest', async () => {
   });
 });
 
-describe('createApiError', async () => {
+describe('createApiError', () => {
   it('creates ApiError from fetch response', async () => {
     const response = {
       status: 404,

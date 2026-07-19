@@ -25,24 +25,24 @@ jest.mock('react-native', () => ({
 
 import { Image } from 'react-native';
 
-describe('imageCompression', async () => {
+describe('imageCompression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('DEFAULT_MAX_DIMENSION', async () => {
+  describe('DEFAULT_MAX_DIMENSION', () => {
     it('should be 1920', async () => {
       expect(DEFAULT_MAX_DIMENSION).toBe(1920);
     });
   });
 
-  describe('DEFAULT_COMPRESSION_QUALITY', async () => {
+  describe('DEFAULT_COMPRESSION_QUALITY', () => {
     it('should be 0.8 (80%)', async () => {
       expect(DEFAULT_COMPRESSION_QUALITY).toBe(0.8);
     });
   });
 
-  describe('getImageDimensions', async () => {
+  describe('getImageDimensions', () => {
     it('should return width and height for a valid image URI', async () => {
       (Image.getSize as jest.Mock).mockImplementation(
         (uri, success) => {
@@ -67,7 +67,7 @@ describe('imageCompression', async () => {
     });
   });
 
-  describe('calculateResizeDimensions', async () => {
+  describe('calculateResizeDimensions', () => {
     it('should not resize if image is smaller than max dimension', async () => {
       const result = calculateResizeDimensions(800, 600, 1920);
       expect(result).toBeNull();
@@ -99,7 +99,7 @@ describe('imageCompression', async () => {
     });
   });
 
-  describe('compressImage', async () => {
+  describe('compressImage', () => {
     it('should compress and resize a large image', async () => {
       (Image.getSize as jest.Mock).mockImplementation(
         (uri, success) => {

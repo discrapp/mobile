@@ -1,5 +1,23 @@
 // Jest setup file
 import '@testing-library/jest-native/extend-expect';
+import { cleanup } from '@testing-library/react-native';
+
+// RNTL v14 + React 19 + fake timers: result.current can be null after
+// await renderHook() when React's scheduler (which uses setImmediate in Node)
+// is intercepted by fake timers. Patch renderHook to waitFor population.
+const _rntl = require('@testing-library/react-native');
+const _originalRenderHook = _rntl.renderHook;
+_rntl.renderHook = async function patchedRenderHook(hookToRender, options) {
+  const hookResult = await _originalRenderHook(hookToRender, options);
+  if (hookResult.result.current === null) {
+    await _rntl.waitFor(() => {
+      if (hookResult.result.current === null) {
+        throw new Error('renderHook: result.current is null after render');
+      }
+    }, { timeout: 3000 });
+  }
+  return hookResult;
+};
 
 // Mock React Native Reanimated
 jest.mock('react-native-reanimated', () => {
@@ -215,7 +233,8 @@ beforeEach(() => {
   jest.clearAllTimers();
 });
 
-afterEach(() => {
+afterEach(async () => {
+  cleanup();
   jest.clearAllMocks();
   jest.clearAllTimers();
 });

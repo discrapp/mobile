@@ -10,7 +10,7 @@ jest.mock('expo-status-bar', () => ({
 // Mock EditScreenInfo component
 jest.mock('../../components/EditScreenInfo', () => 'EditScreenInfo');
 
-describe('ModalScreen', async () => {
+describe('ModalScreen', () => {
   it('renders modal title', async () => {
     const { getByText } = await render(<ModalScreen />);
 

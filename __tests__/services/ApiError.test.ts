@@ -4,8 +4,8 @@
 
 import { ApiError, ApiErrorCode, isApiError } from '@/services/ApiError';
 
-describe('ApiError', async () => {
-  describe('constructor', async () => {
+describe('ApiError', () => {
+  describe('constructor', () => {
     it('creates an error with message and default values', async () => {
       const error = new ApiError('Test error message');
 
@@ -59,7 +59,7 @@ describe('ApiError', async () => {
     });
   });
 
-  describe('error codes', async () => {
+  describe('error codes', () => {
     it('defines all expected error codes', async () => {
       expect(ApiErrorCode.NETWORK).toBe('NETWORK');
       expect(ApiErrorCode.AUTH).toBe('AUTH');
@@ -72,7 +72,7 @@ describe('ApiError', async () => {
     });
   });
 
-  describe('isNetworkError', async () => {
+  describe('isNetworkError', () => {
     it('returns true for network errors', async () => {
       const error = new ApiError('Network failed', {
         code: ApiErrorCode.NETWORK,
@@ -86,7 +86,7 @@ describe('ApiError', async () => {
     });
   });
 
-  describe('isAuthError', async () => {
+  describe('isAuthError', () => {
     it('returns true for auth errors', async () => {
       const error = new ApiError('Auth failed', { code: ApiErrorCode.AUTH });
       expect(error.isAuthError()).toBe(true);
@@ -105,7 +105,7 @@ describe('ApiError', async () => {
     });
   });
 
-  describe('requiresReauth', async () => {
+  describe('requiresReauth', () => {
     it('returns true for session expired errors', async () => {
       const error = new ApiError('Session expired', {
         code: ApiErrorCode.SESSION_EXPIRED,
@@ -119,7 +119,7 @@ describe('ApiError', async () => {
     });
   });
 
-  describe('toJSON', async () => {
+  describe('toJSON', () => {
     it('serializes the error to JSON', async () => {
       const error = new ApiError('Test error', {
         code: ApiErrorCode.API,
@@ -140,7 +140,7 @@ describe('ApiError', async () => {
   });
 });
 
-describe('isApiError', async () => {
+describe('isApiError', () => {
   it('returns true for ApiError instances', async () => {
     const error = new ApiError('Test');
     expect(isApiError(error)).toBe(true);

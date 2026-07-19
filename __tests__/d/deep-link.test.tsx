@@ -34,7 +34,7 @@ const { supabase } = require('../../lib/supabase');
 // Mock fetch
 global.fetch = jest.fn();
 
-describe('DeepLinkHandler', async () => {
+describe('DeepLinkHandler', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useLocalSearchParams.mockReturnValue({ code: 'ABC123' });

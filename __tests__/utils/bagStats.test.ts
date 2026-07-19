@@ -4,8 +4,8 @@ import {
   BagStatsDisc,
 } from '../../utils/bagStats';
 
-describe('calculateBagStats', async () => {
-  describe('with empty disc array', async () => {
+describe('calculateBagStats', () => {
+  describe('with empty disc array', () => {
     it('returns sensible defaults', async () => {
       const result = calculateBagStats([]);
 
@@ -25,7 +25,7 @@ describe('calculateBagStats', async () => {
     });
   });
 
-  describe('with a single disc', async () => {
+  describe('with a single disc', () => {
     it('calculates stats correctly', async () => {
       const discs: BagStatsDisc[] = [
         {
@@ -55,7 +55,7 @@ describe('calculateBagStats', async () => {
     });
   });
 
-  describe('with multiple discs', async () => {
+  describe('with multiple discs', () => {
     const discs: BagStatsDisc[] = [
       {
         id: '1',
@@ -177,7 +177,7 @@ describe('calculateBagStats', async () => {
     });
   });
 
-  describe('with missing data', async () => {
+  describe('with missing data', () => {
     it('handles missing flight numbers', async () => {
       const discs: BagStatsDisc[] = [
         {
@@ -246,7 +246,7 @@ describe('calculateBagStats', async () => {
     });
   });
 
-  describe('stability classification', async () => {
+  describe('stability classification', () => {
     it('classifies turn <= -2 as understable', async () => {
       const discs: BagStatsDisc[] = [
         { id: '1', flight_numbers: { speed: 12, glide: 5, turn: -2, fade: 2 } },

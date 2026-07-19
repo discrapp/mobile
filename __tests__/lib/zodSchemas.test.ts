@@ -20,8 +20,8 @@ import {
   validateShippingAddressWithZod,
 } from '@/lib/zodSchemas';
 
-describe('Zod Validation Schemas', async () => {
-  describe('signInSchema', async () => {
+describe('Zod Validation Schemas', () => {
+  describe('signInSchema', () => {
     it('validates a correct sign-in form', async () => {
       const validData: SignInFormData = {
         email: 'test@example.com',
@@ -92,7 +92,7 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('signUpSchema', async () => {
+  describe('signUpSchema', () => {
     it('validates a correct sign-up form', async () => {
       const validData: SignUpFormData = {
         email: 'test@example.com',
@@ -168,7 +168,7 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('forgotPasswordSchema', async () => {
+  describe('forgotPasswordSchema', () => {
     it('validates a correct email', async () => {
       const validData: ForgotPasswordFormData = {
         email: 'test@example.com',
@@ -211,7 +211,7 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('resetPasswordSchema', async () => {
+  describe('resetPasswordSchema', () => {
     it('validates a correct reset password form', async () => {
       const validData: ResetPasswordFormData = {
         password: 'newpassword123',
@@ -267,7 +267,7 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('discFormSchema', async () => {
+  describe('discFormSchema', () => {
     it('validates a minimal disc form with just mold', async () => {
       const validData = {
         mold: 'Destroyer',
@@ -439,7 +439,7 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('shippingAddressSchema', async () => {
+  describe('shippingAddressSchema', () => {
     const validAddress: ShippingAddressFormData = {
       name: 'John Doe',
       street_address: '123 Main St',
@@ -581,8 +581,8 @@ describe('Zod Validation Schemas', async () => {
     });
   });
 
-  describe('Helper Functions', async () => {
-    describe('extractZodErrors', async () => {
+  describe('Helper Functions', () => {
+    describe('extractZodErrors', () => {
       it('returns empty object for successful validation', async () => {
         const result = signInSchema.safeParse({
           email: 'test@example.com',
@@ -602,7 +602,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateSignInWithZod', async () => {
+    describe('validateSignInWithZod', () => {
       it('returns empty object for valid data', async () => {
         const errors = validateSignInWithZod('test@example.com', 'password123');
         expect(errors).toEqual({});
@@ -615,7 +615,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateSignUpWithZod', async () => {
+    describe('validateSignUpWithZod', () => {
       it('returns empty object for valid data', async () => {
         const errors = validateSignUpWithZod(
           'test@example.com',
@@ -635,7 +635,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateForgotPasswordWithZod', async () => {
+    describe('validateForgotPasswordWithZod', () => {
       it('returns empty object for valid email', async () => {
         const errors = validateForgotPasswordWithZod('test@example.com');
         expect(errors).toEqual({});
@@ -647,7 +647,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateResetPasswordWithZod', async () => {
+    describe('validateResetPasswordWithZod', () => {
       it('returns empty object for valid passwords', async () => {
         const errors = validateResetPasswordWithZod('newpassword', 'newpassword');
         expect(errors).toEqual({});
@@ -659,7 +659,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateDiscFormWithZod', async () => {
+    describe('validateDiscFormWithZod', () => {
       it('returns empty object for valid disc data', async () => {
         const errors = validateDiscFormWithZod({ mold: 'Destroyer' });
         expect(errors).toEqual({});
@@ -671,7 +671,7 @@ describe('Zod Validation Schemas', async () => {
       });
     });
 
-    describe('validateShippingAddressWithZod', async () => {
+    describe('validateShippingAddressWithZod', () => {
       it('returns empty object for valid address', async () => {
         const errors = validateShippingAddressWithZod({
           name: 'John Doe',

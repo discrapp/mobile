@@ -6,7 +6,7 @@ jest.mock('@/contexts/AuthContext');
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
-describe('useIsAdmin', async () => {
+describe('useIsAdmin', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

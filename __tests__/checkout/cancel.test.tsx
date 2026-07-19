@@ -11,13 +11,14 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ order_id: 'order-123' }),
 }));
 
-describe('CheckoutCancelScreen', async () => {
+describe('CheckoutCancelScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
   });
 
   afterEach(() => {
+    jest.runAllTimers();
     jest.useRealTimers();
   });
 

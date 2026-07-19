@@ -1,7 +1,7 @@
 import { STORAGE_KEYS } from '../../constants/storageKeys';
 
-describe('STORAGE_KEYS', async () => {
-  describe('structure', async () => {
+describe('STORAGE_KEYS', () => {
+  describe('structure', () => {
     it('exports STORAGE_KEYS as a const object', async () => {
       expect(STORAGE_KEYS).toBeDefined();
       expect(typeof STORAGE_KEYS).toBe('object');
@@ -16,7 +16,7 @@ describe('STORAGE_KEYS', async () => {
     });
   });
 
-  describe('disc cache keys', async () => {
+  describe('disc cache keys', () => {
     it('defines DISC_CACHE key with correct value', async () => {
       expect(STORAGE_KEYS.DISC_CACHE).toBe('@discr/discs_cache');
     });
@@ -28,7 +28,7 @@ describe('STORAGE_KEYS', async () => {
     });
   });
 
-  describe('key naming convention', async () => {
+  describe('key naming convention', () => {
     it('all keys follow @discr/ prefix convention', async () => {
       Object.entries(STORAGE_KEYS).forEach(([key, value]) => {
         // This will show both the key name and actual value on failure
@@ -50,7 +50,7 @@ describe('STORAGE_KEYS', async () => {
     });
   });
 
-  describe('type safety', async () => {
+  describe('type safety', () => {
     it('provides StorageKey type for values', async () => {
       // This test verifies the type exists at compile time
       // At runtime, we just verify the keys exist

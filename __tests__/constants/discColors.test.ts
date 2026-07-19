@@ -7,8 +7,8 @@
 
 import { DISC_COLORS, DiscColorName } from '@/constants/discColors';
 
-describe('DISC_COLORS constants', async () => {
-  describe('structure', async () => {
+describe('DISC_COLORS constants', () => {
+  describe('structure', () => {
     it('should export DISC_COLORS object', async () => {
       expect(DISC_COLORS).toBeDefined();
       expect(typeof DISC_COLORS).toBe('object');
@@ -43,7 +43,7 @@ describe('DISC_COLORS constants', async () => {
     });
   });
 
-  describe('color values', async () => {
+  describe('color values', () => {
     it('should have correct hex value for Red', async () => {
       expect(DISC_COLORS.Red).toBe('#E74C3C');
     });
@@ -89,7 +89,7 @@ describe('DISC_COLORS constants', async () => {
     });
   });
 
-  describe('type safety', async () => {
+  describe('type safety', () => {
     it('should allow accessing colors by string key', async () => {
       const colorName = 'Blue' as DiscColorName;
       expect(DISC_COLORS[colorName]).toBe('#3498DB');
