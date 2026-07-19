@@ -12,8 +12,8 @@ import {
 } from '../Skeleton';
 
 // Spy on useColorScheme instead of mocking entire react-native module
-let mockColorScheme: ReactNative.ColorSchemeName = 'light';
-jest.spyOn(ReactNative, 'useColorScheme').mockImplementation(() => mockColorScheme);
+let mockColorScheme: ReactNative.ColorSchemeName | null = 'light';
+jest.spyOn(ReactNative, 'useColorScheme').mockImplementation(() => mockColorScheme as ReactNative.ColorSchemeName);
 
 describe('Skeleton', () => {
   beforeEach(() => {

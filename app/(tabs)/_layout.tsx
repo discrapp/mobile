@@ -2,7 +2,7 @@ import { logger } from '@/lib/logger';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
-import { View, Text, StyleSheet, AppState, AppStateStatus } from 'react-native';
+import { View, Text, StyleSheet, AppState, AppStateStatus, ColorValue } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -10,8 +10,8 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useAuth } from '@/contexts/AuthContext';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string | ColorValue }) {
+  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} color={props.color as string} />;
 }
 
 function TabBarIconWithBadge({
@@ -20,7 +20,7 @@ function TabBarIconWithBadge({
   badgeCount,
 }: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
+  color: string | ColorValue;
   badgeCount: number;
 }) {
   return (
@@ -110,7 +110,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme === 'dark' ? 'dark' : 'light'].tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),

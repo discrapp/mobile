@@ -59,7 +59,7 @@ export default function AddDiscScreen() {
   const { mode } = useLocalSearchParams<{ mode?: 'qr' | 'photo-ai' | 'manual' }>();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const textColor = Colors[colorScheme ?? 'light'].text;
+  const textColor = Colors[colorScheme === 'dark' ? 'dark' : 'light'].text;
   const [loading, setLoading] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -1451,7 +1451,7 @@ const styles = StyleSheet.create({
   },
   // Scanner styles
   scannerContainer: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: '#000',
     zIndex: 9999,
   },
@@ -1459,7 +1459,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scannerOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0,
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 60,

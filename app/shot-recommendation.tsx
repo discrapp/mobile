@@ -26,7 +26,7 @@ export default function ShotRecommendationScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const textColor = Colors[colorScheme ?? 'light'].text;
+  const textColor = Colors[colorScheme === 'dark' ? 'dark' : 'light'].text;
   const [permission, requestPermission] = useCameraPermissions();
 
   // Camera state

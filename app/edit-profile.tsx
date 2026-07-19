@@ -50,7 +50,7 @@ export default function EditProfileScreen() {
   const { user } = useAuth();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const textColor = Colors[colorScheme ?? 'light'].text;
+  const textColor = Colors[colorScheme === 'dark' ? 'dark' : 'light'].text;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
