@@ -138,7 +138,7 @@ jest.mock('../../hooks/useDiscIdentification', () => ({
 // Mock expo-camera
 // Using inline mock to avoid hoisting issues
 const mockRequestPermissionFn = jest.fn();
-jest.mock('expo-camera', async () => {
+jest.mock('expo-camera', () => {
   // Access the mock from outer scope
   let requestFn: jest.Mock;
   return {

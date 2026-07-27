@@ -58,7 +58,7 @@ jest.mock('@/lib/errorHandler', () => ({
 }));
 
 // Mock components
-jest.mock('@/components/DiscRecommendationCard', async () => {
+jest.mock('@/components/DiscRecommendationCard', () => {
   const { View, Text, Pressable } = require('react-native');
   return function MockDiscRecommendationCard({
     recommendation,
@@ -85,7 +85,7 @@ jest.mock('@/components/DiscRecommendationCard', async () => {
   };
 });
 
-jest.mock('@/components/BagAnalysisCard', async () => {
+jest.mock('@/components/BagAnalysisCard', () => {
   const { View, Text } = require('react-native');
   return function MockBagAnalysisCard() {
     return (
@@ -96,7 +96,7 @@ jest.mock('@/components/BagAnalysisCard', async () => {
   };
 });
 
-jest.mock('@/components/TradeInCandidateCard', async () => {
+jest.mock('@/components/TradeInCandidateCard', () => {
   const { View, Text } = require('react-native');
   return function MockTradeInCandidateCard({ candidate }: { candidate: { disc: { name: string | null; mold: string | null } } }) {
     return (

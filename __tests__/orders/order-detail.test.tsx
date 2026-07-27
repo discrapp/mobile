@@ -9,7 +9,7 @@ jest.spyOn(Alert, 'alert');
 // Mock expo-router
 const mockRouterPush = jest.fn();
 const mockRouterBack = jest.fn();
-jest.mock('expo-router', async () => {
+jest.mock('expo-router', () => {
   const React = require('react');
   return {
     useRouter: () => ({

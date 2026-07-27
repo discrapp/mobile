@@ -10,7 +10,7 @@ interface AlertButtonWithHandler extends AlertButton {
 
 // Mock expo-router
 const mockPush = jest.fn();
-jest.mock('expo-router', async () => {
+jest.mock('expo-router', () => {
   const actual = { router: { push: () => {} } };
   return {
     get router() {

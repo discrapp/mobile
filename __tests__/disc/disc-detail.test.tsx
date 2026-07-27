@@ -8,7 +8,7 @@ import { handleError } from '../../lib/errorHandler';
 const mockRouterPush = jest.fn();
 const mockRouterBack = jest.fn();
 const mockSetOptions = jest.fn();
-jest.mock('expo-router', async () => {
+jest.mock('expo-router', () => {
   const React = require('react');
   return {
     useRouter: () => ({

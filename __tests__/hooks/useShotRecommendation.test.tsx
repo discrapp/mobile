@@ -130,7 +130,9 @@ describe('useShotRecommendation', () => {
       result.current.getRecommendation('file://test-image.jpg');
     });
 
-    // Should be loading
+    // Flush deferred React 19 state updates before checking
+      await act(async () => {});
+      // Should be loading
     expect(result.current.isLoading).toBe(true);
 
     // Resolve the image fetch

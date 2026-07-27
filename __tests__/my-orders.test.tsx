@@ -12,7 +12,7 @@ jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
 
 // Mock expo-router
 const mockRouterPush = jest.fn();
-jest.mock('expo-router', async () => {
+jest.mock('expo-router', () => {
   const React = require('react');
   return {
     useRouter: () => ({

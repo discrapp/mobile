@@ -78,7 +78,9 @@ describe('useDismissRecommendation', () => {
       result.current.dismissDisc('catalog-456');
     });
 
-    // Should be loading
+    // Flush deferred React 19 state updates before checking
+      await act(async () => {});
+      // Should be loading
     expect(result.current.isLoading).toBe(true);
 
     // Resolve the request

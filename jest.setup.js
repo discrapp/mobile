@@ -1,20 +1,18 @@
 // Jest setup file
 import '@testing-library/jest-native/extend-expect';
-import { cleanup } from '@testing-library/react-native';
+import { cleanup, act } from '@testing-library/react-native';
 
-// RNTL v14 + React 19 + fake timers: result.current can be null after
-// await renderHook() when React's scheduler (which uses setImmediate in Node)
-// is intercepted by fake timers. Patch renderHook to waitFor population.
-const _rntl = require('@testing-library/react-native');
-const _originalRenderHook = _rntl.renderHook;
-_rntl.renderHook = async function patchedRenderHook(hookToRender, options) {
+// RNTL v14 uses Object.defineProperty read-only getters on its main index export,
+// so patching index.js is a no-op. Patch the underlying render-hook.js directly,
+// whose exports ARE writable. This ensures result.current is populated before
+// renderHook() resolves, even when React 19 defers useEffect scheduling.
+const _renderHookModule = require('@testing-library/react-native/dist/render-hook');
+const _originalRenderHook = _renderHookModule.renderHook;
+_renderHookModule.renderHook = async function patchedRenderHook(hookToRender, options) {
   const hookResult = await _originalRenderHook(hookToRender, options);
   if (hookResult.result.current === null) {
-    await _rntl.waitFor(() => {
-      if (hookResult.result.current === null) {
-        throw new Error('renderHook: result.current is null after render');
-      }
-    }, { timeout: 3000 });
+    // Flush any deferred effects by running an empty async act
+    await act(async () => {});
   }
   return hookResult;
 };
@@ -234,6 +232,8 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  // Flush any pending React work before cleanup to avoid state leakage
+  await act(async () => {});
   cleanup();
   jest.clearAllMocks();
   jest.clearAllTimers();
