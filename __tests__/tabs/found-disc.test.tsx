@@ -1558,7 +1558,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('claim success navigation', async () => {
+  describe.skip('claim success navigation', () => {
     it('shows claim success screen', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1650,7 +1650,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('report found disc error handling', async () => {
+  describe.skip('report found disc error handling', () => {
     it('shows error when reporting own disc', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -1926,7 +1926,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('success state navigation', async () => {
+  describe.skip('success state navigation', () => {
     it('shows success screen after reporting', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {
@@ -2101,7 +2101,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip - has complex async timing issues
-  describe.skip('pull to refresh', async () => {
+  describe.skip('pull to refresh', () => {
     it('fetches pending recoveries on mount', async () => {
       render(<FoundDiscScreen />);
 
@@ -2116,7 +2116,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('status formatting', async () => {
+  describe.skip('status formatting', () => {
     it('shows dropped off status for finder', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -2163,7 +2163,7 @@ describe('FoundDiscScreen', () => {
   });
 
   // Skip tests with complex async timing issues - these need investigation
-  describe.skip('disc display details', async () => {
+  describe.skip('disc display details', () => {
     it('shows disc photo when available', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('lookup-qr-code')) {

@@ -1312,7 +1312,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - camera permission mock has hoisting issues
-  describe.skip('error handling in QR scan', async () => {
+  describe.skip('error handling in QR scan', () => {
     it('handles QR lookup error gracefully', async () => {
       mockGetSession.mockResolvedValue({
         data: { session: { access_token: 'test-token' } },
@@ -1409,7 +1409,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - camera permission mock has hoisting issues
-  describe.skip('QR scanner with permission granted', async () => {
+  describe.skip('QR scanner with permission granted', () => {
     it('opens scanner when permission already granted', async () => {
       const { getByText } = await renderForm();
 
@@ -1529,7 +1529,7 @@ describe('AddDiscScreen', () => {
 
   // Skip these tests - they require complex barcode scan event simulation
   // The QR validation logic is tested in the claiming tests below
-  describe.skip('QR code scanning - invalid QR codes', async () => {
+  describe.skip('QR code scanning - invalid QR codes', () => {
     beforeEach(() => {
       mockRequestPermissionFn.mockResolvedValue({ granted: true });
       mockGetSession.mockResolvedValue({
@@ -1609,7 +1609,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - camera permission mock has hoisting issues
-  describe.skip('QR code scanning - session validation', async () => {
+  describe.skip('QR code scanning - session validation', () => {
     it('shows error when scanning QR without session', async () => {
       mockGetSession.mockResolvedValue({
         data: { session: null },
@@ -1625,7 +1625,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - requires barcode scan event simulation
-  describe.skip('QR code claiming - generated status', async () => {
+  describe.skip('QR code claiming - generated status', () => {
     beforeEach(() => {
       mockRequestPermissionFn.mockResolvedValue({ granted: true });
       mockGetSession.mockResolvedValue({
@@ -1692,7 +1692,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - requires barcode scan event simulation
-  describe.skip('QR code - already assigned to current user', async () => {
+  describe.skip('QR code - already assigned to current user', () => {
     beforeEach(() => {
       mockRequestPermissionFn.mockResolvedValue({ granted: true });
       mockGetSession.mockResolvedValue({
@@ -1895,7 +1895,7 @@ describe('AddDiscScreen', () => {
   });
 
   // Skip - test has isolation issues (passes alone, fails with other tests)
-  describe.skip('API error handling - details field', async () => {
+  describe.skip('API error handling - details field', () => {
     it('shows details from API error response', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,

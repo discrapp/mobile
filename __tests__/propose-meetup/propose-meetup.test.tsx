@@ -1029,7 +1029,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   // Skip - tests have test isolation issues (pass individually, fail when run together)
-  describe.skip('API request structure', async () => {
+  describe.skip('API request structure', () => {
     it('sends correct request body to propose-meetup endpoint', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('propose-meetup')) {
@@ -1184,7 +1184,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   // Skip - tests have test isolation issues (pass individually, fail when run together)
-  describe.skip('success messages based on role', async () => {
+  describe.skip('success messages based on role', () => {
     it('shows owner success message when user is owner', async () => {
       (global.fetch as jest.Mock).mockImplementation((url: string) => {
         if (url.includes('get-recovery-details')) {
@@ -1263,7 +1263,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   // Skip - tests have test isolation issues (pass individually, fail when run together)
-  describe.skip('network error handling', async () => {
+  describe.skip('network error handling', () => {
     it('handles network error when fetching user role', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
@@ -1313,7 +1313,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   // Skip - tests have test isolation issues (pass individually, fail when run together)
-  describe.skip('button states during submission', async () => {
+  describe.skip('button states during submission', () => {
     it('disables submit button while submitting', async () => {
       let resolvePromise: (value: unknown) => void;
       const pendingPromise = new Promise((resolve) => {
@@ -1395,7 +1395,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   // Skip - tests have test isolation issues (pass individually, fail when run together)
-  describe.skip('form validation edge cases', async () => {
+  describe.skip('form validation edge cases', () => {
     it('validates location after trimming whitespace', async () => {
       const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 

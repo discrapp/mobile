@@ -2613,7 +2613,7 @@ describe('RecoveryDetailScreen', () => {
   // Skip Linking.openURL tests - React Native's Linking module uses lazy loading
   // which makes it very difficult to mock in Jest. The actual functionality works
   // correctly in the app; these tests are for third-party API integration.
-  describe.skip('Linking.openURL functionality', async () => {
+  describe.skip('Linking.openURL functionality', () => {
     it('opens Google Maps for get directions on meetup proposal', async () => {
       jest.clearAllMocks();
       (global.fetch as jest.Mock).mockResolvedValue({

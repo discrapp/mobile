@@ -1445,7 +1445,7 @@ describe('NotificationsScreen', () => {
 
   // Skip session handling tests - jest.resetModules() causes complex issues
   // with React component re-registration and unmounting
-  describe.skip('session handling', async () => {
+  describe.skip('session handling', () => {
     it('does not fetch notifications without session', async () => {
       // Mock useAuth to return no session
       jest.resetModules();
@@ -1477,7 +1477,7 @@ describe('NotificationsScreen', () => {
 
   // Skip unread count display tests - causes component unmounting issues
   // due to complex async state updates that aren't properly cleaned up
-  describe.skip('unread count display', async () => {
+  describe.skip('unread count display', () => {
     it('shows notification count when all are read', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1529,7 +1529,7 @@ describe('NotificationsScreen', () => {
   });
 
   // Skip - causes component unmounting issues due to unhandled promise rejections
-  describe.skip('notification with both recovery_event_id and disc_id', async () => {
+  describe.skip('notification with both recovery_event_id and disc_id', () => {
     it('prioritizes recovery_event_id for navigation', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
@@ -1562,7 +1562,7 @@ describe('NotificationsScreen', () => {
   });
 
   // Skip - causes component unmounting issues due to unhandled promise rejections
-  describe.skip('error handling for mark as read', async () => {
+  describe.skip('error handling for mark as read', () => {
     it('handles error when marking notification as read', async () => {
       getMockInvoke().mockRejectedValueOnce(new Error('Mark as read failed'));
 
