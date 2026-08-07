@@ -359,22 +359,22 @@ describe('OfflineQueueService', () => {
 });
 
 describe('ActionType', () => {
-  it('includes UPDATE_DISC', () => {
+  it('includes UPDATE_DISC', async () => {
     const action: ActionType = 'UPDATE_DISC';
     expect(action).toBe('UPDATE_DISC');
   });
 
-  it('includes CREATE_DISC', () => {
+  it('includes CREATE_DISC', async () => {
     const action: ActionType = 'CREATE_DISC';
     expect(action).toBe('CREATE_DISC');
   });
 
-  it('includes DELETE_DISC', () => {
+  it('includes DELETE_DISC', async () => {
     const action: ActionType = 'DELETE_DISC';
     expect(action).toBe('DELETE_DISC');
   });
 
-  it('includes REPORT_FOUND', () => {
+  it('includes REPORT_FOUND', async () => {
     const action: ActionType = 'REPORT_FOUND';
     expect(action).toBe('REPORT_FOUND');
   });

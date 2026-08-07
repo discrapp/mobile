@@ -64,11 +64,13 @@ async function registerForPushNotificationsAsync(): Promise<string | null> {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { status: existingStatus } = await Notifications.getPermissionsAsync() as any;
+    let finalStatus: string = existingStatus;
 
     if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { status } = await Notifications.requestPermissionsAsync() as any;
       finalStatus = status;
     }
 

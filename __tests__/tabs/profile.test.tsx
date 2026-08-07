@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import { Alert, AlertButton } from 'react-native';
 import ProfileScreen from '../../app/(tabs)/two';
 
@@ -166,7 +166,7 @@ describe('ProfileScreen', () => {
 
   describe('user info display', () => {
     it('displays user email', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('test@example.com')).toBeTruthy();
@@ -174,7 +174,7 @@ describe('ProfileScreen', () => {
     });
 
     it('displays username when loaded', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('testuser').length).toBeGreaterThan(0);
@@ -182,7 +182,7 @@ describe('ProfileScreen', () => {
     });
 
     it('displays profile header', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -192,7 +192,7 @@ describe('ProfileScreen', () => {
 
   describe('profile fields', () => {
     it('shows username field', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -200,7 +200,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows full name field label', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Full Name')).toBeTruthy();
@@ -211,7 +211,7 @@ describe('ProfileScreen', () => {
 
   describe('sign out', () => {
     it('shows sign out button', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -219,7 +219,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows confirmation when signing out', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -237,7 +237,7 @@ describe('ProfileScreen', () => {
 
   describe('profile sections', () => {
     it('shows display name preference section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows account details section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Account Details')).toBeTruthy();
@@ -253,7 +253,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows account created label', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Account Created')).toBeTruthy();
@@ -261,7 +261,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows my discs being recovered section when available', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       // Profile Settings is always visible
       await waitFor(() => {
@@ -272,7 +272,7 @@ describe('ProfileScreen', () => {
 
   describe('profile display', () => {
     it('shows the full name value', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Test User')).toBeTruthy();
@@ -282,7 +282,7 @@ describe('ProfileScreen', () => {
 
   describe('display preference', () => {
     it('shows display preference value', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       // "Username" appears as both a label and potentially as the display preference value
       await waitFor(() => {
@@ -291,7 +291,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows display preference change option', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -301,7 +301,7 @@ describe('ProfileScreen', () => {
 
   describe('stats display', () => {
     it('renders profile stats area', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       // Stats only show when values > 0, but profile always shows
       await waitFor(() => {
@@ -312,7 +312,7 @@ describe('ProfileScreen', () => {
 
   describe('profile editing', () => {
     it('shows edit button for username', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -323,7 +323,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows edit button for full name', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Full Name')).toBeTruthy();
@@ -335,7 +335,7 @@ describe('ProfileScreen', () => {
   describe('navigation', () => {
     it('shows active recoveries section when user has recoveries', async () => {
       // Profile always shows the base structure
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -345,7 +345,7 @@ describe('ProfileScreen', () => {
 
   describe('gravatar', () => {
     it('loads gravatar for user email', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       // Just verify component renders with email visible
       await waitFor(() => {
@@ -356,7 +356,7 @@ describe('ProfileScreen', () => {
 
   describe('loading state', () => {
     it('shows profile content after loading', async () => {
-      const { getByText, queryByTestId } = render(<ProfileScreen />);
+      const { getByText, queryByTestId } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -389,7 +389,7 @@ describe('ProfileScreen', () => {
         };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -400,7 +400,7 @@ describe('ProfileScreen', () => {
 
   describe('shipping address section', () => {
     it('shows shipping address section title', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Shipping Address')).toBeTruthy();
@@ -409,7 +409,7 @@ describe('ProfileScreen', () => {
 
     it('shows Add Shipping Address button when no address exists', async () => {
       // Default mock returns null for address
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -445,7 +445,7 @@ describe('ProfileScreen', () => {
         });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('John Doe')).toBeTruthy();
@@ -456,7 +456,7 @@ describe('ProfileScreen', () => {
     });
 
     it('opens edit form when pressing Add Shipping Address', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -472,7 +472,7 @@ describe('ProfileScreen', () => {
     });
 
     it('pre-fills name with profile full name when adding new address', async () => {
-      const { getByText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByDisplayValue } = await render(<ProfileScreen />);
 
       // Wait for profile to load (mock returns full_name: 'Test User')
       await waitFor(() => {
@@ -516,7 +516,7 @@ describe('ProfileScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, getByDisplayValue } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('John Doe')).toBeTruthy();
@@ -531,7 +531,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows validation error for missing name', async () => {
-      const { getByText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByDisplayValue } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -555,7 +555,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows validation error for missing street address', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -576,7 +576,7 @@ describe('ProfileScreen', () => {
     });
 
     it('saves address successfully', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -608,7 +608,7 @@ describe('ProfileScreen', () => {
     });
 
     it('cancels editing without saving', async () => {
-      const { getByText, getByPlaceholderText, queryByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, queryByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -632,7 +632,7 @@ describe('ProfileScreen', () => {
 
   describe('user email display', () => {
     it('displays user email in profile', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('test@example.com')).toBeTruthy();
@@ -642,7 +642,7 @@ describe('ProfileScreen', () => {
 
   describe('pull to refresh', () => {
     it('renders with refresh control', async () => {
-      const { UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -703,7 +703,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -713,7 +713,7 @@ describe('ProfileScreen', () => {
 
   describe('sign out', () => {
     it('shows sign out button', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -721,7 +721,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows confirmation dialog when sign out pressed', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -761,7 +761,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('@testvenmo')).toBeTruthy();
@@ -810,7 +810,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -820,7 +820,7 @@ describe('ProfileScreen', () => {
 
   describe('refresh functionality', () => {
     it('has pull to refresh', async () => {
-      const { UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -832,7 +832,7 @@ describe('ProfileScreen', () => {
 
   describe('account details', () => {
     it('shows email address', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('test@example.com')).toBeTruthy();
@@ -842,7 +842,7 @@ describe('ProfileScreen', () => {
 
   describe('photo handling', () => {
     it('shows profile photo press handler', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -852,7 +852,7 @@ describe('ProfileScreen', () => {
 
   describe('field editing', () => {
     it('shows username in profile', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('testuser').length).toBeGreaterThan(0);
@@ -860,7 +860,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows full name in profile', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Test User')).toBeTruthy();
@@ -870,7 +870,7 @@ describe('ProfileScreen', () => {
 
   describe('display preference toggle', () => {
     it('shows display preference options', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -895,7 +895,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -905,7 +905,7 @@ describe('ProfileScreen', () => {
 
   describe('address validation', () => {
     it('shows validation error for missing city', async () => {
-      const { getByText, getByPlaceholderText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, getByDisplayValue } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -928,7 +928,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows validation error for missing state', async () => {
-      const { getByText, getByPlaceholderText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, getByDisplayValue } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -952,7 +952,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows validation error for missing zip code', async () => {
-      const { getByText, getByPlaceholderText, getByDisplayValue } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, getByDisplayValue } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -986,7 +986,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -1011,7 +1011,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -1043,7 +1043,7 @@ describe('ProfileScreen', () => {
 
   describe('sign out execution', () => {
     it('calls sign out when confirmed', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -1067,7 +1067,7 @@ describe('ProfileScreen', () => {
 
   describe('profile update', () => {
     it('calls supabase update when saving profile changes', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('testuser').length).toBeGreaterThan(0);
@@ -1102,7 +1102,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1112,7 +1112,7 @@ describe('ProfileScreen', () => {
 
   describe('avatar photo', () => {
     it('shows profile avatar area', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1120,7 +1120,7 @@ describe('ProfileScreen', () => {
     });
 
     it('handles avatar upload button', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1130,7 +1130,7 @@ describe('ProfileScreen', () => {
 
   describe('profile field editing', () => {
     it('shows edit button for username field', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -1138,7 +1138,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows edit button for full name field', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Full Name')).toBeTruthy();
@@ -1146,7 +1146,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows profile settings for venmo area', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1156,7 +1156,7 @@ describe('ProfileScreen', () => {
 
   describe('display preference', () => {
     it('shows display name options', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -1166,7 +1166,7 @@ describe('ProfileScreen', () => {
 
   describe('recovery navigation', () => {
     it('renders recoveries section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1176,7 +1176,7 @@ describe('ProfileScreen', () => {
 
   describe('finds section', () => {
     it('loads finds data on mount', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
@@ -1189,7 +1189,7 @@ describe('ProfileScreen', () => {
 
   describe('member since display', () => {
     it('shows account created date', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Account Created')).toBeTruthy();
@@ -1199,7 +1199,7 @@ describe('ProfileScreen', () => {
 
   describe('loading states', () => {
     it('shows loading state initially', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1209,7 +1209,7 @@ describe('ProfileScreen', () => {
 
   describe('address street_address_2', () => {
     it('shows address form when adding new address', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add Shipping Address')).toBeTruthy();
@@ -1249,7 +1249,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1259,7 +1259,7 @@ describe('ProfileScreen', () => {
 
   describe('order stickers', () => {
     it('shows sticker orders section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sticker Orders')).toBeTruthy();
@@ -1269,7 +1269,7 @@ describe('ProfileScreen', () => {
 
   describe('my orders section', () => {
     it('shows my orders button', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('My Orders')).toBeTruthy();
@@ -1277,7 +1277,7 @@ describe('ProfileScreen', () => {
     });
 
     it('navigates to my orders when pressed', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('My Orders')).toBeTruthy();
@@ -1291,7 +1291,7 @@ describe('ProfileScreen', () => {
 
   describe('sign out flow', () => {
     it('shows sign out confirmation when button pressed', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Sign Out')).toBeTruthy();
@@ -1309,7 +1309,7 @@ describe('ProfileScreen', () => {
 
   describe('profile photo handling', () => {
     it('shows profile photo options when avatar pressed', async () => {
-      const { getByText, UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { getByText, UNSAFE_getAllByType } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1319,7 +1319,7 @@ describe('ProfileScreen', () => {
 
   describe('display preference', () => {
     it('shows display preference section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -1329,7 +1329,7 @@ describe('ProfileScreen', () => {
 
   describe('venmo username', () => {
     it('shows venmo section', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Venmo')).toBeTruthy();
@@ -1339,7 +1339,7 @@ describe('ProfileScreen', () => {
 
   describe('full name editing', () => {
     it('shows full name field', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Full Name')).toBeTruthy();
@@ -1349,7 +1349,7 @@ describe('ProfileScreen', () => {
 
   describe('username editing', () => {
     it('shows username field', async () => {
-      const { getAllByText } = render(<ProfileScreen />);
+      const { getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -1359,7 +1359,7 @@ describe('ProfileScreen', () => {
 
   describe('scroll view refresh', () => {
     it('has pull to refresh', async () => {
-      const { UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -1371,7 +1371,7 @@ describe('ProfileScreen', () => {
 
   describe('shipping address section', () => {
     it('shows shipping address title', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Shipping Address')).toBeTruthy();
@@ -1381,7 +1381,7 @@ describe('ProfileScreen', () => {
 
   describe('profile form sections', () => {
     it('shows profile settings header', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1389,7 +1389,7 @@ describe('ProfileScreen', () => {
     });
 
     it('shows profile edit sections', async () => {
-      const { getAllByText, getByText } = render(<ProfileScreen />);
+      const { getAllByText, getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -1423,7 +1423,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1453,7 +1453,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1463,7 +1463,7 @@ describe('ProfileScreen', () => {
 
   describe('display preference changing', () => {
     it('shows display preference change alert', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -1487,7 +1487,7 @@ describe('ProfileScreen', () => {
 
   describe('username editing flow', () => {
     it('allows editing username', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('testuser').length).toBeGreaterThan(0);
@@ -1505,7 +1505,7 @@ describe('ProfileScreen', () => {
 
   describe('full name editing flow', () => {
     it('allows editing full name', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Test User')).toBeTruthy();
@@ -1523,7 +1523,7 @@ describe('ProfileScreen', () => {
 
   describe('venmo username editing flow', () => {
     it('shows venmo input placeholder when no username set', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Venmo')).toBeTruthy();
@@ -1532,7 +1532,7 @@ describe('ProfileScreen', () => {
     });
 
     it('opens venmo editing when tapping on venmo field', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add your Venmo username')).toBeTruthy();
@@ -1548,7 +1548,7 @@ describe('ProfileScreen', () => {
 
   describe('profile photo options', () => {
     it('shows profile photo alert with options', async () => {
-      const { UNSAFE_root } = render(<ProfileScreen />);
+      const { UNSAFE_root } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(UNSAFE_root).toBeTruthy();
@@ -1558,7 +1558,7 @@ describe('ProfileScreen', () => {
 
   describe('order stickers navigation', () => {
     it('navigates to order stickers when pressed', async () => {
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Order More Stickers')).toBeTruthy();
@@ -1587,7 +1587,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Discs I Found')).toBeTruthy();
@@ -1629,7 +1629,7 @@ describe('ProfileScreen', () => {
         error: null,
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1696,7 +1696,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1711,7 +1711,7 @@ describe('ProfileScreen', () => {
         error: null,
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -1738,7 +1738,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Discs I Found')).toBeTruthy();
@@ -1748,7 +1748,7 @@ describe('ProfileScreen', () => {
 
   describe('username editing save and cancel', () => {
     it('saves username when check button is pressed', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('testuser')).toBeTruthy();
@@ -1765,7 +1765,7 @@ describe('ProfileScreen', () => {
       fireEvent.changeText(getByPlaceholderText('Enter username'), 'newusername');
 
       // Save by pressing check icon (find by pressing all touchable elements and checking state)
-      const { UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(mockSupabaseFrom).toHaveBeenCalled();
@@ -1773,7 +1773,7 @@ describe('ProfileScreen', () => {
     });
 
     it('cancels username editing when cancel button is pressed', async () => {
-      const { getByText, getByPlaceholderText, queryByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText, queryByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('testuser')).toBeTruthy();
@@ -1794,7 +1794,7 @@ describe('ProfileScreen', () => {
 
   describe('full name editing save and cancel', () => {
     it('saves full name when check button is pressed', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Test User')).toBeTruthy();
@@ -1815,7 +1815,7 @@ describe('ProfileScreen', () => {
     });
 
     it('saves empty full name when cleared', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Test User')).toBeTruthy();
@@ -1837,7 +1837,7 @@ describe('ProfileScreen', () => {
 
   describe('venmo username editing save and cancel', () => {
     it('saves venmo username when check button is pressed', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add your Venmo username')).toBeTruthy();
@@ -1876,7 +1876,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProfileScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Add your Venmo username')).toBeTruthy();
@@ -1941,7 +1941,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -1961,7 +1961,7 @@ describe('ProfileScreen', () => {
     });
 
     it('saves display preference when username option selected', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -1983,7 +1983,7 @@ describe('ProfileScreen', () => {
     });
 
     it('saves display preference when full name option selected', async () => {
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Display Name As')).toBeTruthy();
@@ -2026,7 +2026,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Set Up (ID required)')).toBeTruthy();
@@ -2059,7 +2059,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Set Up (ID required)')).toBeTruthy();
@@ -2114,7 +2114,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Continue Setup')).toBeTruthy();
@@ -2169,7 +2169,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Fix Issues')).toBeTruthy();
@@ -2208,7 +2208,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Ready to receive card payments')).toBeTruthy();
@@ -2237,7 +2237,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText, getAllByText } = render(<ProfileScreen />);
+      const { getByText, getAllByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getAllByText('Username').length).toBeGreaterThan(0);
@@ -2261,7 +2261,7 @@ describe('ProfileScreen', () => {
 
   describe('pull to refresh functionality', () => {
     it('refreshes all data when pull to refresh triggered', async () => {
-      const { UNSAFE_getAllByType } = render(<ProfileScreen />);
+      const { UNSAFE_getAllByType } = await render(<ProfileScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -2301,7 +2301,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Discs I Found')).toBeTruthy();
@@ -2325,7 +2325,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Discs I Found')).toBeTruthy();
@@ -2349,7 +2349,7 @@ describe('ProfileScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();
@@ -2401,7 +2401,7 @@ describe('ProfileScreen', () => {
         return { select: jest.fn(() => ({ eq: jest.fn(() => Promise.resolve({ data: [], error: null })) })) };
       });
 
-      const { getByText } = render(<ProfileScreen />);
+      const { getByText } = await render(<ProfileScreen />);
 
       await waitFor(() => {
         expect(getByText('Profile Settings')).toBeTruthy();

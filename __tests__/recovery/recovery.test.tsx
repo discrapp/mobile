@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import { Alert } from 'react-native';
 import RecoveryDetailScreen from '../../app/recovery/[id]';
 
@@ -130,8 +130,8 @@ describe('RecoveryDetailScreen', () => {
     });
   });
 
-  it('shows skeleton loaders initially', () => {
-    const { UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+  it('shows skeleton loaders initially', async () => {
+    const { UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
 
     // Should show skeleton components (which use Animated.View)
     const Animated = require('react-native').Animated;
@@ -140,7 +140,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('renders recovery details', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Destroyer')).toBeTruthy();
@@ -148,7 +148,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc found status badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
@@ -156,7 +156,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc manufacturer', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Innova')).toBeTruthy();
@@ -164,7 +164,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc plastic', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Star')).toBeTruthy();
@@ -172,7 +172,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc color badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Blue')).toBeTruthy();
@@ -180,7 +180,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows reward badge', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('$10 Reward')).toBeTruthy();
@@ -188,7 +188,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows people section', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('People')).toBeTruthy();
@@ -198,7 +198,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows finder message', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText("Finder's Message")).toBeTruthy();
@@ -207,7 +207,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows propose meetup button for found status', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -215,7 +215,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows surrender button for owner', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -223,7 +223,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('navigates to propose meetup on button press', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -240,7 +240,7 @@ describe('RecoveryDetailScreen', () => {
       json: () => Promise.resolve({ error: 'Not found' }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Error')).toBeTruthy();
@@ -254,7 +254,7 @@ describe('RecoveryDetailScreen', () => {
       json: () => Promise.resolve({ error: 'Not found' }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Go Back')).toBeTruthy();
@@ -274,7 +274,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -291,7 +291,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Surrendered')).toBeTruthy();
@@ -317,7 +317,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Maple Hill DGC')).toBeTruthy();
@@ -342,7 +342,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Central Park')).toBeTruthy();
@@ -368,7 +368,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -385,7 +385,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -402,7 +402,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Meetup Confirmed')).toBeTruthy();
@@ -428,7 +428,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Counter')).toBeTruthy();
@@ -449,7 +449,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancelled')).toBeTruthy();
@@ -466,7 +466,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Abandoned')).toBeTruthy();
@@ -492,7 +492,7 @@ describe('RecoveryDetailScreen', () => {
       }),
     });
 
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -500,7 +500,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('shows disc info section', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
@@ -509,7 +509,7 @@ describe('RecoveryDetailScreen', () => {
   });
 
   it('renders the screen successfully', async () => {
-    const { getByText } = render(<RecoveryDetailScreen />);
+    const { getByText } = await render(<RecoveryDetailScreen />);
 
     await waitFor(() => {
       expect(getByText('Disc Found')).toBeTruthy();
@@ -526,7 +526,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -543,7 +543,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Finder should see the propose meetup option
@@ -572,7 +572,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -597,7 +597,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -625,7 +625,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -650,7 +650,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Under the big oak tree')).toBeTruthy();
@@ -677,7 +677,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -697,7 +697,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Received!')).toBeTruthy();
@@ -707,7 +707,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('navigation', () => {
     it('navigates back correctly', async () => {
-      const { getByTestId, getByText } = render(<RecoveryDetailScreen />);
+      const { getByTestId, getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -719,7 +719,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText: getByTextError } = render(<RecoveryDetailScreen />);
+      const { getByText: getByTextError } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByTextError('Go Back')).toBeTruthy();
@@ -732,7 +732,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('reward section', () => {
     it('shows reward badge when reward is set', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward')).toBeTruthy();
@@ -748,7 +748,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { queryByText, getByText } = render(<RecoveryDetailScreen />);
+      const { queryByText, getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -768,7 +768,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -784,7 +784,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -801,7 +801,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -813,7 +813,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('loading states', () => {
     it('shows refreshing state', async () => {
-      const { getByText, UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -835,7 +835,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -847,7 +847,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('owner and finder display', () => {
     it('shows people section', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('People')).toBeTruthy();
@@ -855,7 +855,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows owner label', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Owner')).toBeTruthy();
@@ -863,7 +863,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows finder label', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Finder')).toBeTruthy();
@@ -873,7 +873,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('action buttons', () => {
     it('shows surrender button press triggers alert', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -905,7 +905,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -940,7 +940,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Meet at the parking lot')).toBeTruthy();
@@ -967,7 +967,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -992,7 +992,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -1017,7 +1017,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Under the oak tree near hole 5')).toBeTruthy();
@@ -1047,7 +1047,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<RecoveryDetailScreen />);
+      const { getByText, queryByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1070,7 +1070,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Check for the recovered section header
@@ -1089,7 +1089,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When owner views surrendered status, shows "Disc Surrendered"
@@ -1100,7 +1100,7 @@ describe('RecoveryDetailScreen', () => {
     it('shows meetup proposal status correctly', async () => {
       // This test uses the default mock which has status 'found'
       // and verifies the component can render meetup-related UI
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Verify the finder's message section shows for 'found' status
@@ -1131,7 +1131,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Downtown Disc Golf')).toBeTruthy();
@@ -1157,7 +1157,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -1183,7 +1183,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Counter')).toBeTruthy();
@@ -1204,7 +1204,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward')).toBeTruthy();
@@ -1225,7 +1225,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Red')).toBeTruthy();
@@ -1244,7 +1244,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Champion')).toBeTruthy();
@@ -1256,7 +1256,7 @@ describe('RecoveryDetailScreen', () => {
     it('handles fetch error gracefully', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Should still render loading or error state without crashing
       await waitFor(() => {
@@ -1270,7 +1270,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Should handle error without crashing
       await waitFor(() => {
@@ -1289,7 +1289,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -1315,7 +1315,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1333,7 +1333,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1349,7 +1349,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Disc')).toBeTruthy();
@@ -1359,7 +1359,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('contact information', () => {
     it('shows people section with owner and finder', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('People')).toBeTruthy();
@@ -1369,7 +1369,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows current user as You', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When user_role is 'owner', the owner name shows as "You"
@@ -1378,7 +1378,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows finder display name when owner is viewing', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // When user_role is 'owner', the finder's name is displayed with @ prefix
@@ -1389,7 +1389,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('timeline', () => {
     it('shows finder message section when message exists', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText("Finder's Message")).toBeTruthy();
@@ -1408,7 +1408,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1428,7 +1428,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Drop Off Disc')).toBeTruthy();
@@ -1446,7 +1446,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -1481,7 +1481,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -1517,7 +1517,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Counter')).toBeTruthy();
@@ -1549,7 +1549,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1576,7 +1576,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -1612,7 +1612,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off!')).toBeTruthy();
@@ -1638,7 +1638,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -1650,7 +1650,7 @@ describe('RecoveryDetailScreen', () => {
     it('shows loading state initially', async () => {
       (global.fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
 
-      const { UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const Animated = require('react-native').Animated;
 
       // Should show loading skeleton
@@ -1665,7 +1665,7 @@ describe('RecoveryDetailScreen', () => {
         json: () => Promise.resolve({ error: 'Recovery not found' }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       // Component should still render without crashing
       await waitFor(() => {
@@ -1676,7 +1676,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('disc details section', () => {
     it('shows disc mold name in card', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Disc mold is shown in the disc card
@@ -1685,7 +1685,7 @@ describe('RecoveryDetailScreen', () => {
     });
 
     it('shows status badge', async () => {
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found')).toBeTruthy();
@@ -1736,7 +1736,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -1763,7 +1763,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText("Don't want to pick it up?")).toBeTruthy();
@@ -1791,7 +1791,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -1825,7 +1825,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -1859,7 +1859,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -1896,7 +1896,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -1923,7 +1923,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -1951,7 +1951,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Contact .* directly to send the/)).toBeTruthy();
@@ -1974,7 +1974,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -1998,7 +1998,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('$10 Reward Received')).toBeTruthy();
@@ -2019,7 +2019,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('View in My Collection')).toBeTruthy();
@@ -2038,7 +2038,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('View in My Collection')).toBeTruthy();
@@ -2070,7 +2070,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // The title includes an icon, so check for the text part
@@ -2091,7 +2091,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Should display the unknown status as is
@@ -2107,7 +2107,7 @@ describe('RecoveryDetailScreen', () => {
         data: { session: null },
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You must be signed in to view this')).toBeTruthy();
@@ -2129,7 +2129,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -2159,7 +2159,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2185,7 +2185,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         // Status badge shows meetup confirmed
@@ -2214,7 +2214,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You Dropped Off the Disc')).toBeTruthy();
@@ -2250,7 +2250,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -2300,7 +2300,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -2358,7 +2358,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -2408,7 +2408,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -2442,7 +2442,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -2492,7 +2492,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -2526,7 +2526,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -2563,7 +2563,7 @@ describe('RecoveryDetailScreen', () => {
         data: { session: null },
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('You must be signed in to view this')).toBeTruthy();
@@ -2575,7 +2575,7 @@ describe('RecoveryDetailScreen', () => {
     it('uses router.back when canGoBack returns true', async () => {
       mockCanGoBack.mockReturnValue(true);
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Destroyer')).toBeTruthy();
@@ -2598,7 +2598,7 @@ describe('RecoveryDetailScreen', () => {
 
   describe('pull to refresh', () => {
     it('refreshes data on pull', async () => {
-      const { getByText, UNSAFE_getAllByType } = render(<RecoveryDetailScreen />);
+      const { getByText, UNSAFE_getAllByType } = await render(<RecoveryDetailScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -2635,7 +2635,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2667,7 +2667,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions')).toBeTruthy();
@@ -2699,7 +2699,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Get Directions to Pickup')).toBeTruthy();
@@ -2735,7 +2735,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -2771,7 +2771,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Send $10 via Venmo')).toBeTruthy();
@@ -2808,7 +2808,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -2849,7 +2849,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -2894,7 +2894,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText(/Pay .* with Card/)).toBeTruthy();
@@ -2930,7 +2930,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered!')).toBeTruthy();
@@ -2966,7 +2966,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -3007,7 +3007,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Received the $10 Reward')).toBeTruthy();
@@ -3052,7 +3052,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Confirm')).toBeTruthy();
@@ -3097,7 +3097,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -3140,7 +3140,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -3191,7 +3191,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -3242,7 +3242,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Give to Finder')).toBeTruthy();
@@ -3293,7 +3293,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Abandon Disc')).toBeTruthy();
@@ -3358,7 +3358,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();
@@ -3400,7 +3400,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Surrender Disc to Finder')).toBeTruthy();
@@ -3466,7 +3466,7 @@ describe('RecoveryDetailScreen', () => {
         });
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('I Picked Up My Disc')).toBeTruthy();
@@ -3510,7 +3510,7 @@ describe('RecoveryDetailScreen', () => {
         }),
       });
 
-      const { getByText } = render(<RecoveryDetailScreen />);
+      const { getByText } = await render(<RecoveryDetailScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark as Recovered')).toBeTruthy();

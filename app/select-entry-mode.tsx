@@ -9,7 +9,7 @@ export default function SelectEntryModeScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const textColor = Colors[colorScheme ?? 'light'].text;
+  const textColor = Colors[colorScheme === 'dark' ? 'dark' : 'light'].text;
 
   const handleSelectMode = (mode: 'qr' | 'photo-ai' | 'manual') => {
     // Dismiss the modal first, then push to add-disc
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0,
   },
   content: {
     width: '90%',

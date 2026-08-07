@@ -102,7 +102,7 @@ describe('AuthContext', () => {
 
   describe('AuthProvider', () => {
     it('provides auth context to children', async () => {
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -114,7 +114,7 @@ describe('AuthContext', () => {
     }, 15000);
 
     it('initializes with loading state', async () => {
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -351,7 +351,7 @@ describe('AuthContext', () => {
     it('shows no user when no session', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -371,7 +371,7 @@ describe('AuthContext', () => {
         },
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -392,7 +392,7 @@ describe('AuthContext', () => {
         return { data: { subscription: { unsubscribe: jest.fn() } } };
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -419,7 +419,7 @@ describe('AuthContext', () => {
         return { data: { subscription: { unsubscribe: jest.fn() } } };
       });
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -683,7 +683,7 @@ describe('AuthContext', () => {
 
       let authContext: ReturnType<typeof useAuth> | null = null;
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent onAuth={(auth) => { authContext = auth; }} />
         </AuthProvider>
@@ -970,7 +970,7 @@ describe('AuthContext', () => {
         data: { subscription: { unsubscribe } },
       });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -990,7 +990,7 @@ describe('AuthContext', () => {
       const remove = jest.fn();
       Linking.addEventListener.mockReturnValue({ remove });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1013,7 +1013,7 @@ describe('AuthContext', () => {
       Notifications.addNotificationReceivedListener.mockReturnValue({ remove: removeReceived });
       Notifications.addNotificationResponseReceivedListener.mockReturnValue({ remove: removeResponse });
 
-      const { unmount } = render(
+      const { unmount } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1036,7 +1036,7 @@ describe('AuthContext', () => {
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1117,7 +1117,7 @@ describe('AuthContext', () => {
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>
@@ -1344,7 +1344,7 @@ describe('AuthContext', () => {
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByTestId } = render(
+      const { getByTestId } = await render(
         <AuthProvider>
           <TestComponent />
         </AuthProvider>

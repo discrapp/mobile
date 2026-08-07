@@ -18,25 +18,26 @@ describe('CheckoutSuccessScreen', () => {
   });
 
   afterEach(() => {
+    jest.runAllTimers();
     jest.useRealTimers();
   });
 
-  it('renders payment successful message', () => {
-    const { getByText } = render(<CheckoutSuccessScreen />);
+  it('renders payment successful message', async () => {
+    const { getByText } = await render(<CheckoutSuccessScreen />);
 
     expect(getByText('✅')).toBeTruthy();
     expect(getByText('Payment Successful!')).toBeTruthy();
     expect(getByText('Your order has been placed successfully.')).toBeTruthy();
   });
 
-  it('displays order ID when provided', () => {
-    const { getByText } = render(<CheckoutSuccessScreen />);
+  it('displays order ID when provided', async () => {
+    const { getByText } = await render(<CheckoutSuccessScreen />);
 
     expect(getByText('Order ID: order-123')).toBeTruthy();
   });
 
-  it('shows redirect message', () => {
-    const { getByText } = render(<CheckoutSuccessScreen />);
+  it('shows redirect message', async () => {
+    const { getByText } = await render(<CheckoutSuccessScreen />);
 
     expect(getByText('Returning to the app...')).toBeTruthy();
   });
@@ -55,8 +56,8 @@ describe('CheckoutSuccessScreen', () => {
     });
   });
 
-  it('cleans up timer on unmount', () => {
-    const { unmount } = render(<CheckoutSuccessScreen />);
+  it('cleans up timer on unmount', async () => {
+    const { unmount } = await render(<CheckoutSuccessScreen />);
 
     unmount();
 

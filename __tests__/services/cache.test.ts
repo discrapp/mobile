@@ -256,15 +256,15 @@ describe('CacheService', () => {
 });
 
 describe('CACHE_KEYS', () => {
-  it('exports disc collection cache key', () => {
+  it('exports disc collection cache key', async () => {
     expect(CACHE_KEYS.DISC_COLLECTION).toBe('disc-collection');
   });
 
-  it('exports user profile cache key', () => {
+  it('exports user profile cache key', async () => {
     expect(CACHE_KEYS.USER_PROFILE).toBe('user-profile');
   });
 
-  it('exports notifications cache key', () => {
+  it('exports notifications cache key', async () => {
     expect(CACHE_KEYS.NOTIFICATIONS).toBe('notifications');
   });
 });

@@ -31,13 +31,13 @@ describe('imageCompression', () => {
   });
 
   describe('DEFAULT_MAX_DIMENSION', () => {
-    it('should be 1920', () => {
+    it('should be 1920', async () => {
       expect(DEFAULT_MAX_DIMENSION).toBe(1920);
     });
   });
 
   describe('DEFAULT_COMPRESSION_QUALITY', () => {
-    it('should be 0.8 (80%)', () => {
+    it('should be 0.8 (80%)', async () => {
       expect(DEFAULT_COMPRESSION_QUALITY).toBe(0.8);
     });
   });
@@ -68,32 +68,32 @@ describe('imageCompression', () => {
   });
 
   describe('calculateResizeDimensions', () => {
-    it('should not resize if image is smaller than max dimension', () => {
+    it('should not resize if image is smaller than max dimension', async () => {
       const result = calculateResizeDimensions(800, 600, 1920);
       expect(result).toBeNull();
     });
 
-    it('should resize landscape image to max width', () => {
+    it('should resize landscape image to max width', async () => {
       const result = calculateResizeDimensions(3840, 2160, 1920);
       expect(result).toEqual({ width: 1920, height: 1080 });
     });
 
-    it('should resize portrait image to max height', () => {
+    it('should resize portrait image to max height', async () => {
       const result = calculateResizeDimensions(2160, 3840, 1920);
       expect(result).toEqual({ width: 1080, height: 1920 });
     });
 
-    it('should resize square image correctly', () => {
+    it('should resize square image correctly', async () => {
       const result = calculateResizeDimensions(4000, 4000, 1920);
       expect(result).toEqual({ width: 1920, height: 1920 });
     });
 
-    it('should handle exact max dimension', () => {
+    it('should handle exact max dimension', async () => {
       const result = calculateResizeDimensions(1920, 1080, 1920);
       expect(result).toBeNull();
     });
 
-    it('should use custom max dimension', () => {
+    it('should use custom max dimension', async () => {
       const result = calculateResizeDimensions(2000, 1500, 1000);
       expect(result).toEqual({ width: 1000, height: 750 });
     });

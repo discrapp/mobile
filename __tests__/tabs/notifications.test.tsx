@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '../test-utils';
 import NotificationsScreen from '../../app/(tabs)/notifications';
 
 // Mock expo-router
@@ -53,7 +53,7 @@ describe('NotificationsScreen', () => {
 
   describe('empty state', () => {
     it('renders empty state', async () => {
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('No notifications yet')).toBeTruthy();
@@ -61,7 +61,7 @@ describe('NotificationsScreen', () => {
     }, 15000);
 
     it('shows empty state description', async () => {
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText("You'll be notified when someone finds your disc or proposes a meetup")).toBeTruthy();
@@ -87,7 +87,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -104,7 +104,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('1 unread')).toBeTruthy();
@@ -123,7 +123,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 unread')).toBeTruthy();
@@ -149,7 +149,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -173,7 +173,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -197,7 +197,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Accepted')).toBeTruthy();
@@ -221,7 +221,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Surrendered')).toBeTruthy();
@@ -272,7 +272,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ error: 'Server error' }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should still render empty state without crashing
       await waitFor(() => {
@@ -299,7 +299,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -324,7 +324,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -349,7 +349,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -373,7 +373,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -402,7 +402,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2h ago')).toBeTruthy();
@@ -428,7 +428,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Just now')).toBeTruthy();
@@ -454,7 +454,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('3d ago')).toBeTruthy();
@@ -480,7 +480,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('10m ago')).toBeTruthy();
@@ -506,7 +506,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Your Destroyer was found!')).toBeTruthy();
@@ -542,7 +542,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -563,7 +563,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('First Notification')).toBeTruthy();
@@ -583,7 +583,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -599,7 +599,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { queryByText, getByText } = render(<NotificationsScreen />);
+      const { queryByText, getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -619,7 +619,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -635,7 +635,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -664,7 +664,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -689,7 +689,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Proposed')).toBeTruthy();
@@ -714,7 +714,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -733,7 +733,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -753,7 +753,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -781,7 +781,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -808,7 +808,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Dropped Off')).toBeTruthy();
@@ -820,7 +820,7 @@ describe('NotificationsScreen', () => {
     it('handles network error on fetch', async () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should still render empty state without crashing
       await waitFor(() => {
@@ -839,7 +839,7 @@ describe('NotificationsScreen', () => {
         })
         .mockRejectedValueOnce(new Error('Network error'));
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -852,7 +852,7 @@ describe('NotificationsScreen', () => {
 
   describe('pull to refresh', () => {
     it('has refresh control', async () => {
-      const { UNSAFE_getAllByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getAllByType } = await render(<NotificationsScreen />);
       const { RefreshControl } = require('react-native');
 
       await waitFor(() => {
@@ -880,7 +880,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Found!')).toBeTruthy();
@@ -907,7 +907,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Press Me')).toBeTruthy();
@@ -934,7 +934,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Unread Notification')).toBeTruthy();
@@ -969,7 +969,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Navigate Me')).toBeTruthy();
@@ -999,7 +999,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -1029,7 +1029,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('No Navigation')).toBeTruthy();
@@ -1065,7 +1065,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Old Notification')).toBeTruthy();
@@ -1083,7 +1083,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1107,7 +1107,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1137,7 +1137,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Disc Recovered')).toBeTruthy();
@@ -1156,7 +1156,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ error: 'Server error' }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       // Should render empty state
       await waitFor(() => {
@@ -1167,7 +1167,7 @@ describe('NotificationsScreen', () => {
 
   describe('loading state', () => {
     it('shows loading indicator while fetching', async () => {
-      const { UNSAFE_getByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getByType } = await render(<NotificationsScreen />);
       const { ActivityIndicator } = require('react-native');
 
       // Initially loading
@@ -1180,7 +1180,7 @@ describe('NotificationsScreen', () => {
         json: () => Promise.resolve({ notifications: [], unread_count: 0 }),
       });
 
-      const { queryByTestId } = render(<NotificationsScreen />);
+      const { queryByTestId } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(queryByTestId('loading-indicator')).toBeNull();
@@ -1198,7 +1198,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { UNSAFE_getAllByType } = render(<NotificationsScreen />);
+      const { UNSAFE_getAllByType } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -1230,7 +1230,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1259,7 +1259,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Mark all read')).toBeTruthy();
@@ -1283,7 +1283,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText, queryByText } = render(<NotificationsScreen />);
+      const { getByText, queryByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1312,7 +1312,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss all')).toBeTruthy();
@@ -1361,7 +1361,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss Me')).toBeTruthy();
@@ -1400,7 +1400,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Dismiss')).toBeTruthy();
@@ -1434,7 +1434,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Meetup Declined')).toBeTruthy();
@@ -1490,7 +1490,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 notifications')).toBeTruthy();
@@ -1509,7 +1509,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('2 unread')).toBeTruthy();
@@ -1547,7 +1547,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Both IDs')).toBeTruthy();
@@ -1582,7 +1582,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Test')).toBeTruthy();
@@ -1611,7 +1611,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Plastic Type Approved!')).toBeTruthy();
@@ -1636,7 +1636,7 @@ describe('NotificationsScreen', () => {
         }),
       });
 
-      const { getByText } = render(<NotificationsScreen />);
+      const { getByText } = await render(<NotificationsScreen />);
 
       await waitFor(() => {
         expect(getByText('Plastic Type Approved!')).toBeTruthy();

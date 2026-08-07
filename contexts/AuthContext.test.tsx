@@ -83,7 +83,7 @@ describe('AuthContext', () => {
     it('should provide initial auth state with no session', async () => {
       setupMocks();
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -96,7 +96,7 @@ describe('AuthContext', () => {
     it('should provide auth state with existing session', async () => {
       setupMocks(mockSession);
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -109,7 +109,7 @@ describe('AuthContext', () => {
     it('should start with loading true', async () => {
       setupMocks();
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       // Initially loading should be true
       expect(result.current.loading).toBe(true);
@@ -128,7 +128,7 @@ describe('AuthContext', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -152,7 +152,7 @@ describe('AuthContext', () => {
         error: mockError,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -175,7 +175,7 @@ describe('AuthContext', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -199,7 +199,7 @@ describe('AuthContext', () => {
         error: mockError,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -222,7 +222,7 @@ describe('AuthContext', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -248,7 +248,7 @@ describe('AuthContext', () => {
         error: mockError,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -270,7 +270,7 @@ describe('AuthContext', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -287,7 +287,7 @@ describe('AuthContext', () => {
       setupMocks(mockSession);
       mockSignOut.mockRejectedValue(new Error('Network error'));
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -306,7 +306,7 @@ describe('AuthContext', () => {
     it('should provide signOut function', async () => {
       setupMocks();
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -320,7 +320,7 @@ describe('AuthContext', () => {
     it('should provide registerPushToken function', async () => {
       setupMocks();
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -334,7 +334,7 @@ describe('AuthContext', () => {
     it('should provide all auth functions', async () => {
       setupMocks();
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const { result } = await renderHook(() => useAuth(), { wrapper });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);

@@ -96,7 +96,7 @@ describe('OrderStickersScreen', () => {
 
   describe('initial rendering', () => {
     it('renders the order stickers screen', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Discr QR Code Stickers')).toBeTruthy();
@@ -104,7 +104,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows package selection', async () => {
-      const { getByText, getAllByText } = render(<OrderStickersScreen />);
+      const { getByText, getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Starter')).toBeTruthy();
@@ -115,7 +115,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows shipping address section', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Shipping Address')).toBeTruthy();
@@ -147,7 +147,7 @@ describe('OrderStickersScreen', () => {
         });
       });
 
-      const { getByDisplayValue } = render(<OrderStickersScreen />);
+      const { getByDisplayValue } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByDisplayValue('John Doe')).toBeTruthy();
@@ -160,7 +160,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('leaves form empty when no default address exists', async () => {
-      const { queryByDisplayValue, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { queryByDisplayValue, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -171,7 +171,7 @@ describe('OrderStickersScreen', () => {
 
   describe('save as default checkbox', () => {
     it('shows save as default checkbox', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Save as my default address')).toBeTruthy();
@@ -180,7 +180,7 @@ describe('OrderStickersScreen', () => {
 
     it('checkbox defaults to checked when no saved address exists', async () => {
       // Default mock returns null for address
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Save as my default address')).toBeTruthy();
@@ -217,7 +217,7 @@ describe('OrderStickersScreen', () => {
         });
       });
 
-      const { getByText, getByDisplayValue } = render(<OrderStickersScreen />);
+      const { getByText, getByDisplayValue } = await render(<OrderStickersScreen />);
 
       // Wait for address to load
       await waitFor(() => {
@@ -229,7 +229,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('toggles checkbox when pressed', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Save as my default address')).toBeTruthy();
@@ -245,7 +245,7 @@ describe('OrderStickersScreen', () => {
 
   describe('form validation', () => {
     it('shows error when name is missing', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -265,7 +265,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows error when street address is missing', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -284,7 +284,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows error when city is missing', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -303,7 +303,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows error when state is missing', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -322,7 +322,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows error when postal code is missing', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -343,7 +343,7 @@ describe('OrderStickersScreen', () => {
 
   describe('checkout with address save', () => {
     it('saves address when checkbox is checked on checkout', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -407,7 +407,7 @@ describe('OrderStickersScreen', () => {
         });
       });
 
-      const { getByText, getByDisplayValue } = render(<OrderStickersScreen />);
+      const { getByText, getByDisplayValue } = await render(<OrderStickersScreen />);
 
       // Wait for address to load
       await waitFor(() => {
@@ -495,7 +495,7 @@ describe('OrderStickersScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -522,7 +522,7 @@ describe('OrderStickersScreen', () => {
 
   describe('package selection', () => {
     it('defaults to Popular package', async () => {
-      const { getAllByText } = render(<OrderStickersScreen />);
+      const { getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Popular package is selected by default
@@ -534,7 +534,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows all package options', async () => {
-      const { getByText, getAllByText } = render(<OrderStickersScreen />);
+      const { getByText, getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Starter')).toBeTruthy();
@@ -545,7 +545,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows package quantities in cards', async () => {
-      const { getByText, getAllByText } = render(<OrderStickersScreen />);
+      const { getByText, getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Each package card shows its quantity
@@ -557,7 +557,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('displays correct price for Popular package', async () => {
-      const { getAllByText } = render(<OrderStickersScreen />);
+      const { getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Popular package: 10 stickers at $15.00
@@ -567,7 +567,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('displays price per sticker for Popular package', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Popular package is $1.50 per sticker (displayed as /ea)
@@ -576,7 +576,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows correct sticker count in order summary', async () => {
-      const { getAllByText } = render(<OrderStickersScreen />);
+      const { getAllByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Popular package has 10 stickers (appears in package card and order summary)
@@ -587,7 +587,7 @@ describe('OrderStickersScreen', () => {
 
   describe('order summary', () => {
     it('shows order summary section', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Order Summary')).toBeTruthy();
@@ -595,7 +595,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows free shipping', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('FREE')).toBeTruthy();
@@ -603,7 +603,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows checkout button with total', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         // Popular package default: $15.00
@@ -616,7 +616,7 @@ describe('OrderStickersScreen', () => {
     it('shows loading while fetching address', async () => {
       mockFetch.mockImplementation(() => new Promise(() => {}));
 
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       // Should eventually render
       await waitFor(() => {
@@ -627,7 +627,7 @@ describe('OrderStickersScreen', () => {
 
   describe('header section', () => {
     it('shows sticker icon and title', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Discr QR Code Stickers')).toBeTruthy();
@@ -635,7 +635,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows product description', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText(/Durable, weatherproof QR stickers/)).toBeTruthy();
@@ -645,7 +645,7 @@ describe('OrderStickersScreen', () => {
 
   describe('checkout flow', () => {
     it('creates order and opens Stripe checkout', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -688,7 +688,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -719,7 +719,7 @@ describe('OrderStickersScreen', () => {
         error: null,
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -742,7 +742,7 @@ describe('OrderStickersScreen', () => {
 
   describe('address validation', () => {
     it('calls validate-address API', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -775,7 +775,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -812,7 +812,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -855,7 +855,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -907,7 +907,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -963,7 +963,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1005,7 +1005,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText, queryByText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText, queryByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1053,7 +1053,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1089,7 +1089,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1124,7 +1124,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -1135,7 +1135,7 @@ describe('OrderStickersScreen', () => {
 
   describe('sticker description', () => {
     it('shows sticker description section', async () => {
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Discr QR Code Stickers')).toBeTruthy();
@@ -1145,7 +1145,7 @@ describe('OrderStickersScreen', () => {
 
   describe('checkout button loading', () => {
     it('shows loading when checkout initiated', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1171,7 +1171,7 @@ describe('OrderStickersScreen', () => {
 
   describe('address line 2', () => {
     it('shows address line 2 field', async () => {
-      const { getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Apt 4B (optional)')).toBeTruthy();
@@ -1179,7 +1179,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('accepts address line 2 input', async () => {
-      const { getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Apt 4B (optional)')).toBeTruthy();
@@ -1194,7 +1194,7 @@ describe('OrderStickersScreen', () => {
 
   describe('order API body', () => {
     it('sends correct order body to API', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1227,7 +1227,7 @@ describe('OrderStickersScreen', () => {
     it('handles Linking.openURL failure', async () => {
       (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error('Cannot open URL'));
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1253,7 +1253,7 @@ describe('OrderStickersScreen', () => {
     it('handles canOpenURL returning false', async () => {
       (Linking.canOpenURL as jest.Mock).mockResolvedValueOnce(false);
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1278,7 +1278,7 @@ describe('OrderStickersScreen', () => {
 
   describe('navigation and alerts', () => {
     it('navigates back after successful checkout', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1298,7 +1298,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('shows success alert after checkout', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1329,7 +1329,7 @@ describe('OrderStickersScreen', () => {
         error: null,
       });
 
-      const { getByText } = render(<OrderStickersScreen />);
+      const { getByText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Discr QR Code Stickers')).toBeTruthy();
@@ -1356,7 +1356,7 @@ describe('OrderStickersScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1400,7 +1400,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1426,7 +1426,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('sends trimmed address values in order', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1456,7 +1456,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('includes authorization header in all API calls', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1510,7 +1510,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1567,7 +1567,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByDisplayValue } = render(<OrderStickersScreen />);
+      const { getByText, getByDisplayValue } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByDisplayValue('Old Name')).toBeTruthy();
@@ -1619,7 +1619,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1677,7 +1677,7 @@ describe('OrderStickersScreen', () => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
       });
 
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1711,7 +1711,7 @@ describe('OrderStickersScreen', () => {
 
   describe('address input fields', () => {
     it('displays all required address fields', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByText('Full Name *')).toBeTruthy();
@@ -1730,7 +1730,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('defaults country to US', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();
@@ -1755,7 +1755,7 @@ describe('OrderStickersScreen', () => {
     });
 
     it('handles empty street_address_2 field', async () => {
-      const { getByText, getByPlaceholderText } = render(<OrderStickersScreen />);
+      const { getByText, getByPlaceholderText } = await render(<OrderStickersScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('John Doe')).toBeTruthy();

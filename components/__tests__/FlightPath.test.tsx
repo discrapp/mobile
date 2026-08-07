@@ -59,7 +59,7 @@ describe('FlightPath', () => {
   };
 
   it('renders without crashing', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -67,7 +67,7 @@ describe('FlightPath', () => {
   });
 
   it('displays the section title', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -75,7 +75,7 @@ describe('FlightPath', () => {
   });
 
   it('renders backhand/forehand toggle', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText('Backhand')).toBeTruthy();
@@ -84,7 +84,7 @@ describe('FlightPath', () => {
   });
 
   it('toggles between backhand and forehand', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText('Backhand')).toBeTruthy();
@@ -97,7 +97,7 @@ describe('FlightPath', () => {
   });
 
   it('tapping legend item shows only that path', async () => {
-    const { getByText, getAllByTestId } = render(<FlightPath {...defaultProps} />);
+    const { getByText, getAllByTestId } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       // Initially all 3 paths visible
@@ -122,7 +122,7 @@ describe('FlightPath', () => {
   });
 
   it('renders color legend', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText('Hyzer')).toBeTruthy();
@@ -132,7 +132,7 @@ describe('FlightPath', () => {
   });
 
   it('renders distance markers for distance driver (400ft scale)', async () => {
-    const { getByText } = render(<FlightPath {...defaultProps} />);
+    const { getByText } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       // Speed 12, glide 5 = ~391ft, rounds to 400ft scale
@@ -152,7 +152,7 @@ describe('FlightPath', () => {
       fade: 1,
     };
 
-    const { getByText } = render(<FlightPath {...putterProps} />);
+    const { getByText } = await render(<FlightPath {...putterProps} />);
 
     await waitFor(() => {
       // Speed 2, glide 1 = ~91ft, rounds to 100ft scale
@@ -164,7 +164,7 @@ describe('FlightPath', () => {
   });
 
   it('renders SVG paths for all three release angles', async () => {
-    const { getAllByTestId } = render(<FlightPath {...defaultProps} />);
+    const { getAllByTestId } = await render(<FlightPath {...defaultProps} />);
 
     await waitFor(() => {
       // Should have 3 Path elements (hyzer, flat, anhyzer)
@@ -181,7 +181,7 @@ describe('FlightPath', () => {
       fade: 1,
     };
 
-    const { getByText } = render(<FlightPath {...understableProps} />);
+    const { getByText } = await render(<FlightPath {...understableProps} />);
 
     await waitFor(() => {
       expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -196,7 +196,7 @@ describe('FlightPath', () => {
       fade: 4,
     };
 
-    const { getByText } = render(<FlightPath {...overstableProps} />);
+    const { getByText } = await render(<FlightPath {...overstableProps} />);
 
     await waitFor(() => {
       expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -211,7 +211,7 @@ describe('FlightPath', () => {
       fade: 1,
     };
 
-    const { getByText } = render(<FlightPath {...putterProps} />);
+    const { getByText } = await render(<FlightPath {...putterProps} />);
 
     await waitFor(() => {
       expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -234,7 +234,7 @@ describe('FlightPath', () => {
     });
 
     it('adjusts paths for left-handed thrower', async () => {
-      const { getByText } = render(<FlightPath {...defaultProps} />);
+      const { getByText } = await render(<FlightPath {...defaultProps} />);
 
       await waitFor(() => {
         expect(getByText('FLIGHT PATH')).toBeTruthy();
@@ -262,7 +262,7 @@ describe('FlightPath', () => {
         }),
       });
 
-      const { unmount, getByText } = render(<FlightPath {...defaultProps} />);
+      const { unmount, getByText } = await render(<FlightPath {...defaultProps} />);
 
       // Verify component rendered
       expect(getByText('FLIGHT PATH')).toBeTruthy();

@@ -85,8 +85,8 @@ describe('useShotRecommendation', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useShotRecommendation());
+  it('initializes with default state', async () => {
+    const { result } = await renderHook(() => useShotRecommendation());
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -96,7 +96,7 @@ describe('useShotRecommendation', () => {
   it('returns error when not authenticated', async () => {
     mockGetSession.mockResolvedValue({ data: { session: null } });
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -123,14 +123,16 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // Start the request
     act(() => {
       result.current.getRecommendation('file://test-image.jpg');
     });
 
-    // Should be loading
+    // Flush deferred React 19 state updates before checking
+      await act(async () => {});
+      // Should be loading
     expect(result.current.isLoading).toBe(true);
 
     // Resolve the image fetch
@@ -159,7 +161,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation(testImageUri);
@@ -190,7 +192,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -220,7 +222,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');
@@ -232,7 +234,7 @@ describe('useShotRecommendation', () => {
   it('handles network errors', async () => {
     (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       const recommendation = await result.current.getRecommendation('file://test-image.jpg');
@@ -260,7 +262,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');
@@ -287,7 +289,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // Get a recommendation first
     await act(async () => {
@@ -320,7 +322,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     // First request
     await act(async () => {
@@ -367,7 +369,7 @@ describe('useShotRecommendation', () => {
         })
       );
 
-    const { result } = renderHook(() => useShotRecommendation());
+    const { result } = await renderHook(() => useShotRecommendation());
 
     await act(async () => {
       await result.current.getRecommendation('file://test-image.jpg');

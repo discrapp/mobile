@@ -82,8 +82,8 @@ describe('useDiscRecommendations', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useDiscRecommendations());
+  it('initializes with default state', async () => {
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -93,7 +93,7 @@ describe('useDiscRecommendations', () => {
   it('returns error when not authenticated', async () => {
     mockGetSession.mockResolvedValue({ data: { session: null } });
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       const recommendations = await result.current.getRecommendations(1);
@@ -112,14 +112,16 @@ describe('useDiscRecommendations', () => {
 
     (global.fetch as jest.Mock).mockImplementationOnce(() => requestPromise);
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     // Start the request
     act(() => {
       result.current.getRecommendations(1);
     });
 
-    // Should be loading
+    // Flush deferred React 19 state updates before checking
+      await act(async () => {});
+      // Should be loading
     expect(result.current.isLoading).toBe(true);
 
     // Resolve the request
@@ -141,7 +143,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       const recommendations = await result.current.getRecommendations(1);
@@ -170,7 +172,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(3);
@@ -197,7 +199,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(5);
@@ -215,7 +217,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       const recommendations = await result.current.getRecommendations(1);
@@ -239,7 +241,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(1);
@@ -251,7 +253,7 @@ describe('useDiscRecommendations', () => {
   it('handles network errors', async () => {
     (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       const recommendations = await result.current.getRecommendations(1);
@@ -273,7 +275,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(3);
@@ -295,7 +297,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     // Get recommendations first
     await act(async () => {
@@ -322,7 +324,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     // First request
     await act(async () => {
@@ -352,7 +354,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(1);
@@ -369,7 +371,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(1);
@@ -389,7 +391,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(1);
@@ -406,7 +408,7 @@ describe('useDiscRecommendations', () => {
       })
     );
 
-    const { result } = renderHook(() => useDiscRecommendations());
+    const { result } = await renderHook(() => useDiscRecommendations());
 
     await act(async () => {
       await result.current.getRecommendations(1);

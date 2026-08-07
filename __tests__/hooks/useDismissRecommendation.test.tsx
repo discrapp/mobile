@@ -42,8 +42,8 @@ describe('useDismissRecommendation', () => {
     (global.fetch as jest.Mock).mockReset();
   });
 
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useDismissRecommendation());
+  it('initializes with default state', async () => {
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -52,7 +52,7 @@ describe('useDismissRecommendation', () => {
   it('returns error when not authenticated', async () => {
     mockGetSession.mockResolvedValue({ data: { session: null } });
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('catalog-456');
@@ -71,14 +71,16 @@ describe('useDismissRecommendation', () => {
 
     (global.fetch as jest.Mock).mockImplementationOnce(() => requestPromise);
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     // Start the request
     act(() => {
       result.current.dismissDisc('catalog-456');
     });
 
-    // Should be loading
+    // Flush deferred React 19 state updates before checking
+      await act(async () => {});
+      // Should be loading
     expect(result.current.isLoading).toBe(true);
 
     // Resolve the request
@@ -100,7 +102,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('catalog-456');
@@ -124,7 +126,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('catalog-456');
@@ -143,7 +145,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('nonexistent-disc');
@@ -157,7 +159,7 @@ describe('useDismissRecommendation', () => {
   it('handles network errors', async () => {
     (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('catalog-456');
@@ -179,7 +181,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       await result.current.dismissDisc('catalog-456');
@@ -202,7 +204,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('');
@@ -221,7 +223,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       const success = await result.current.dismissDisc('catalog-456');
@@ -241,7 +243,7 @@ describe('useDismissRecommendation', () => {
       })
     );
 
-    const { result } = renderHook(() => useDismissRecommendation());
+    const { result } = await renderHook(() => useDismissRecommendation());
 
     await act(async () => {
       await result.current.dismissDisc('bad-id');

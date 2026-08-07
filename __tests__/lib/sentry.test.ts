@@ -10,7 +10,7 @@ describe('Sentry utilities', () => {
   });
 
   describe('initSentry', () => {
-    it('should initialize Sentry with correct config when DSN is set', () => {
+    it('should initialize Sentry with correct config when DSN is set', async () => {
       // Arrange
       const originalEnv = process.env.EXPO_PUBLIC_SENTRY_DSN;
       process.env.EXPO_PUBLIC_SENTRY_DSN = 'https://test@sentry.io/123';
@@ -30,7 +30,7 @@ describe('Sentry utilities', () => {
       process.env.EXPO_PUBLIC_SENTRY_DSN = originalEnv;
     });
 
-    it('should not initialize Sentry when DSN is not set', () => {
+    it('should not initialize Sentry when DSN is not set', async () => {
       // Arrange
       const originalEnv = process.env.EXPO_PUBLIC_SENTRY_DSN;
       delete process.env.EXPO_PUBLIC_SENTRY_DSN;
@@ -47,7 +47,7 @@ describe('Sentry utilities', () => {
   });
 
   describe('captureError', () => {
-    it('should capture exception with Sentry', () => {
+    it('should capture exception with Sentry', async () => {
       // Arrange
       const error = new Error('Test error');
 
@@ -58,7 +58,7 @@ describe('Sentry utilities', () => {
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
 
-    it('should capture exception with context when provided', () => {
+    it('should capture exception with context when provided', async () => {
       // Arrange
       const error = new Error('Test error');
       const context = { userId: '123', screen: 'MyBag' };
@@ -73,7 +73,7 @@ describe('Sentry utilities', () => {
   });
 
   describe('setUserContext', () => {
-    it('should set user in Sentry', () => {
+    it('should set user in Sentry', async () => {
       // Arrange
       const userId = 'user-123';
       const email = 'test@example.com';
@@ -88,7 +88,7 @@ describe('Sentry utilities', () => {
       });
     });
 
-    it('should set user with only id when email not provided', () => {
+    it('should set user with only id when email not provided', async () => {
       // Arrange
       const userId = 'user-123';
 
@@ -104,7 +104,7 @@ describe('Sentry utilities', () => {
   });
 
   describe('clearUserContext', () => {
-    it('should clear user from Sentry', () => {
+    it('should clear user from Sentry', async () => {
       // Act
       clearUserContext();
 

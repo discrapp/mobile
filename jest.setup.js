@@ -1,5 +1,21 @@
 // Jest setup file
 import '@testing-library/jest-native/extend-expect';
+import { cleanup, act } from '@testing-library/react-native';
+
+// RNTL v14 uses Object.defineProperty read-only getters on its main index export,
+// so patching index.js is a no-op. Patch the underlying render-hook.js directly,
+// whose exports ARE writable. This ensures result.current is populated before
+// renderHook() resolves, even when React 19 defers useEffect scheduling.
+const _renderHookModule = require('@testing-library/react-native/dist/render-hook');
+const _originalRenderHook = _renderHookModule.renderHook;
+_renderHookModule.renderHook = async function patchedRenderHook(hookToRender, options) {
+  const hookResult = await _originalRenderHook(hookToRender, options);
+  if (hookResult.result.current === null) {
+    // Flush any deferred effects by running an empty async act
+    await act(async () => {});
+  }
+  return hookResult;
+};
 
 // Mock React Native Reanimated
 jest.mock('react-native-reanimated', () => {
@@ -215,7 +231,10 @@ beforeEach(() => {
   jest.clearAllTimers();
 });
 
-afterEach(() => {
+afterEach(async () => {
+  // Flush any pending React work before cleanup to avoid state leakage
+  await act(async () => {});
+  cleanup();
   jest.clearAllMocks();
   jest.clearAllTimers();
 });

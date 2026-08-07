@@ -152,7 +152,7 @@ describe('OfflineService', () => {
   });
 
   describe('subscribe', () => {
-    it('adds listener and returns unsubscribe function', () => {
+    it('adds listener and returns unsubscribe function', async () => {
       const mockUnsubscribe = jest.fn();
       mockNetInfo.addEventListener.mockReturnValue(mockUnsubscribe);
 
@@ -163,7 +163,7 @@ describe('OfflineService', () => {
       expect(typeof unsubscribe).toBe('function');
     });
 
-    it('calls listener when network state changes', () => {
+    it('calls listener when network state changes', async () => {
       let capturedHandler: (state: NetInfoState) => void = () => {};
       mockNetInfo.addEventListener.mockImplementation((handler) => {
         capturedHandler = handler;
@@ -187,7 +187,7 @@ describe('OfflineService', () => {
       });
     });
 
-    it('unsubscribe removes the listener', () => {
+    it('unsubscribe removes the listener', async () => {
       const mockUnsubscribe = jest.fn();
       mockNetInfo.addEventListener.mockReturnValue(mockUnsubscribe);
 
@@ -199,7 +199,7 @@ describe('OfflineService', () => {
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
-    it('supports multiple listeners', () => {
+    it('supports multiple listeners', async () => {
       const mockUnsubscribe1 = jest.fn();
       const mockUnsubscribe2 = jest.fn();
       mockNetInfo.addEventListener
@@ -217,7 +217,7 @@ describe('OfflineService', () => {
   });
 
   describe('cleanup', () => {
-    it('unsubscribes all listeners', () => {
+    it('unsubscribes all listeners', async () => {
       const mockUnsubscribe1 = jest.fn();
       const mockUnsubscribe2 = jest.fn();
       mockNetInfo.addEventListener
@@ -233,7 +233,7 @@ describe('OfflineService', () => {
       expect(mockUnsubscribe2).toHaveBeenCalled();
     });
 
-    it('handles cleanup when no listeners exist', () => {
+    it('handles cleanup when no listeners exist', async () => {
       // Should not throw
       expect(() => offlineService.cleanup()).not.toThrow();
     });

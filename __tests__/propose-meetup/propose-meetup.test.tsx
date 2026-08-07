@@ -84,7 +84,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('renders propose meetup screen', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -92,7 +92,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows location input field', async () => {
-    const { getByPlaceholderText } = render(<ProposeMeetupScreen />);
+    const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -101,7 +101,7 @@ describe('ProposeMeetupScreen', () => {
 
   it('shows date and time pickers', async () => {
     // Date and time are displayed as formatted strings, not labels
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -109,7 +109,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows message field', async () => {
-    const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+    const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Additional Message (Optional)')).toBeTruthy();
@@ -118,7 +118,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows send proposal button', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Send Proposal')).toBeTruthy();
@@ -126,7 +126,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows cancel button', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -134,7 +134,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('validates missing location', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Send Proposal')).toBeTruthy();
@@ -146,7 +146,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('handles cancel button press', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -158,7 +158,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows hint text for location', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Suggest a public place like a disc golf course, park, or parking lot.')).toBeTruthy();
@@ -166,7 +166,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows finder subtitle text', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Suggest a time and place to return the disc to its owner.')).toBeTruthy();
@@ -174,7 +174,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('allows entering location name', async () => {
-    const { getByPlaceholderText } = render(<ProposeMeetupScreen />);
+    const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -189,7 +189,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('allows entering optional message', async () => {
-    const { getByPlaceholderText } = render(<ProposeMeetupScreen />);
+    const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('Any other details about the meetup...')).toBeTruthy();
@@ -204,7 +204,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows date picker section', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       // Date label is present
@@ -213,7 +213,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows time picker section', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       // Time label is present
@@ -239,7 +239,7 @@ describe('ProposeMeetupScreen', () => {
       json: () => Promise.resolve({ user_role: 'owner' }),
     });
 
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText('Suggest a time and place to retrieve your disc from the finder.')).toBeTruthy();
@@ -247,7 +247,7 @@ describe('ProposeMeetupScreen', () => {
   });
 
   it('shows location name label', async () => {
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     await waitFor(() => {
       expect(getByText(/Meetup Location/)).toBeTruthy();
@@ -258,7 +258,7 @@ describe('ProposeMeetupScreen', () => {
     jest.clearAllMocks();
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-    const { getByText } = render(<ProposeMeetupScreen />);
+    const { getByText } = await render(<ProposeMeetupScreen />);
 
     // Should still render the screen
     await waitFor(() => {
@@ -268,7 +268,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('proposal submission', () => {
     it('shows validation error when location is empty', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Send Proposal')).toBeTruthy();
@@ -283,7 +283,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('send proposal button is pressable when form has location', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -301,7 +301,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('form sections', () => {
     it('shows required indicator on location field', async () => {
-      const { getAllByText } = render(<ProposeMeetupScreen />);
+      const { getAllByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getAllByText('*').length).toBeGreaterThan(0);
@@ -309,7 +309,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('shows loading state initially', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       // Component should render title
       await waitFor(() => {
@@ -320,7 +320,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('successful submission', () => {
     it('calls propose-meetup API when form is valid', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -362,7 +362,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -383,7 +383,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('error handling', () => {
     it('validates missing location', async () => {
-      const { getByText, queryByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, queryByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(queryByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -411,7 +411,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -435,7 +435,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('form fields', () => {
     it('displays location label', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Meetup Location/)).toBeTruthy();
@@ -443,7 +443,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('displays optional message label', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Additional Message (Optional)')).toBeTruthy();
@@ -451,7 +451,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('shows location hint text', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Suggest a public place like a disc golf course, park, or parking lot.')).toBeTruthy();
@@ -461,7 +461,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('button actions', () => {
     it('shows both action buttons', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Send Proposal')).toBeTruthy();
@@ -470,7 +470,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('cancel button navigates back', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Cancel')).toBeTruthy();
@@ -483,7 +483,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('user role handling', () => {
     it('shows finder message when user is finder', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Suggest a time and place to return the disc to its owner.')).toBeTruthy();
@@ -497,7 +497,7 @@ describe('ProposeMeetupScreen', () => {
         json: () => Promise.resolve({ user_role: 'owner' }),
       });
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Suggest a time and place to retrieve your disc from the finder.')).toBeTruthy();
@@ -520,7 +520,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -551,7 +551,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('date and time display', () => {
     it('shows date section', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Date/)).toBeTruthy();
@@ -559,7 +559,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('shows time section', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Time/)).toBeTruthy();
@@ -569,7 +569,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('date validation', () => {
     it('validates future date requirement', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -592,7 +592,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('date and time pickers', () => {
     it('has date picker touchable', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Date/)).toBeTruthy();
@@ -600,7 +600,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('has time picker touchable', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Time/)).toBeTruthy();
@@ -623,7 +623,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -647,7 +647,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('header content', () => {
     it('shows calendar icon and title', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -657,7 +657,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('location input', () => {
     it('shows location required indicator', async () => {
-      const { getAllByText } = render(<ProposeMeetupScreen />);
+      const { getAllByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getAllByText('*').length).toBeGreaterThan(0);
@@ -677,7 +677,7 @@ describe('ProposeMeetupScreen', () => {
         json: () => Promise.resolve({ user_role: 'finder' }),
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -699,7 +699,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('message field', () => {
     it('shows message placeholder', async () => {
-      const { getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Any other details about the meetup...')).toBeTruthy();
@@ -707,7 +707,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('allows entering message', async () => {
-      const { getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('Any other details about the meetup...')).toBeTruthy();
@@ -737,7 +737,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -771,7 +771,7 @@ describe('ProposeMeetupScreen', () => {
           data: { session: null },
         });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -797,7 +797,7 @@ describe('ProposeMeetupScreen', () => {
         data: { session: null },
       });
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       // Should still render without crashing
       await waitFor(() => {
@@ -809,7 +809,7 @@ describe('ProposeMeetupScreen', () => {
   describe('past date validation', () => {
     it('shows validation error for past date', async () => {
       // Create a component with a past date
-      const { getByText, getByPlaceholderText, rerender } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText, rerender } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -838,7 +838,7 @@ describe('ProposeMeetupScreen', () => {
         json: () => Promise.resolve({}),
       });
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -853,7 +853,7 @@ describe('ProposeMeetupScreen', () => {
         json: () => Promise.resolve({ error: 'Not found' }),
       });
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -863,7 +863,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('formatted date and time display', () => {
     it('displays formatted date', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         // Date is displayed in format like "Thu, Dec 21"
@@ -872,7 +872,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('displays formatted time', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         // Time is displayed in format like "2:30 PM"
@@ -883,7 +883,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('required indicators', () => {
     it('shows date required indicator', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Date/)).toBeTruthy();
@@ -891,7 +891,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('shows time required indicator', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText(/Time/)).toBeTruthy();
@@ -914,7 +914,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -942,7 +942,7 @@ describe('ProposeMeetupScreen', () => {
         json: () => Promise.resolve({ user_role: 'owner' }),
       });
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -965,7 +965,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -987,7 +987,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('whitespace only location validation', () => {
     it('validates location with only whitespace', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1006,7 +1006,7 @@ describe('ProposeMeetupScreen', () => {
 
   describe('date picker platform handling', () => {
     it('renders date picker for iOS and Android', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1017,7 +1017,7 @@ describe('ProposeMeetupScreen', () => {
     });
 
     it('renders time picker for iOS and Android', async () => {
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1044,7 +1044,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1118,7 +1118,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1157,7 +1157,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1205,7 +1205,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1243,7 +1243,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1268,7 +1268,7 @@ describe('ProposeMeetupScreen', () => {
       (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      const { getByText } = render(<ProposeMeetupScreen />);
+      const { getByText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByText('Propose a Meetup')).toBeTruthy();
@@ -1292,7 +1292,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1330,7 +1330,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1374,7 +1374,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1397,7 +1397,7 @@ describe('ProposeMeetupScreen', () => {
   // Skip - tests have test isolation issues (pass individually, fail when run together)
   describe.skip('form validation edge cases', () => {
     it('validates location after trimming whitespace', async () => {
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1427,7 +1427,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();
@@ -1459,7 +1459,7 @@ describe('ProposeMeetupScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<ProposeMeetupScreen />);
+      const { getByText, getByPlaceholderText } = await render(<ProposeMeetupScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., Parking lot at Maple Hill DGC')).toBeTruthy();

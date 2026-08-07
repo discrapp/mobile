@@ -52,7 +52,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('renders link sticker screen', async () => {
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Link Your Sticker')).toBeTruthy();
@@ -60,7 +60,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('shows code input field', async () => {
-    const { getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -68,7 +68,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('shows verify code button', async () => {
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Verify Code')).toBeTruthy();
@@ -76,7 +76,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('shows cancel button', async () => {
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -84,7 +84,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('handles cancel button press', async () => {
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Cancel')).toBeTruthy();
@@ -96,7 +96,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('allows entering sticker code', async () => {
-    const { getByPlaceholderText } = render(<LinkStickerScreen />);
+    const { getByPlaceholderText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       const input = getByPlaceholderText('e.g., ABC123XY');
@@ -110,7 +110,7 @@ describe('LinkStickerScreen', () => {
   });
 
   it('shows description text', async () => {
-    const { getByText } = render(<LinkStickerScreen />);
+    const { getByText } = await render(<LinkStickerScreen />);
 
     await waitFor(() => {
       expect(getByText('Scan the QR code on your sticker or enter the code manually')).toBeTruthy();
@@ -132,7 +132,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -163,7 +163,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -194,7 +194,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -225,7 +225,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -263,7 +263,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -307,7 +307,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -365,7 +365,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -418,7 +418,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -446,7 +446,7 @@ describe('LinkStickerScreen', () => {
         data: { session: null },
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();
@@ -484,7 +484,7 @@ describe('LinkStickerScreen', () => {
         });
       });
 
-      const { getByText, getByPlaceholderText } = render(<LinkStickerScreen />);
+      const { getByText, getByPlaceholderText } = await render(<LinkStickerScreen />);
 
       await waitFor(() => {
         expect(getByPlaceholderText('e.g., ABC123XY')).toBeTruthy();

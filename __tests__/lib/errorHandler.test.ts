@@ -15,7 +15,7 @@ describe('errorHandler', () => {
 
   describe('handleError', () => {
     describe('alert dialogs', () => {
-      it('shows alert for critical errors', () => {
+      it('shows alert for critical errors', async () => {
         const error = new Error('Out of memory');
         handleError(error, { operation: 'test' });
 
@@ -26,7 +26,7 @@ describe('errorHandler', () => {
         );
       });
 
-      it('shows alert with retry option for critical errors when onRetry provided', () => {
+      it('shows alert with retry option for critical errors when onRetry provided', async () => {
         const error = new Error('Fatal error occurred');
         const onRetry = jest.fn();
         handleError(error, { operation: 'test', onRetry });
@@ -41,7 +41,7 @@ describe('errorHandler', () => {
         );
       });
 
-      it('shows alert when forceAlert is true', () => {
+      it('shows alert when forceAlert is true', async () => {
         const error = new Error('Regular error');
         handleError(error, { operation: 'test', forceAlert: true });
 
@@ -51,7 +51,7 @@ describe('errorHandler', () => {
         );
       });
 
-      it('shows session expired alert for auth errors requiring reauth', () => {
+      it('shows session expired alert for auth errors requiring reauth', async () => {
         const error = new Error('JWT expired');
         handleError(error, { operation: 'test' });
 
@@ -62,7 +62,7 @@ describe('errorHandler', () => {
         );
       });
 
-      it('shows session expired alert for refresh token not found', () => {
+      it('shows session expired alert for refresh token not found', async () => {
         const error = new Error('refresh_token_not_found');
         handleError(error, { operation: 'test' });
 
@@ -75,7 +75,7 @@ describe('errorHandler', () => {
     });
 
     describe('toast notifications', () => {
-      it('does not show alert for regular errors (uses toast)', () => {
+      it('does not show alert for regular errors (uses toast)', async () => {
         const error = new Error('Something went wrong');
         handleError(error, { operation: 'test' });
 
@@ -83,14 +83,14 @@ describe('errorHandler', () => {
         expect(Alert.alert).not.toHaveBeenCalled();
       });
 
-      it('does not show alert for network errors (uses toast)', () => {
+      it('does not show alert for network errors (uses toast)', async () => {
         const error = new Error('Network request failed');
         handleError(error, { operation: 'test' });
 
         expect(Alert.alert).not.toHaveBeenCalled();
       });
 
-      it('does not show alert for API errors (uses toast)', () => {
+      it('does not show alert for API errors (uses toast)', async () => {
         const error = new Error('Row not found');
         handleError(error, { operation: 'test' });
 
@@ -100,13 +100,13 @@ describe('errorHandler', () => {
   });
 
   describe('showSuccess', () => {
-    it('does not throw when called', () => {
+    it('does not throw when called', async () => {
       expect(() => showSuccess('Operation completed!')).not.toThrow();
     });
   });
 
   describe('showInfo', () => {
-    it('does not throw when called', () => {
+    it('does not throw when called', async () => {
       expect(() => showInfo('Just so you know...')).not.toThrow();
     });
   });
